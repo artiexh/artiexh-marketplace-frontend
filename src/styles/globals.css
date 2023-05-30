@@ -2,26 +2,17 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer components {
+	/* Insert component classes here */
+	.gradient {
+		background-image: linear-gradient(135deg, var(--primary), var(--secondary));
+	}
+}
+
 :root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
-  }
-}
-
-body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+	/* Insert root variables */
+	--primary: #f10487;
+	--secondary: #8924c2;
+	--subtext: #afafaf;
+	--body: #f8f9fa;
 }

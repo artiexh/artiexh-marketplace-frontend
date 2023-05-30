@@ -1,25 +1,41 @@
 {
-  "name": "fe-marketplace",
-  "version": "0.1.0",
-  "private": true,
-  "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "lint": "next lint"
-  },
-  "dependencies": {
-    "@types/node": "20.2.5",
-    "@types/react": "18.2.7",
-    "@types/react-dom": "18.2.4",
-    "autoprefixer": "10.4.14",
-    "eslint": "8.41.0",
-    "eslint-config-next": "13.4.4",
-    "next": "13.4.4",
-    "postcss": "8.4.24",
-    "react": "18.2.0",
-    "react-dom": "18.2.0",
-    "tailwindcss": "3.3.2",
-    "typescript": "5.0.4"
-  }
+	"name": "fe-marketplace",
+	"version": "0.1.0",
+	"private": true,
+	"scripts": {
+		"dev": "next dev",
+		"build": "next build",
+		"start": "next start",
+		"lint": "next lint"
+	},
+	"dependencies": {
+		"@emotion/react": "^11.11.0",
+		"@emotion/server": "^11.11.0",
+		"@mantine/core": "^6.0.13",
+		"@mantine/dates": "^6.0.13",
+		"@mantine/form": "^6.0.13",
+		"@mantine/hooks": "^6.0.13",
+		"@mantine/modals": "^6.0.13",
+		"@mantine/next": "^6.0.13",
+		"@mantine/notifications": "^6.0.13",
+		"axios": "^1.4.0",
+		"clsx": "^1.2.1",
+		"dayjs": "^1.11.7",
+		"next": "13.4.4",
+		"react": "18.2.0",
+		"react-dom": "18.2.0",
+		"swr": "^2.1.5"
+	},
+	"devDependencies": {
+		"@types/node": "20.2.5",
+		"@types/react": "18.2.7",
+		"@types/react-dom": "18.2.4",
+		"autoprefixer": "10.4.14",
+		"eslint": "8.41.0",
+		"eslint-config-next": "13.4.4",
+		"postcss": "8.4.24",
+		"sass": "^1.62.1",
+		"tailwindcss": "3.3.2",
+		"typescript": "5.0.4"
+	}
 }
