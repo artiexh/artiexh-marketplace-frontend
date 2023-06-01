@@ -89,9 +89,28 @@ const SignUpFormContainer = () => {
 			</Button>
 			<Divider label='Or sign in with' labelPosition='center' />
 			<div className='flex gap-3'>
-				<Button className='bg-primary flex-1' disabled={isSubmitting}>
-					Google
-				</Button>
+				<a
+					href={`${
+						process.env.NEXT_PUBLIC_API_ENDPOINT
+					}/oauth2/google?redirect_uri=${encodeURIComponent(
+						typeof window !== 'undefined' ? 'http://localhost:3000' : 'http://localhost:3000'
+					)}`}
+				>
+					<Button
+						className='bg-primary flex-1'
+						disabled={isSubmitting}
+						onClick={() => {
+							console.log(location.href);
+							// router.push(
+							// 	`localhost:8080/api/v1/oauth2/google?redirect_uri=${encodeURIComponent(
+							// 		location.href
+							// 	)}`
+							// );
+						}}
+					>
+						Google
+					</Button>
+				</a>
 				<Button className='bg-primary flex-1' disabled={isSubmitting}>
 					Facebook
 				</Button>
