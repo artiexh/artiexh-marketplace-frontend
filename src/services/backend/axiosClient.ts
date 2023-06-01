@@ -1,30 +1,32 @@
-import axios from 'axios';
+import axios from "axios";
 
 const axiosClient = axios.create({
-	baseURL: process.env.NEXT_PUBLIC_API_ENDPOINT,
-	withCredentials: true,
+  baseURL: process.env.NEXT_PUBLIC_API_ENDPOINT,
+  withCredentials: true,
 });
 
 let isRefreshing = false;
 
 const refresh = () => {
-	if (isRefreshing) return Promise.reject();
-	isRefreshing = true;
-	return axiosClient.post('/auth/refresh').then(() => {
-		isRefreshing = false;
-	});
+  if (isRefreshing) return Promise.reject();
+  isRefreshing = true;
+  return axiosClient.post("/auth/refresh").then(() => {
+    isRefreshing = false;
+  });
 };
 
 axiosClient.interceptors.response.use(undefined, (error) => {
-	const originalRequest = error.config;
-	const status = error?.response?.status;
+  const originalRequest = error.config;
+  const status = error?.response?.status;
 
-	if (status === 401 && !originalRequest._retry) {
-		originalRequest._retry = true;
-		return refresh().then(() => {
-			return axiosClient(originalRequest);
-		});
-	}
+  if (status === 401 && !originalRequest._retry) {
+    originalRequest._retry = true;
+    return refresh().then(() => {
+      return axiosClient(originalRequest);
+    });
+  }
 
-	return Promise.reject(error);
+  return Promise.reject(error);
 });
+
+export default axiosClient;
