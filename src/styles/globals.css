@@ -16,3 +16,7 @@
 	--subtext: #afafaf;
 	--body: #f8f9fa;
 }
+
+body {
+	background-color: var(--body);
+}
