@@ -2,6 +2,7 @@ import axiosClient from '@/services/backend/axiosClient';
 import { User } from '@/types';
 import { Button, Divider, TextInput, PasswordInput } from '@mantine/core';
 import { useForm } from '@mantine/form';
+import { useRouter } from 'next/router';
 import { useState } from 'react';
 
 const initialValues = {
@@ -29,6 +30,7 @@ const validate = {
 
 const SignUpFormContainer = () => {
 	const [isSubmitting, setIsSubmitting] = useState(false);
+	const router = useRouter();
 
 	const form = useForm({
 		initialValues,
@@ -49,6 +51,7 @@ const SignUpFormContainer = () => {
 			console.log(data);
 			// TODO:
 			// Save this
+			router.push('/');
 		} catch (error) {
 			console.log(error);
 		} finally {
@@ -102,8 +105,8 @@ const SignUpFormContainer = () => {
 					(async function () {
 						try {
 							await axiosClient.post('/auth/login', {
-								username: 'string',
-								password: 'string',
+								username: 'username',
+								password: '123456',
 							});
 						} catch (error) {
 							console.log(error);
