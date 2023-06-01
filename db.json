@@ -1,0 +1,43 @@
+{
+	"products": [
+		{
+			"id": 1,
+			"name": "Product 1",
+			"price": 100,
+			"description": "This is product 1, it is very good",
+			"released": "12/10/2023",
+			"tags": ["tag1", "tag2", "tag3"],
+			"seller": {
+				"id": 1,
+				"name": "Seller 1",
+				"rating": 4.5
+			}
+		},
+		{
+			"id": 2,
+			"name": "Product 2",
+			"price": 200,
+			"description": "This is product 2, it is very good",
+			"released": "12/10/2023",
+			"tags": ["tag1", "tag2", "tag3"],
+			"seller": {
+				"id": 1,
+				"name": "Seller 1",
+				"rating": 4.5
+			}
+		},
+		{
+			"id": 3,
+			"name": "Product 3",
+			"price": 300,
+			"description": "This is product 3, it is very good",
+			"released": "12/10/2023",
+			"tags": ["tag1", "tag2", "tag3"],
+			"seller": {
+				"id": 1,
+				"name": "Seller 1",
+				"rating": 4.5
+			}
+		}
+	]
+}
