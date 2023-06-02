@@ -53,6 +53,8 @@ const SignUpFormContainer = () => {
 			// Save this
 			router.push('/');
 		} catch (error) {
+			// TODO:
+			// Handle 401 invalid credentials
 			console.log(error);
 		} finally {
 			setIsSubmitting(false);
@@ -89,28 +91,21 @@ const SignUpFormContainer = () => {
 			</Button>
 			<Divider label='Or sign in with' labelPosition='center' />
 			<div className='flex gap-3'>
-				<a
-					href={`${
-						process.env.NEXT_PUBLIC_API_ENDPOINT
-					}/oauth2/google?redirect_uri=${encodeURIComponent(
-						typeof window !== 'undefined' ? 'http://localhost:3000' : 'http://localhost:3000'
-					)}`}
+				<Button
+					className='bg-primary flex-1'
+					disabled={isSubmitting}
+					onClick={() => {
+						router.push(
+							`${
+								process.env.NEXT_PUBLIC_API_ENDPOINT
+							}/oauth2/authorization/google?redirect_uri=${encodeURIComponent(
+								`${location.origin}/auth/callback`
+							)}`
+						);
+					}}
 				>
-					<Button
-						className='bg-primary flex-1'
-						disabled={isSubmitting}
-						onClick={() => {
-							console.log(location.href);
-							// router.push(
-							// 	`localhost:8080/api/v1/oauth2/google?redirect_uri=${encodeURIComponent(
-							// 		location.href
-							// 	)}`
-							// );
-						}}
-					>
-						Google
-					</Button>
-				</a>
+					Google
+				</Button>
 				<Button className='bg-primary flex-1' disabled={isSubmitting}>
 					Facebook
 				</Button>

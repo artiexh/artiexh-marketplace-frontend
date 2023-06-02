@@ -6,6 +6,7 @@ import { ModalsProvider } from '@mantine/modals';
 
 import { Open_Sans } from 'next/font/google';
 import { SWRConfig } from 'swr';
+import AuthGuard from '@/services/guards/AuthGuard';
 
 const openSans = Open_Sans({
 	subsets: ['latin', 'vietnamese'],
@@ -67,6 +68,7 @@ export default function App({ Component, pageProps }: AppProps) {
 			<ModalsProvider>
 				<Notifications limit={5} autoClose={4000} />
 				<SWRConfig>
+					<AuthGuard />
 					<Component {...pageProps} />
 				</SWRConfig>
 			</ModalsProvider>

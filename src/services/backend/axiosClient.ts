@@ -22,6 +22,15 @@ axiosClient.interceptors.response.use(undefined, (error) => {
 	const originalRequest = error.config;
 	const status = error?.response?.status;
 
+	// For invalid password or expired/invalid refresh_token
+	if (
+		status === 401 &&
+		(originalRequest.url === '/auth/login' || originalRequest.url === '/auth/refresh')
+	) {
+		return Promise.reject(error);
+	}
+
+	// For expired tokens
 	if (status === 401 && !originalRequest._retry) {
 		originalRequest._retry = true;
 		return refresh().then(() => {
