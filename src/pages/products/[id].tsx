@@ -12,8 +12,12 @@ const ProductDetailPage: NextPage<InferGetStaticPropsType<typeof getStaticProps>
 	return (
 		<div>
 			<div className='flex gap-5'>
-				<Carousel>
-					<Carousel.Slide></Carousel.Slide>
+				<Carousel height={200} loop>
+					<Carousel.Slide>1</Carousel.Slide>
+					<Carousel.Slide>1</Carousel.Slide>
+					<Carousel.Slide>1</Carousel.Slide>
+					<Carousel.Slide>1</Carousel.Slide>
+					<Carousel.Slide>1</Carousel.Slide>
 				</Carousel>
 			</div>
 		</div>
@@ -26,7 +30,6 @@ export const getStaticPaths = async () => {
 		const paths = data.map((product) => ({
 			params: { id: `${product.id}` },
 		}));
-		console.log(paths);
 		return {
 			paths,
 			fallback: true,
