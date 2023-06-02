@@ -7,28 +7,17 @@ import { useState } from 'react';
 
 const initialValues = {
 	username: '',
-	email: '',
 	password: '',
-	confirmPassword: '',
 };
 
 type FormValues = typeof initialValues;
 
 const validate = {
-	username: (value: string) =>
-		value.trim().length >= 3 ? null : 'Username must be at least 3 characters long',
-	email: (value: string) =>
-		/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(value) ? null : 'Invalid email address',
-	password: (value: string) =>
-		value.trim().length >= 6 ? null : 'Password must be at least 6 characters long',
-	confirmPassword: (value: string, values: FormValues) => {
-		if (!value) return 'Please type your password again';
-		if (value !== values.password) return 'Passwords do not match';
-		return null;
-	},
+	username: (value: string) => (value.trim().length > 0 ? null : 'Username cannot be empty'),
+	password: (value: string) => (value.trim().length > 0 ? null : 'Password cannot be empty'),
 };
 
-const SignUpFormContainer = () => {
+const SignInFormContainer = () => {
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const router = useRouter();
 
@@ -42,9 +31,8 @@ const SignUpFormContainer = () => {
 	const onSubmit = async (values: FormValues) => {
 		setIsSubmitting(true);
 		try {
-			const { email, password, username } = values;
-			const { data } = await axiosClient.post<User>('/registration/user', {
-				email,
+			const { password, username } = values;
+			const { data } = await axiosClient.post<User>('/auth/login', {
 				password,
 				username,
 			});
@@ -75,29 +63,16 @@ const SignUpFormContainer = () => {
 				autoComplete='username'
 				{...form.getInputProps('username')}
 			/>
-			<TextInput
-				label='Email'
-				placeholder='example@email.com'
-				disabled={isSubmitting}
-				autoComplete='email'
-				{...form.getInputProps('email')}
-			/>
 			<PasswordInput
 				label='Mật khẩu'
 				placeholder='Siêu bí mật'
 				disabled={isSubmitting}
-				autoComplete='new-password'
+				autoComplete='password'
 				{...form.getInputProps('password')}
 			/>
-			<PasswordInput
-				label='Mật khẩu xác nhận'
-				placeholder='Giống cái ở trên'
-				disabled={isSubmitting}
-				autoComplete='new-password'
-				{...form.getInputProps('confirmPassword')}
-			/>
+
 			<Button type='submit' className='bg-primary' disabled={isSubmitting || hasErrors}>
-				Đăng kí
+				Đăng nhập
 			</Button>
 			<Divider label='Hoặc đăng nhập bằng' labelPosition='center' />
 			<div className='flex flex-row sm:flex-col gap-3'>
@@ -126,4 +101,4 @@ const SignUpFormContainer = () => {
 	);
 };
 
-export default SignUpFormContainer;
+export default SignInFormContainer;

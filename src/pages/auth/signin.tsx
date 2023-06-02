@@ -1,9 +1,9 @@
-import SignUpFormContainer from '@/containers/SignUpFormContainer/SignUpFormContainer';
+import SignInFormContainer from '@/containers/SignInFormContainer/SignInFormContainer';
 import { GetServerSidePropsContext } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
 
-const SignUpPage = () => {
+const SignInPage = () => {
 	return (
 		<div className='flex h-screen sm:bg-white bg-accent sm:flex-row flex-col items-center justify-center gap-5 sm:gap-0 px-5 sm:px-0'>
 			<div className='logo-wrapper_mobile sm:hidden'>
@@ -20,13 +20,13 @@ const SignUpPage = () => {
 				<div className='header_desktop hidden sm:flex flex-col'>
 					<h1 className='font-bold text-primary w-full max-w-xs mx-auto'>Artiexh</h1>
 					<h2 className='text-subtext max-w-xs mx-auto w-full'>
-						Đã có tài khoản?{' '}
-						<Link href='/auth/signin' className='text-secondary'>
-							Đăng nhập ngay
+						Chưa có tài khoản?{' '}
+						<Link href='/auth/signup' className='text-secondary'>
+							Tạo ngay
 						</Link>
 					</h2>
 				</div>
-				<SignUpFormContainer />
+				<SignInFormContainer />
 			</div>
 			<div className='sm:flex flex-col flex-1 gap-3 hidden items-center justify-center bg-accent h-full'>
 				<Image
@@ -43,9 +43,9 @@ const SignUpPage = () => {
 				</h2>
 			</div>
 			<div className='footer-wrapper_mobile sm:hidden'>
-				Đã có tài khoản?{' '}
-				<Link href='/auth/signin' className='font-bold text-primary'>
-					Đăng nhập
+				Chưa có tài khoản?{' '}
+				<Link href='/auth/signup' className='font-bold text-primary'>
+					Tạo ngay
 				</Link>
 			</div>
 		</div>
@@ -61,4 +61,4 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
 	};
 }
 
-export default SignUpPage;
+export default SignInPage;
