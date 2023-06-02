@@ -11,7 +11,8 @@ const SignInPage = () => {
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
 	const cookies = context.req.cookies;
-	if (cookies['refresh_token']) return { redirect: { destination: '/', permanent: false } };
+	if (cookies[process.env.NEXT_PUBLIC_REFRESH_TOKEN_KEY as string])
+		return { redirect: { destination: '/', permanent: false } };
 	return {
 		props: {},
 	};
