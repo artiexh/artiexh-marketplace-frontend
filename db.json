@@ -37,6 +37,94 @@
         "https://picsum.photos/300/300",
         "https://picsum.photos/300/300"
       ]
+    },
+    {
+      "id": "3",
+      "name": "Lycoris keychain - Chisato",
+      "price": "10.000.000 VND",
+      "shop": "MeowMeow shop",
+      "images": [
+        "https://picsum.photos/300/300",
+        "https://picsum.photos/300/300",
+        "https://picsum.photos/300/300"
+      ]
+    },
+    {
+      "id": "4",
+      "name": "Lycoris keychain - Chisato",
+      "price": "10.000.000 VND",
+      "shop": "MeowMeow shop",
+      "images": [
+        "https://picsum.photos/300/300",
+        "https://picsum.photos/300/300",
+        "https://picsum.photos/300/300"
+      ]
+    },
+    {
+      "id": "5",
+      "name": "Lycoris keychain - Chisato",
+      "price": "10.000.000 VND",
+      "shop": "MeowMeow shop",
+      "images": [
+        "https://picsum.photos/300/300",
+        "https://picsum.photos/300/300",
+        "https://picsum.photos/300/300"
+      ]
+    },
+    {
+      "id": "6",
+      "name": "Lycoris keychain - Chisato",
+      "price": "10.000.000 VND",
+      "shop": "MeowMeow shop",
+      "images": [
+        "https://picsum.photos/300/300",
+        "https://picsum.photos/300/300",
+        "https://picsum.photos/300/300"
+      ]
+    },
+    {
+      "id": "7",
+      "name": "Lycoris keychain - Chisato",
+      "price": "10.000.000 VND",
+      "shop": "MeowMeow shop",
+      "images": [
+        "https://picsum.photos/300/300",
+        "https://picsum.photos/300/300",
+        "https://picsum.photos/300/300"
+      ]
+    },
+    {
+      "id": "8",
+      "name": "Lycoris keychain - Chisato",
+      "price": "10.000.000 VND",
+      "shop": "MeowMeow shop",
+      "images": [
+        "https://picsum.photos/300/300",
+        "https://picsum.photos/300/300",
+        "https://picsum.photos/300/300"
+      ]
+    },
+    {
+      "id": "9",
+      "name": "Lycoris keychain - Chisato",
+      "price": "10.000.000 VND",
+      "shop": "MeowMeow shop",
+      "images": [
+        "https://picsum.photos/300/300",
+        "https://picsum.photos/300/300",
+        "https://picsum.photos/300/300"
+      ]
+    },
+    {
+      "id": "10",
+      "name": "Lycoris keychain - Chisato",
+      "price": "10.000.000 VND",
+      "shop": "MeowMeow shop",
+      "images": [
+        "https://picsum.photos/300/300",
+        "https://picsum.photos/300/300",
+        "https://picsum.photos/300/300"
+      ]
     }
   ],
   "dashboardProducts": [
@@ -68,28 +156,32 @@
   ],
   "dashboardHotTags": [
     {
-      "id": "SGD12436786",
-      "name": "Lycoris keychain - Chisato"
+      "name": "#hsr",
+      "description": "5050 products"
     },
     {
-      "id": "SGD12436786",
-      "name": "Lycoris keychain - Chisato"
+      "name": "#hsr",
+      "description": "5050 products"
     },
     {
-      "id": "SGD12436786",
-      "name": "Lycoris keychain - Chisato"
+      "name": "#hsr",
+      "description": "5050 products"
     },
     {
-      "id": "SGD12436786",
-      "name": "Lycoris keychain - Chisato"
+      "name": "#hsr",
+      "description": "5050 products"
     },
     {
-      "id": "SGD12436786",
-      "name": "Lycoris keychain - Chisato"
+      "name": "#hsr",
+      "description": "5050 products"
     },
     {
-      "id": "SGD12436786",
-      "name": "Lycoris keychain - Chisato"
+      "name": "#hsr",
+      "description": "5050 products"
+    },
+    {
+      "name": "#hsr",
+      "description": "5050 products"
     }
   ]
 }
