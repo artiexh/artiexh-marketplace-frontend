@@ -23,6 +23,6 @@ router.render = (req, res) => {
 };
 // Use default router
 server.use(router);
-server.listen(8080, () => {
+server.listen(3004, () => {
 	console.log('JSON Server is running');
 });

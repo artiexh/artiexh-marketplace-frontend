@@ -7,7 +7,6 @@
 		"build": "next build",
 		"start": "next start",
 		"lint": "next lint",
-		"be": "json-server --watch db.json --port 8080 --id id --routes routes.json",
 		"backend": "node ./mockup-server/server.js "
 	},
 	"dependencies": {
