@@ -7,12 +7,11 @@ export type Tag = {
 export type Product = {
   name: string;
   shop: string;
-  price: string;
+  price: Price;
   images: string[];
 };
 
-export type DashboardProduct = {
-  id: string;
-  shop: string;
-  price: string;
+export type Price = {
+  value: number;
+  unit: string;
 };

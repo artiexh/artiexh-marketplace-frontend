@@ -3,35 +3,56 @@ import Layout from "@/layouts/Layout/Layout";
 import ssrAxiosClient from "@/services/backend/axiosMockups/ssrAxiosMockupClient";
 import { Product, Tag } from "@/types/Product";
 import { GetStaticPropsContext, InferGetStaticPropsType, NextPage } from "next";
+import productStyles from "@/styles/Products/productList.module.scss";
+import clsx from "clsx";
+import { CommonResponseBase } from "@/types/ResponseBase";
+import useSWR from "swr";
+import axiosClient from "@/services/backend/axiosMockups/axiosMockupClient";
+import HeroSection from "@/components/Home/HeroSection";
+import { HomeBranding } from "@/types/HomeBranding";
+import PreviewList from "@/components/PreviewList";
 
 const HomePage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = ({
-  products,
+  hotProducts,
   hotTags,
+  homeBranding,
 }) => {
+  const { data: products, isLoading } = useSWR(
+    ["/products?_limit=10&_page=1"],
+    (key) =>
+      axiosClient
+        .get<CommonResponseBase<Product[]>>(key[0])
+        .then((res) => res.data.data)
+  );
+
   return (
     <Layout>
-      <div className="flex flex-col gap-16">
-        <div className="flex h-[27rem] gap-4">
-          <div className="w-3/4 flex-shrink-0 from-[#F10487] to-[#8924C2] bg-gradient-to-br rounded-xl" />
-          <div className="flex flex-col w-full gap-8">
-            <div className="flex-1 bg-[#D9D9D9] rounded-xl" />
-            <div className="flex-1 bg-[#D9D9D9] rounded-xl" />
-          </div>
-        </div>
+      <div className="flex flex-col gap-8 lg:gap-16">
+        <HeroSection
+          promotionElements={homeBranding?.promotions ?? []}
+          carouselElements={homeBranding?.campaigns ?? []}
+          className="flex h-[12rem] lg:h-[27rem] gap-4 w-[100vw] lg:w-full -ml-6 md:mx-auto"
+        />
         <div>
           <div>Trending tags:</div>
-          <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-7 mt-3">
-            {hotTags.map(({ color, description, name }, index) => (
+          <PreviewList
+            data={hotTags}
+            classNames={{
+              root: "mt-3",
+              slide: "flex-none",
+              controls: "hidden lg:flex",
+            }}
+            render={(product: Tag) => (
               <div
-                key={index}
-                className="text-center p-6 text-white"
-                style={{ backgroundColor: color }}
+                key={product.name}
+                className="text-center text-white h-12 w-32 flex flex-col items-center justify-center"
+                style={{ backgroundColor: product.color }}
               >
-                <div className="font-bold">{name}</div>
-                <div className="text-xs">{description}</div>
+                <div className="font-bold">{product.name}</div>
+                <div className="text-xs">{product.description}</div>
               </div>
-            ))}
-          </div>
+            )}
+          />
         </div>
         <div>
           <div className="flex justify-between">
@@ -45,13 +66,21 @@ const HomePage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = ({
             </div>
             <div className="font-semibold hidden lg:block">Xem tất cả</div>
           </div>
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 mt-5">
-            {products.slice(0, 5).map((product, index) => (
-              <ProductPreviewCard data={product} key={index} />
-            ))}
-          </div>
+          <PreviewList
+            data={hotProducts}
+            classNames={{
+              root: "mt-5",
+              container: clsx("gap-x-4"),
+              slide:
+                "w-[calc((100vw-1rem*4)/2)] sm:w-[calc((100vw-1rem*4)/3)] md:w-[calc((100vw-1rem*4)/4)] flex-none lg:flex-1",
+              controls: "hidden lg:flex",
+            }}
+            render={(product: Product) => (
+              <ProductPreviewCard data={product} key={product.name} />
+            )}
+          />
         </div>
-        <div>
+        <div className="hidden lg:block">
           <div className="border p-6 font-semibold">DANH MỤC</div>
           <div className="grid grid-cols-3 sm:grid-cols-5 md:grid-cols-6 lg:grid-cols-8">
             {[
@@ -69,8 +98,8 @@ const HomePage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = ({
         </div>
         <div>
           <div className="font-semibold">Gợi ý cho bạn hôm nay</div>
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 mt-3">
-            {products.map((product, index) => (
+          <div className={clsx(productStyles["product-list-grid"], "mt-3")}>
+            {products?.map((product, index) => (
               <ProductPreviewCard data={product} key={index} />
             ))}
           </div>
@@ -81,20 +110,29 @@ const HomePage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = ({
 };
 
 export const getStaticProps = async (context: GetStaticPropsContext) => {
-  let products: Product[] = [];
+  let hotProducts: Product[] = [];
   let hotTags: Tag[] = [];
+  let homeBranding: HomeBranding | null = null;
   try {
-    const [{ data: productData }, { data: hotTagsData }] = await Promise.all([
-      ssrAxiosClient.get<Product[]>("/products"),
-      ssrAxiosClient.get<Tag[]>("/dashboardHotTags"),
+    const [
+      { data: productRes },
+      { data: hotTagsRes },
+      { data: homeBrandingRes },
+    ] = await Promise.all([
+      ssrAxiosClient.get<CommonResponseBase<Product[]>>("/products?_limit=5"),
+      ssrAxiosClient.get<CommonResponseBase<Tag[]>>("/tags?type=HOT"),
+      ssrAxiosClient.get<CommonResponseBase<HomeBranding>>(
+        "/homepage_branding"
+      ),
     ]);
-    products = productData;
-    hotTags = hotTagsData;
+    hotProducts = productRes.data;
+    hotTags = hotTagsRes.data;
+    homeBranding = homeBrandingRes.data;
   } catch (e) {
     console.error(e);
   }
 
-  return { props: { products, hotTags }, revalidate: 10 };
+  return { props: { hotProducts, hotTags, homeBranding }, revalidate: 10 };
 };
 
 export default HomePage;
