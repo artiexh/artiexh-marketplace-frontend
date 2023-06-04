@@ -1,4 +1,5 @@
 import axiosClient from '@/services/backend/axiosClient';
+import { Product } from '@/types/Product';
 import { Carousel } from '@mantine/carousel';
 import { Breadcrumbs } from '@mantine/core';
 import { GetStaticPropsContext, InferGetStaticPropsType, NextPage } from 'next';
