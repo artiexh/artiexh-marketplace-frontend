@@ -1,0 +1,230 @@
+{
+  "users": [
+    {
+      "id": "id",
+      "email": "admin@gmail.com",
+      "provider": "email",
+      "password": "admin",
+      "role": "admin"
+    },
+    {
+      "email": "jerry.ng2002@gmail.com",
+      "password": "",
+      "provider": "google",
+      "id": "1678270646089",
+      "role": "user"
+    }
+  ],
+  "homepage_branding": {
+    "campaigns": [
+      {
+        "id": "1",
+        "url": "https://static.wikia.nocookie.net/bangdreamvetnamfandom/images/8/81/Roselia.jpg/revision/latest?cb=20220417065827&path-prefix=vi"
+      },
+      {
+        "id": "2",
+        "url": "https://s3-ap-northeast-1.amazonaws.com/bmu-new-corp-production-public/fc41f61c-8e5b-4a9d-b6aa-8462f8a89283.png"
+      },
+      {
+        "id": "3",
+        "url": "https://static.wikia.nocookie.net/bangdreamvetnamfandom/images/8/81/Roselia.jpg/revision/latest?cb=20220417065827&path-prefix=vi"
+      }
+    ],
+    "promotions": [
+      {
+        "id": "2",
+        "url": "https://s3-ap-northeast-1.amazonaws.com/bmu-new-corp-production-public/fc41f61c-8e5b-4a9d-b6aa-8462f8a89283.png"
+      },
+      {
+        "id": "3",
+        "url": "https://static.wikia.nocookie.net/bangdreamvetnamfandom/images/8/81/Roselia.jpg/revision/latest?cb=20220417065827&path-prefix=vi"
+      }
+    ]
+  },
+  "products": [
+    {
+      "id": "1",
+      "name": "Lycoris keychain - Chisato",
+      "price": {
+        "value": 10000000,
+        "unit": "VND"
+      },
+      "shop": "MeowMeow shop",
+      "images": [
+        "https://picsum.photos/300/300",
+        "https://picsum.photos/300/300",
+        "https://picsum.photos/300/300"
+      ]
+    },
+    {
+      "id": "2",
+      "name": "Lycoris keychain - Chisato",
+      "price": {
+        "value": 10000000,
+        "unit": "VND"
+      },
+      "shop": "MeowMeow shop",
+      "images": [
+        "https://picsum.photos/300/300",
+        "https://picsum.photos/300/300",
+        "https://picsum.photos/300/300"
+      ]
+    },
+    {
+      "id": "3",
+      "name": "Lycoris keychain - Chisato",
+      "price": {
+        "value": 10000000,
+        "unit": "VND"
+      },
+      "shop": "MeowMeow shop",
+      "images": [
+        "https://picsum.photos/300/300",
+        "https://picsum.photos/300/300",
+        "https://picsum.photos/300/300"
+      ]
+    },
+    {
+      "id": "4",
+      "name": "Lycoris keychain - Chisato",
+      "price": {
+        "value": 10000000,
+        "unit": "VND"
+      },
+      "shop": "MeowMeow shop",
+      "images": [
+        "https://picsum.photos/300/300",
+        "https://picsum.photos/300/300",
+        "https://picsum.photos/300/300"
+      ]
+    },
+    {
+      "id": "5",
+      "name": "Lycoris keychain - Chisato",
+      "price": {
+        "value": 10000000,
+        "unit": "VND"
+      },
+      "shop": "MeowMeow shop",
+      "images": [
+        "https://picsum.photos/300/300",
+        "https://picsum.photos/300/300",
+        "https://picsum.photos/300/300"
+      ]
+    },
+    {
+      "id": "6",
+      "name": "Lycoris keychain - Chisato",
+      "price": {
+        "value": 10000000,
+        "unit": "VND"
+      },
+      "shop": "MeowMeow shop",
+      "images": [
+        "https://picsum.photos/300/300",
+        "https://picsum.photos/300/300",
+        "https://picsum.photos/300/300"
+      ]
+    },
+    {
+      "id": "7",
+      "name": "Lycoris keychain - Chisato",
+      "price": {
+        "value": 10000000,
+        "unit": "VND"
+      },
+      "shop": "MeowMeow shop",
+      "images": [
+        "https://picsum.photos/300/300",
+        "https://picsum.photos/300/300",
+        "https://picsum.photos/300/300"
+      ]
+    },
+    {
+      "id": "8",
+      "name": "Lycoris keychain - Chisato",
+      "price": {
+        "value": 10000000,
+        "unit": "VND"
+      },
+      "shop": "MeowMeow shop",
+      "images": [
+        "https://picsum.photos/300/300",
+        "https://picsum.photos/300/300",
+        "https://picsum.photos/300/300"
+      ]
+    },
+    {
+      "id": "9",
+      "name": "Lycoris keychain - Chisato",
+      "price": {
+        "value": 10000000,
+        "unit": "VND"
+      },
+      "shop": "MeowMeow shop",
+      "images": [
+        "https://picsum.photos/300/300",
+        "https://picsum.photos/300/300",
+        "https://picsum.photos/300/300"
+      ]
+    },
+    {
+      "id": "10",
+      "name": "Lycoris keychain - Chisato",
+      "price": {
+        "value": 10000000,
+        "unit": "VND"
+      },
+      "shop": "MeowMeow shop",
+      "images": [
+        "https://picsum.photos/300/300",
+        "https://picsum.photos/300/300",
+        "https://picsum.photos/300/300"
+      ]
+    }
+  ],
+  "tags": [
+    {
+      "name": "#hsr",
+      "description": "5050 products",
+      "type": "HOT",
+      "color": "#FF9898"
+    },
+    {
+      "name": "#hsr",
+      "description": "5050 products",
+      "type": "HOT",
+      "color": "#FFB571"
+    },
+    {
+      "name": "#hsr",
+      "description": "5050 products",
+      "type": "HOT",
+      "color": "#9CA6FF"
+    },
+    {
+      "name": "#hsr",
+      "description": "5050 products",
+      "type": "HOT",
+      "color": "#57AC3C"
+    },
+    {
+      "name": "#hsr",
+      "description": "5050 products",
+      "type": "HOT",
+      "color": "#FF8179"
+    },
+    {
+      "name": "#hsr",
+      "description": "5050 products",
+      "type": "HOT",
+      "color": "#FFB571"
+    },
+    {
+      "name": "#hsr",
+      "description": "5050 products",
+      "type": "HOT",
+      "color": "#9CA6FF"
+    }
+  ]
+}
