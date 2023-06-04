@@ -157,31 +157,38 @@
   "dashboardHotTags": [
     {
       "name": "#hsr",
-      "description": "5050 products"
+      "description": "5050 products",
+      "color": "#FF9898"
     },
     {
       "name": "#hsr",
-      "description": "5050 products"
+      "description": "5050 products",
+      "color": "#FFB571"
     },
     {
       "name": "#hsr",
-      "description": "5050 products"
+      "description": "5050 products",
+      "color": "#9CA6FF"
     },
     {
       "name": "#hsr",
-      "description": "5050 products"
+      "description": "5050 products",
+      "color": "#57AC3C"
     },
     {
       "name": "#hsr",
-      "description": "5050 products"
+      "description": "5050 products",
+      "color": "#FF8179"
     },
     {
       "name": "#hsr",
-      "description": "5050 products"
+      "description": "5050 products",
+      "color": "#FFB571"
     },
     {
       "name": "#hsr",
-      "description": "5050 products"
+      "description": "5050 products",
+      "color": "#9CA6FF"
     }
   ]
 }
