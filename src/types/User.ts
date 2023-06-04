@@ -1,8 +1,9 @@
 export type User = {
-	id: string;
-	username: string;
-	status: string;
-	role: string;
-	avatarUrl: string;
-	email: string;
+  id: number;
+  username: string;
+  status: string;
+  role: string;
+  avatarUrl?: string;
+  subscriptionsTo: object[];
+  email?: string;
 };
