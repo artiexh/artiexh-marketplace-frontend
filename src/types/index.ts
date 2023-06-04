@@ -15,6 +15,7 @@ type Product = {
 	released: string;
 	tags: string[];
 	seller: Seller;
+	ratings: number;
 };
 
 type Seller = {
