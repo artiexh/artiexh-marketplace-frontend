@@ -1,5 +1,5 @@
 import axiosClient from '@/services/backend/axiosClient';
-import { User } from '@/types';
+import { User } from '@/types/User';
 import { Button, Divider, TextInput, PasswordInput } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { useRouter } from 'next/router';

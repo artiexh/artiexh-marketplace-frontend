@@ -1,17 +1,28 @@
 export type Tag = {
-  name: string;
-  description: string;
-  color: string;
+	name: string;
+	description: string;
+	color: string;
+};
+
+export type Seller = {
+	id: string;
+	name: string;
+	rating: number;
 };
 
 export type Product = {
-  name: string;
-  shop: string;
-  price: Price;
-  images: string[];
+	id: string;
+	name: string;
+	price: Price;
+	description: string;
+	released: string;
+	tags: string[];
+	shop: Seller;
+	ratings: number;
+	images: string[];
 };
 
 export type Price = {
-  value: number;
-  unit: string;
+	value: number;
+	unit: string;
 };
