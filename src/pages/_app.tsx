@@ -18,6 +18,13 @@ export default function App({ Component, pageProps }: AppProps) {
 			withGlobalStyles
 			withNormalizeCSS
 			theme={{
+				breakpoints: {
+					sm: '640px',
+					md: '768px',
+					lg: '1024px',
+					xl: '1280px',
+					'2xl': '1536px',
+				},
 				colorScheme: 'light',
 				fontFamily: nunito.style.fontFamily,
 				// Generate here https://omatsuri.app/color-shades-generator
