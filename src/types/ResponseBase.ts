@@ -1,8 +1,8 @@
 export type CommonResponseBase<T> = {
   timestamp: number;
   status: number;
-  error: string | null;
-  message: string | null;
+  error?: string;
+  message?: string;
   path: string;
   data: T;
 };
