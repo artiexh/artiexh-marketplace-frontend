@@ -84,7 +84,7 @@ const SignInFormContainer = () => {
 					onClick={() => {
 						router.push(
 							`${
-								process.env.NEXT_PUBLIC_API_ENDPOINT
+								process.env.NEXT_PUBLIC_AUTH_ENDPOINT
 							}/oauth2/authorization/google?redirect_uri=${encodeURIComponent(
 								`${location.origin}/auth/callback`
 							)}`
