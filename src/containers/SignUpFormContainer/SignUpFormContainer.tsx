@@ -7,6 +7,7 @@ import { useState } from 'react';
 
 const initialValues = {
 	username: '',
+	displayName: '',
 	email: '',
 	password: '',
 	confirmPassword: '',
@@ -20,7 +21,7 @@ const validate = {
 	email: (value: string) =>
 		/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(value) ? null : 'Invalid email address',
 	password: (value: string) =>
-		value.trim().length >= 6 ? null : 'Password must be at least 6 characters long',
+		value.trim().length >= 8 ? null : 'Password must be at least 8 characters long',
 	confirmPassword: (value: string, values: FormValues) => {
 		if (!value) return 'Please type your password again';
 		if (value !== values.password) return 'Passwords do not match';
@@ -42,11 +43,12 @@ const SignUpFormContainer = () => {
 	const onSubmit = async (values: FormValues) => {
 		setIsSubmitting(true);
 		try {
-			const { email, password, username } = values;
+			const { email, password, username, displayName } = values;
 			const { data } = await axiosClient.post<User>('/registration/user', {
 				email,
 				password,
 				username,
+				displayName,
 			});
 			console.log(data);
 			// TODO:
@@ -74,6 +76,12 @@ const SignUpFormContainer = () => {
 				disabled={isSubmitting}
 				autoComplete='username'
 				{...form.getInputProps('username')}
+			/>
+			<TextInput
+				label='Display name'
+				placeholder='tên mọi người thấy nè'
+				disabled={isSubmitting}
+				{...form.getInputProps('displayName')}
 			/>
 			<TextInput
 				label='Email'
@@ -109,7 +117,7 @@ const SignUpFormContainer = () => {
 					onClick={() => {
 						router.push(
 							`${
-								process.env.NEXT_PUBLIC_API_ENDPOINT
+								process.env.NEXT_PUBLIC_AUTH_ENDPOINT
 							}/oauth2/authorization/google?redirect_uri=${encodeURIComponent(
 								`${location.origin}/auth/callback`
 							)}`
