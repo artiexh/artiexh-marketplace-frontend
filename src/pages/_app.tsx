@@ -63,6 +63,7 @@ export default function App({ Component, pageProps }: AppProps) {
 					from: 'customPrimary',
 					to: 'customSecondary',
 				},
+				defaultRadius: '8px',
 			}}
 		>
 			<style jsx global>
