@@ -163,6 +163,8 @@ const CreateProductContainer = () => {
 					<Switch
 						label='Allow pre-order'
 						size='md'
+						offLabel={<span className='text-sm'>|</span>}
+						onLabel={<span className='text-base'>O</span>}
 						{...getInputProps('allowPreOrder', {
 							type: 'checkbox',
 						})}
@@ -222,6 +224,8 @@ const CreateProductContainer = () => {
 					className='mt-5'
 					label='Allow shipping'
 					size='md'
+					offLabel={<span className='text-sm'>|</span>}
+					onLabel={<span className='text-base'>O</span>}
 					{...getInputProps('allowShipping', { type: 'checkbox' })}
 					onChange={(e) => {
 						getInputProps('allowShipping').onChange(e);
@@ -247,6 +251,8 @@ const CreateProductContainer = () => {
 					<Input.Wrapper label='Same as my shop' className='col-span-12 md:col-span-2'>
 						<Switch
 							size='md'
+							offLabel={<span className='text-sm'>|</span>}
+							onLabel={<span className='text-base'>O</span>}
 							{...getInputProps('sameAsStoreAddress', {
 								type: 'checkbox',
 							})}
