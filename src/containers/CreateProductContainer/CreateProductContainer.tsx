@@ -1,6 +1,10 @@
 import useCategories from '@/hooks/useCategories';
 import { CreateProductValues } from '@/types/Product';
-import { createProductValidation } from '@/utils/createProductValidations';
+import {
+	DEFAULT_FORM_VALUES,
+	createProductValidation,
+	CURRENCIES,
+} from '@/utils/createProductValidations';
 import {
 	Button,
 	Checkbox,
@@ -14,35 +18,8 @@ import {
 } from '@mantine/core';
 import { DatePickerInput } from '@mantine/dates';
 import { useForm } from '@mantine/form';
+import clsx from 'clsx';
 import { useState } from 'react';
-
-const currencies = ['USD', 'VND', 'EUR', 'YEN'];
-
-const DEFAULT_FORM_VALUES: CreateProductValues = {
-	// general
-	name: '',
-	category: null,
-	// memberOnly: false,
-	tags: [],
-	description: '',
-	price: {
-		value: 1,
-		unit: currencies[0],
-	},
-	attaches: [],
-	maxItemsPerOrder: 0, // 0 = unlimited
-	remainingQuantity: 0,
-	// pre-order
-	allowPreOrder: false,
-	publishDatetime: null,
-	preOrderRange: [null, null],
-	// shipping
-	allowShipping: false,
-	pickupLocation: '',
-	sameAsStoreAddress: false,
-	// payment
-	paymentMethods: [],
-};
 
 const CreateProductContainer = () => {
 	const { data: categories } = useCategories();
@@ -123,7 +100,7 @@ const CreateProductContainer = () => {
 								{...getInputProps('price.value')}
 							/>
 							<Select
-								data={currencies}
+								data={CURRENCIES}
 								label='Unit'
 								withAsterisk
 								className='flex-[1]'
@@ -201,40 +178,43 @@ const CreateProductContainer = () => {
 						}}
 					/>
 				</div>
-				{allowPreOrder && (
-					<div className='grid grid-cols-12 gap-5 md:gap-x-10 mt-5'>
-						<DatePickerInput
-							type='range'
-							label='Pre-order date range'
-							placeholder='Pick dates range'
-							className='col-span-12 md:col-span-6'
-							withAsterisk
-							numberOfColumns={2}
-							{...getInputProps('preOrderRange')}
-							onChange={(value) => {
-								const [start, end] = value;
-								if (start && end && publishDatetime && end <= publishDatetime) {
-									clearFieldError('publishDatetime');
-								}
-								setFieldValue('preOrderRange', value);
-							}}
-						/>
-						<DatePickerInput
-							label='Release date'
-							placeholder='Pick a date'
-							className='col-span-12 md:col-span-6'
-							withAsterisk
-							{...getInputProps('publishDatetime')}
-							onChange={(value) => {
-								const [start, end] = preOrderRange;
-								if (start && end && value && end <= value) {
-									clearFieldError('preOrderRange');
-								}
-								setFieldValue('publishDatetime', value);
-							}}
-						/>
-					</div>
-				)}
+				<div
+					className={clsx(
+						'grid grid-cols-12 transition-all gap-5 md:gap-x-10',
+						allowPreOrder ? 'opacity-100 mt-5' : 'h-0 pointer-events-none opacity-0'
+					)}
+				>
+					<DatePickerInput
+						type='range'
+						label='Pre-order date range'
+						placeholder='Pick dates range'
+						className='col-span-12 md:col-span-6'
+						withAsterisk
+						numberOfColumns={2}
+						{...getInputProps('preOrderRange')}
+						onChange={(value) => {
+							const [start, end] = value;
+							if (start && end && publishDatetime && end <= publishDatetime) {
+								clearFieldError('publishDatetime');
+							}
+							setFieldValue('preOrderRange', value);
+						}}
+					/>
+					<DatePickerInput
+						label='Release date'
+						placeholder='Pick a date'
+						className='col-span-12 md:col-span-6'
+						withAsterisk
+						{...getInputProps('publishDatetime')}
+						onChange={(value) => {
+							const [start, end] = preOrderRange;
+							if (start && end && value && end <= value) {
+								clearFieldError('preOrderRange');
+							}
+							setFieldValue('publishDatetime', value);
+						}}
+					/>
+				</div>
 			</div>
 			<div className='card shipping-payment-wrapper'>
 				<h2 className='text-xl font-bold'>Shipping & payment methods</h2>
@@ -252,32 +232,35 @@ const CreateProductContainer = () => {
 						}
 					}}
 				/>
-				{!allowShipping && (
-					<div className='shipping-wrapper mt-5 grid grid-cols-12 gap-5 md:gap-x-10'>
-						<TextInput
-							label='Pick up at'
-							className='col-span-12 md:col-span-10'
-							{...getInputProps('pickupLocation')}
-							disabled={sameAsStoreAddress}
+				<div
+					className={clsx(
+						'shipping-wrapper grid grid-cols-12 gap-5 md:gap-x-10 transition-all',
+						!allowShipping ? 'opacity-100 mt-5' : 'h-0 pointer-events-none opacity-0'
+					)}
+				>
+					<TextInput
+						label='Pick up at'
+						className='col-span-12 md:col-span-10'
+						{...getInputProps('pickupLocation')}
+						disabled={sameAsStoreAddress}
+					/>
+					<Input.Wrapper label='Same as my shop' className='col-span-12 md:col-span-2'>
+						<Switch
+							size='md'
+							{...getInputProps('sameAsStoreAddress', {
+								type: 'checkbox',
+							})}
+							onChange={(e) => {
+								getInputProps('sameAsStoreAddress').onChange(e);
+								if (e.target.checked) {
+									setFieldValue('pickupLocation', 'NICE FORM VALIDATION');
+								} else {
+									setFieldValue('pickupLocation', '');
+								}
+							}}
 						/>
-						<Input.Wrapper label='Same as my shop' className='col-span-12 md:col-span-2'>
-							<Switch
-								size='md'
-								{...getInputProps('sameAsStoreAddress', {
-									type: 'checkbox',
-								})}
-								onChange={(e) => {
-									getInputProps('sameAsStoreAddress').onChange(e);
-									if (e.target.checked) {
-										setFieldValue('pickupLocation', 'NICE FORM VALIDATION');
-									} else {
-										setFieldValue('pickupLocation', '');
-									}
-								}}
-							/>
-						</Input.Wrapper>
-					</div>
-				)}
+					</Input.Wrapper>
+				</div>
 				<h2 className='text-xl font-bold mt-5'>Payment information</h2>
 				<Checkbox.Group
 					className='flex flex-col gap-3 mt-5'

@@ -55,3 +55,31 @@ export const createProductValidation: FormValidateInput<CreateProductValues> = {
 	paymentMethods: (methods) =>
 		mantineValidationHandler(methods.length > 0, 'At least 1 payment method is required'),
 };
+
+export const CURRENCIES = ['USD', 'VND', 'EUR', 'YEN'];
+
+export const DEFAULT_FORM_VALUES: CreateProductValues = {
+	// general
+	name: '',
+	category: null,
+	// memberOnly: false,
+	tags: [],
+	description: '',
+	price: {
+		value: 1,
+		unit: CURRENCIES[0],
+	},
+	attaches: [],
+	maxItemsPerOrder: 0, // 0 = unlimited
+	remainingQuantity: 0,
+	// pre-order
+	allowPreOrder: false,
+	publishDatetime: null,
+	preOrderRange: [null, null],
+	// shipping
+	allowShipping: false,
+	pickupLocation: '',
+	sameAsStoreAddress: false,
+	// payment
+	paymentMethods: [],
+};
