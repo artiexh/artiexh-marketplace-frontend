@@ -54,7 +54,7 @@
 			"tags": ["tag1", "tag2", "tag3"],
 			"artistInfo": {
 				"id": 1,
-				"name": "MeowMeow shop",
+				"displayName": "MeowMeow shop",
 				"rating": 4.5
 			},
 			"attaches": [
@@ -114,7 +114,7 @@
 			"tags": ["tag1", "tag2", "tag3"],
 			"artistInfo": {
 				"id": 1,
-				"name": "MeowMeow shop",
+				"displayName": "MeowMeow shop",
 				"rating": 4.5
 			},
 			"attaches": [
@@ -174,7 +174,7 @@
 			"tags": ["tag1", "tag2", "tag3"],
 			"artistInfo": {
 				"id": 1,
-				"name": "MeowMeow shop",
+				"displayName": "MeowMeow shop",
 				"rating": 4.5
 			},
 			"attaches": [
@@ -234,7 +234,7 @@
 			"tags": ["tag1", "tag2", "tag3"],
 			"artistInfo": {
 				"id": 1,
-				"name": "MeowMeow shop",
+				"displayName": "MeowMeow shop",
 				"rating": 4.5
 			},
 			"attaches": [
@@ -294,7 +294,7 @@
 			"tags": ["tag1", "tag2", "tag3"],
 			"artistInfo": {
 				"id": 1,
-				"name": "MeowMeow shop",
+				"displayName": "MeowMeow shop",
 				"rating": 4.5
 			},
 			"attaches": [
@@ -354,7 +354,7 @@
 			"tags": ["tag1", "tag2", "tag3"],
 			"artistInfo": {
 				"id": 1,
-				"name": "MeowMeow shop",
+				"displayName": "MeowMeow shop",
 				"rating": 4.5
 			},
 			"attaches": [
@@ -414,7 +414,7 @@
 			"tags": ["tag1", "tag2", "tag3"],
 			"artistInfo": {
 				"id": 1,
-				"name": "MeowMeow shop",
+				"displayName": "MeowMeow shop",
 				"rating": 4.5
 			},
 			"attaches": [
@@ -474,7 +474,7 @@
 			"tags": ["tag1", "tag2", "tag3"],
 			"artistInfo": {
 				"id": 1,
-				"name": "MeowMeow shop",
+				"displayName": "MeowMeow shop",
 				"rating": 4.5
 			},
 			"attaches": [
@@ -534,7 +534,7 @@
 			"tags": ["tag1", "tag2", "tag3"],
 			"artistInfo": {
 				"id": 1,
-				"name": "MeowMeow shop",
+				"displayName": "MeowMeow shop",
 				"rating": 4.5
 			},
 			"attaches": [
@@ -594,7 +594,7 @@
 			"tags": ["tag1", "tag2", "tag3"],
 			"artistInfo": {
 				"id": 1,
-				"name": "MeowMeow shop",
+				"displayName": "MeowMeow shop",
 				"rating": 4.5
 			},
 			"attaches": [
