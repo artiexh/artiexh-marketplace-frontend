@@ -27,7 +27,7 @@ const ProductDetailPage: NextPage<InferGetStaticPropsType<typeof getStaticProps>
 			<nav>Navbar</nav>
 			<div className='page-wrapper max-w-7xl px-5 md:px-10 mx-auto mt-10 pb-5'>
 				<CustomBreadcrumbs />
-				<div className='mt-10 grid grid-cols-12 md:gap-10'>
+				<div className='mt-10 grid grid-cols-12 md:gap-10 gap-y-5'>
 					<Carousel
 						className='overflow-hidden rounded-lg rounded-tl-none col-span-12 md:col-span-7'
 						loop
@@ -39,7 +39,8 @@ const ProductDetailPage: NextPage<InferGetStaticPropsType<typeof getStaticProps>
 						{attaches.map((image) => (
 							<Carousel.Slide key={image.id}>
 								<div className='flex h-[460px] bg-white'>
-									<Image src={image.url} className='object-contain' alt={image.title} fill />
+									{/* <Image src={image.url} className='object-contain' alt={image.title} fill /> */}
+									<div className='w-full h-full gradient'></div>
 								</div>
 							</Carousel.Slide>
 						))}
