@@ -1,3 +1,4 @@
+import { Button } from '@mantine/core';
 import clsx from 'clsx';
 import Image from 'next/image';
 import { ChangeEvent, FC, HTMLAttributes, useState } from 'react';
@@ -9,6 +10,9 @@ type ThumbnailProps = HTMLAttributes<HTMLDivElement> & {
 	error?: string;
 	url?: string;
 	addNode?: boolean;
+	defaultPlaceholder?: React.ReactNode;
+	clearable?: boolean;
+	onClear?: () => void;
 };
 
 const Thumbnail: FC<ThumbnailProps> = ({
@@ -19,6 +23,9 @@ const Thumbnail: FC<ThumbnailProps> = ({
 	setFile,
 	setDataUrl,
 	error,
+	defaultPlaceholder = <div>+</div>,
+	clearable = false,
+	onClear,
 	...rest
 }) => {
 	const [imageUrl, setImageUrl] = useState(url);
@@ -53,7 +60,7 @@ const Thumbnail: FC<ThumbnailProps> = ({
 					<img className='object-contain object-center' src={imageUrl} alt='thumbnail' />
 				</>
 			) : (
-				<div>+</div>
+				defaultPlaceholder
 			)}
 			<input
 				type='file'
@@ -64,8 +71,22 @@ const Thumbnail: FC<ThumbnailProps> = ({
 				value=''
 			/>
 			{imageUrl && (
-				<div className='absolute top-0 left-0 w-full h-full pointer-events-none peer-hover:opacity-100 opacity-0 bg-black/50 transition-opacity flex items-center justify-center text-white text-center'>
-					Change image
+				<div className='absolute top-0 left-0 w-full h-full pointer-events-none peer-hover:opacity-100 hover:opacity-100 opacity-0 bg-black/50 transition-opacity flex flex-col items-center justify-center gap-1'>
+					<div className='text-white text-center'>Update</div>
+					{clearable && (
+						<Button
+							size='xs'
+							type='button'
+							className='bg-red-500 pointer-events-auto'
+							color='red'
+							onClick={() => {
+								setImageUrl('');
+								onClear && onClear();
+							}}
+						>
+							Clear
+						</Button>
+					)}
 				</div>
 			)}
 		</div>

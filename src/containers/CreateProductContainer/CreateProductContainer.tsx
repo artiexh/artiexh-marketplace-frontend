@@ -28,11 +28,11 @@ const CreateProductContainer = () => {
 		values,
 		getInputProps,
 		onSubmit,
-		isValid,
 		validateField,
 		setFieldValue,
 		clearFieldError,
 		errors,
+		removeListItem,
 	} = useForm({
 		initialValues: DEFAULT_FORM_VALUES,
 		validate: createProductValidation,
@@ -176,19 +176,34 @@ const CreateProductContainer = () => {
 									setFieldValue('thumbnail', dataUrl);
 								}}
 								error={errors.thumbnail as string}
+								defaultPlaceholder={
+									<div className='flex flex-col items-center'>
+										<p className='text-4xl font-thin'>+</p>
+										<p>Add thumbnail</p>
+									</div>
+								}
+								clearable
+								onClear={() => {
+									setFieldValue('thumbnail', '');
+								}}
 							/>
 						</Input.Wrapper>
 						<Input.Wrapper label='Attachments' className='mt-3'>
 							<div className='grid grid-cols-3 gap-3'>
 								{attaches.map((attach, index) => (
 									<Thumbnail
-										key={index}
+										// Make this unique
+										key={`${attach.title}-${index}-${Math.random()}`}
 										url={attach.url}
 										setCustomFile={({ file, url }) => {
 											setFieldValue(`attaches.${index}`, {
 												url,
 												title: file.name,
 											});
+										}}
+										clearable
+										onClear={() => {
+											removeListItem('attaches', index);
 										}}
 									/>
 								))}

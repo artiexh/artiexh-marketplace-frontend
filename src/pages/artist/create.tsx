@@ -10,3 +10,5 @@ const CreatePage = () => {
 };
 
 export default CreatePage;
+
+// TODO: Check artist role
