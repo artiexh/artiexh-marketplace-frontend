@@ -23,17 +23,18 @@ export type Product = {
 	type: 'NORMAL' | 'PRE_ORDER';
 	remainingQuantity: number;
 	publishDatetime: string; // ISO String
-	preOrderRange?: string[]; // ISO Strings
+	preOrderRange?: string[]; // ISO String[]
 	maxItemsPerOrder: number;
 	allowDelivery: boolean;
 	paymentMethods: PaymentMethod[];
 	category: Category;
+	thumbnail: string; // URL
 };
 
 export type Attaches = {
 	id: string;
 	url: string;
-	type: 'THUMBNAIL' | 'IMAGE' | 'VIDEO';
+	type: 'IMAGE' | 'VIDEO';
 	title: string;
 	description?: string;
 };
@@ -60,6 +61,7 @@ export type CreateProductValues = {
 	tags: string[];
 	description: string;
 	price: Price;
+	thumbnail: string;
 	attaches: Attaches[];
 	maxItemsPerOrder: number;
 	remainingQuantity: number;

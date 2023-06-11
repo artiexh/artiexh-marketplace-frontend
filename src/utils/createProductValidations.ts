@@ -1,59 +1,79 @@
 import { CreateProductValues } from '@/types/Product';
 import { FormValidateInput } from '@mantine/form/lib/types';
 
-export function mantineValidationHandler(valid: boolean, error: string) {
+export function validationHandler(valid: boolean, error: string) {
 	return valid ? null : error;
 }
 
 export const createProductValidation: FormValidateInput<CreateProductValues> = {
 	// general
-	name: (name) => mantineValidationHandler(name.trim().length > 0, 'Name is required'),
-	category: (category) => mantineValidationHandler(category !== null, 'Category is required'),
+	name: (name) => {
+		if (name.trim().length === 0) return 'Name is required';
+		if (name.trim().length < 5) return 'Name must be at least 5 characters';
+		if (name.trim().length > 50) return 'Name cannot be longer than 50 characters';
+		return null;
+	},
+	category: (category) => validationHandler(category !== null, 'Category is required'),
 	price: {
-		value: (value) => mantineValidationHandler(value > 0, 'Price must be greater than 0'),
+		value: (value) => validationHandler(value > 0, 'Price must be greater than 0'),
 	},
 	// attaches: (attaches) =>
 	// 	mantineValidationHandler(attaches.length > 0, 'At least 1 image is required'),
-	remainingQuantity: (remaining) =>
-		mantineValidationHandler(typeof remaining !== 'string' && remaining >= 0, 'Must be at least 0'),
-	maxItemsPerOrder: (maxItems) =>
-		mantineValidationHandler(typeof maxItems !== 'string' && maxItems >= 0, 'Must be at least 0'),
+	remainingQuantity: (remaining) => {
+		if (typeof remaining === 'string') return 'Remaining quantity is required';
+		if (remaining < 0) return 'Remaining quantity must be at least 0';
+		return null;
+	},
+	maxItemsPerOrder: (maxItems) => {
+		if (typeof maxItems === 'string') return 'Max items per order is required';
+		if (maxItems < 0) return 'Max items per order must be at least 0';
+		return null;
+	},
+	thumbnail: (thumbnail) => {
+		if (thumbnail.trim().length === 0) return 'Thumbnail is required';
+		return null;
+	},
 
 	// pre-order
-	publishDatetime: (publishDate, formValues) =>
-		mantineValidationHandler(
-			!formValues.allowPreOrder ||
-				(!!publishDate &&
-					!!formValues.preOrderRange[0] &&
-					!!formValues.preOrderRange[1] &&
-					publishDate.getTime() >= Date.now() &&
-					publishDate.getTime() >= formValues.preOrderRange[1].getTime()),
-			'Publish date must be in the future'
-		),
-	preOrderRange: (preOrderDates, formValues) =>
-		mantineValidationHandler(
-			!formValues.allowPreOrder ||
-				// Pre order start from today
-				(!!preOrderDates[0] &&
-					!!preOrderDates[1] &&
-					!!formValues.publishDatetime &&
-					preOrderDates[0].getTime() >= Date.now() &&
-					// Pre order end after start
-					preOrderDates[0].getTime() < preOrderDates[1].getTime() &&
-					// Pre order end before publish
-					preOrderDates[1].getTime() <= formValues.publishDatetime.getTime()),
-			'Pre order range is invalid'
-		),
+	publishDatetime: (publishDate, formValues) => {
+		if (!formValues.allowPreOrder) return null;
+		if (!publishDate) return 'Publish date is required';
+		if (publishDate.getTime() < Date.now()) return 'Publish date must be in the future';
+		if (
+			!!formValues.preOrderRange[1] &&
+			publishDate.getTime() < formValues.preOrderRange[1].getTime()
+		)
+			return 'Publish date must be after preorder ended';
+		return null;
+	},
+	preOrderRange: (preOrderDates, formValues) => {
+		if (!formValues.allowPreOrder) return null;
+		if (!preOrderDates[0]) return 'Preorder start date is required';
+		if (!preOrderDates[1]) return 'Preorder end date is required';
+		// Not gonna happen since mantine handles this
+		// if (preOrderDates[0].getTime() > preOrderDates[1].getTime())
+		// return 'Preorder start date must be before preorder end date';
+		if (!!formValues.publishDatetime && preOrderDates[1].getTime() < Date.now())
+			return 'Preorder end date must be in the future';
+		// Make sure pre-order end date is before or on publish date
+		if (
+			!!formValues.publishDatetime &&
+			preOrderDates[1].getTime() > formValues.publishDatetime.getTime()
+		)
+			return 'Preorder end date must be before or on publish date';
+		return null;
+	},
 	// delivery
-	pickupLocation: (location, formValues) =>
-		mantineValidationHandler(
-			formValues.allowShipping || location.trim().length > 0,
-			'Pickup location is required'
-		),
+	pickupLocation: (location, formValues) => {
+		if (formValues.allowShipping) return null;
+		if (!location) return 'Pickup location is required';
+		if (location.trim().length < 5) return 'Pickup location is too short';
+		return null;
+	},
 
 	// payment
 	paymentMethods: (methods) =>
-		mantineValidationHandler(methods.length > 0, 'At least 1 payment method is required'),
+		validationHandler(methods.length > 0, 'At least 1 payment method is required'),
 };
 
 export const CURRENCIES = ['USD', 'VND', 'EUR', 'YEN'];
@@ -69,6 +89,7 @@ export const DEFAULT_FORM_VALUES: CreateProductValues = {
 		value: 1,
 		unit: CURRENCIES[0],
 	},
+	thumbnail: '',
 	attaches: [],
 	maxItemsPerOrder: 0, // 0 = unlimited
 	remainingQuantity: 0,

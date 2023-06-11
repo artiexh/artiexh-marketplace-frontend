@@ -1,3 +1,4 @@
+import Thumbnail from '@/components/CreateProduct/Thumbnail';
 import useCategories from '@/hooks/useCategories';
 import { CreateProductValues } from '@/types/Product';
 import {
@@ -23,19 +24,35 @@ import { useState } from 'react';
 
 const CreateProductContainer = () => {
 	const { data: categories } = useCategories();
-	const { values, getInputProps, onSubmit, errors, validateField, setFieldValue, clearFieldError } =
-		useForm({
-			initialValues: DEFAULT_FORM_VALUES,
-			validate: createProductValidation,
-			validateInputOnBlur: true,
-			validateInputOnChange: true,
-		});
+	const {
+		values,
+		getInputProps,
+		onSubmit,
+		isValid,
+		validateField,
+		setFieldValue,
+		clearFieldError,
+		errors,
+	} = useForm({
+		initialValues: DEFAULT_FORM_VALUES,
+		validate: createProductValidation,
+		validateInputOnBlur: true,
+		validateInputOnChange: true,
+	});
+
+	const [isSubmitting, setIsSubmitting] = useState(false);
 
 	// FETCH TAGS FROM SERVER
 	const [tags, setTags] = useState<{ value: string; label: string }[]>([]);
 
-	const { publishDatetime, allowShipping, allowPreOrder, preOrderRange, sameAsStoreAddress } =
-		values;
+	const {
+		publishDatetime,
+		allowShipping,
+		allowPreOrder,
+		preOrderRange,
+		sameAsStoreAddress,
+		attaches,
+	} = values;
 
 	const categoryOptions = categories?.data.map((category) => ({
 		value: category.id,
@@ -43,8 +60,14 @@ const CreateProductContainer = () => {
 	}));
 
 	const submitHandler = (values: CreateProductValues) => {
-		console.log(values);
+		setIsSubmitting(true);
+		setTimeout(() => {
+			console.log(values);
+			setIsSubmitting(false);
+		}, 3000);
 	};
+
+	console.log(errors);
 
 	return (
 		<form
@@ -60,6 +83,7 @@ const CreateProductContainer = () => {
 							className='col-span-12'
 							withAsterisk
 							{...getInputProps('name')}
+							disabled={isSubmitting}
 						/>
 						<MultiSelect
 							data={tags}
@@ -79,6 +103,7 @@ const CreateProductContainer = () => {
 								return item;
 							}}
 							{...getInputProps('tags')}
+							disabled={isSubmitting}
 						/>
 						<NumberInput
 							label='Quantity'
@@ -86,6 +111,7 @@ const CreateProductContainer = () => {
 							withAsterisk
 							min={0}
 							{...getInputProps('remainingQuantity')}
+							disabled={isSubmitting}
 						/>
 						<div className='flex col-span-12 md:col-span-8 order-1 md:order-none'>
 							<NumberInput
@@ -98,16 +124,18 @@ const CreateProductContainer = () => {
 								}}
 								min={1}
 								{...getInputProps('price.value')}
+								disabled={isSubmitting}
 							/>
 							<Select
 								data={CURRENCIES}
 								label='Unit'
 								withAsterisk
-								className='flex-[1]'
+								className='flex-[2]'
 								classNames={{
 									input: 'rounded-l-none',
 								}}
 								{...getInputProps('price.unit')}
+								disabled={isSubmitting}
 							/>
 						</div>
 						<NumberInput
@@ -116,6 +144,7 @@ const CreateProductContainer = () => {
 							withAsterisk
 							min={0}
 							{...getInputProps('maxItemsPerOrder')}
+							disabled={isSubmitting}
 						/>
 						<Select
 							data={categoryOptions || []}
@@ -126,6 +155,7 @@ const CreateProductContainer = () => {
 							withAsterisk
 							allowDeselect
 							{...getInputProps('category')}
+							disabled={isSubmitting}
 						/>
 						<Textarea
 							label='Description'
@@ -136,24 +166,45 @@ const CreateProductContainer = () => {
 								input: 'h-full',
 							}}
 							{...getInputProps('description')}
+							disabled={isSubmitting}
 						/>
 					</div>
 					<div className='image-wrapper flex flex-col md:w-6/12'>
-						<h2>Images</h2>
-						<div className='border-dashed border-2 border-gray-primary w-full md:w-full aspect-square rounded-lg flex-1 mt-1 max-h-80 md:max-h-full mx-auto'>
-							doesnt work because im too lazy to make popup right now
-						</div>
-						<div className='flex gap-5 mt-5'>
-							<div className='border-dashed border-2 border-gray-primary w-1/3 aspect-square rounded-lg'>
-								f
+						<Input.Wrapper label='Thumbnail' withAsterisk>
+							<Thumbnail
+								setDataUrl={(dataUrl) => {
+									setFieldValue('thumbnail', dataUrl);
+								}}
+								error={errors.thumbnail as string}
+							/>
+						</Input.Wrapper>
+						<Input.Wrapper label='Attachments' className='mt-3'>
+							<div className='grid grid-cols-3 gap-3'>
+								{attaches.map((attach, index) => (
+									<Thumbnail
+										key={index}
+										url={attach.url}
+										setCustomFile={({ file, url }) => {
+											setFieldValue(`attaches.${index}`, {
+												url,
+												title: file.name,
+											});
+										}}
+									/>
+								))}
+								{attaches.length < 6 && (
+									<Thumbnail
+										setCustomFile={({ file, url }) => {
+											setFieldValue(`attaches.${attaches.length}`, {
+												url,
+												title: file.name,
+											});
+										}}
+										addNode
+									/>
+								)}
 							</div>
-							<div className='border-dashed border-2 border-gray-primary w-1/3 aspect-square rounded-lg'>
-								b
-							</div>
-							<div className='border-dashed border-2 border-gray-primary w-1/3 aspect-square rounded-lg'>
-								t
-							</div>
-						</div>
+						</Input.Wrapper>
 					</div>
 				</div>
 			</div>
@@ -171,6 +222,7 @@ const CreateProductContainer = () => {
 						onChange={(e) => {
 							getInputProps('allowPreOrder').onChange(e);
 							if (!e.target.checked) {
+								// For submission
 								clearFieldError('preOrderRange');
 								clearFieldError('publishDatetime');
 							} else {
@@ -178,6 +230,7 @@ const CreateProductContainer = () => {
 								validateField('publishDatetime');
 							}
 						}}
+						disabled={isSubmitting}
 					/>
 				</div>
 				<div
@@ -196,11 +249,13 @@ const CreateProductContainer = () => {
 						{...getInputProps('preOrderRange')}
 						onChange={(value) => {
 							const [start, end] = value;
+							// Manual validation since does not trigger validation for other field
 							if (start && end && publishDatetime && end <= publishDatetime) {
 								clearFieldError('publishDatetime');
 							}
 							setFieldValue('preOrderRange', value);
 						}}
+						disabled={isSubmitting}
 					/>
 					<DatePickerInput
 						label='Release date'
@@ -210,11 +265,13 @@ const CreateProductContainer = () => {
 						{...getInputProps('publishDatetime')}
 						onChange={(value) => {
 							const [start, end] = preOrderRange;
+							// Manual validation since does not trigger validation for other field
 							if (start && end && value && end <= value) {
 								clearFieldError('preOrderRange');
 							}
 							setFieldValue('publishDatetime', value);
 						}}
+						disabled={isSubmitting}
 					/>
 				</div>
 			</div>
@@ -230,11 +287,13 @@ const CreateProductContainer = () => {
 					onChange={(e) => {
 						getInputProps('allowShipping').onChange(e);
 						if (e.target.checked) {
+							// For submission
 							clearFieldError('pickupLocation');
 						} else {
 							validateField('pickupLocation');
 						}
 					}}
+					disabled={isSubmitting}
 				/>
 				<div
 					className={clsx(
@@ -246,7 +305,7 @@ const CreateProductContainer = () => {
 						label='Pick up at'
 						className='col-span-12 md:col-span-10'
 						{...getInputProps('pickupLocation')}
-						disabled={sameAsStoreAddress}
+						disabled={sameAsStoreAddress || isSubmitting}
 					/>
 					<Input.Wrapper label='Same as my shop' className='col-span-12 md:col-span-2'>
 						<Switch
@@ -259,11 +318,12 @@ const CreateProductContainer = () => {
 							onChange={(e) => {
 								getInputProps('sameAsStoreAddress').onChange(e);
 								if (e.target.checked) {
-									setFieldValue('pickupLocation', 'NICE FORM VALIDATION');
+									setFieldValue('pickupLocation', 'INSERT THE ADDRESS FROM ARTIST HERE');
 								} else {
 									setFieldValue('pickupLocation', '');
 								}
 							}}
+							disabled={isSubmitting}
 						/>
 					</Input.Wrapper>
 				</div>
@@ -274,15 +334,15 @@ const CreateProductContainer = () => {
 						type: 'checkbox',
 					})}
 				>
-					<Checkbox value='cod' label='Cash on delivery' />
-					<Checkbox value='bank' label='Bank transfer' />
+					<Checkbox value='cod' label='Cash on delivery' disabled={isSubmitting} />
+					<Checkbox value='bank' label='Bank transfer' disabled={isSubmitting} />
 				</Checkbox.Group>
 			</div>
 			<div className='btn-wrapper flex flex-col-reverse md:flex-row gap-5 w-full md:w-max ml-auto bg-white p-5 rounded-lg md:bg-transparent sm:p-0'>
-				<Button variant='outline' type='button'>
+				<Button variant='outline' type='button' disabled={isSubmitting}>
 					Cancel
 				</Button>
-				<Button className='bg-primary' type='submit'>
+				<Button className='bg-primary' type='submit' loading={isSubmitting}>
 					Publish
 				</Button>
 			</div>
