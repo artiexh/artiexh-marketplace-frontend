@@ -49,20 +49,58 @@
 				"value": 10000000,
 				"unit": "VND"
 			},
-			"released": "12/10/2023",
+			"publishDatetime": "12/10/2023",
 			"description": "This is product 1, it is very good",
 			"tags": ["tag1", "tag2", "tag3"],
-			"shop": {
+			"artistInfo": {
 				"id": 1,
 				"name": "MeowMeow shop",
 				"rating": 4.5
 			},
-			"images": [
-				"https://picsum.photos/300/300",
-				"https://picsum.photos/300/300",
-				"https://picsum.photos/300/300"
+			"attaches": [
+				{
+					"id": "1",
+					"url": "https://picsum.photos/300/300",
+					"type": "IMAGE",
+					"title": "This is image 1",
+					"description": "This is image 1"
+				},
+				{
+					"id": "2",
+					"url": "https://picsum.photos/300/300",
+					"type": "IMAGE",
+					"title": "This is image 2",
+					"description": "This is image 2"
+				},
+				{
+					"id": "3",
+					"url": "https://picsum.photos/300/300",
+					"type": "IMAGE",
+					"title": "This is image 3",
+					"description": "This is image 3"
+				}
 			],
-			"ratings": 5
+			"ratings": 5,
+			"status": "AVAILABLE",
+			"type": "NORMAL",
+			"remainingQuantity": 100,
+			"maxItemsPerOrder": 10,
+			"allowDelivery": true,
+			"paymentMethods": [
+				{
+					"id": "1",
+					"type": "COD"
+				},
+				{
+					"id": "2",
+					"type": "ONLINE"
+				}
+			],
+			"category": {
+				"id": "7",
+				"name": "Category 7"
+			},
+			"memberOnly": false
 		},
 		{
 			"id": "2",
@@ -71,20 +109,58 @@
 				"value": 10000000,
 				"unit": "VND"
 			},
-			"released": "12/10/2023",
+			"publishDatetime": "12/10/2023",
 			"description": "This is product 1, it is very good",
 			"tags": ["tag1", "tag2", "tag3"],
-			"shop": {
+			"artistInfo": {
 				"id": 1,
 				"name": "MeowMeow shop",
 				"rating": 4.5
 			},
-			"images": [
-				"https://picsum.photos/300/300",
-				"https://picsum.photos/300/300",
-				"https://picsum.photos/300/300"
+			"attaches": [
+				{
+					"id": "1",
+					"url": "https://picsum.photos/300/300",
+					"type": "IMAGE",
+					"title": "This is image 1",
+					"description": "This is image 1"
+				},
+				{
+					"id": "2",
+					"url": "https://picsum.photos/300/300",
+					"type": "IMAGE",
+					"title": "This is image 2",
+					"description": "This is image 2"
+				},
+				{
+					"id": "3",
+					"url": "https://picsum.photos/300/300",
+					"type": "IMAGE",
+					"title": "This is image 3",
+					"description": "This is image 3"
+				}
 			],
-			"ratings": 5
+			"ratings": 5,
+			"status": "AVAILABLE",
+			"type": "NORMAL",
+			"remainingQuantity": 100,
+			"maxItemsPerOrder": 10,
+			"allowDelivery": true,
+			"paymentMethods": [
+				{
+					"id": "1",
+					"type": "COD"
+				},
+				{
+					"id": "2",
+					"type": "ONLINE"
+				}
+			],
+			"category": {
+				"id": "6",
+				"name": "Category 6"
+			},
+			"memberOnly": false
 		},
 		{
 			"id": "3",
@@ -93,20 +169,58 @@
 				"value": 10000000,
 				"unit": "VND"
 			},
-			"released": "12/10/2023",
+			"publishDatetime": "12/10/2023",
 			"description": "This is product 1, it is very good",
 			"tags": ["tag1", "tag2", "tag3"],
-			"shop": {
+			"artistInfo": {
 				"id": 1,
 				"name": "MeowMeow shop",
 				"rating": 4.5
 			},
-			"images": [
-				"https://picsum.photos/300/300",
-				"https://picsum.photos/300/300",
-				"https://picsum.photos/300/300"
+			"attaches": [
+				{
+					"id": "1",
+					"url": "https://picsum.photos/300/300",
+					"type": "IMAGE",
+					"title": "This is image 1",
+					"description": "This is image 1"
+				},
+				{
+					"id": "2",
+					"url": "https://picsum.photos/300/300",
+					"type": "IMAGE",
+					"title": "This is image 2",
+					"description": "This is image 2"
+				},
+				{
+					"id": "3",
+					"url": "https://picsum.photos/300/300",
+					"type": "IMAGE",
+					"title": "This is image 3",
+					"description": "This is image 3"
+				}
 			],
-			"ratings": 5
+			"ratings": 5,
+			"status": "AVAILABLE",
+			"type": "NORMAL",
+			"remainingQuantity": 100,
+			"maxItemsPerOrder": 10,
+			"allowDelivery": true,
+			"paymentMethods": [
+				{
+					"id": "1",
+					"type": "COD"
+				},
+				{
+					"id": "2",
+					"type": "ONLINE"
+				}
+			],
+			"category": {
+				"id": "6",
+				"name": "Category 6"
+			},
+			"memberOnly": false
 		},
 		{
 			"id": "4",
@@ -115,20 +229,58 @@
 				"value": 10000000,
 				"unit": "VND"
 			},
-			"released": "12/10/2023",
+			"publishDatetime": "12/10/2023",
 			"description": "This is product 1, it is very good",
 			"tags": ["tag1", "tag2", "tag3"],
-			"shop": {
+			"artistInfo": {
 				"id": 1,
 				"name": "MeowMeow shop",
 				"rating": 4.5
 			},
-			"images": [
-				"https://picsum.photos/300/300",
-				"https://picsum.photos/300/300",
-				"https://picsum.photos/300/300"
+			"attaches": [
+				{
+					"id": "1",
+					"url": "https://picsum.photos/300/300",
+					"type": "IMAGE",
+					"title": "This is image 1",
+					"description": "This is image 1"
+				},
+				{
+					"id": "2",
+					"url": "https://picsum.photos/300/300",
+					"type": "IMAGE",
+					"title": "This is image 2",
+					"description": "This is image 2"
+				},
+				{
+					"id": "3",
+					"url": "https://picsum.photos/300/300",
+					"type": "IMAGE",
+					"title": "This is image 3",
+					"description": "This is image 3"
+				}
 			],
-			"ratings": 5
+			"ratings": 5,
+			"status": "AVAILABLE",
+			"type": "NORMAL",
+			"remainingQuantity": 100,
+			"maxItemsPerOrder": 10,
+			"allowDelivery": true,
+			"paymentMethods": [
+				{
+					"id": "1",
+					"type": "COD"
+				},
+				{
+					"id": "2",
+					"type": "ONLINE"
+				}
+			],
+			"category": {
+				"id": "3",
+				"name": "Category 3"
+			},
+			"memberOnly": false
 		},
 		{
 			"id": "5",
@@ -137,20 +289,58 @@
 				"value": 10000000,
 				"unit": "VND"
 			},
-			"released": "12/10/2023",
+			"publishDatetime": "12/10/2023",
 			"description": "This is product 1, it is very good",
 			"tags": ["tag1", "tag2", "tag3"],
-			"shop": {
+			"artistInfo": {
 				"id": 1,
 				"name": "MeowMeow shop",
 				"rating": 4.5
 			},
-			"images": [
-				"https://picsum.photos/300/300",
-				"https://picsum.photos/300/300",
-				"https://picsum.photos/300/300"
+			"attaches": [
+				{
+					"id": "1",
+					"url": "https://picsum.photos/300/300",
+					"type": "IMAGE",
+					"title": "This is image 1",
+					"description": "This is image 1"
+				},
+				{
+					"id": "2",
+					"url": "https://picsum.photos/300/300",
+					"type": "IMAGE",
+					"title": "This is image 2",
+					"description": "This is image 2"
+				},
+				{
+					"id": "3",
+					"url": "https://picsum.photos/300/300",
+					"type": "IMAGE",
+					"title": "This is image 3",
+					"description": "This is image 3"
+				}
 			],
-			"ratings": 5
+			"ratings": 5,
+			"status": "AVAILABLE",
+			"type": "NORMAL",
+			"remainingQuantity": 100,
+			"maxItemsPerOrder": 10,
+			"allowDelivery": true,
+			"paymentMethods": [
+				{
+					"id": "1",
+					"type": "COD"
+				},
+				{
+					"id": "2",
+					"type": "ONLINE"
+				}
+			],
+			"category": {
+				"id": "2",
+				"name": "Category 2"
+			},
+			"memberOnly": false
 		},
 		{
 			"id": "6",
@@ -159,20 +349,58 @@
 				"value": 10000000,
 				"unit": "VND"
 			},
-			"released": "12/10/2023",
+			"publishDatetime": "12/10/2023",
 			"description": "This is product 1, it is very good",
 			"tags": ["tag1", "tag2", "tag3"],
-			"shop": {
+			"artistInfo": {
 				"id": 1,
 				"name": "MeowMeow shop",
 				"rating": 4.5
 			},
-			"images": [
-				"https://picsum.photos/300/300",
-				"https://picsum.photos/300/300",
-				"https://picsum.photos/300/300"
+			"attaches": [
+				{
+					"id": "1",
+					"url": "https://picsum.photos/300/300",
+					"type": "IMAGE",
+					"title": "This is image 1",
+					"description": "This is image 1"
+				},
+				{
+					"id": "2",
+					"url": "https://picsum.photos/300/300",
+					"type": "IMAGE",
+					"title": "This is image 2",
+					"description": "This is image 2"
+				},
+				{
+					"id": "3",
+					"url": "https://picsum.photos/300/300",
+					"type": "IMAGE",
+					"title": "This is image 3",
+					"description": "This is image 3"
+				}
 			],
-			"ratings": 5
+			"ratings": 5,
+			"status": "AVAILABLE",
+			"type": "NORMAL",
+			"remainingQuantity": 100,
+			"maxItemsPerOrder": 10,
+			"allowDelivery": true,
+			"paymentMethods": [
+				{
+					"id": "1",
+					"type": "COD"
+				},
+				{
+					"id": "2",
+					"type": "ONLINE"
+				}
+			],
+			"category": {
+				"id": "2",
+				"name": "Category 2"
+			},
+			"memberOnly": false
 		},
 		{
 			"id": "7",
@@ -181,20 +409,58 @@
 				"value": 10000000,
 				"unit": "VND"
 			},
-			"released": "12/10/2023",
+			"publishDatetime": "12/10/2023",
 			"description": "This is product 1, it is very good",
 			"tags": ["tag1", "tag2", "tag3"],
-			"shop": {
+			"artistInfo": {
 				"id": 1,
 				"name": "MeowMeow shop",
 				"rating": 4.5
 			},
-			"images": [
-				"https://picsum.photos/300/300",
-				"https://picsum.photos/300/300",
-				"https://picsum.photos/300/300"
+			"attaches": [
+				{
+					"id": "1",
+					"url": "https://picsum.photos/300/300",
+					"type": "IMAGE",
+					"title": "This is image 1",
+					"description": "This is image 1"
+				},
+				{
+					"id": "2",
+					"url": "https://picsum.photos/300/300",
+					"type": "IMAGE",
+					"title": "This is image 2",
+					"description": "This is image 2"
+				},
+				{
+					"id": "3",
+					"url": "https://picsum.photos/300/300",
+					"type": "IMAGE",
+					"title": "This is image 3",
+					"description": "This is image 3"
+				}
 			],
-			"ratings": 5
+			"ratings": 5,
+			"status": "AVAILABLE",
+			"type": "NORMAL",
+			"remainingQuantity": 100,
+			"maxItemsPerOrder": 10,
+			"allowDelivery": true,
+			"paymentMethods": [
+				{
+					"id": "1",
+					"type": "COD"
+				},
+				{
+					"id": "2",
+					"type": "ONLINE"
+				}
+			],
+			"category": {
+				"id": "1",
+				"name": "Category 1"
+			},
+			"memberOnly": false
 		},
 		{
 			"id": "8",
@@ -203,20 +469,58 @@
 				"value": 10000000,
 				"unit": "VND"
 			},
-			"released": "12/10/2023",
+			"publishDatetime": "12/10/2023",
 			"description": "This is product 1, it is very good",
 			"tags": ["tag1", "tag2", "tag3"],
-			"shop": {
+			"artistInfo": {
 				"id": 1,
 				"name": "MeowMeow shop",
 				"rating": 4.5
 			},
-			"images": [
-				"https://picsum.photos/300/300",
-				"https://picsum.photos/300/300",
-				"https://picsum.photos/300/300"
+			"attaches": [
+				{
+					"id": "1",
+					"url": "https://picsum.photos/300/300",
+					"type": "IMAGE",
+					"title": "This is image 1",
+					"description": "This is image 1"
+				},
+				{
+					"id": "2",
+					"url": "https://picsum.photos/300/300",
+					"type": "IMAGE",
+					"title": "This is image 2",
+					"description": "This is image 2"
+				},
+				{
+					"id": "3",
+					"url": "https://picsum.photos/300/300",
+					"type": "IMAGE",
+					"title": "This is image 3",
+					"description": "This is image 3"
+				}
 			],
-			"ratings": 5
+			"ratings": 5,
+			"status": "AVAILABLE",
+			"type": "NORMAL",
+			"remainingQuantity": 100,
+			"maxItemsPerOrder": 10,
+			"allowDelivery": true,
+			"paymentMethods": [
+				{
+					"id": "1",
+					"type": "COD"
+				},
+				{
+					"id": "2",
+					"type": "ONLINE"
+				}
+			],
+			"category": {
+				"id": "1",
+				"name": "Category 1"
+			},
+			"memberOnly": false
 		},
 		{
 			"id": "9",
@@ -225,20 +529,58 @@
 				"value": 10000000,
 				"unit": "VND"
 			},
-			"released": "12/10/2023",
+			"publishDatetime": "12/10/2023",
 			"description": "This is product 1, it is very good",
 			"tags": ["tag1", "tag2", "tag3"],
-			"shop": {
+			"artistInfo": {
 				"id": 1,
 				"name": "MeowMeow shop",
 				"rating": 4.5
 			},
-			"images": [
-				"https://picsum.photos/300/300",
-				"https://picsum.photos/300/300",
-				"https://picsum.photos/300/300"
+			"attaches": [
+				{
+					"id": "1",
+					"url": "https://picsum.photos/300/300",
+					"type": "IMAGE",
+					"title": "This is image 1",
+					"description": "This is image 1"
+				},
+				{
+					"id": "2",
+					"url": "https://picsum.photos/300/300",
+					"type": "IMAGE",
+					"title": "This is image 2",
+					"description": "This is image 2"
+				},
+				{
+					"id": "3",
+					"url": "https://picsum.photos/300/300",
+					"type": "IMAGE",
+					"title": "This is image 3",
+					"description": "This is image 3"
+				}
 			],
-			"ratings": 5
+			"ratings": 5,
+			"status": "AVAILABLE",
+			"type": "NORMAL",
+			"remainingQuantity": 100,
+			"maxItemsPerOrder": 10,
+			"allowDelivery": true,
+			"paymentMethods": [
+				{
+					"id": "1",
+					"type": "COD"
+				},
+				{
+					"id": "2",
+					"type": "ONLINE"
+				}
+			],
+			"category": {
+				"id": "2",
+				"name": "Category 2"
+			},
+			"memberOnly": false
 		},
 		{
 			"id": "10",
@@ -247,20 +589,58 @@
 				"value": 10000000,
 				"unit": "VND"
 			},
-			"released": "12/10/2023",
+			"publishDatetime": "12/10/2023",
 			"description": "This is product 1, it is very good",
 			"tags": ["tag1", "tag2", "tag3"],
-			"shop": {
+			"artistInfo": {
 				"id": 1,
 				"name": "MeowMeow shop",
 				"rating": 4.5
 			},
-			"images": [
-				"https://picsum.photos/300/300",
-				"https://picsum.photos/300/300",
-				"https://picsum.photos/300/300"
+			"attaches": [
+				{
+					"id": "1",
+					"url": "https://picsum.photos/300/300",
+					"type": "IMAGE",
+					"title": "This is image 1",
+					"description": "This is image 1"
+				},
+				{
+					"id": "2",
+					"url": "https://picsum.photos/300/300",
+					"type": "IMAGE",
+					"title": "This is image 2",
+					"description": "This is image 2"
+				},
+				{
+					"id": "3",
+					"url": "https://picsum.photos/300/300",
+					"type": "IMAGE",
+					"title": "This is image 3",
+					"description": "This is image 3"
+				}
 			],
-			"ratings": 5
+			"ratings": 5,
+			"status": "AVAILABLE",
+			"type": "NORMAL",
+			"remainingQuantity": 100,
+			"maxItemsPerOrder": 10,
+			"allowDelivery": true,
+			"paymentMethods": [
+				{
+					"id": "1",
+					"type": "COD"
+				},
+				{
+					"id": "2",
+					"type": "ONLINE"
+				}
+			],
+			"category": {
+				"id": "1",
+				"name": "Category 1"
+			},
+			"memberOnly": false
 		}
 	],
 	"tags": [
@@ -305,6 +685,36 @@
 			"description": "5050 products",
 			"type": "HOT",
 			"color": "#9CA6FF"
+		}
+	],
+	"categories": [
+		{
+			"id": "1",
+			"name": "Category 1"
+		},
+		{
+			"id": "2",
+			"name": "Category 2"
+		},
+		{
+			"id": "3",
+			"name": "Category 3"
+		},
+		{
+			"id": "4",
+			"name": "Category 4"
+		},
+		{
+			"id": "5",
+			"name": "Category 5"
+		},
+		{
+			"id": "6",
+			"name": "Category 6"
+		},
+		{
+			"id": "7",
+			"name": "Category 7"
 		}
 	]
 }

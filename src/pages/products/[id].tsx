@@ -18,7 +18,8 @@ const ProductDetailPage: NextPage<InferGetStaticPropsType<typeof getStaticProps>
 	if (router.isFallback) return <div>Loading...</div>;
 	if (!product) return <div>Product not found</div>;
 
-	const { description, id, images, name, price, ratings, released, shop, tags } = product;
+	const { description, id, attaches, name, price, ratings, publishDatetime, artistInfo, tags } =
+		product;
 
 	const breadCrumps = [
 		{ label: 'Home', href: '/' },
@@ -41,10 +42,10 @@ const ProductDetailPage: NextPage<InferGetStaticPropsType<typeof getStaticProps>
 							loop
 							withIndicators
 						>
-							{images.map((image) => (
-								<Carousel.Slide key={image}>
+							{attaches.map((image) => (
+								<Carousel.Slide key={image.id}>
 									<div className='flex h-[400px] bg-white'>
-										<Image src={image} className='object-contain' alt={name} fill />
+										<Image src={image.url} className='object-contain' alt={image.title} fill />
 									</div>
 								</Carousel.Slide>
 							))}
@@ -68,7 +69,7 @@ const ProductDetailPage: NextPage<InferGetStaticPropsType<typeof getStaticProps>
 								))}
 							</div>
 						</div>
-						<ShopCard shop={shop} />
+						<ShopCard artist={artistInfo} />
 					</section>
 				</div>
 			</div>
