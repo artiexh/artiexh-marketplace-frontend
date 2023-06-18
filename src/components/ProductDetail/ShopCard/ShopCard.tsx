@@ -20,10 +20,7 @@ const ShopCard: FC<ArtistInfoProps> = ({ artist, className, ...rest }) => {
       <div className="w-20 gradient aspect-square rounded-full"></div>
       <div className="flex flex-col ml-5">
         <h3 className="text-2xl font-bold">{artist.displayName}</h3>
-        {/* <Rating value={artist.rating} color='customPrimary' readOnly /> */}
-        <Badge className="mt-auto" size="text-md">
-          BLAH BLAH
-        </Badge>
+        <span className="text-gray-500 text-xl">@{artist.username}</span>
       </div>
     </div>
   );

@@ -48,8 +48,13 @@ const ProductDetailPage: NextPage<
             {attaches.map((image) => (
               <Carousel.Slide key={image.id}>
                 <div className="flex h-[460px] bg-white">
-                  {/* <Image src={image.url} className='object-contain' alt={image.title} fill /> */}
-                  <div className="w-full h-full gradient"></div>
+                  <Image
+                    src={image.url}
+                    className="object-contain"
+                    alt={image.title}
+                    fill
+                  />
+                  {/* <div className="w-full h-full gradient"></div> */}
                 </div>
               </Carousel.Slide>
             ))}
