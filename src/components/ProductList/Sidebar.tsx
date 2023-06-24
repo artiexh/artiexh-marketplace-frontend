@@ -1,74 +1,32 @@
 import { Category } from '@/types/Product';
 import { Button, Checkbox, Divider, NumberInput, Rating } from '@mantine/core';
-import clsx from 'clsx';
-import { FC, useEffect, useState } from 'react';
+import { FC, useState } from 'react';
 import CategoryItem from './CategoryItem';
-import { useForm } from '@mantine/form';
-import { useRouter } from 'next/router';
-import { urlFormatter } from '@/utils/formatter';
-
-type FilterProps = {
-	categoryId: string;
-	cost_gte: number;
-	cost_lte: number;
-	ratings_gte: number;
-	locations: number[]; // Temp: no way to make this work with JSONSERVER, i dont want to code BE
-};
+import { UseFormReturnType } from '@mantine/form';
+import { FilterProps } from '@/services/backend/types/Filter';
+import { MAX_CATEGORIES } from '@/constants/ProductList';
+import { IconArrowDown, IconArrowRight, IconArrowUp, IconFilter } from '@tabler/icons-react';
 
 type SidebarProps = {
+	form: UseFormReturnType<Partial<FilterProps>>;
 	categories: Category[];
-	pagination: any; // lazy
+	submitHandler: (filters?: Object) => void;
+	resetHandler: () => void;
 };
 
-const MAX_CATEGORIES = 5;
-
-const DEFAULT_FILTERS: Partial<FilterProps> = {
-	cost_gte: 0,
-	cost_lte: 100_000_000,
-	ratings_gte: 0,
-	categoryId: '',
-};
-
-const Sidebar: FC<SidebarProps> = ({ categories, pagination }) => {
+const Sidebar: FC<SidebarProps> = ({ categories, form, submitHandler, resetHandler }) => {
+	const { values: filters, getInputProps, setFieldValue } = form;
 	const [moreCategories, setMoreCategories] = useState(false);
 	const [moreLocations, setMoreLocations] = useState(false);
-	const router = useRouter();
-
-	const {
-		values: filters,
-		getInputProps,
-		setFieldValue,
-		setValues,
-	} = useForm<Partial<FilterProps>>({
-		initialValues: DEFAULT_FILTERS,
-	});
-
-	const submitHandler = (values = filters) => {
-		const url = urlFormatter('/products', { ...values, ...pagination });
-		router.replace(url, undefined, { shallow: true });
-	};
-
-	useEffect(() => {
-		setValues({
-			categoryId: (router.query.categoryId as string) || DEFAULT_FILTERS.categoryId,
-			cost_gte: Number(router.query.cost_gte) || DEFAULT_FILTERS.cost_gte,
-			cost_lte: Number(router.query.cost_lte) || DEFAULT_FILTERS.cost_lte,
-			ratings_gte: Number(router.query.ratings_gte) || DEFAULT_FILTERS.ratings_gte,
-		});
-	}, [router, setValues]);
 
 	return (
-		<nav className='hidden lg:block col-span-3'>
+		<nav className='hidden lg:block sticky col-span-3 top-5 h-max'>
 			<div className='flex justify-between items-center'>
-				<h2 className='font-bold text-xl'>Bộ lọc</h2>
-				<Button
-					variant='outline'
-					size='xs'
-					onClick={() => {
-						setValues(DEFAULT_FILTERS);
-						submitHandler(pagination);
-					}}
-				>
+				<h2 className='font-bold text-xl flex items-center gap-1'>
+					<IconFilter />
+					Bộ lọc
+				</h2>
+				<Button variant='outline' size='xs' onClick={resetHandler}>
 					Xóa tất cả
 				</Button>
 			</div>
@@ -81,7 +39,9 @@ const Sidebar: FC<SidebarProps> = ({ categories, pagination }) => {
 					placeholder='100.000'
 					{...getInputProps('cost_gte')}
 				/>
-				<span className='mx-2'>-</span>
+				<span className='mx-2'>
+					<IconArrowRight />
+				</span>
 				<NumberInput
 					hideControls
 					// classNames={{ input: 'rounded-sm' }}
@@ -122,7 +82,15 @@ const Sidebar: FC<SidebarProps> = ({ categories, pagination }) => {
 						className='text-subtext cursor-pointer hover:text-primary'
 						onClick={() => setMoreCategories(!moreCategories)}
 					>
-						{moreCategories ? 'Bớt UP' : 'Thêm DOWN'}
+						{moreCategories ? (
+							<span className='flex gap-1 items-center'>
+								Bớt <IconArrowUp />
+							</span>
+						) : (
+							<span className='flex gap-1 items-center'>
+								Thêm <IconArrowDown />
+							</span>
+						)}
 					</div>
 				)}
 			</div>
@@ -148,7 +116,15 @@ const Sidebar: FC<SidebarProps> = ({ categories, pagination }) => {
 						className='text-subtext cursor-pointer hover:text-primary'
 						onClick={() => setMoreLocations(!moreLocations)}
 					>
-						{moreLocations ? 'Bớt UP' : 'Thêm DOWN'}
+						{moreLocations ? (
+							<span className='flex gap-1 items-center'>
+								Bớt <IconArrowUp />
+							</span>
+						) : (
+							<span className='flex gap-1 items-center'>
+								Thêm <IconArrowDown />
+							</span>
+						)}
 					</div>
 				)}
 			</Checkbox.Group>
