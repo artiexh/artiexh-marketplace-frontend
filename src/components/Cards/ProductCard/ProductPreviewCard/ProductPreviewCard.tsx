@@ -10,7 +10,7 @@ interface IProductPreviewCardProps {
 }
 
 const ProductPreviewCard = ({ data, className }: IProductPreviewCardProps) => {
-  return (
+	return (
 		<div
 			className={clsx(
 				styles['product-preview-card'],
@@ -31,7 +31,7 @@ const ProductPreviewCard = ({ data, className }: IProductPreviewCardProps) => {
 			</div>
 			<div className='p-2.5 sm:p-6 sm:text-xl md:p-4 md:text-xl'>
 				<div className='font-semibold'>{data?.name}</div>
-				<div className='text-slate-400 text-base'>{data?.artistInfo.displayName}</div>
+				<div className='text-slate-400 text-base'>{data?.ownerInfo.displayName}</div>
 				<div className='text-right mt-2.5 md:mt-6 font-semibold'>
 					{isNaN(Number(data.price.value)) ? 'N/A' : currencyFormatter('vn-VN', data.price)}
 				</div>

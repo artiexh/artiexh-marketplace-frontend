@@ -19,7 +19,7 @@ const ProductDetailPage: NextPage<InferGetStaticPropsType<typeof getStaticProps>
 	if (router.isFallback) return <div>Loading...</div>;
 	if (!product) return <div>Product not found</div>;
 
-	const { description, id, attaches, name, price, ratings, publishDatetime, artistInfo, tags } =
+	const { description, id, attaches, name, price, ratings, publishDatetime, ownerInfo, tags } =
 		product;
 
 	return (
@@ -47,7 +47,7 @@ const ProductDetailPage: NextPage<InferGetStaticPropsType<typeof getStaticProps>
 					</Carousel>
 					<ProductInfo product={product} special='Only 5 left' />
 					<Description description={description} />
-					<ShopCard className='col-span-12 md:col-span-5' artist={artistInfo} />
+					<ShopCard className='col-span-12 md:col-span-5' artist={ownerInfo} />
 				</div>
 				<h2 className='font-bold text-lg mt-10'>Might interest you</h2>
 				<div className='interest-wrapper grid grid-cols-4 md:grid-cols-10 gap-5 mt-5'>

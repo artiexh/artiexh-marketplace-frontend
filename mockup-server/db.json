@@ -49,10 +49,12 @@
 				"value": 10000000,
 				"unit": "VND"
 			},
+			"cost": 1,
+			"categoryId": 7,
 			"publishDatetime": "12/10/2023",
 			"description": "This is product 1, it is very good",
 			"tags": ["tag1", "tag2", "tag3"],
-			"artistInfo": {
+			"ownerInfo": {
 				"id": 1,
 				"displayName": "MeowMeow shop",
 				"rating": 4.5
@@ -80,7 +82,7 @@
 					"description": "This is image 3"
 				}
 			],
-			"ratings": 5,
+			"ratings": 1,
 			"status": "AVAILABLE",
 			"type": "NORMAL",
 			"remainingQuantity": 100,
@@ -109,10 +111,12 @@
 				"value": 10000000,
 				"unit": "VND"
 			},
+			"cost": 2,
+			"categoryId": 6,
 			"publishDatetime": "12/10/2023",
 			"description": "This is product 1, it is very good",
 			"tags": ["tag1", "tag2", "tag3"],
-			"artistInfo": {
+			"ownerInfo": {
 				"id": 1,
 				"displayName": "MeowMeow shop",
 				"rating": 4.5
@@ -169,10 +173,12 @@
 				"value": 10000000,
 				"unit": "VND"
 			},
+			"cost": 3,
+			"categoryId": 6,
 			"publishDatetime": "12/10/2023",
 			"description": "This is product 1, it is very good",
 			"tags": ["tag1", "tag2", "tag3"],
-			"artistInfo": {
+			"ownerInfo": {
 				"id": 1,
 				"displayName": "MeowMeow shop",
 				"rating": 4.5
@@ -229,10 +235,12 @@
 				"value": 10000000,
 				"unit": "VND"
 			},
+			"cost": 4,
+			"categoryId": 3,
 			"publishDatetime": "12/10/2023",
 			"description": "This is product 1, it is very good",
 			"tags": ["tag1", "tag2", "tag3"],
-			"artistInfo": {
+			"ownerInfo": {
 				"id": 1,
 				"displayName": "MeowMeow shop",
 				"rating": 4.5
@@ -289,10 +297,12 @@
 				"value": 10000000,
 				"unit": "VND"
 			},
+			"cost": 5,
+			"categoryId": 2,
 			"publishDatetime": "12/10/2023",
 			"description": "This is product 1, it is very good",
 			"tags": ["tag1", "tag2", "tag3"],
-			"artistInfo": {
+			"ownerInfo": {
 				"id": 1,
 				"displayName": "MeowMeow shop",
 				"rating": 4.5
@@ -349,10 +359,12 @@
 				"value": 10000000,
 				"unit": "VND"
 			},
+			"cost": 6,
+			"categoryId": 2,
 			"publishDatetime": "12/10/2023",
 			"description": "This is product 1, it is very good",
 			"tags": ["tag1", "tag2", "tag3"],
-			"artistInfo": {
+			"ownerInfo": {
 				"id": 1,
 				"displayName": "MeowMeow shop",
 				"rating": 4.5
@@ -409,10 +421,12 @@
 				"value": 10000000,
 				"unit": "VND"
 			},
+			"cost": 7,
+			"categoryId": 1,
 			"publishDatetime": "12/10/2023",
 			"description": "This is product 1, it is very good",
 			"tags": ["tag1", "tag2", "tag3"],
-			"artistInfo": {
+			"ownerInfo": {
 				"id": 1,
 				"displayName": "MeowMeow shop",
 				"rating": 4.5
@@ -469,10 +483,12 @@
 				"value": 10000000,
 				"unit": "VND"
 			},
+			"cost": 10,
+			"categoryId": 1,
 			"publishDatetime": "12/10/2023",
 			"description": "This is product 1, it is very good",
 			"tags": ["tag1", "tag2", "tag3"],
-			"artistInfo": {
+			"ownerInfo": {
 				"id": 1,
 				"displayName": "MeowMeow shop",
 				"rating": 4.5
@@ -529,10 +545,12 @@
 				"value": 10000000,
 				"unit": "VND"
 			},
+			"cost": 8,
+			"categoryId": 2,
 			"publishDatetime": "12/10/2023",
 			"description": "This is product 1, it is very good",
 			"tags": ["tag1", "tag2", "tag3"],
-			"artistInfo": {
+			"ownerInfo": {
 				"id": 1,
 				"displayName": "MeowMeow shop",
 				"rating": 4.5
@@ -589,10 +607,12 @@
 				"value": 10000000,
 				"unit": "VND"
 			},
+			"cost": 9,
+			"categoryId": 1,
 			"publishDatetime": "12/10/2023",
 			"description": "This is product 1, it is very good",
 			"tags": ["tag1", "tag2", "tag3"],
-			"artistInfo": {
+			"ownerInfo": {
 				"id": 1,
 				"displayName": "MeowMeow shop",
 				"rating": 4.5

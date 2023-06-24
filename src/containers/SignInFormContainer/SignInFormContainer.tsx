@@ -30,6 +30,7 @@ const SignInFormContainer = () => {
 
 	const onSubmit = async (values: FormValues) => {
 		setIsSubmitting(true);
+		if (!form.isValid()) return;
 		try {
 			const { password, username } = values;
 			const { data } = await axiosClient.post<User>('/auth/login', {
@@ -44,12 +45,14 @@ const SignInFormContainer = () => {
 			// TODO:
 			// Handle 401 invalid credentials
 			console.log(error);
+			form.setErrors({
+				username: 'Invalid credentials',
+				password: 'Invalid credentials',
+			});
 		} finally {
 			setIsSubmitting(false);
 		}
 	};
-
-	const hasErrors = Object.keys(form.errors).length > 0;
 
 	return (
 		<form
@@ -71,7 +74,7 @@ const SignInFormContainer = () => {
 				{...form.getInputProps('password')}
 			/>
 
-			<Button type='submit' className='bg-primary' disabled={isSubmitting || hasErrors}>
+			<Button type='submit' className='bg-primary' disabled={isSubmitting}>
 				Đăng nhập
 			</Button>
 			<Divider label='Hoặc đăng nhập bằng' labelPosition='center' />

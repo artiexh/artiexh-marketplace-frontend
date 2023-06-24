@@ -8,102 +8,74 @@ import axiosClient from '@/services/backend/axiosMockups/axiosMockupClient';
 import productStyles from '@/styles/Products/productList.module.scss';
 import ProductPreviewCard from '@/components/Cards/ProductCard/ProductPreviewCard';
 import Layout from '@/layouts/Layout/Layout';
-import { Badge, Button, Checkbox, Divider, NumberInput, Rating, Select } from '@mantine/core';
-import { FC, useState } from 'react';
-
-type SidebarProps = {
-	categories: Category[];
-};
-
-const Sidebar: FC<SidebarProps> = ({ categories }) => {
-	const [activeCategory, setActiveCategory] = useState(0);
-	const [moreCategories, setMoreCategories] = useState(false);
-	const [moreLocations, setMoreLocations] = useState(false);
-	return (
-		<nav className='hidden lg:block px-4'>
-			<div className='flex justify-between items-center'>
-				<h2 className='font-bold text-xl'>Bộ lọc</h2>
-				<Button variant='outline' size='xs'>
-					Clear
-				</Button>
-			</div>
-			<Divider className='my-3' />
-			<h3 className='font-bold text-lg'>Price range</h3>
-			<div className='flex mt-2 items-center justify-between'>
-				<NumberInput hideControls />
-				<span className='mx-2'>-</span>
-				<NumberInput hideControls />
-			</div>
-			<Divider className='my-3' />
-			<h3 className='font-bold text-lg'>Ratings</h3>
-			<div className='flex items-center gap-3'>
-				<Rating />
-				<span className='text-subtext text-sm'>and above</span>
-			</div>
-			<Divider className='my-3' />
-			<h3 className='font-bold text-lg'>Categories</h3>
-			<div className='flex flex-col gap-2'>
-				{categories.slice(0, 5).map((category, index) => (
-					<div
-						className={clsx(index === activeCategory ? 'text-primary' : 'text-subtext')}
-						key={category.id}
-						onClick={() => setActiveCategory(index)}
-					>
-						{category.name}
-					</div>
-				))}
-				{moreCategories &&
-					categories.slice(5).map((category, index) => (
-						<div
-							className={clsx(index + 5 === activeCategory ? 'text-primary' : 'text-subtext')}
-							key={category.id}
-							onClick={() => setActiveCategory(index + 5)}
-						>
-							{category.name}
-						</div>
-					))}
-				{categories.length > 5 && (
-					<div
-						className='text-subtext cursor-pointer'
-						onClick={() => setMoreCategories(!moreCategories)}
-					>
-						{moreCategories ? 'Show less UP' : 'Show more DOWN'}
-					</div>
-				)}
-			</div>
-			<Divider className='my-3' />
-			<h3 className='font-bold text-lg'>Locations</h3>
-			<Checkbox.Group className='flex flex-col gap-2'>
-				{categories.slice(0, 5).map((category) => (
-					<Checkbox key={category.id} label={category.name} value={category.id} />
-				))}
-				{moreLocations &&
-					categories
-						.slice(5)
-						.map((category) => (
-							<Checkbox key={category.id} label={category.name} value={category.id} />
-						))}
-				{categories.length > 5 && (
-					<div
-						className='text-subtext cursor-pointer'
-						onClick={() => setMoreLocations(!moreCategories)}
-					>
-						{moreLocations ? 'Show less UP' : 'Show more DOWN'}
-					</div>
-				)}
-			</Checkbox.Group>
-			<Divider className='my-3' />
-			<Button className='bg-primary w-full'>Apply</Button>
-		</nav>
-	);
-};
+import { Badge, Button, Select } from '@mantine/core';
+import { Sidebar } from '@/components/ProductList';
+import { useEffect, useState } from 'react';
+import { urlFormatter } from '@/utils/formatter';
+import { useRouter } from 'next/router';
 
 const ProductListPage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = ({
 	categories,
 }) => {
-	const { data: products, isLoading } = useSWR(['/products?_limit=10&_page=1'], (key) =>
+	const router = useRouter();
+	const params = router.query;
+
+	const [pagination, setPagination] = useState({
+		_limit: 10,
+		_page: 1,
+		_sort: 'cost',
+		_order: 'asc',
+	});
+
+	const [url, setUrl] = useState(
+		urlFormatter('/products', {
+			...pagination,
+			...params,
+		})
+	);
+
+	const { data: products, isLoading } = useSWR([url], (key) =>
 		axiosClient.get<CommonResponseBase<Product[]>>(key[0]).then((res) => res.data.data)
 	);
+
+	router.events?.on('routeChangeComplete', () => {
+		const url = urlFormatter('/products', {
+			...pagination,
+			...params,
+		});
+
+		setUrl(url);
+	});
+
+	const onSort = (value: string | null) => {
+		if (!value) return;
+		const [key, direction] = value.split('_');
+		// Update pagination
+		setPagination((prev) => ({ ...prev, _sort: key, _order: direction }));
+		//  Format the URL
+		const url = urlFormatter('/products', {
+			...pagination,
+			...params,
+			_sort: key,
+			_order: direction,
+		});
+		router.replace(url, undefined, { shallow: true });
+	};
+
+	useEffect(() => {
+		// Pagination is already in here, dont fuck with it
+		setUrl(
+			urlFormatter('/products', {
+				...params,
+			})
+		);
+		// For pagination
+		setPagination((prev) => ({
+			...prev,
+			_order: (params._order as string) || prev._order,
+			_sort: (params._sort as string) || prev._sort,
+		}));
+	}, [params]);
 
 	return (
 		<Layout>
@@ -115,25 +87,26 @@ const ProductListPage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> 
 					Sắp xếp
 				</Button>
 			</div>
-			<h1 className='lg:text-4xl mt-10 lg:mt-0 font-bold'>All products</h1>
-			<div className='grid grid-cols-1 lg:grid-cols-5 gap-x-4 mt-4'>
-				<Sidebar categories={categories} />
-				<div className='col-span-4'>
+			<h1 className='lg:text-3xl mt-10 lg:mt-0 font-bold px-5 lg:px-10'>Tất cả sản phẩm</h1>
+			<div className='grid grid-cols-1 lg:grid-cols-12 gap-x-12 mt-4 px-5 lg:px-10'>
+				<Sidebar categories={categories} pagination={pagination} />
+				<div className='col-span-9'>
 					<div className='justify-between items-center hidden lg:flex'>
 						<div className='flex gap-3'>
-							{[...Array(5)].map((_, index) => (
-								<Badge key={index}>Tag {index}</Badge>
-							))}
+							<Badge>Cho nhan</Badge>
+							<Badge>Cho nhan</Badge>
+							<Badge>Cho nhan</Badge>
+							<Badge>Cho nhan</Badge>
 						</div>
 						<Select
 							data={[
-								{ value: 'price_asc', label: 'Price low to high' },
-								{ value: 'price_desc', label: 'Price high to low' },
-								{ value: 'rating', label: 'Rating' },
+								{ value: 'cost_asc', label: 'Price low to high' },
+								{ value: 'cost_desc', label: 'Price high to low' },
+								{ value: 'ratings_asc', label: 'Ratings low to high' },
+								{ value: 'ratings_desc', label: 'Ratings high to low' },
 							]}
-							// doesnt work
-							defaultValue='price_asc'
-							clearable
+							onChange={onSort}
+							value={`${pagination._sort}_${pagination._order}`}
 						/>
 					</div>
 					<div className={clsx(productStyles['product-list-grid'], 'col-span-4 lg:mt-10')}>
@@ -154,6 +127,7 @@ export async function getStaticProps() {
 	const { data: categories } = await ssrAxiosClient.get<CommonResponseBase<Category[]>>(
 		'/categories'
 	);
+
 	return {
 		props: { categories: categories.data },
 	};
