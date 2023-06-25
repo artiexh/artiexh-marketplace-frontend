@@ -6,7 +6,7 @@ export type Tag = {
 	color: string;
 };
 
-export type ArtistInfo = User & {
+export type OwnerInfo = User & {
 	rating: number;
 };
 
@@ -16,7 +16,7 @@ export type Product = {
 	price: Price;
 	description: string;
 	tags: string[];
-	artistInfo: ArtistInfo;
+	ownerInfo: OwnerInfo;
 	ratings: number;
 	attaches: Attaches[];
 	status: 'DELETE' | 'AVAILABLE' | 'SOLD_OUT' | 'HIDDEN';
@@ -28,7 +28,7 @@ export type Product = {
 	allowDelivery: boolean;
 	paymentMethods: PaymentMethod[];
 	category: Category;
-	thumbnail: string; // URL
+	thumbnailUrl: string; // URL
 };
 
 export type Attaches = {

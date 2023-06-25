@@ -7,7 +7,8 @@ import productStyles from "@/styles/Products/productList.module.scss";
 import clsx from "clsx";
 import { CommonResponseBase } from "@/types/ResponseBase";
 import useSWR from "swr";
-import axiosClient from "@/services/backend/axiosMockups/axiosMockupClient";
+// import axiosClient from "@/services/backend/axiosMockups/axiosMockupClient";
+import axiosClient from "@/services/backend/haiEndpointCC";
 import HeroSection from "@/components/Home/HeroSection";
 import { HomeBranding } from "@/types/HomeBranding";
 import PreviewList from "@/components/PreviewList";
@@ -17,13 +18,13 @@ const HomePage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = ({
   hotTags,
   homeBranding,
 }) => {
-  const { data: products, isLoading } = useSWR(
-    ["/products?_limit=10&_page=1"],
-    (key) =>
-      axiosClient
-        .get<CommonResponseBase<Product[]>>(key[0])
-        .then((res) => res.data.data)
+  const { data: products, isLoading } = useSWR(["/product"], (key) =>
+    axiosClient
+      .get<CommonResponseBase<{ items: Product[] }>>(key[0])
+      .then((res) => res.data.data)
   );
+
+  console.log(products);
 
   return (
     <Layout>
@@ -98,8 +99,13 @@ const HomePage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = ({
         </div>
         <div>
           <div className="font-semibold">Gợi ý cho bạn hôm nay</div>
-          <div className={clsx(productStyles["product-list-grid"], "mt-3")}>
-            {products?.map((product, index) => (
+          <div
+            className={clsx(
+              productStyles["product-list-grid"],
+              "mt-3 lg:!grid-cols-5"
+            )}
+          >
+            {products?.items.map((product, index) => (
               <ProductPreviewCard data={product} key={index} />
             ))}
           </div>
@@ -125,6 +131,7 @@ export const getStaticProps = async (context: GetStaticPropsContext) => {
         "/homepage_branding"
       ),
     ]);
+    console.log(productRes);
     hotProducts = productRes.data;
     hotTags = hotTagsRes.data;
     homeBranding = homeBrandingRes.data;
