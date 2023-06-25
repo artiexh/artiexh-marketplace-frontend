@@ -95,7 +95,9 @@ export default function CartSection({
               }
               isChecked={isChecked(item.id)}
             />
-            {index !== arr.length - 1 && <Divider className="my-2" />}
+            {index !== arr.length - 1 && (
+              <Divider className="my-4 relative -left-2 sm:-left-6 !w-[calc(100%+16px)] sm:!w-[calc(100%+48px)]" />
+            )}
           </div>
         ))}
       </div>

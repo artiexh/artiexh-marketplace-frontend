@@ -66,7 +66,6 @@ const CartPage: NextPage = () => {
   };
 
   const isChecked = (id: number) => {
-    console.log(selectedItems.map((item) => item.items).flat());
     return selectedItems
       .map((item) => item.items)
       .flat()

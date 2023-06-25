@@ -65,7 +65,12 @@ export default function CartItemCard({
         </Grid.Col>
       </Grid>
       <div className="flex sm:hidden gap-4 text-sm ">
-        <div>
+        <div className="relative">
+          <LogoCheckbox
+            configClass="absolute -top-2 -left-2"
+            clickEvent={selectEvent}
+            isChecked={isChecked}
+          />
           <img
             className="object-fit max-w-[80px] h-[80px] rounded-lg"
             src={cartItem.attaches[0].url}
