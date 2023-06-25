@@ -1,7 +1,7 @@
 import { CustomBreadcrumbs } from "@/components/Breadcrumbs";
 import ProductPreviewCard from "@/components/Cards/ProductCard/ProductPreviewCard";
 import Description from "@/components/ProductDetail/Description/Description";
-import ProductInfo from "@/components/ProductDetail/ProductInfo/ProductInfo";
+import ProductInfo from "@/containers/ProductInfo/ProductInfo";
 import ShopCard from "@/components/ProductDetail/ShopCard/ShopCard";
 import ssrAxiosClient from "@/services/backend/axiosMockups/ssrAxiosMockupClient";
 import { Product } from "@/types/Product";
@@ -19,17 +19,7 @@ const ProductDetailPage: NextPage<
   if (router.isFallback) return <div>Loading...</div>;
   if (!product) return <div>Product not found</div>;
 
-  const {
-    description,
-    id,
-    attaches,
-    name,
-    price,
-    ratings,
-    publishDatetime,
-    ownerInfo,
-    tags,
-  } = product;
+  const { description, id, attaches, ownerInfo } = product;
 
   return (
     <>
