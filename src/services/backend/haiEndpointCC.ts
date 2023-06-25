@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const axiosClient = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_AUTH_ENDPOINT,
+  baseURL: process.env.NEXT_PUBLIC_OTHER_ENDPOINT,
   headers: {
     "Content-Type": "application/json",
   },
@@ -13,11 +13,9 @@ let isRefreshing = false;
 const refresh = () => {
   if (isRefreshing) return Promise.reject();
   isRefreshing = true;
-  return axiosClient
-    .post("http://localhost:8081/api/v1/auth/refresh")
-    .then(() => {
-      isRefreshing = false;
-    });
+  return axiosClient.post("/auth/refresh").then(() => {
+    isRefreshing = false;
+  });
 };
 
 axiosClient.interceptors.response.use(undefined, (error) => {

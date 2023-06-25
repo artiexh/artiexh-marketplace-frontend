@@ -1,38 +1,25 @@
 import { CustomBreadcrumbs } from "@/components/Breadcrumbs";
 import ProductPreviewCard from "@/components/Cards/ProductCard/ProductPreviewCard";
 import Description from "@/components/ProductDetail/Description/Description";
-import ProductInfo from "@/components/ProductDetail/ProductInfo/ProductInfo";
+import ProductInfo from "@/containers/ProductInfo/ProductInfo";
 import ShopCard from "@/components/ProductDetail/ShopCard/ShopCard";
 import ssrAxiosClient from "@/services/backend/axiosMockups/ssrAxiosMockupClient";
-import { addToCart } from "@/services/backend/services/cart";
 import { Product } from "@/types/Product";
 import { CommonResponseBase } from "@/types/ResponseBase";
 import { Carousel } from "@mantine/carousel";
 import { GetStaticPropsContext, InferGetStaticPropsType, NextPage } from "next";
 import Image from "next/image";
 import { useRouter } from "next/router";
-import { useState } from "react";
 
 const ProductDetailPage: NextPage<
   InferGetStaticPropsType<typeof getStaticProps>
 > = ({ product }) => {
   const router = useRouter();
-  const [quantity, setQuantity] = useState<number>(1);
 
   if (router.isFallback) return <div>Loading...</div>;
   if (!product) return <div>Product not found</div>;
 
-  const {
-    description,
-    id,
-    attaches,
-    name,
-    price,
-    ratings,
-    publishDatetime,
-    artistInfo,
-    tags,
-  } = product;
+  const { description, id, attaches, ownerInfo } = product;
 
   return (
     <>
@@ -57,20 +44,13 @@ const ProductDetailPage: NextPage<
                     alt={image.title}
                     fill
                   />
-                  {/* <div className="w-full h-full gradient"></div> */}
                 </div>
               </Carousel.Slide>
             ))}
           </Carousel>
-          <ProductInfo
-            product={product}
-            quantity={quantity}
-            setQuantity={setQuantity}
-            addToCart={() => addToCart(id, quantity)}
-            special="Only 5 left"
-          />
+          <ProductInfo product={product} special="Only 5 left" />
           <Description description={description} />
-          <ShopCard className="col-span-12 md:col-span-5" artist={artistInfo} />
+          <ShopCard className="col-span-12 md:col-span-5" artist={ownerInfo} />
         </div>
         <h2 className="font-bold text-lg mt-10">Might interest you</h2>
         <div className="interest-wrapper grid grid-cols-4 md:grid-cols-10 gap-5 mt-5">

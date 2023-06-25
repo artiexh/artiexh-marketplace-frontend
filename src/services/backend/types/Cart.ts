@@ -18,21 +18,23 @@ export type CartItem = {
   }[];
 };
 
-export type CartData = {
-  artistItems: {
-    artistInfo: {
+export type CartSection = {
+  artistInfo: {
+    id: number;
+    username: string;
+    displayName: string;
+    province: {
       id: number;
-      username: string;
-      displayName: string;
-      province: {
+      name: string;
+      country: {
         id: number;
         name: string;
-        country: {
-          id: number;
-          name: string;
-        };
       };
     };
-    items: CartItem[];
-  }[];
+  };
+  items: CartItem[];
+};
+
+export type CartData = {
+  artistItems: CartSection[];
 };

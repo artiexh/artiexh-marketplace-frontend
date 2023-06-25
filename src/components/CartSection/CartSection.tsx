@@ -2,25 +2,10 @@ import CartItemCard from "@/containers/Card/CartItemCard/CartItemCard";
 import { Button, Divider, Grid } from "@mantine/core";
 import LogoCheckbox from "../LogoCheckbox/LogoCheckbox";
 import Image from "next/image";
-import { CartItem } from "@/services/backend/types/Cart";
+import { CartItem, CartSection } from "@/services/backend/types/Cart";
 
-type CartSection = {
-  cartSection: {
-    artistInfo: {
-      id: number;
-      username: string;
-      displayName: string;
-      province: {
-        id: number;
-        name: string;
-        country: {
-          id: number;
-          name: string;
-        };
-      };
-    };
-    items: CartItem[];
-  };
+type CartSectionProps = {
+  cartSection: CartSection;
   toggleSelectItems: (
     artistId: number,
     items: CartItem[],
@@ -33,7 +18,7 @@ export default function CartSection({
   cartSection,
   toggleSelectItems,
   isChecked,
-}: CartSection) {
+}: CartSectionProps) {
   return (
     <div className="cart-section">
       <LogoCheckbox

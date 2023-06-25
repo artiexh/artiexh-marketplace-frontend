@@ -1,5 +1,5 @@
 import Layout from "@/layouts/Layout/Layout";
-import axiosClient from "@/services/backend/axiosClient";
+import axiosClient from "@/services/backend/haiEndpointCC";
 import { CartData, CartItem } from "@/services/backend/types/Cart";
 import { Button } from "@mantine/core";
 import { NextPage } from "next";

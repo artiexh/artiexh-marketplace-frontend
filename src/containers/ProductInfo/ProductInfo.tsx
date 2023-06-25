@@ -1,26 +1,18 @@
 import Badge from "@/components/Badge/Badge";
+import { addToCart } from "@/services/backend/services/cart";
 import { Product } from "@/types/Product";
 import { currencyFormatter } from "@/utils/formatter";
 import { Rating, NumberInput, Button } from "@mantine/core";
-import { AxiosResponse } from "axios";
-import { Dispatch, FC, SetStateAction } from "react";
+import { FC, useState } from "react";
 
 type ProductInfoProps = {
   product: Product;
-  quantity: number;
-  setQuantity: any;
-  addToCart: () => Promise<AxiosResponse<any, any>>;
   special?: string;
 };
 
-const ProductInfo: FC<ProductInfoProps> = ({
-  product,
-  quantity,
-  setQuantity,
-  addToCart,
-  special,
-}) => {
+const ProductInfo: FC<ProductInfoProps> = ({ product, special }) => {
   const { ratings, name, price, tags } = product;
+  const [quantity, setQuantity] = useState<number>(1);
 
   return (
     <div className="rounded-lg p-5 md:p-8 bg-white flex flex-col col-span-12 md:col-span-5">
@@ -45,7 +37,7 @@ const ProductInfo: FC<ProductInfoProps> = ({
             input: "w-20",
           }}
           value={quantity}
-          onChange={setQuantity}
+          onChange={setQuantity as any}
           defaultValue={1}
           min={1}
         />
@@ -53,7 +45,11 @@ const ProductInfo: FC<ProductInfoProps> = ({
       </div>
       <div className="flex gap-5 mt-5">
         <Button className="flex-1 bg-primary">Buy now</Button>
-        <Button className="flex-1" variant="outline" onClick={addToCart}>
+        <Button
+          className="flex-1"
+          variant="outline"
+          onClick={() => addToCart(product.id, quantity)}
+        >
           Add to cart
         </Button>
       </div>

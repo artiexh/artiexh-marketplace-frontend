@@ -34,7 +34,7 @@ export default function CartItemCard({
               isChecked={isChecked}
             />
             <img
-              className="object-fit max-w-[80px] h-[80px] md:max-w-[120px] md:h-[120px] rounded-lg"
+              className="object-cover aspect-square w-[80px] md:w-[120px]  rounded-lg"
               src={cartItem.attaches[0].url}
               alt="product-name"
             />

@@ -20,7 +20,6 @@
 		"@mantine/modals": "^6.0.13",
 		"@mantine/next": "^6.0.13",
 		"@mantine/notifications": "^6.0.13",
-		"@tabler/core": "^1.0.0-beta19",
 		"@tabler/icons-react": "^2.22.0",
 		"axios": "^1.4.0",
 		"clsx": "^1.2.1",

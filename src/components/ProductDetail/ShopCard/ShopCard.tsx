@@ -1,11 +1,11 @@
-import { ArtistInfo } from "@/types/Product";
+import { OwnerInfo } from "@/types/Product";
 import { FC, HTMLAttributes } from "react";
 import { Rating } from "@mantine/core";
 import clsx from "clsx";
 import Badge from "@/components/Badge/Badge";
 
 type ArtistInfoProps = HTMLAttributes<HTMLDivElement> & {
-  artist: ArtistInfo;
+  artist: OwnerInfo;
 };
 
 const ShopCard: FC<ArtistInfoProps> = ({ artist, className, ...rest }) => {
