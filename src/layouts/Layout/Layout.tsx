@@ -6,7 +6,7 @@ const Layout = ({ children }: ILayoutProps) => {
   return (
     <>
       <div className="nav-bar h-10 lg:h-20"></div>
-      <div className="max-w-[80rem] mx-6 lg:mx-auto my-0">{children}</div>
+      <div className="max-w-[80rem] px-6 mx-auto my-0">{children}</div>
     </>
   );
 };

@@ -35,7 +35,7 @@ const CallbackPage = ({
 
     try {
       const { data } = await axiosClient.post<CommonResponseBase<User>>(
-        "/registration/user",
+        "http://localhost:8081/api/v1/registration/user",
         {
           username: values.username,
           ...provider,

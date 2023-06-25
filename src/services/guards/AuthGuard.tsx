@@ -1,24 +1,26 @@
 // import { useRouter } from 'next/router';
-import { useEffect } from 'react';
-import axiosClient from '../backend/axiosClient';
-import { AxiosError } from 'axios';
+import { useEffect } from "react";
+import axiosClient from "../backend/axiosClient";
+import { AxiosError } from "axios";
 
 const AuthGuard = () => {
-	// const router = useRouter();
+  // const router = useRouter();
 
-	useEffect(() => {
-		const validate = async () => {
-			try {
-				const { data } = await axiosClient.post('/auth/refresh');
-			} catch (error) {
-				const axiosError = error as AxiosError;
-				console.log(axiosError);
-			}
-		};
-		validate();
-	}, []);
+  useEffect(() => {
+    const validate = async () => {
+      try {
+        const { data } = await axiosClient.post(
+          "http://localhost:8081/api/v1/auth/refresh"
+        );
+      } catch (error) {
+        const axiosError = error as AxiosError;
+        console.log(axiosError);
+      }
+    };
+    validate();
+  }, []);
 
-	return null;
+  return null;
 };
 
 export default AuthGuard;

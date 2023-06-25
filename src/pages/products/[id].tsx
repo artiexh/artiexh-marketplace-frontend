@@ -4,17 +4,20 @@ import Description from "@/components/ProductDetail/Description/Description";
 import ProductInfo from "@/components/ProductDetail/ProductInfo/ProductInfo";
 import ShopCard from "@/components/ProductDetail/ShopCard/ShopCard";
 import ssrAxiosClient from "@/services/backend/axiosMockups/ssrAxiosMockupClient";
+import { addToCart } from "@/services/backend/services/cart";
 import { Product } from "@/types/Product";
 import { CommonResponseBase } from "@/types/ResponseBase";
 import { Carousel } from "@mantine/carousel";
 import { GetStaticPropsContext, InferGetStaticPropsType, NextPage } from "next";
 import Image from "next/image";
 import { useRouter } from "next/router";
+import { useState } from "react";
 
 const ProductDetailPage: NextPage<
   InferGetStaticPropsType<typeof getStaticProps>
 > = ({ product }) => {
   const router = useRouter();
+  const [quantity, setQuantity] = useState<number>(1);
 
   if (router.isFallback) return <div>Loading...</div>;
   if (!product) return <div>Product not found</div>;
@@ -59,7 +62,13 @@ const ProductDetailPage: NextPage<
               </Carousel.Slide>
             ))}
           </Carousel>
-          <ProductInfo product={product} special="Only 5 left" />
+          <ProductInfo
+            product={product}
+            quantity={quantity}
+            setQuantity={setQuantity}
+            addToCart={() => addToCart(id, quantity)}
+            special="Only 5 left"
+          />
           <Description description={description} />
           <ShopCard className="col-span-12 md:col-span-5" artist={artistInfo} />
         </div>
