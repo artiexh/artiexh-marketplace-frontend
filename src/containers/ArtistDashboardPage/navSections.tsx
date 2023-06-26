@@ -1,5 +1,4 @@
-import artistProductColumns from "../TableColumn/ArtistProductColumn";
-import TableContainer from "../TableContainer";
+import ArtistProductTableContainer from "./ArtistProductTable";
 
 export const navSections = [
   {
@@ -56,9 +55,7 @@ export const navSections = [
 ];
 
 export const navContents: Record<string, JSX.Element> = {
-  DASHBOARD: (
-    <TableContainer pathName="products" columns={artistProductColumns} />
-  ),
+  DASHBOARD: <ArtistProductTableContainer />,
   TABLE: <div>Table</div>,
   BILLING: <div>Billing</div>,
   VIRTUAL_REALITY: <div>Virtual Reality</div>,
