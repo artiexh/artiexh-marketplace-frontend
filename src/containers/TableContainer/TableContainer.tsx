@@ -1,68 +1,55 @@
+import TableComponent from "@/components/TableComponent";
 import { fetcher } from "@/services/backend/axiosMockups/axiosMockupClient";
 import { PaginationResponseBase } from "@/types/ResponseBase";
 import { TableColumns } from "@/types/Table";
-import { Table } from "@mantine/core";
+import { Pagination, TableProps } from "@mantine/core";
 import { Dispatch, SetStateAction, useState } from "react";
 import useSWR from "swr";
 
-interface ITableContainerProps {
+type ITableContainerProps<T> = {
   pathName: string;
-  columns: TableColumns<any>;
-  children?: any;
+  columns: TableColumns<T>;
   pagination?: boolean;
-  itemNumber?: number;
-  searchParams?: any;
-  forceRerender?: number;
-  setSearchParams?: Dispatch<SetStateAction<object>>;
-}
+  pageSize?: number;
+  searchParams?: Record<string, string>;
+  setSearchParams?: Dispatch<SetStateAction<Record<string, string>>>;
+  tableProps?: TableProps;
+};
 
-const TableContainer = ({
+const TableContainer = <T,>({
   pathName,
   columns,
-  children,
   pagination,
-  itemNumber,
+  pageSize = 5,
   searchParams = {},
-  forceRerender = 0,
   setSearchParams = (prev) => {},
-}: ITableContainerProps) => {
+  tableProps,
+}: ITableContainerProps<T>) => {
   const [currentPage, setCurrentPage] = useState<number>(1);
-  const [currentId, setCurrentId] = useState<number | string>(0);
 
   //TODO: replace fetcher later
-
-  const {
-    data: response,
-    mutate: mutateTable,
-    isLoading,
-  } = useSWR<PaginationResponseBase<any[]>>(`/${pathName}`, fetcher);
+  const { data: response } = useSWR<PaginationResponseBase<any[]>>(
+    (pagination
+      ? `/${pathName}?_page=${currentPage}&_limit=${pageSize}`
+      : `/${pathName}`) + new URLSearchParams(searchParams).toString(),
+    fetcher
+  );
 
   return (
-    <div className="table-container">
-      <Table>
-        <thead>
-          <tr>
-            {columns.map(({ key, title }) => (
-              <th key={key}>{title}</th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {response?.data.map((item, index) => (
-            <tr key={item?.id || index}>
-              {columns.map((column) => {
-                if (column?.render) {
-                  return <td key={column.key}>{column.render(item)}</td>;
-                }
-                if (column?.dataIndex) {
-                  return <td key={column.key}>{item?.[column?.dataIndex]}</td>;
-                }
-                return null;
-              })}
-            </tr>
-          ))}
-        </tbody>
-      </Table>
+    <div className="flex flex-col items-center gap-4 w-full">
+      <TableComponent
+        columns={columns}
+        data={response?.data}
+        tableProps={tableProps}
+      />
+      {pagination && (
+        <Pagination
+          value={currentPage}
+          onChange={setCurrentPage}
+          //TODO: change this to total of api call later
+          total={response?.data?.[0]?.total || 10}
+        />
+      )}
     </div>
   );
 };

@@ -33,7 +33,7 @@ export type Product = {
 
 export type ArtistProductColumnType = Pick<
   Product,
-  "name" | "publishDatetime" | "maxItemsPerOrder" | "status"
+  "name" | "publishDatetime" | "maxItemsPerOrder" | "status" | "thumbnailUrl"
 >;
 
 export type Attaches = {
