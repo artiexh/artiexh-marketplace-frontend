@@ -8,27 +8,27 @@ export const navSections = [
       {
         id: "DASHBOARD",
         label: "Dashboard",
-        iconPath: "/assets/icons/dashboard_icon.svg",
+        iconPath: "dashboard_icon.svg",
       },
       {
         id: "TABLE",
         label: "Table",
-        iconPath: "/assets/icons/tables_icon.svg",
+        iconPath: "tables_icon.svg",
       },
       {
         id: "BILLING",
         label: "Billing",
-        iconPath: "/assets/icons/billing_icon.svg",
+        iconPath: "billing_icon.svg",
       },
       {
         id: "VIRTUAL_REALITY",
         label: "Virtual Reality",
-        iconPath: "/assets/icons/virtual_reality_icon.svg",
+        iconPath: "virtual_reality_icon.svg",
       },
       {
         id: "RTL",
         label: "RTL",
-        iconPath: "/assets/icons/rtl_icon.svg",
+        iconPath: "rtl_icon.svg",
       },
     ],
   },
@@ -39,17 +39,17 @@ export const navSections = [
       {
         id: "PROFILE",
         label: "Profile",
-        iconPath: "/assets/icons/profile_icon.svg",
+        iconPath: "profile_icon.svg",
       },
       {
         id: "SIGN_IN",
         label: "Sign In",
-        iconPath: "/assets/icons/sign_in_icon.svg",
+        iconPath: "sign_in_icon.svg",
       },
       {
         id: "SIGN_UP",
         label: "Sign Up",
-        iconPath: "/assets/icons/sign_up_icon.svg",
+        iconPath: "sign_up_icon.svg",
       },
     ],
   },

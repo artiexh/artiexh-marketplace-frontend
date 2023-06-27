@@ -1,6 +1,7 @@
 import { NavSection } from "@/types/SideNav";
 import SideNavTab from "./SideNavTab";
 import { Dispatch, SetStateAction } from "react";
+import clsx from "clsx";
 
 interface ISideNavProps {
   navSections: NavSection[];
@@ -17,9 +18,10 @@ const SideNav = ({
 }: ISideNavProps) => {
   return (
     <div
-      className={`max-w-[15.625rem] ease-nav-brand z-[990] fixed inset-y-0 my-4 ml-4 block w-full -translate-x-full flex-wrap items-center justify-between overflow-y-auto rounded-2xl border-0 bg-white p-0 antialiased shadow-none transition-transform duration-200 xl:left-0 xl:translate-x-0 xl:bg-transparent ps ${
+      className={clsx(
+        "max-w-[15.625rem] z-[990] fixed my-4 ml-4 w-full -translate-x-full overflow-y-auto rounded-2xl bg-white transition-transform duration-200 xl:left-0 xl:translate-x-0 xl:bg-transparent",
         displaySideNav && "translate-x-0 shadow-soft-xl"
-      }`}
+      )}
     >
       {navSections.map((navSection) => (
         <div key={navSection.id}>

@@ -38,30 +38,32 @@ const TableContainer = ({
   } = useSWR<PaginationResponseBase<any[]>>(`/${pathName}`, fetcher);
 
   return (
-    <Table>
-      <thead>
-        <tr>
-          {columns.map(({ key, title }) => (
-            <th key={key}>{title}</th>
-          ))}
-        </tr>
-      </thead>
-      <tbody>
-        {response?.data.map((item, index) => (
-          <tr key={item?.id || index}>
-            {columns.map((column) => {
-              if (column?.render) {
-                return <td key={column.key}>{column.render(item)}</td>;
-              }
-              if (column?.dataIndex) {
-                return <td key={column.key}>{item?.[column?.dataIndex]}</td>;
-              }
-              return null;
-            })}
+    <div className="table-container">
+      <Table>
+        <thead>
+          <tr>
+            {columns.map(({ key, title }) => (
+              <th key={key}>{title}</th>
+            ))}
           </tr>
-        ))}
-      </tbody>
-    </Table>
+        </thead>
+        <tbody>
+          {response?.data.map((item, index) => (
+            <tr key={item?.id || index}>
+              {columns.map((column) => {
+                if (column?.render) {
+                  return <td key={column.key}>{column.render(item)}</td>;
+                }
+                if (column?.dataIndex) {
+                  return <td key={column.key}>{item?.[column?.dataIndex]}</td>;
+                }
+                return null;
+              })}
+            </tr>
+          ))}
+        </tbody>
+      </Table>
+    </div>
   );
 };
 
