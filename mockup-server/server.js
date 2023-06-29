@@ -17,12 +17,12 @@ router.render = (req, res) => {
     status: 200,
     error: null,
     message: "Successful",
-    path: "mockup-pạth",
+    path: "mockup-path",
     data: res.locals.data,
   });
 };
 // Use default router
 server.use(router);
 server.listen(3004, () => {
-	console.log('JSON Server is running');
+  console.log("JSON Server is running");
 });
