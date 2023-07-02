@@ -20,6 +20,8 @@
 		"@mantine/modals": "^6.0.13",
 		"@mantine/next": "^6.0.13",
 		"@mantine/notifications": "^6.0.13",
+		"@react-three/drei": "^9.77.10",
+		"@react-three/fiber": "^8.13.4",
 		"@tabler/icons-react": "^2.22.0",
 		"axios": "^1.4.0",
 		"clsx": "^1.2.1",
@@ -28,12 +30,15 @@
 		"next": "13.4.4",
 		"react": "18.2.0",
 		"react-dom": "18.2.0",
-		"swr": "^2.1.5"
+		"swr": "^2.1.5",
+		"three": "^0.154.0",
+		"tunnel-rat": "^0.1.2"
 	},
 	"devDependencies": {
 		"@types/node": "20.2.5",
 		"@types/react": "18.2.7",
 		"@types/react-dom": "18.2.4",
+		"@types/three": "^0.152.1",
 		"autoprefixer": "10.4.14",
 		"eslint": "8.41.0",
 		"eslint-config-next": "13.4.4",
