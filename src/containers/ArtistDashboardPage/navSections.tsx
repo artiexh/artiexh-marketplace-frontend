@@ -1,3 +1,5 @@
+import ArtistCampaignTableContainer from "./ArtistCampaignTable";
+import ArtistOrderTableContainer from "./ArtistOrderTable";
 import ArtistProductTableContainer from "./ArtistProductTable";
 
 export const navSections = [
@@ -5,18 +7,18 @@ export const navSections = [
     id: "DASHBOARD",
     navList: [
       {
-        id: "DASHBOARD",
-        label: "Dashboard",
+        id: "PRODUCTS",
+        label: "Products",
         iconPath: "dashboard_icon.svg",
       },
       {
-        id: "TABLE",
-        label: "Table",
+        id: "ORDERS",
+        label: "Orders",
         iconPath: "tables_icon.svg",
       },
       {
-        id: "BILLING",
-        label: "Billing",
+        id: "CAMPAIGNS",
+        label: "Campaigns",
         iconPath: "billing_icon.svg",
       },
       {
@@ -55,9 +57,9 @@ export const navSections = [
 ];
 
 export const navContents: Record<string, JSX.Element> = {
-  DASHBOARD: <ArtistProductTableContainer />,
-  TABLE: <div>Table</div>,
-  BILLING: <div>Billing</div>,
+  PRODUCTS: <ArtistProductTableContainer />,
+  ORDERS: <ArtistOrderTableContainer />,
+  CAMPAIGNS: <ArtistCampaignTableContainer />,
   VIRTUAL_REALITY: <div>Virtual Reality</div>,
   RTL: <div>RTL</div>,
   PROFILE: <div>Profile</div>,

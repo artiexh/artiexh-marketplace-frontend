@@ -28,7 +28,7 @@ const artistProductColumns: TableColumns<ArtistProductColumnType> = [
     key: "publishDatetime",
   },
   {
-    title: "Number of orders",
+    title: "Quantity",
     dataIndex: "maxItemsPerOrder",
     key: "maxItemsPerOrder",
     className: "!text-center w-[10rem]",
@@ -41,6 +41,7 @@ const artistProductColumns: TableColumns<ArtistProductColumnType> = [
       <Badge
         variant="gradient"
         gradient={{ from: "teal", to: "lime", deg: 105 }}
+        classNames={{ inner: "!leading-tight" }}
       >
         {record.status}
       </Badge>
@@ -52,10 +53,12 @@ const artistProductColumns: TableColumns<ArtistProductColumnType> = [
     action: "EDIT",
     className: "!text-center",
     render: (_, actionHandler) => (
-      <IconBallpen
-        className="cursor-pointer"
-        onClick={() => actionHandler && actionHandler()}
-      />
+      <div className="flex justify-center">
+        <IconBallpen
+          className="cursor-pointer"
+          onClick={() => actionHandler && actionHandler()}
+        />
+      </div>
     ),
   },
 ];

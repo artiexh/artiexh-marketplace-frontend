@@ -6,7 +6,7 @@ import {
 import { useState } from "react";
 
 const ArtistDashboardPage = () => {
-  const [currentTabId, setCurrentTabId] = useState<string>("DASHBOARD");
+  const [currentTabId, setCurrentTabId] = useState<string>("PRODUCTS");
   const [displaySideNav, setDisplaySideNav] = useState<boolean>(false);
 
   return (
