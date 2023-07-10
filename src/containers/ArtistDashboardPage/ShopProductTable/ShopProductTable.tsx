@@ -3,9 +3,11 @@ import { Button, Input } from "@mantine/core";
 import { IconPlus, IconSearch } from "@tabler/icons-react";
 import { useRouter } from "next/router";
 import { useState } from "react";
-import artistProductColumns from "./artistProductColumns";
+import shopProductColumns from "./shopProductColumns";
 
-const ArtistProductTable = () => {
+const PAGE_SIZE = 6;
+
+const ShopProductTable = () => {
   const router = useRouter();
   const [searchParams, setSearchParams] = useState<Record<string, string>>({});
 
@@ -28,13 +30,14 @@ const ArtistProductTable = () => {
         </Button>
       </div>
       <TableContainer
-        pathName="products"
-        columns={artistProductColumns}
+        fetchUrl={(currentPage) =>
+          `/products?_page=${currentPage}&_limit=${PAGE_SIZE}` +
+          new URLSearchParams(searchParams).toString()
+        }
+        columns={shopProductColumns}
         pagination
         tableProps={{ verticalSpacing: "sm", className: "font-semibold" }}
-        pageSize={6}
         searchParams={searchParams}
-        setSearchParams={setSearchParams}
         className="mt-2.5"
         header={(response) => (
           <>
@@ -50,4 +53,4 @@ const ArtistProductTable = () => {
   );
 };
 
-export default ArtistProductTable;
+export default ShopProductTable;

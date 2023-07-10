@@ -1,19 +1,22 @@
 import TableContainer from "@/containers/TableContainer";
 import { useState } from "react";
-import artistCampaignColumns from "./artistCampaignColumns";
+import shopCampaignColumns from "./shopCampaignColumns";
 
-const ArtistCampaignTable = () => {
+const PAGE_SIZE = 6;
+
+const ShopCampaignTable = () => {
   const [searchParams, setSearchParams] = useState<Record<string, string>>({});
 
   return (
     <TableContainer
-      pathName="campaigns"
-      columns={artistCampaignColumns}
+      fetchUrl={(currentPage) =>
+        `/campaigns?_page=${currentPage}&_limit=${PAGE_SIZE}` +
+        new URLSearchParams(searchParams).toString()
+      }
+      columns={shopCampaignColumns}
       pagination
       tableProps={{ verticalSpacing: "sm", className: "font-semibold" }}
-      pageSize={6}
       searchParams={searchParams}
-      setSearchParams={setSearchParams}
       className="mt-2.5"
       header={(response) => (
         <>
@@ -28,4 +31,4 @@ const ArtistCampaignTable = () => {
   );
 };
 
-export default ArtistCampaignTable;
+export default ShopCampaignTable;

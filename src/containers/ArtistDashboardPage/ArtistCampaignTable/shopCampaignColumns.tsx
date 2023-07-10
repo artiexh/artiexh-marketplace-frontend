@@ -4,7 +4,7 @@ import { Badge } from "@mantine/core";
 import { IconBallpen } from "@tabler/icons-react";
 import Image from "next/image";
 
-const artistCampaignColumns: TableColumns<ArtistCampaignColumnType> = [
+const shopCampaignColumns: TableColumns<ArtistCampaignColumnType> = [
   {
     title: "ID",
     key: "id",
@@ -71,4 +71,4 @@ const artistCampaignColumns: TableColumns<ArtistCampaignColumnType> = [
   },
 ];
 
-export default artistCampaignColumns;
+export default shopCampaignColumns;

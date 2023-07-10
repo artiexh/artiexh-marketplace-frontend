@@ -1,3 +1,3 @@
-import ArtistCampaignTableContainer from "./ArtistCampaignTable";
+import ShopCampaignTableContainer from "./ShopCampaignTable";
 
-export default ArtistCampaignTableContainer;
+export default ShopCampaignTableContainer;

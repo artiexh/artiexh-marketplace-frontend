@@ -1,6 +1,6 @@
-import ArtistCampaignTableContainer from "./ArtistCampaignTable";
-import ArtistOrderTableContainer from "./ArtistOrderTable";
-import ArtistProductTableContainer from "./ArtistProductTable";
+import ShopCampaignTableContainer from "./ArtistCampaignTable";
+import ShopOrderTableContainer from "./ShopOrderTable";
+import ShopProductTableContainer from "./ShopProductTable";
 
 export const navSections = [
   {
@@ -57,9 +57,9 @@ export const navSections = [
 ];
 
 export const navContents: Record<string, JSX.Element> = {
-  PRODUCTS: <ArtistProductTableContainer />,
-  ORDERS: <ArtistOrderTableContainer />,
-  CAMPAIGNS: <ArtistCampaignTableContainer />,
+  PRODUCTS: <ShopProductTableContainer />,
+  ORDERS: <ShopOrderTableContainer />,
+  CAMPAIGNS: <ShopCampaignTableContainer />,
   VIRTUAL_REALITY: <div>Virtual Reality</div>,
   RTL: <div>RTL</div>,
   PROFILE: <div>Profile</div>,

@@ -1,19 +1,22 @@
 import TableContainer from "@/containers/TableContainer";
-import artistOrderColumns from "./artistOrderColumns";
 import { useState } from "react";
+import shopOrderColumns from "./shopOrderColumns";
 
-const ArtistOrderTable = () => {
+const PAGE_SIZE = 6;
+
+const ShopOrderTable = () => {
   const [searchParams, setSearchParams] = useState<Record<string, string>>({});
 
   return (
     <TableContainer
-      pathName="orders"
-      columns={artistOrderColumns}
+      fetchUrl={(currentPage) =>
+        `/products?_page=${currentPage}&_limit=${PAGE_SIZE}` +
+        new URLSearchParams(searchParams).toString()
+      }
+      columns={shopOrderColumns}
       pagination
       tableProps={{ verticalSpacing: "sm", className: "font-semibold" }}
-      pageSize={6}
       searchParams={searchParams}
-      setSearchParams={setSearchParams}
       className="mt-2.5"
       header={(response) => (
         <>
@@ -28,4 +31,4 @@ const ArtistOrderTable = () => {
   );
 };
 
-export default ArtistOrderTable;
+export default ShopOrderTable;

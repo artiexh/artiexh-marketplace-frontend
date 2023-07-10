@@ -8,34 +8,28 @@ import React, { Dispatch, SetStateAction, useState } from "react";
 import useSWR from "swr";
 
 type ITableContainerProps<T> = {
-  pathName: string;
   columns: TableColumns<T>;
   pagination?: boolean;
-  pageSize?: number;
   searchParams?: Record<string, string>;
-  setSearchParams?: Dispatch<SetStateAction<Record<string, string>>>;
   tableProps?: TableProps;
+  fetchUrl: (currentPage: number) => string;
   className?: string;
   header?: (response?: PaginationResponseBase<any[]>) => React.ReactNode;
 };
 
 const TableContainer = <T,>({
-  pathName,
   columns,
   pagination,
-  pageSize = 5,
   searchParams = {},
-  setSearchParams = (prev) => {},
+  fetchUrl,
   tableProps,
   header,
 }: ITableContainerProps<T>) => {
   const [currentPage, setCurrentPage] = useState<number>(1);
 
-  //TODO: replace fetcher later
+  //TODO: replace fetcher later, and replace any -> T too
   const { data: response } = useSWR<PaginationResponseBase<any[]>>(
-    (pagination
-      ? `/${pathName}?_page=${currentPage}&_limit=${pageSize}`
-      : `/${pathName}`) + new URLSearchParams(searchParams).toString(),
+    fetchUrl(currentPage),
     fetcher
   );
 
