@@ -1,9 +1,9 @@
 import TableContainer from "@/containers/TableContainer";
 import { Button, Input } from "@mantine/core";
 import { IconPlus, IconSearch } from "@tabler/icons-react";
-import { useRouter } from "next/router";
 import { useState } from "react";
 import shopProductColumns from "./shopProductColumns";
+import { useRouter } from "next/navigation";
 
 const PAGE_SIZE = 6;
 

@@ -1,3 +1,5 @@
+"use client";
+
 import SideNav from "@/components/SideNav";
 import {
   navContents,

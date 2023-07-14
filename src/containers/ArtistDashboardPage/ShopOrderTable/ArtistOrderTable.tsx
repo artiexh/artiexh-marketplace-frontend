@@ -10,7 +10,7 @@ const ShopOrderTable = () => {
   return (
     <TableContainer
       fetchUrl={(currentPage) =>
-        `/products?_page=${currentPage}&_limit=${PAGE_SIZE}` +
+        `/orders?_page=${currentPage}&_limit=${PAGE_SIZE}` +
         new URLSearchParams(searchParams).toString()
       }
       columns={shopOrderColumns}

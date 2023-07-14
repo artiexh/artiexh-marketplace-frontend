@@ -2,7 +2,6 @@ import { ArtistProductColumnType } from "@/types/Product";
 import { TableColumns } from "@/types/Table";
 import { Badge } from "@mantine/core";
 import { IconBallpen } from "@tabler/icons-react";
-import Image from "next/image";
 
 const shopProductColumns: TableColumns<ArtistProductColumnType> = [
   {
@@ -10,14 +9,11 @@ const shopProductColumns: TableColumns<ArtistProductColumnType> = [
     key: "name",
     render: (record) => (
       <div className="flex items-center gap-5">
-        <div className="relative w-16 aspect-square">
-          <Image
-            src={record.thumbnailUrl}
-            alt="product-thumb"
-            fill
-            className="object-contain rounded-lg"
-          />
-        </div>
+        <img
+          src={record.thumbnailUrl}
+          alt="product-thumb"
+          className="w-16 aspect-square"
+        />
         <div>{record.name}</div>
       </div>
     ),
