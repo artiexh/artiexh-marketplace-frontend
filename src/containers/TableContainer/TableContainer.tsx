@@ -1,8 +1,8 @@
 import TableComponent from "@/components/TableComponent";
-import { fetcher } from "@/services/backend/axiosMockups/axiosMockupClient";
 import { PaginationResponseBase } from "@/types/ResponseBase";
 import { TableColumns } from "@/types/Table";
 import { Pagination, TableProps } from "@mantine/core";
+import { AxiosInstance } from "axios";
 import clsx from "clsx";
 import React, { Dispatch, SetStateAction, useState } from "react";
 import useSWR from "swr";
@@ -10,9 +10,8 @@ import useSWR from "swr";
 type ITableContainerProps<T> = {
   columns: TableColumns<T>;
   pagination?: boolean;
-  searchParams?: Record<string, string>;
   tableProps?: TableProps;
-  fetchUrl: (currentPage: number) => string;
+  fetcher: (currentPage: number) => () => any;
   className?: string;
   header?: (response?: PaginationResponseBase<any[]>) => React.ReactNode;
 };
@@ -20,8 +19,7 @@ type ITableContainerProps<T> = {
 const TableContainer = <T,>({
   columns,
   pagination,
-  searchParams = {},
-  fetchUrl,
+  fetcher,
   tableProps,
   header,
 }: ITableContainerProps<T>) => {
@@ -29,8 +27,8 @@ const TableContainer = <T,>({
 
   //TODO: replace fetcher later, and replace any -> T too
   const { data: response } = useSWR<PaginationResponseBase<any[]>>(
-    fetchUrl(currentPage),
-    fetcher
+    "/page_url",
+    fetcher(currentPage)
   );
 
   return (

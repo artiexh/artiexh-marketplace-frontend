@@ -5,7 +5,7 @@ import { Button, Input } from "@mantine/core";
 import { IconPlus, IconSearch } from "@tabler/icons-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import shopProductColumns from "./products/shopProductColumns";
+import shopProductColumns from "../../constants/ArtistShopPage/shopProductColumns";
 
 const PAGE_SIZE = 6;
 

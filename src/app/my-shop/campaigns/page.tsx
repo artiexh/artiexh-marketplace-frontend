@@ -1,8 +1,9 @@
 "use client";
 
+import shopCampaignColumns from "@/constants/Columns/shopCampaignColumns";
 import TableContainer from "@/containers/TableContainer";
+import axiosClient from "@/services/backend/axiosMockups/axiosMockupClient";
 import { useState } from "react";
-import shopCampaignColumns from "./shopCampaignColumns";
 
 const PAGE_SIZE = 6;
 const ShopCampaignsPage = () => {
@@ -10,14 +11,16 @@ const ShopCampaignsPage = () => {
 
   return (
     <TableContainer
-      fetchUrl={(currentPage) =>
-        `/campaigns?_page=${currentPage}&_limit=${PAGE_SIZE}` +
-        new URLSearchParams(searchParams).toString()
-      }
+      fetcher={(currentPage) => async () =>
+        (
+          await axiosClient.get(
+            `/campaigns?_page=${currentPage}&_limit=${PAGE_SIZE}` +
+              new URLSearchParams(searchParams).toString()
+          )
+        ).data}
       columns={shopCampaignColumns}
       pagination
       tableProps={{ verticalSpacing: "sm", className: "font-semibold" }}
-      searchParams={searchParams}
       className="mt-2.5"
       header={(response) => (
         <>

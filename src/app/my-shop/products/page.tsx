@@ -5,7 +5,8 @@ import { Button, Input } from "@mantine/core";
 import { IconPlus, IconSearch } from "@tabler/icons-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import shopProductColumns from "./shopProductColumns";
+import axiosClient from "@/services/backend/axiosMockups/axiosMockupClient";
+import shopProductColumns from "@/constants/Columns/shopProductColumns";
 
 const PAGE_SIZE = 6;
 
@@ -25,21 +26,25 @@ const ShopProductsPage = () => {
         <Button
           leftIcon={<IconPlus />}
           type="button"
-          onClick={() => router.push("/artist/create")}
+          onClick={() => router.push("create")}
           variant="outline"
         >
           Create product
         </Button>
       </div>
       <TableContainer
-        fetchUrl={(currentPage) =>
-          `/products?_page=${currentPage}&_limit=${PAGE_SIZE}` +
-          new URLSearchParams(searchParams).toString()
-        }
+        fetcher={(currentPage) => async () => {
+          const ret = (
+            await axiosClient.get(
+              `/products?_page=${currentPage}&_limit=${PAGE_SIZE}` +
+                new URLSearchParams(searchParams).toString()
+            )
+          ).data;
+          return ret;
+        }}
         columns={shopProductColumns}
         pagination
         tableProps={{ verticalSpacing: "sm", className: "font-semibold" }}
-        searchParams={searchParams}
         className="mt-2.5"
         header={(response) => (
           <>

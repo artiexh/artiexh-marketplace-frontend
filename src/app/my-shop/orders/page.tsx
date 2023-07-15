@@ -1,8 +1,9 @@
 "use client";
 
+import shopOrderColumns from "@/constants/Columns/shopOrderColumns";
 import TableContainer from "@/containers/TableContainer";
+import axiosClient from "@/services/backend/axiosMockups/axiosMockupClient";
 import { useState } from "react";
-import shopOrderColumns from "./shopOrderColumns";
 
 const PAGE_SIZE = 6;
 
@@ -11,14 +12,16 @@ const ShopOrdersPage = () => {
 
   return (
     <TableContainer
-      fetchUrl={(currentPage) =>
-        `/orders?_page=${currentPage}&_limit=${PAGE_SIZE}` +
-        new URLSearchParams(searchParams).toString()
-      }
+      fetcher={(currentPage) => async () =>
+        (
+          await axiosClient.get(
+            `/orders?_page=${currentPage}&_limit=${PAGE_SIZE}` +
+              new URLSearchParams(searchParams).toString()
+          )
+        ).data}
       columns={shopOrderColumns}
       pagination
       tableProps={{ verticalSpacing: "sm", className: "font-semibold" }}
-      searchParams={searchParams}
       className="mt-2.5"
       header={(response) => (
         <>

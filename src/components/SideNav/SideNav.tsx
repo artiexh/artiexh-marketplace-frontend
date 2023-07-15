@@ -1,20 +1,22 @@
-import { NavSection } from "@/types/SideNav";
+import { NavInfo, NavSection } from "@/types/SideNav";
 import SideNavTab from "./SideNavTab";
 import clsx from "clsx";
-import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 
 interface ISideNavProps {
   navSections: NavSection[];
   displaySideNav: boolean;
-  basePath: string;
+  onClickNav: (data: NavInfo) => void;
+  isChosen: (data: NavInfo) => boolean;
 }
 
-const SideNav = ({ navSections, displaySideNav, basePath }: ISideNavProps) => {
+const SideNav = ({
+  navSections,
+  displaySideNav,
+  onClickNav,
+  isChosen,
+}: ISideNavProps) => {
   const pathname = usePathname();
-
-  const currentPath =
-    pathname === basePath ? navSections[0].navList[0].href : pathname;
 
   return (
     <div
@@ -29,9 +31,12 @@ const SideNav = ({ navSections, displaySideNav, basePath }: ISideNavProps) => {
             {navSection?.title}
           </div>
           {navSection.navList.map((nav) => (
-            <Link key={nav.id} href={nav.href}>
-              <SideNavTab {...nav} isChosen={nav.href === currentPath} />
-            </Link>
+            <SideNavTab
+              data={nav}
+              isChosen={isChosen(nav)}
+              onClick={() => onClickNav(nav)}
+              key={nav.id}
+            />
           ))}
         </div>
       ))}
