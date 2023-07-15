@@ -4,17 +4,15 @@ import Image from "next/image";
 
 type Props = {
   isChosen: boolean;
-  onClickTab: () => void;
 } & NavInfo;
 
-const SideNavTab = ({ label, iconPath, isChosen, onClickTab }: Props) => {
+const SideNavTab = ({ label, iconPath, isChosen }: Props) => {
   return (
     <div
       className={clsx(
         "mt-0.5 cursor-pointer flex text-sm mx-4 items-center px-4 py-2.5",
         isChosen && "rounded-lg bg-white text-slate-700 font-semibold"
       )}
-      onClick={onClickTab}
     >
       <div
         className={clsx(

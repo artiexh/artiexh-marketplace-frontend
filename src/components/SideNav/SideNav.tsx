@@ -1,21 +1,21 @@
 import { NavSection } from "@/types/SideNav";
 import SideNavTab from "./SideNavTab";
-import { Dispatch, SetStateAction } from "react";
 import clsx from "clsx";
+import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
 
 interface ISideNavProps {
   navSections: NavSection[];
   displaySideNav: boolean;
-  currentTabId: string;
-  setCurrentTabId: Dispatch<SetStateAction<string>>;
+  basePath: string;
 }
 
-const SideNav = ({
-  navSections,
-  displaySideNav,
-  currentTabId,
-  setCurrentTabId,
-}: ISideNavProps) => {
+const SideNav = ({ navSections, displaySideNav, basePath }: ISideNavProps) => {
+  const pathname = usePathname();
+
+  const currentPath =
+    pathname === basePath ? navSections[0].navList[0].href : pathname;
+
   return (
     <div
       className={clsx(
@@ -29,12 +29,9 @@ const SideNav = ({
             {navSection?.title}
           </div>
           {navSection.navList.map((nav) => (
-            <SideNavTab
-              key={nav.id}
-              {...nav}
-              isChosen={currentTabId === nav.id}
-              onClickTab={() => setCurrentTabId(nav.id)}
-            />
+            <Link key={nav.id} href={nav.href}>
+              <SideNavTab {...nav} isChosen={nav.href === currentPath} />
+            </Link>
           ))}
         </div>
       ))}

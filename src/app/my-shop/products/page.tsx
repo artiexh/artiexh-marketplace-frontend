@@ -1,13 +1,15 @@
+"use client";
+
 import TableContainer from "@/containers/TableContainer";
 import { Button, Input } from "@mantine/core";
 import { IconPlus, IconSearch } from "@tabler/icons-react";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import shopProductColumns from "./shopProductColumns";
-import { useRouter } from "next/navigation";
 
 const PAGE_SIZE = 6;
 
-const ShopProductTable = () => {
+const ShopProductsPage = () => {
   const router = useRouter();
   const [searchParams, setSearchParams] = useState<Record<string, string>>({});
 
@@ -53,4 +55,4 @@ const ShopProductTable = () => {
   );
 };
 
-export default ShopProductTable;
+export default ShopProductsPage;
