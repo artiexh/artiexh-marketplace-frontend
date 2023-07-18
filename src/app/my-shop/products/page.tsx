@@ -22,7 +22,9 @@ const ShopProductsPage = () => {
         <Input
           icon={<IconSearch />}
           onChange={(e) =>
-            createQueryString(searchParams, "_like", e.target.value)
+            router.push(
+              createQueryString(searchParams, "_like", e.target.value)
+            )
           }
         />
         <Button

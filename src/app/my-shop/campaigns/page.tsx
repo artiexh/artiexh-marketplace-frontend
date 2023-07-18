@@ -3,9 +3,7 @@
 import shopCampaignColumns from "@/constants/Columns/shopCampaignColumns";
 import TableContainer from "@/containers/TableContainer";
 import axiosClient from "@/services/backend/axiosMockups/axiosMockupClient";
-import { createQueryString } from "@/utils/searchParams";
-import { usePathname, useSearchParams } from "next/navigation";
-import { useState } from "react";
+import { useSearchParams } from "next/navigation";
 
 const PAGE_SIZE = 6;
 const ShopCampaignsPage = () => {

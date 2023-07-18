@@ -36,7 +36,7 @@ const TableContainer = <T,>({
   return (
     <div className="py-5 px-7 bg-white rounded-lg">
       {header && header(response)}
-      <div className={clsx("flex flex-col items-center gap-4 w-full")}>
+      <div className="flex flex-col items-center gap-4 w-full">
         <TableComponent
           columns={columns}
           data={response?.data}
