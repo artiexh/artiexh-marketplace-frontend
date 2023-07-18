@@ -20,9 +20,9 @@ export default function MyShopLayout({
         displaySideNav={displaySideNav}
         navSections={navSections}
         isChosen={(data) =>
-          (pathname === "/my-shop"
-            ? navSections[0].navList[0].href
-            : pathname) === data.href
+          !!(
+            pathname === "/my-shop" ? navSections[0].navList[0].href : pathname
+          )?.includes(data.href)
         }
         onClickNav={(data) => router.push(data.href)}
       />

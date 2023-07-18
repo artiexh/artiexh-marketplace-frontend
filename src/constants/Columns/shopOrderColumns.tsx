@@ -32,7 +32,8 @@ const shopOrderColumns: TableColumns<ArtistOrderColumnType> = [
     key: "total",
     render: (record) => (
       <div>
-        {new Intl.NumberFormat().format(record.total.value)} {record.total.unit}
+        {new Intl.NumberFormat().format(record?.total?.value)}{" "}
+        {record?.total?.unit}
       </div>
     ),
   },

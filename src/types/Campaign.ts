@@ -5,7 +5,7 @@ export type Campaign = {
   thumb: string;
   name: string;
   total: Price;
-  payment: string;
+  payment?: string;
   status: string;
 };
 

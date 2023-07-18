@@ -1,17 +1,19 @@
 "use client";
 
+import shopProductColumns from "@/constants/Columns/shopProductColumns";
 import TableContainer from "@/containers/TableContainer";
+import axiosClient from "@/services/backend/axiosMockups/axiosMockupClient";
+import { createQueryString } from "@/utils/searchParams";
 import { Button, Input } from "@mantine/core";
 import { IconPlus, IconSearch } from "@tabler/icons-react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
-import shopProductColumns from "../../constants/ArtistShopPage/shopProductColumns";
 
 const PAGE_SIZE = 6;
 
 const ShopProductsPage = () => {
   const router = useRouter();
-  const [searchParams, setSearchParams] = useState<Record<string, string>>({});
+  const searchParams = useSearchParams();
 
   return (
     <div>
@@ -19,7 +21,7 @@ const ShopProductsPage = () => {
         <Input
           icon={<IconSearch />}
           onChange={(e) =>
-            setSearchParams((prev) => ({ ...prev, _like: e.target.value }))
+            createQueryString(searchParams, "_like", e.target.value)
           }
         />
         <Button
@@ -32,14 +34,19 @@ const ShopProductsPage = () => {
         </Button>
       </div>
       <TableContainer
-        fetchUrl={(currentPage) =>
-          `/products?_page=${currentPage}&_limit=${PAGE_SIZE}` +
-          new URLSearchParams(searchParams).toString()
-        }
+        key="products"
+        fetcher={(currentPage) => async () => {
+          const ret = (
+            await axiosClient.get(
+              `/products?_page=${currentPage}&_limit=${PAGE_SIZE}` +
+                new URLSearchParams(searchParams?.toString()).toString()
+            )
+          ).data;
+          return ret;
+        }}
         columns={shopProductColumns}
         pagination
         tableProps={{ verticalSpacing: "sm", className: "font-semibold" }}
-        searchParams={searchParams}
         className="mt-2.5"
         header={(response) => (
           <>

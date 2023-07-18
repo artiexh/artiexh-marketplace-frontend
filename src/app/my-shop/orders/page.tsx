@@ -3,20 +3,22 @@
 import shopOrderColumns from "@/constants/Columns/shopOrderColumns";
 import TableContainer from "@/containers/TableContainer";
 import axiosClient from "@/services/backend/axiosMockups/axiosMockupClient";
+import { useSearchParams } from "next/navigation";
 import { useState } from "react";
 
 const PAGE_SIZE = 6;
 
 const ShopOrdersPage = () => {
-  const [searchParams, setSearchParams] = useState<Record<string, string>>({});
+  const searchParams = useSearchParams();
 
   return (
     <TableContainer
+      key="orders"
       fetcher={(currentPage) => async () =>
         (
           await axiosClient.get(
             `/orders?_page=${currentPage}&_limit=${PAGE_SIZE}` +
-              new URLSearchParams(searchParams).toString()
+              new URLSearchParams(searchParams?.toString()).toString()
           )
         ).data}
       columns={shopOrderColumns}

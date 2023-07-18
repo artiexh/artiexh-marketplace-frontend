@@ -3,19 +3,22 @@
 import shopCampaignColumns from "@/constants/Columns/shopCampaignColumns";
 import TableContainer from "@/containers/TableContainer";
 import axiosClient from "@/services/backend/axiosMockups/axiosMockupClient";
+import { createQueryString } from "@/utils/searchParams";
+import { usePathname, useSearchParams } from "next/navigation";
 import { useState } from "react";
 
 const PAGE_SIZE = 6;
 const ShopCampaignsPage = () => {
-  const [searchParams, setSearchParams] = useState<Record<string, string>>({});
+  const searchParams = useSearchParams();
 
   return (
     <TableContainer
+      key="campaigns"
       fetcher={(currentPage) => async () =>
         (
           await axiosClient.get(
             `/campaigns?_page=${currentPage}&_limit=${PAGE_SIZE}` +
-              new URLSearchParams(searchParams).toString()
+              new URLSearchParams(searchParams?.toString()).toString()
           )
         ).data}
       columns={shopCampaignColumns}

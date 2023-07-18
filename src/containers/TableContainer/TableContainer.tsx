@@ -9,6 +9,7 @@ import useSWR from "swr";
 
 type ITableContainerProps<T> = {
   columns: TableColumns<T>;
+  key: string;
   pagination?: boolean;
   tableProps?: TableProps;
   fetcher: (currentPage: number) => () => any;
@@ -18,6 +19,7 @@ type ITableContainerProps<T> = {
 
 const TableContainer = <T,>({
   columns,
+  key,
   pagination,
   fetcher,
   tableProps,
@@ -27,7 +29,7 @@ const TableContainer = <T,>({
 
   //TODO: replace fetcher later, and replace any -> T too
   const { data: response } = useSWR<PaginationResponseBase<any[]>>(
-    "/page_url",
+    `/page_url/${key}`,
     fetcher(currentPage)
   );
 

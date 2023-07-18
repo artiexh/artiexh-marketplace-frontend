@@ -32,7 +32,8 @@ const shopCampaignColumns: TableColumns<ArtistCampaignColumnType> = [
     key: "total",
     render: (record) => (
       <div>
-        {new Intl.NumberFormat().format(record.total.value)} {record.total.unit}
+        {new Intl.NumberFormat().format(record?.total?.value)}{" "}
+        {record?.total?.unit}
       </div>
     ),
   },
