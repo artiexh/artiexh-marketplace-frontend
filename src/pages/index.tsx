@@ -18,11 +18,679 @@ const HomePage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = ({
   hotTags,
   homeBranding,
 }) => {
-  const { data: products, isLoading } = useSWR(["/product"], (key) =>
-    axiosClient
-      .get<CommonResponseBase<{ items: Product[] }>>(key[0])
-      .then((res) => res.data.data)
-  );
+  const { data: products, isLoading } = useSWR(["/product"], (key) => ({
+    data: [
+      {
+        id: "1",
+        name: "Lycoris keychain - Chisato",
+        price: {
+          value: 10000000,
+          unit: "VND",
+        },
+        cost: 1,
+        categoryId: 7,
+        publishDatetime: "12/10/2023",
+        description: "This is product 1, it is very good",
+        tags: ["tag1", "tag2", "tag3"],
+        ownerInfo: {
+          id: 1,
+          displayName: "MeowMeow shop",
+          rating: 4.5,
+          username: "meowmeow",
+        },
+        attaches: [
+          {
+            id: "1",
+            url: "https://picsum.photos/300/300",
+            type: "IMAGE",
+            title: "This is image 1",
+            description: "This is image 1",
+          },
+          {
+            id: "2",
+            url: "https://picsum.photos/300/300",
+            type: "IMAGE",
+            title: "This is image 2",
+            description: "This is image 2",
+          },
+          {
+            id: "3",
+            url: "https://picsum.photos/300/300",
+            type: "IMAGE",
+            title: "This is image 3",
+            description: "This is image 3",
+          },
+        ],
+        ratings: 1,
+        status: "AVAILABLE",
+        type: "NORMAL",
+        remainingQuantity: 100,
+        maxItemsPerOrder: 10,
+        allowDelivery: true,
+        paymentMethods: [
+          {
+            id: "1",
+            type: "COD",
+          },
+          {
+            id: "2",
+            type: "ONLINE",
+          },
+        ],
+        category: {
+          id: "7",
+          name: "Category 7",
+        },
+        memberOnly: false,
+      },
+      {
+        id: "2",
+        name: "Lycoris keychain - Chisato",
+        price: {
+          value: 10000000,
+          unit: "VND",
+        },
+        cost: 2,
+        categoryId: 6,
+        publishDatetime: "12/10/2023",
+        description: "This is product 1, it is very good",
+        tags: ["tag1", "tag2", "tag3"],
+        ownerInfo: {
+          id: 1,
+          displayName: "MeowMeow shop",
+          rating: 4.5,
+          username: "meowmeow",
+        },
+        attaches: [
+          {
+            id: "1",
+            url: "https://picsum.photos/300/300",
+            type: "IMAGE",
+            title: "This is image 1",
+            description: "This is image 1",
+          },
+          {
+            id: "2",
+            url: "https://picsum.photos/300/300",
+            type: "IMAGE",
+            title: "This is image 2",
+            description: "This is image 2",
+          },
+          {
+            id: "3",
+            url: "https://picsum.photos/300/300",
+            type: "IMAGE",
+            title: "This is image 3",
+            description: "This is image 3",
+          },
+        ],
+        ratings: 5,
+        status: "AVAILABLE",
+        type: "NORMAL",
+        remainingQuantity: 100,
+        maxItemsPerOrder: 10,
+        allowDelivery: true,
+        paymentMethods: [
+          {
+            id: "1",
+            type: "COD",
+          },
+          {
+            id: "2",
+            type: "ONLINE",
+          },
+        ],
+        category: {
+          id: "6",
+          name: "Category 6",
+        },
+        memberOnly: false,
+      },
+      {
+        id: "3",
+        name: "Lycoris keychain - Chisato",
+        price: {
+          value: 10000000,
+          unit: "VND",
+        },
+        cost: 3,
+        categoryId: 6,
+        publishDatetime: "12/10/2023",
+        description: "This is product 1, it is very good",
+        tags: ["tag1", "tag2", "tag3"],
+        ownerInfo: {
+          id: 1,
+          displayName: "MeowMeow shop",
+          rating: 4.5,
+          username: "meowmeow",
+        },
+        attaches: [
+          {
+            id: "1",
+            url: "https://picsum.photos/300/300",
+            type: "IMAGE",
+            title: "This is image 1",
+            description: "This is image 1",
+          },
+          {
+            id: "2",
+            url: "https://picsum.photos/300/300",
+            type: "IMAGE",
+            title: "This is image 2",
+            description: "This is image 2",
+          },
+          {
+            id: "3",
+            url: "https://picsum.photos/300/300",
+            type: "IMAGE",
+            title: "This is image 3",
+            description: "This is image 3",
+          },
+        ],
+        ratings: 5,
+        status: "AVAILABLE",
+        type: "NORMAL",
+        remainingQuantity: 100,
+        maxItemsPerOrder: 10,
+        allowDelivery: true,
+        paymentMethods: [
+          {
+            id: "1",
+            type: "COD",
+          },
+          {
+            id: "2",
+            type: "ONLINE",
+          },
+        ],
+        category: {
+          id: "6",
+          name: "Category 6",
+        },
+        memberOnly: false,
+      },
+      {
+        id: "4",
+        name: "Lycoris keychain - Chisato",
+        price: {
+          value: 10000000,
+          unit: "VND",
+        },
+        cost: 4,
+        categoryId: 3,
+        publishDatetime: "12/10/2023",
+        description: "This is product 1, it is very good",
+        tags: ["tag1", "tag2", "tag3"],
+        ownerInfo: {
+          id: 1,
+          displayName: "MeowMeow shop",
+          rating: 4.5,
+          username: "meowmeow",
+        },
+        attaches: [
+          {
+            id: "1",
+            url: "https://picsum.photos/300/300",
+            type: "IMAGE",
+            title: "This is image 1",
+            description: "This is image 1",
+          },
+          {
+            id: "2",
+            url: "https://picsum.photos/300/300",
+            type: "IMAGE",
+            title: "This is image 2",
+            description: "This is image 2",
+          },
+          {
+            id: "3",
+            url: "https://picsum.photos/300/300",
+            type: "IMAGE",
+            title: "This is image 3",
+            description: "This is image 3",
+          },
+        ],
+        ratings: 5,
+        status: "AVAILABLE",
+        type: "NORMAL",
+        remainingQuantity: 100,
+        maxItemsPerOrder: 10,
+        allowDelivery: true,
+        paymentMethods: [
+          {
+            id: "1",
+            type: "COD",
+          },
+          {
+            id: "2",
+            type: "ONLINE",
+          },
+        ],
+        category: {
+          id: "3",
+          name: "Category 3",
+        },
+        memberOnly: false,
+      },
+      {
+        id: "5",
+        name: "Lycoris keychain - Chisato",
+        price: {
+          value: 10000000,
+          unit: "VND",
+        },
+        cost: 5,
+        categoryId: 2,
+        publishDatetime: "12/10/2023",
+        description: "This is product 1, it is very good",
+        tags: ["tag1", "tag2", "tag3"],
+        ownerInfo: {
+          id: 1,
+          displayName: "MeowMeow shop",
+          rating: 4.5,
+          username: "meowmeow",
+        },
+        attaches: [
+          {
+            id: "1",
+            url: "https://picsum.photos/300/300",
+            type: "IMAGE",
+            title: "This is image 1",
+            description: "This is image 1",
+          },
+          {
+            id: "2",
+            url: "https://picsum.photos/300/300",
+            type: "IMAGE",
+            title: "This is image 2",
+            description: "This is image 2",
+          },
+          {
+            id: "3",
+            url: "https://picsum.photos/300/300",
+            type: "IMAGE",
+            title: "This is image 3",
+            description: "This is image 3",
+          },
+        ],
+        ratings: 5,
+        status: "AVAILABLE",
+        type: "NORMAL",
+        remainingQuantity: 100,
+        maxItemsPerOrder: 10,
+        allowDelivery: true,
+        paymentMethods: [
+          {
+            id: "1",
+            type: "COD",
+          },
+          {
+            id: "2",
+            type: "ONLINE",
+          },
+        ],
+        category: {
+          id: "2",
+          name: "Category 2",
+        },
+        memberOnly: false,
+      },
+      {
+        id: "6",
+        name: "Lycoris keychain - Chisato",
+        price: {
+          value: 10000000,
+          unit: "VND",
+        },
+        cost: 6,
+        categoryId: 2,
+        publishDatetime: "12/10/2023",
+        description: "This is product 1, it is very good",
+        tags: ["tag1", "tag2", "tag3"],
+        ownerInfo: {
+          id: 1,
+          displayName: "MeowMeow shop",
+          rating: 4.5,
+        },
+        attaches: [
+          {
+            id: "1",
+            url: "https://picsum.photos/300/300",
+            type: "IMAGE",
+            title: "This is image 1",
+            description: "This is image 1",
+          },
+          {
+            id: "2",
+            url: "https://picsum.photos/300/300",
+            type: "IMAGE",
+            title: "This is image 2",
+            description: "This is image 2",
+          },
+          {
+            id: "3",
+            url: "https://picsum.photos/300/300",
+            type: "IMAGE",
+            title: "This is image 3",
+            description: "This is image 3",
+          },
+        ],
+        ratings: 5,
+        status: "AVAILABLE",
+        type: "NORMAL",
+        remainingQuantity: 100,
+        maxItemsPerOrder: 10,
+        allowDelivery: true,
+        paymentMethods: [
+          {
+            id: "1",
+            type: "COD",
+          },
+          {
+            id: "2",
+            type: "ONLINE",
+          },
+        ],
+        category: {
+          id: "2",
+          name: "Category 2",
+        },
+        memberOnly: false,
+      },
+      {
+        id: "7",
+        name: "Lycoris keychain - Chisato",
+        price: {
+          value: 10000000,
+          unit: "VND",
+        },
+        cost: 7,
+        categoryId: 1,
+        publishDatetime: "12/10/2023",
+        description: "This is product 1, it is very good",
+        tags: ["tag1", "tag2", "tag3"],
+        ownerInfo: {
+          id: 1,
+          displayName: "MeowMeow shop",
+          rating: 4.5,
+        },
+        attaches: [
+          {
+            id: "1",
+            url: "https://picsum.photos/300/300",
+            type: "IMAGE",
+            title: "This is image 1",
+            description: "This is image 1",
+          },
+          {
+            id: "2",
+            url: "https://picsum.photos/300/300",
+            type: "IMAGE",
+            title: "This is image 2",
+            description: "This is image 2",
+          },
+          {
+            id: "3",
+            url: "https://picsum.photos/300/300",
+            type: "IMAGE",
+            title: "This is image 3",
+            description: "This is image 3",
+          },
+        ],
+        ratings: 5,
+        status: "AVAILABLE",
+        type: "NORMAL",
+        remainingQuantity: 100,
+        maxItemsPerOrder: 10,
+        allowDelivery: true,
+        paymentMethods: [
+          {
+            id: "1",
+            type: "COD",
+          },
+          {
+            id: "2",
+            type: "ONLINE",
+          },
+        ],
+        category: {
+          id: "1",
+          name: "Category 1",
+        },
+        memberOnly: false,
+      },
+      {
+        id: "8",
+        name: "Lycoris keychain - Chisato",
+        price: {
+          value: 10000000,
+          unit: "VND",
+        },
+        cost: 10,
+        categoryId: 1,
+        publishDatetime: "12/10/2023",
+        description: "This is product 1, it is very good",
+        tags: ["tag1", "tag2", "tag3"],
+        ownerInfo: {
+          id: 1,
+          displayName: "MeowMeow shop",
+          rating: 4.5,
+        },
+        attaches: [
+          {
+            id: "1",
+            url: "https://picsum.photos/300/300",
+            type: "IMAGE",
+            title: "This is image 1",
+            description: "This is image 1",
+          },
+          {
+            id: "2",
+            url: "https://picsum.photos/300/300",
+            type: "IMAGE",
+            title: "This is image 2",
+            description: "This is image 2",
+          },
+          {
+            id: "3",
+            url: "https://picsum.photos/300/300",
+            type: "IMAGE",
+            title: "This is image 3",
+            description: "This is image 3",
+          },
+        ],
+        ratings: 5,
+        status: "AVAILABLE",
+        type: "NORMAL",
+        remainingQuantity: 100,
+        maxItemsPerOrder: 10,
+        allowDelivery: true,
+        paymentMethods: [
+          {
+            id: "1",
+            type: "COD",
+          },
+          {
+            id: "2",
+            type: "ONLINE",
+          },
+        ],
+        category: {
+          id: "1",
+          name: "Category 1",
+        },
+        memberOnly: false,
+      },
+      {
+        id: "9",
+        name: "Lycoris keychain - Chisato",
+        price: {
+          value: 10000000,
+          unit: "VND",
+        },
+        cost: 8,
+        categoryId: 2,
+        publishDatetime: "12/10/2023",
+        description: "This is product 1, it is very good",
+        tags: ["tag1", "tag2", "tag3"],
+        ownerInfo: {
+          id: 1,
+          displayName: "MeowMeow shop",
+          rating: 4.5,
+        },
+        attaches: [
+          {
+            id: "1",
+            url: "https://picsum.photos/300/300",
+            type: "IMAGE",
+            title: "This is image 1",
+            description: "This is image 1",
+          },
+          {
+            id: "2",
+            url: "https://picsum.photos/300/300",
+            type: "IMAGE",
+            title: "This is image 2",
+            description: "This is image 2",
+          },
+          {
+            id: "3",
+            url: "https://picsum.photos/300/300",
+            type: "IMAGE",
+            title: "This is image 3",
+            description: "This is image 3",
+          },
+        ],
+        ratings: 5,
+        status: "AVAILABLE",
+        type: "NORMAL",
+        remainingQuantity: 100,
+        maxItemsPerOrder: 10,
+        allowDelivery: true,
+        paymentMethods: [
+          {
+            id: "1",
+            type: "COD",
+          },
+          {
+            id: "2",
+            type: "ONLINE",
+          },
+        ],
+        category: {
+          id: "2",
+          name: "Category 2",
+        },
+        memberOnly: false,
+      },
+      {
+        id: "10",
+        name: "Lycoris keychain - Chisato",
+        price: {
+          value: 10000000,
+          unit: "VND",
+        },
+        cost: 9,
+        categoryId: 1,
+        publishDatetime: "12/10/2023",
+        description: "This is product 1, it is very good",
+        tags: ["tag1", "tag2", "tag3"],
+        ownerInfo: {
+          id: 1,
+          displayName: "MeowMeow shop",
+          rating: 4.5,
+        },
+        attaches: [
+          {
+            id: "1",
+            url: "https://picsum.photos/300/300",
+            type: "IMAGE",
+            title: "This is image 1",
+            description: "This is image 1",
+          },
+          {
+            id: "2",
+            url: "https://picsum.photos/300/300",
+            type: "IMAGE",
+            title: "This is image 2",
+            description: "This is image 2",
+          },
+          {
+            id: "3",
+            url: "https://picsum.photos/300/300",
+            type: "IMAGE",
+            title: "This is image 3",
+            description: "This is image 3",
+          },
+        ],
+        ratings: 5,
+        status: "AVAILABLE",
+        type: "NORMAL",
+        remainingQuantity: 100,
+        maxItemsPerOrder: 10,
+        allowDelivery: true,
+        paymentMethods: [
+          {
+            id: "1",
+            type: "COD",
+          },
+          {
+            id: "2",
+            type: "ONLINE",
+          },
+        ],
+        category: {
+          id: "1",
+          name: "Category 1",
+        },
+        memberOnly: false,
+      },
+    ],
+    tags: [
+      {
+        name: "#hsr",
+        description: "5050 products",
+        type: "HOT",
+        color: "#FF9898",
+      },
+      {
+        name: "#hsr",
+        description: "5050 products",
+        type: "HOT",
+        color: "#FFB571",
+      },
+      {
+        name: "#hsr",
+        description: "5050 products",
+        type: "HOT",
+        color: "#9CA6FF",
+      },
+      {
+        name: "#hsr",
+        description: "5050 products",
+        type: "HOT",
+        color: "#57AC3C",
+      },
+      {
+        name: "#hsr",
+        description: "5050 products",
+        type: "HOT",
+        color: "#FF8179",
+      },
+      {
+        name: "#hsr",
+        description: "5050 products",
+        type: "HOT",
+        color: "#FFB571",
+      },
+      {
+        name: "#hsr",
+        description: "5050 products",
+        type: "HOT",
+        color: "#9CA6FF",
+      },
+    ],
+  }));
 
   console.log(products);
 
@@ -105,7 +773,8 @@ const HomePage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = ({
               "mt-3 lg:!grid-cols-5"
             )}
           >
-            {products?.items.map((product, index) => (
+            {products?.data?.map((product, index) => (
+              //@ts-ignore
               <ProductPreviewCard data={product} key={index} />
             ))}
           </div>
@@ -120,21 +789,768 @@ export const getStaticProps = async (context: GetStaticPropsContext) => {
   let hotTags: Tag[] = [];
   let homeBranding: HomeBranding | null = null;
   try {
-    const [
-      { data: productRes },
-      { data: hotTagsRes },
-      { data: homeBrandingRes },
-    ] = await Promise.all([
-      ssrAxiosClient.get<CommonResponseBase<Product[]>>("/products?_limit=5"),
-      ssrAxiosClient.get<CommonResponseBase<Tag[]>>("/tags?type=HOT"),
-      ssrAxiosClient.get<CommonResponseBase<HomeBranding>>(
-        "/homepage_branding"
-      ),
-    ]);
+    const [productRes, hotTagsRes, homeBrandingRes] =
+      // ] = await Promise.all([
+      //   ssrAxiosClient.get<CommonResponseBase<Product[]>>("/products?_limit=5"),
+      //   ssrAxiosClient.get<CommonResponseBase<Tag[]>>("/tags?type=HOT"),
+      //   ssrAxiosClient.get<CommonResponseBase<HomeBranding>>(
+      //     "/homepage_branding"
+      //   ),
+      // ]);
+      [
+        {
+          data: [
+            {
+              id: "1",
+              name: "Lycoris keychain - Chisato",
+              price: {
+                value: 10000000,
+                unit: "VND",
+              },
+              cost: 1,
+              categoryId: 7,
+              publishDatetime: "12/10/2023",
+              description: "This is product 1, it is very good",
+              tags: ["tag1", "tag2", "tag3"],
+              ownerInfo: {
+                id: 1,
+                displayName: "MeowMeow shop",
+                rating: 4.5,
+                username: "meowmeow",
+              },
+              attaches: [
+                {
+                  id: "1",
+                  url: "https://picsum.photos/300/300",
+                  type: "IMAGE",
+                  title: "This is image 1",
+                  description: "This is image 1",
+                },
+                {
+                  id: "2",
+                  url: "https://picsum.photos/300/300",
+                  type: "IMAGE",
+                  title: "This is image 2",
+                  description: "This is image 2",
+                },
+                {
+                  id: "3",
+                  url: "https://picsum.photos/300/300",
+                  type: "IMAGE",
+                  title: "This is image 3",
+                  description: "This is image 3",
+                },
+              ],
+              ratings: 1,
+              status: "AVAILABLE",
+              type: "NORMAL",
+              remainingQuantity: 100,
+              maxItemsPerOrder: 10,
+              allowDelivery: true,
+              paymentMethods: [
+                {
+                  id: "1",
+                  type: "COD",
+                },
+                {
+                  id: "2",
+                  type: "ONLINE",
+                },
+              ],
+              category: {
+                id: "7",
+                name: "Category 7",
+              },
+              memberOnly: false,
+            },
+            {
+              id: "2",
+              name: "Lycoris keychain - Chisato",
+              price: {
+                value: 10000000,
+                unit: "VND",
+              },
+              cost: 2,
+              categoryId: 6,
+              publishDatetime: "12/10/2023",
+              description: "This is product 1, it is very good",
+              tags: ["tag1", "tag2", "tag3"],
+              ownerInfo: {
+                id: 1,
+                displayName: "MeowMeow shop",
+                rating: 4.5,
+                username: "meowmeow",
+              },
+              attaches: [
+                {
+                  id: "1",
+                  url: "https://picsum.photos/300/300",
+                  type: "IMAGE",
+                  title: "This is image 1",
+                  description: "This is image 1",
+                },
+                {
+                  id: "2",
+                  url: "https://picsum.photos/300/300",
+                  type: "IMAGE",
+                  title: "This is image 2",
+                  description: "This is image 2",
+                },
+                {
+                  id: "3",
+                  url: "https://picsum.photos/300/300",
+                  type: "IMAGE",
+                  title: "This is image 3",
+                  description: "This is image 3",
+                },
+              ],
+              ratings: 5,
+              status: "AVAILABLE",
+              type: "NORMAL",
+              remainingQuantity: 100,
+              maxItemsPerOrder: 10,
+              allowDelivery: true,
+              paymentMethods: [
+                {
+                  id: "1",
+                  type: "COD",
+                },
+                {
+                  id: "2",
+                  type: "ONLINE",
+                },
+              ],
+              category: {
+                id: "6",
+                name: "Category 6",
+              },
+              memberOnly: false,
+            },
+            {
+              id: "3",
+              name: "Lycoris keychain - Chisato",
+              price: {
+                value: 10000000,
+                unit: "VND",
+              },
+              cost: 3,
+              categoryId: 6,
+              publishDatetime: "12/10/2023",
+              description: "This is product 1, it is very good",
+              tags: ["tag1", "tag2", "tag3"],
+              ownerInfo: {
+                id: 1,
+                displayName: "MeowMeow shop",
+                rating: 4.5,
+                username: "meowmeow",
+              },
+              attaches: [
+                {
+                  id: "1",
+                  url: "https://picsum.photos/300/300",
+                  type: "IMAGE",
+                  title: "This is image 1",
+                  description: "This is image 1",
+                },
+                {
+                  id: "2",
+                  url: "https://picsum.photos/300/300",
+                  type: "IMAGE",
+                  title: "This is image 2",
+                  description: "This is image 2",
+                },
+                {
+                  id: "3",
+                  url: "https://picsum.photos/300/300",
+                  type: "IMAGE",
+                  title: "This is image 3",
+                  description: "This is image 3",
+                },
+              ],
+              ratings: 5,
+              status: "AVAILABLE",
+              type: "NORMAL",
+              remainingQuantity: 100,
+              maxItemsPerOrder: 10,
+              allowDelivery: true,
+              paymentMethods: [
+                {
+                  id: "1",
+                  type: "COD",
+                },
+                {
+                  id: "2",
+                  type: "ONLINE",
+                },
+              ],
+              category: {
+                id: "6",
+                name: "Category 6",
+              },
+              memberOnly: false,
+            },
+            {
+              id: "4",
+              name: "Lycoris keychain - Chisato",
+              price: {
+                value: 10000000,
+                unit: "VND",
+              },
+              cost: 4,
+              categoryId: 3,
+              publishDatetime: "12/10/2023",
+              description: "This is product 1, it is very good",
+              tags: ["tag1", "tag2", "tag3"],
+              ownerInfo: {
+                id: 1,
+                displayName: "MeowMeow shop",
+                rating: 4.5,
+                username: "meowmeow",
+              },
+              attaches: [
+                {
+                  id: "1",
+                  url: "https://picsum.photos/300/300",
+                  type: "IMAGE",
+                  title: "This is image 1",
+                  description: "This is image 1",
+                },
+                {
+                  id: "2",
+                  url: "https://picsum.photos/300/300",
+                  type: "IMAGE",
+                  title: "This is image 2",
+                  description: "This is image 2",
+                },
+                {
+                  id: "3",
+                  url: "https://picsum.photos/300/300",
+                  type: "IMAGE",
+                  title: "This is image 3",
+                  description: "This is image 3",
+                },
+              ],
+              ratings: 5,
+              status: "AVAILABLE",
+              type: "NORMAL",
+              remainingQuantity: 100,
+              maxItemsPerOrder: 10,
+              allowDelivery: true,
+              paymentMethods: [
+                {
+                  id: "1",
+                  type: "COD",
+                },
+                {
+                  id: "2",
+                  type: "ONLINE",
+                },
+              ],
+              category: {
+                id: "3",
+                name: "Category 3",
+              },
+              memberOnly: false,
+            },
+            {
+              id: "5",
+              name: "Lycoris keychain - Chisato",
+              price: {
+                value: 10000000,
+                unit: "VND",
+              },
+              cost: 5,
+              categoryId: 2,
+              publishDatetime: "12/10/2023",
+              description: "This is product 1, it is very good",
+              tags: ["tag1", "tag2", "tag3"],
+              ownerInfo: {
+                id: 1,
+                displayName: "MeowMeow shop",
+                rating: 4.5,
+                username: "meowmeow",
+              },
+              attaches: [
+                {
+                  id: "1",
+                  url: "https://picsum.photos/300/300",
+                  type: "IMAGE",
+                  title: "This is image 1",
+                  description: "This is image 1",
+                },
+                {
+                  id: "2",
+                  url: "https://picsum.photos/300/300",
+                  type: "IMAGE",
+                  title: "This is image 2",
+                  description: "This is image 2",
+                },
+                {
+                  id: "3",
+                  url: "https://picsum.photos/300/300",
+                  type: "IMAGE",
+                  title: "This is image 3",
+                  description: "This is image 3",
+                },
+              ],
+              ratings: 5,
+              status: "AVAILABLE",
+              type: "NORMAL",
+              remainingQuantity: 100,
+              maxItemsPerOrder: 10,
+              allowDelivery: true,
+              paymentMethods: [
+                {
+                  id: "1",
+                  type: "COD",
+                },
+                {
+                  id: "2",
+                  type: "ONLINE",
+                },
+              ],
+              category: {
+                id: "2",
+                name: "Category 2",
+              },
+              memberOnly: false,
+            },
+            {
+              id: "6",
+              name: "Lycoris keychain - Chisato",
+              price: {
+                value: 10000000,
+                unit: "VND",
+              },
+              cost: 6,
+              categoryId: 2,
+              publishDatetime: "12/10/2023",
+              description: "This is product 1, it is very good",
+              tags: ["tag1", "tag2", "tag3"],
+              ownerInfo: {
+                id: 1,
+                displayName: "MeowMeow shop",
+                rating: 4.5,
+              },
+              attaches: [
+                {
+                  id: "1",
+                  url: "https://picsum.photos/300/300",
+                  type: "IMAGE",
+                  title: "This is image 1",
+                  description: "This is image 1",
+                },
+                {
+                  id: "2",
+                  url: "https://picsum.photos/300/300",
+                  type: "IMAGE",
+                  title: "This is image 2",
+                  description: "This is image 2",
+                },
+                {
+                  id: "3",
+                  url: "https://picsum.photos/300/300",
+                  type: "IMAGE",
+                  title: "This is image 3",
+                  description: "This is image 3",
+                },
+              ],
+              ratings: 5,
+              status: "AVAILABLE",
+              type: "NORMAL",
+              remainingQuantity: 100,
+              maxItemsPerOrder: 10,
+              allowDelivery: true,
+              paymentMethods: [
+                {
+                  id: "1",
+                  type: "COD",
+                },
+                {
+                  id: "2",
+                  type: "ONLINE",
+                },
+              ],
+              category: {
+                id: "2",
+                name: "Category 2",
+              },
+              memberOnly: false,
+            },
+            {
+              id: "7",
+              name: "Lycoris keychain - Chisato",
+              price: {
+                value: 10000000,
+                unit: "VND",
+              },
+              cost: 7,
+              categoryId: 1,
+              publishDatetime: "12/10/2023",
+              description: "This is product 1, it is very good",
+              tags: ["tag1", "tag2", "tag3"],
+              ownerInfo: {
+                id: 1,
+                displayName: "MeowMeow shop",
+                rating: 4.5,
+              },
+              attaches: [
+                {
+                  id: "1",
+                  url: "https://picsum.photos/300/300",
+                  type: "IMAGE",
+                  title: "This is image 1",
+                  description: "This is image 1",
+                },
+                {
+                  id: "2",
+                  url: "https://picsum.photos/300/300",
+                  type: "IMAGE",
+                  title: "This is image 2",
+                  description: "This is image 2",
+                },
+                {
+                  id: "3",
+                  url: "https://picsum.photos/300/300",
+                  type: "IMAGE",
+                  title: "This is image 3",
+                  description: "This is image 3",
+                },
+              ],
+              ratings: 5,
+              status: "AVAILABLE",
+              type: "NORMAL",
+              remainingQuantity: 100,
+              maxItemsPerOrder: 10,
+              allowDelivery: true,
+              paymentMethods: [
+                {
+                  id: "1",
+                  type: "COD",
+                },
+                {
+                  id: "2",
+                  type: "ONLINE",
+                },
+              ],
+              category: {
+                id: "1",
+                name: "Category 1",
+              },
+              memberOnly: false,
+            },
+            {
+              id: "8",
+              name: "Lycoris keychain - Chisato",
+              price: {
+                value: 10000000,
+                unit: "VND",
+              },
+              cost: 10,
+              categoryId: 1,
+              publishDatetime: "12/10/2023",
+              description: "This is product 1, it is very good",
+              tags: ["tag1", "tag2", "tag3"],
+              ownerInfo: {
+                id: 1,
+                displayName: "MeowMeow shop",
+                rating: 4.5,
+              },
+              attaches: [
+                {
+                  id: "1",
+                  url: "https://picsum.photos/300/300",
+                  type: "IMAGE",
+                  title: "This is image 1",
+                  description: "This is image 1",
+                },
+                {
+                  id: "2",
+                  url: "https://picsum.photos/300/300",
+                  type: "IMAGE",
+                  title: "This is image 2",
+                  description: "This is image 2",
+                },
+                {
+                  id: "3",
+                  url: "https://picsum.photos/300/300",
+                  type: "IMAGE",
+                  title: "This is image 3",
+                  description: "This is image 3",
+                },
+              ],
+              ratings: 5,
+              status: "AVAILABLE",
+              type: "NORMAL",
+              remainingQuantity: 100,
+              maxItemsPerOrder: 10,
+              allowDelivery: true,
+              paymentMethods: [
+                {
+                  id: "1",
+                  type: "COD",
+                },
+                {
+                  id: "2",
+                  type: "ONLINE",
+                },
+              ],
+              category: {
+                id: "1",
+                name: "Category 1",
+              },
+              memberOnly: false,
+            },
+            {
+              id: "9",
+              name: "Lycoris keychain - Chisato",
+              price: {
+                value: 10000000,
+                unit: "VND",
+              },
+              cost: 8,
+              categoryId: 2,
+              publishDatetime: "12/10/2023",
+              description: "This is product 1, it is very good",
+              tags: ["tag1", "tag2", "tag3"],
+              ownerInfo: {
+                id: 1,
+                displayName: "MeowMeow shop",
+                rating: 4.5,
+              },
+              attaches: [
+                {
+                  id: "1",
+                  url: "https://picsum.photos/300/300",
+                  type: "IMAGE",
+                  title: "This is image 1",
+                  description: "This is image 1",
+                },
+                {
+                  id: "2",
+                  url: "https://picsum.photos/300/300",
+                  type: "IMAGE",
+                  title: "This is image 2",
+                  description: "This is image 2",
+                },
+                {
+                  id: "3",
+                  url: "https://picsum.photos/300/300",
+                  type: "IMAGE",
+                  title: "This is image 3",
+                  description: "This is image 3",
+                },
+              ],
+              ratings: 5,
+              status: "AVAILABLE",
+              type: "NORMAL",
+              remainingQuantity: 100,
+              maxItemsPerOrder: 10,
+              allowDelivery: true,
+              paymentMethods: [
+                {
+                  id: "1",
+                  type: "COD",
+                },
+                {
+                  id: "2",
+                  type: "ONLINE",
+                },
+              ],
+              category: {
+                id: "2",
+                name: "Category 2",
+              },
+              memberOnly: false,
+            },
+            {
+              id: "10",
+              name: "Lycoris keychain - Chisato",
+              price: {
+                value: 10000000,
+                unit: "VND",
+              },
+              cost: 9,
+              categoryId: 1,
+              publishDatetime: "12/10/2023",
+              description: "This is product 1, it is very good",
+              tags: ["tag1", "tag2", "tag3"],
+              ownerInfo: {
+                id: 1,
+                displayName: "MeowMeow shop",
+                rating: 4.5,
+              },
+              attaches: [
+                {
+                  id: "1",
+                  url: "https://picsum.photos/300/300",
+                  type: "IMAGE",
+                  title: "This is image 1",
+                  description: "This is image 1",
+                },
+                {
+                  id: "2",
+                  url: "https://picsum.photos/300/300",
+                  type: "IMAGE",
+                  title: "This is image 2",
+                  description: "This is image 2",
+                },
+                {
+                  id: "3",
+                  url: "https://picsum.photos/300/300",
+                  type: "IMAGE",
+                  title: "This is image 3",
+                  description: "This is image 3",
+                },
+              ],
+              ratings: 5,
+              status: "AVAILABLE",
+              type: "NORMAL",
+              remainingQuantity: 100,
+              maxItemsPerOrder: 10,
+              allowDelivery: true,
+              paymentMethods: [
+                {
+                  id: "1",
+                  type: "COD",
+                },
+                {
+                  id: "2",
+                  type: "ONLINE",
+                },
+              ],
+              category: {
+                id: "1",
+                name: "Category 1",
+              },
+              memberOnly: false,
+            },
+          ],
+          tags: [
+            {
+              name: "#hsr",
+              description: "5050 products",
+              type: "HOT",
+              color: "#FF9898",
+            },
+            {
+              name: "#hsr",
+              description: "5050 products",
+              type: "HOT",
+              color: "#FFB571",
+            },
+            {
+              name: "#hsr",
+              description: "5050 products",
+              type: "HOT",
+              color: "#9CA6FF",
+            },
+            {
+              name: "#hsr",
+              description: "5050 products",
+              type: "HOT",
+              color: "#57AC3C",
+            },
+            {
+              name: "#hsr",
+              description: "5050 products",
+              type: "HOT",
+              color: "#FF8179",
+            },
+            {
+              name: "#hsr",
+              description: "5050 products",
+              type: "HOT",
+              color: "#FFB571",
+            },
+            {
+              name: "#hsr",
+              description: "5050 products",
+              type: "HOT",
+              color: "#9CA6FF",
+            },
+          ],
+        },
+        {
+          data: [
+            {
+              name: "#hsr",
+              description: "5050 products",
+              type: "HOT",
+              color: "#FF9898",
+            },
+            {
+              name: "#hsr",
+              description: "5050 products",
+              type: "HOT",
+              color: "#FFB571",
+            },
+            {
+              name: "#hsr",
+              description: "5050 products",
+              type: "HOT",
+              color: "#9CA6FF",
+            },
+            {
+              name: "#hsr",
+              description: "5050 products",
+              type: "HOT",
+              color: "#57AC3C",
+            },
+            {
+              name: "#hsr",
+              description: "5050 products",
+              type: "HOT",
+              color: "#FF8179",
+            },
+            {
+              name: "#hsr",
+              description: "5050 products",
+              type: "HOT",
+              color: "#FFB571",
+            },
+            {
+              name: "#hsr",
+              description: "5050 products",
+              type: "HOT",
+              color: "#9CA6FF",
+            },
+          ],
+        },
+        {
+          data: {
+            campaigns: [
+              {
+                id: "1",
+                url: "https://static.wikia.nocookie.net/bangdreamvetnamfandom/images/8/81/Roselia.jpg/revision/latest?cb=20220417065827&path-prefix=vi",
+              },
+              {
+                id: "2",
+                url: "https://s3-ap-northeast-1.amazonaws.com/bmu-new-corp-production-public/fc41f61c-8e5b-4a9d-b6aa-8462f8a89283.png",
+              },
+              {
+                id: "3",
+                url: "https://static.wikia.nocookie.net/bangdreamvetnamfandom/images/8/81/Roselia.jpg/revision/latest?cb=20220417065827&path-prefix=vi",
+              },
+            ],
+            promotions: [
+              {
+                id: "2",
+                url: "https://s3-ap-northeast-1.amazonaws.com/bmu-new-corp-production-public/fc41f61c-8e5b-4a9d-b6aa-8462f8a89283.png",
+              },
+              {
+                id: "3",
+                url: "https://static.wikia.nocookie.net/bangdreamvetnamfandom/images/8/81/Roselia.jpg/revision/latest?cb=20220417065827&path-prefix=vi",
+              },
+            ],
+          },
+        },
+      ];
     console.log(productRes);
-    hotProducts = productRes.data;
-    hotTags = hotTagsRes.data;
-    homeBranding = homeBrandingRes.data;
+    //@ts-ignore
+    hotProducts = productRes.data as Product[];
+    hotTags = hotTagsRes.data as Tag[];
+    homeBranding = homeBrandingRes.data as HomeBranding;
   } catch (e) {
     console.error(e);
   }

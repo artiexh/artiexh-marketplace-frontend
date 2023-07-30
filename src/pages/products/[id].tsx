@@ -90,14 +90,79 @@ export const getStaticPaths = async () => {
 };
 
 export const getStaticProps = async (context: GetStaticPropsContext) => {
-  const { params } = context;
-  if (!params?.id) return { props: {} };
-  const { data } = await ssrAxiosClient.get<CommonResponseBase<Product>>(
-    `/products/${params.id}`
-  );
+  // const { params } = context;
+  // if (!params?.id) return { props: {} };
+  // const { data } = await ssrAxiosClient.get<CommonResponseBase<Product>>(
+  //   `/products/${params.id}`
+  // );
+
+  const product: Product = {
+    id: "1",
+    name: "Lycoris keychain - Chisato",
+    price: {
+      value: 10000000,
+      unit: "VND",
+    },
+    publishDatetime: "12/10/2023",
+    description: "This is product 1, it is very good",
+    tags: ["tag1", "tag2", "tag3"],
+    ownerInfo: {
+      id: 1,
+      displayName: "MeowMeow shop",
+      rating: 4.5,
+      username: "meowmeow",
+      role: "user",
+      subscriptionsTo: [],
+      status: "active",
+    },
+    thumbnailUrl: "https://picsum.photos/300/300",
+    attaches: [
+      {
+        id: "1",
+        url: "https://picsum.photos/300/300",
+        type: "IMAGE",
+        title: "This is image 1",
+        description: "This is image 1",
+      },
+      {
+        id: "2",
+        url: "https://picsum.photos/300/300",
+        type: "IMAGE",
+        title: "This is image 2",
+        description: "This is image 2",
+      },
+      {
+        id: "3",
+        url: "https://picsum.photos/300/300",
+        type: "IMAGE",
+        title: "This is image 3",
+        description: "This is image 3",
+      },
+    ],
+    ratings: 1,
+    status: "AVAILABLE",
+    type: "NORMAL",
+    remainingQuantity: 100,
+    maxItemsPerOrder: 10,
+    allowDelivery: true,
+    paymentMethods: [
+      {
+        id: "1",
+        type: "COD",
+      },
+      {
+        id: "2",
+        type: "ONLINE",
+      },
+    ],
+    category: {
+      id: "7",
+      name: "Category 7",
+    },
+  };
   return {
     props: {
-      product: data.data,
+      product: product,
     },
   };
 };
