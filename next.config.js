@@ -13,6 +13,7 @@ const nextConfig = {
       },
     ],
   },
+  transpilePackages: ["@react-three/drei"],
 };
 
 module.exports = nextConfig;
