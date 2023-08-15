@@ -13,7 +13,7 @@ const ShopOrdersPage = () => {
 
   return (
     <TableContainer
-      key="orders"
+      fetchKey="orders"
       fetcher={(currentPage) => async () =>
         (
           await axiosClient.get(

@@ -36,7 +36,7 @@ const ShopProductsPage = () => {
         </Button>
       </div>
       <TableContainer
-        key="products"
+        fetchKey="products"
         fetcher={(currentPage) => async () => {
           const ret = (
             await axiosClient.get(

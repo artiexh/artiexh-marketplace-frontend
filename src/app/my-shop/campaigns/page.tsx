@@ -11,7 +11,7 @@ const ShopCampaignsPage = () => {
 
   return (
     <TableContainer
-      key="campaigns"
+      fetchKey="campaigns"
       fetcher={(currentPage) => async () =>
         (
           await axiosClient.get(

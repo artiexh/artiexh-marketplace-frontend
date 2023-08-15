@@ -2,14 +2,12 @@ import TableComponent from "@/components/TableComponent";
 import { PaginationResponseBase } from "@/types/ResponseBase";
 import { TableColumns } from "@/types/Table";
 import { Pagination, TableProps } from "@mantine/core";
-import { AxiosInstance } from "axios";
-import clsx from "clsx";
-import React, { Dispatch, SetStateAction, useState } from "react";
+import React, { useState } from "react";
 import useSWR from "swr";
 
 type ITableContainerProps<T> = {
   columns: TableColumns<T>;
-  key: string;
+  fetchKey: string;
   pagination?: boolean;
   tableProps?: TableProps;
   fetcher: (currentPage: number) => () => any;
@@ -19,7 +17,7 @@ type ITableContainerProps<T> = {
 
 const TableContainer = <T,>({
   columns,
-  key,
+  fetchKey,
   pagination,
   fetcher,
   tableProps,
@@ -29,7 +27,7 @@ const TableContainer = <T,>({
 
   //TODO: replace fetcher later, and replace any -> T too
   const { data: response } = useSWR<PaginationResponseBase<any[]>>(
-    `/page_url/${key}`,
+    `/page_url/${fetchKey}?page=${currentPage}`,
     fetcher(currentPage)
   );
 
@@ -47,7 +45,8 @@ const TableContainer = <T,>({
             value={currentPage}
             onChange={setCurrentPage}
             //TODO: change this to total of api call later
-            total={response?.data?.[0]?.total || 10}
+            total={2}
+            boundaries={2}
           />
         )}
       </div>

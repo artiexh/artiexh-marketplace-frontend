@@ -4,7 +4,6 @@ import TableContainer from "@/containers/TableContainer";
 import { Button, Input } from "@mantine/core";
 import { IconPlus, IconSearch } from "@tabler/icons-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useState } from "react";
 import axiosClient from "@/services/backend/axiosMockups/axiosMockupClient";
 import shopProductColumns from "@/constants/Columns/shopProductColumns";
 import { createQueryString } from "@/utils/searchParams";
@@ -37,7 +36,7 @@ const ShopProductsPage = () => {
         </Button>
       </div>
       <TableContainer
-        key="products"
+        fetchKey="products"
         fetcher={(currentPage) => async () => {
           const ret = (
             await axiosClient.get(
