@@ -4,7 +4,6 @@ import shopOrderColumns from "@/constants/Columns/shopOrderColumns";
 import TableContainer from "@/containers/TableContainer";
 import axiosClient from "@/services/backend/axiosMockups/axiosMockupClient";
 import { useSearchParams } from "next/navigation";
-import { useState } from "react";
 
 const PAGE_SIZE = 6;
 

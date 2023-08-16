@@ -1,5 +1,3 @@
-import ShopProductTableContainer from "../../containers/ArtistDashboardPage/ShopProductTable";
-
 export const navSections = [
   {
     id: "DASHBOARD",
