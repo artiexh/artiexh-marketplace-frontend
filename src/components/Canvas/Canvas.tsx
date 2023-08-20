@@ -17,7 +17,7 @@ import { state } from "../Overlay/Overlay";
 
 export const CanvasComponent = ({
   position = [0, 0, 2.5],
-  fov = 25,
+  fov = 100,
 }: {
   position?: any;
   fov?: number;
@@ -34,7 +34,6 @@ export const CanvasComponent = ({
         camera={{ position, fov }}
         gl={{ preserveDrawingBuffer: true }}
         eventSource={page}
-        eventPrefix="client"
       >
         <ambientLight intensity={0.5} />
         <Environment files="https://dl.polyhaven.org/file/ph-assets/HDRIs/hdr/1k/potsdamer_platz_1k.hdr" />
@@ -127,7 +126,7 @@ function Shirt(props: any) {
       dispose={null}
     >
       <Decal
-        position={[0, 0.04, 0.15]}
+        position={[0, 0.2, 0.15]}
         rotation={[0, 0, 0]}
         scale={0.15}
         map={texture}
