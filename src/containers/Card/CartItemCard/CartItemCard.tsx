@@ -35,7 +35,7 @@ export default function CartItemCard({
             />
             <img
               className="object-cover aspect-square w-[80px] md:w-[120px]  rounded-lg"
-              src={cartItem.attaches[0].url}
+              src={cartItem.thumbnailUrl}
               alt="product-name"
             />
           </div>
@@ -44,7 +44,7 @@ export default function CartItemCard({
           {cartItem.name}
         </Grid.Col>
         <Grid.Col span={2} className="my-auto font-bold ">
-          {cartItem.price}
+          {cartItem.price.amount + cartItem.price.unit}
         </Grid.Col>
         <Grid.Col span={2} className="my-auto">
           <NumberInput
@@ -56,7 +56,7 @@ export default function CartItemCard({
           />
         </Grid.Col>
         <Grid.Col span={2} className="my-auto font-bold">
-          {cartItem.price * quantity}
+          {cartItem.price.amount * quantity}
         </Grid.Col>
         <Grid.Col span={1} className="my-auto text-center">
           <div className="flex justify-center">
@@ -73,7 +73,7 @@ export default function CartItemCard({
           />
           <img
             className="object-fit max-w-[80px] h-[80px] rounded-lg"
-            src={cartItem.attaches[0].url}
+            src={cartItem.thumbnailUrl}
             alt="product-name"
           />
         </div>
@@ -81,7 +81,7 @@ export default function CartItemCard({
           <div>
             <div className="mb-3 font-bold">{cartItem.name}</div>
             <div className="mb-2">
-              Đơn giá: {cartItem.price + " " + cartItem.currency}
+              Đơn giá: {cartItem.price + " " + cartItem.price.unit}
             </div>
             <div className="flex gap-2 items-center">
               <div>Số lượng:</div>

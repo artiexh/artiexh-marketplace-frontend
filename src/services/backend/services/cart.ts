@@ -1,4 +1,4 @@
-import axiosClient from "../haiEndpointCC";
+import axiosClient from "../axiosClient";
 
 export const addToCart = async (productId: string, quantity: number) => {
   const result = await axiosClient.put("/cart/item", {

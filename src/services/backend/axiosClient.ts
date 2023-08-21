@@ -14,7 +14,7 @@ const refresh = () => {
   if (isRefreshing) return Promise.reject();
   isRefreshing = true;
   return axiosClient
-    .post("http://localhost:8081/api/v1/auth/refresh")
+    .post("https://api.artiexh.com/api/v1/auth/refresh")
     .then(() => {
       isRefreshing = false;
     });

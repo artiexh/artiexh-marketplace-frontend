@@ -1,3 +1,4 @@
+import { ROUTE } from "@/constants/route";
 import SignInFormContainer from "@/containers/SignInFormContainer/SignInFormContainer";
 import { GetServerSidePropsContext } from "next";
 import Image from "next/image";
@@ -57,7 +58,7 @@ const SignInPage = () => {
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   const cookies = context.req.cookies;
   if (cookies[process.env.NEXT_PUBLIC_REFRESH_TOKEN_KEY as string])
-    return { redirect: { destination: "/", permanent: false } };
+    return { redirect: { destination: ROUTE.HOME_PAGE, permanent: false } };
   return {
     props: {},
   };

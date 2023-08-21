@@ -1,3 +1,4 @@
+import { ROUTE } from "@/constants/route";
 import axiosClient from "@/services/backend/axiosClient";
 import { CommonResponseBase } from "@/types/ResponseBase";
 import { User } from "@/types/User";
@@ -35,7 +36,7 @@ const CallbackPage = ({
 
     try {
       const { data } = await axiosClient.post<CommonResponseBase<User>>(
-        "http://localhost:8081/api/v1/registration/user",
+        "https://api.artiexh.com/api/v1/registration/user",
         {
           username: values.username,
           ...provider,
@@ -43,7 +44,7 @@ const CallbackPage = ({
       );
 
       if (data.error) throw data;
-      router.push("/");
+      router.push(ROUTE.HOME_PAGE);
     } catch (error) {
       form.setFieldError("username", "Username already exists");
     } finally {
@@ -75,7 +76,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   if (!providerId || !sub) {
     return {
       redirect: {
-        destination: "/",
+        destination: ROUTE.HOME_PAGE,
         permanent: false,
       },
       props: {},

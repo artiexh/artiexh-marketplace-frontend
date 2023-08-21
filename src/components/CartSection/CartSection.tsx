@@ -2,29 +2,34 @@ import CartItemCard from "@/containers/Card/CartItemCard/CartItemCard";
 import { Button, Divider, Grid } from "@mantine/core";
 import LogoCheckbox from "../LogoCheckbox/LogoCheckbox";
 import Image from "next/image";
-import { CartItem, CartSection } from "@/services/backend/types/Cart";
+import { CartSection } from "@/services/backend/types/Cart";
+import { AnyAction } from "@reduxjs/toolkit";
+import { Dispatch } from "react";
+import { toggleSelectItems } from "@/store/slices/cartSlice";
 
 type CartSectionProps = {
   cartSection: CartSection;
-  toggleSelectItems: (
-    artistId: number,
-    items: CartItem[],
-    isAll?: boolean
-  ) => void;
-  isChecked: (id: number) => boolean;
+  dispatch: Dispatch<AnyAction>;
+  isChecked: (id: string) => boolean;
 };
 
 export default function CartSection({
   cartSection,
-  toggleSelectItems,
   isChecked,
+  dispatch,
 }: CartSectionProps) {
   return (
     <div className="cart-section">
       <LogoCheckbox
         configClass="absolute -top-2 -left-2"
         clickEvent={() =>
-          toggleSelectItems(cartSection.artistInfo.id, cartSection.items, true)
+          dispatch(
+            toggleSelectItems({
+              artistId: cartSection.artist.id,
+              items: cartSection.items,
+              isAll: true,
+            })
+          )
         }
         isChecked={cartSection.items.every((item) => isChecked(item.id))}
       />
@@ -40,8 +45,8 @@ export default function CartSection({
             />
           </div>
           <div className="text-sm sm:text-base">
-            <div>{cartSection.artistInfo.displayName}</div>
-            <div>{cartSection.artistInfo.username}</div>
+            <div>{cartSection.artist.displayName}</div>
+            <div>{cartSection.artist.username}</div>
           </div>
         </div>
         <div>
@@ -72,11 +77,17 @@ export default function CartSection({
       </div>
       <div className="cart-section">
         {cartSection.items.map((item, index, arr) => (
-          <div key={index}>
+          <div key={item.id}>
             <CartItemCard
               cartItem={item}
               selectEvent={() =>
-                toggleSelectItems(cartSection.artistInfo.id, [item])
+                dispatch(
+                  toggleSelectItems({
+                    artistId: cartSection.artist.id,
+                    items: [item],
+                    isAll: false,
+                  })
+                )
               }
               isChecked={isChecked(item.id)}
             />

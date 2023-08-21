@@ -11,7 +11,8 @@ type ProductInfoProps = {
 };
 
 const ProductInfo: FC<ProductInfoProps> = ({ product, special }) => {
-  const { ratings, name, price, tags } = product;
+  console.log(product);
+  const { averageRate, name, price, category, tags } = product;
   const [quantity, setQuantity] = useState<number>(1);
 
   return (
@@ -19,14 +20,15 @@ const ProductInfo: FC<ProductInfoProps> = ({ product, special }) => {
       <h1 className="text-3xl">{name}</h1>
       <div className="tag-wrapper flex gap-3 mt-1">
         {tags.map((tag) => (
-          <Badge key={tag}>{tags}</Badge>
+          <Badge key={tag}>{tag}</Badge>
         ))}
       </div>
+      <div className="mt-2">Type: {category.name}</div>
       <div className="flex items-end gap-3 mt-3">
         <span className="font-bold text-2xl text-primary leading-none">
-          {ratings}/5
+          {averageRate}/5
         </span>
-        <Rating value={ratings} size="lg" color="customPrimary" readOnly />
+        <Rating value={averageRate} size="lg" color="customPrimary" readOnly />
       </div>
       <h2 className="text-4xl mt-5">{currencyFormatter("vn", price)}</h2>
       {special && <h4 className="text-red-500">{special}</h4>}

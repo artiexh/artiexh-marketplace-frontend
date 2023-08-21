@@ -1,12 +1,14 @@
 import { User } from "./User";
 
 export type Tag = {
+  id: string;
   name: string;
-  description: string;
-  color: string;
 };
 
-export type OwnerInfo = User & {
+export type OwnerInfo = Omit<
+  User,
+  "role" | "email" | "subscriptionsTo" | "avatarUrl" | "status"
+> & {
   rating: number;
 };
 
@@ -16,8 +18,8 @@ export type Product = {
   price: Price;
   description: string;
   tags: string[];
-  ownerInfo: OwnerInfo;
-  ratings: number;
+  owner: OwnerInfo;
+  averageRate: number;
   attaches: Attaches[];
   status: "DELETE" | "AVAILABLE" | "SOLD_OUT" | "HIDDEN";
   type: "NORMAL" | "PRE_ORDER";
@@ -50,7 +52,7 @@ export type PaymentMethod = {
 };
 
 export type Price = {
-  value: number;
+  amount: number;
   unit: string;
 };
 

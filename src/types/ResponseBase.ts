@@ -7,4 +7,10 @@ export type CommonResponseBase<T> = {
   data: T;
 };
 
-export type PaginationResponseBase<T> = CommonResponseBase<T>;
+export type PaginationResponseBase<T> = {
+  page: number;
+  pageSize: number;
+  totalSize: number;
+  totalPage: number;
+  items: T[];
+};

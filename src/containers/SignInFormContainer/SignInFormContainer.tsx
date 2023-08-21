@@ -1,3 +1,4 @@
+import { ROUTE } from "@/constants/route";
 import axiosClient from "@/services/backend/axiosClient";
 import { User } from "@/types/User";
 import { Button, Divider, TextInput, PasswordInput } from "@mantine/core";
@@ -42,7 +43,7 @@ const SignInFormContainer = () => {
       console.log(data);
       // TODO:
       // Save this
-      router.push("/");
+      router.push(ROUTE.HOME_PAGE);
     } catch (error) {
       // TODO:
       // Handle 401 invalid credentials
