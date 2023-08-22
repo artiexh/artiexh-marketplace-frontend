@@ -1,15 +1,39 @@
 import axiosClient from "../axiosClient";
+import { CartData } from "../types/Cart";
 
-export const addToCart = async (productId: string, quantity: number) => {
-  const result = await axiosClient.put("/cart/item", {
-    items: [
-      {
-        //TODO: will replace later after api is fixed
-        productId: 456149873649872516,
-        quantity,
+export const updateCartItem = async (productId: string, quantity: number) => {
+  let cartItems;
+  try {
+    const { data: result } = await axiosClient.put<CartData>("/cart/item", {
+      items: [
+        {
+          productId,
+          quantity,
+        },
+      ],
+    });
+
+    cartItems = result;
+  } catch (err) {
+    console.log(err);
+  }
+
+  return cartItems;
+};
+
+export const deleteCartItem = async (productId: string[]) => {
+  let cartItems;
+  try {
+    const { data: result } = await axiosClient.delete<CartData>("/cart/item", {
+      data: {
+        productIds: productId,
       },
-    ],
-  });
+    });
 
-  return result;
+    cartItems = result;
+  } catch (err) {
+    console.log(err);
+  }
+
+  return cartItems;
 };

@@ -1,16 +1,22 @@
 /* eslint-disable @next/next/no-img-element */
-import { CartItem } from "@/services/backend/types/Cart";
-import { useEffect, useState } from "react";
+import { CartData, CartItem } from "@/services/backend/types/Cart";
+import { useState } from "react";
 import { Grid, NumberInput } from "@mantine/core";
 import { IconTrash } from "@tabler/icons-react";
-import { addToCart } from "@/services/backend/services/cart";
+import {
+  deleteCartItem,
+  updateCartItem,
+} from "@/services/backend/services/cart";
 import LogoCheckbox from "@/components/LogoCheckbox/LogoCheckbox";
+import { KeyedMutator } from "swr";
 
 type CartItemCardProps = {
   cartItem: CartItem;
   selectEvent?: () => void;
   isChecked?: boolean;
   isCartPage?: boolean;
+  deleteEvent?: () => void;
+  revalidateFunc?: KeyedMutator<CartData>;
 };
 
 export default function CartItemCard({
@@ -18,12 +24,36 @@ export default function CartItemCard({
   selectEvent,
   isChecked = false,
   isCartPage = true,
+  deleteEvent,
+  revalidateFunc,
 }: CartItemCardProps) {
   const [quantity, setQuantity] = useState<number>(cartItem.quantity ?? 1);
+  const [loading, setLoading] = useState(false);
 
-  // useEffect(() => {
-  //   addToCart(cartItem.id.toString(), quantity);
-  // }, [quantity]);
+  const updateCartQuantity = async (value: number) => {
+    if (!loading) {
+      setLoading(true);
+      const result = await updateCartItem(cartItem.id.toString(), value);
+
+      if (result != null) {
+        setQuantity(value);
+        setLoading(false);
+      }
+    }
+  };
+
+  const deleteItemFromCart = async () => {
+    if (!loading) {
+      setLoading(true);
+      const result = await deleteCartItem([cartItem.id]);
+      if (result != null) {
+        deleteEvent?.();
+        revalidateFunc?.();
+        setQuantity(quantity);
+        setLoading(false);
+      }
+    }
+  };
 
   return (
     <div className="cart-item-card">
@@ -52,7 +82,11 @@ export default function CartItemCard({
           <NumberInput
             className="w-[60px] md:w-[100px]"
             value={quantity}
-            onChange={setQuantity as any}
+            onChange={(value) => {
+              if (typeof value === "number") {
+                updateCartQuantity(value);
+              }
+            }}
             defaultValue={1}
             min={1}
           />
@@ -64,13 +98,13 @@ export default function CartItemCard({
             </Grid.Col>
             <Grid.Col span={1} className="my-auto text-center">
               <div className="flex justify-center">
-                <IconTrash size="1.125rem" />
+                <IconTrash size="1.125rem" onClick={deleteItemFromCart} />
               </div>
             </Grid.Col>
           </>
         ) : null}
       </Grid>
-      <div className="flex sm:hidden gap-4 text-sm ">
+      <div className="flex justify-between items-center sm:hidden gap-4 text-sm ">
         <div className="relative">
           <LogoCheckbox
             configClass="absolute -top-2 -left-2"
@@ -94,13 +128,20 @@ export default function CartItemCard({
               <NumberInput
                 className="w-[60px] md:w-[100px]"
                 value={quantity}
-                onChange={setQuantity as any}
+                onChange={(value) => {
+                  console.log(value);
+                  if (typeof value === "number") {
+                    updateCartQuantity(value);
+                  }
+                }}
                 defaultValue={1}
                 min={1}
               />
             </div>
           </div>
-          <div></div>
+        </div>
+        <div className="flex">
+          <IconTrash size="1.125rem" onClick={deleteItemFromCart} />
         </div>
       </div>
     </div>

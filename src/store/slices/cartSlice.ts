@@ -14,6 +14,26 @@ export const cartSlice = createSlice({
   name: "cart",
   initialState,
   reducers: {
+    deleteItems: (
+      state,
+      action: PayloadAction<{
+        productId: string;
+      }>
+    ) => {
+      const selectedItems = state.selectedItems;
+      let newArr = [...selectedItems];
+      const productId = action.payload.productId;
+
+      newArr.forEach((section) => {
+        section.items = section.items.filter((i) => i.id !== productId);
+
+        if (section.items.length === 0) {
+          newArr = newArr.filter((item) => item.shop.id !== section.shop.id);
+        }
+      });
+
+      state.selectedItems = newArr;
+    },
     toggleSelectItems: (
       state,
       action: PayloadAction<{
@@ -21,28 +41,26 @@ export const cartSlice = createSlice({
         isAll: boolean;
       }>
     ) => {
-      // find the cart section belong to artistId
+      // find the cart section belong to shopId
       const selectedItems = state.selectedItems;
       const { cartSection, isAll } = action.payload;
-      const { artist, items } = cartSection;
-      const artistId = artist.id;
+      const { shop, items } = cartSection;
+      const shopId = shop.id;
 
-      const selectItem = selectedItems.find(
-        (item) => item.artist.id == artistId
-      );
+      const selectItem = selectedItems.find((item) => item.shop.id == shopId);
       let newArr = [...selectedItems];
 
-      // if select all items belonged to this artist Id
+      // if select all items belonged to this shop Id
       if (isAll) {
-        // if this artistId section already exist, remove it, otherwise, add it
+        // if this shopId section already exist, remove it, otherwise, add it
 
-        // remove this section belong to artistId
-        newArr = newArr.filter((item) => item.artist.id != artistId);
+        // remove this section belong to shopId
+        newArr = newArr.filter((item) => item.shop.id != shopId);
 
-        // if this artist section doesn exist yet, add it to the selected items
+        // if this shop section doesn exist yet, add it to the selected items
         if (Number(selectItem?.items?.length ?? 0) < items.length) {
           newArr.push({
-            artist,
+            shop,
             items,
           });
         }
@@ -56,13 +74,14 @@ export const cartSlice = createSlice({
 
           // loop through the new array
           newArr.forEach((item) => {
-            // selected the section belong to this artist
-            if (item.artist.id == artistId) {
+            // selected the section belong to this shop
+            if (item.shop.id == shopId) {
               // if the item is selected, remove it
               if (nestedItem) {
                 item.items = item.items.filter(
                   (item) => item.id != items[0].id
                 );
+
                 // otherwise, add it
               } else {
                 item.items.push(items[0]);
@@ -72,12 +91,17 @@ export const cartSlice = createSlice({
           // otherwise, add new cart section
         } else {
           newArr.push({
-            artist,
+            shop,
             items,
           });
         }
       }
 
+      newArr.forEach((section) => {
+        if (section.items.length === 0) {
+          newArr.filter((item) => item.shop.id !== section.shop.id);
+        }
+      });
       // set the new selected array
       state.selectedItems = newArr;
     },
@@ -85,6 +109,6 @@ export const cartSlice = createSlice({
 });
 
 // Action creators are generated for each case reducer function
-export const { toggleSelectItems } = cartSlice.actions;
+export const { toggleSelectItems, deleteItems } = cartSlice.actions;
 
 export default cartSlice.reducer;

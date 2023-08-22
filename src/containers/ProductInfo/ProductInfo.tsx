@@ -1,5 +1,5 @@
 import Badge from "@/components/Badge/Badge";
-import { addToCart } from "@/services/backend/services/cart";
+import { updateCartItem } from "@/services/backend/services/cart";
 import { Product } from "@/types/Product";
 import { currencyFormatter } from "@/utils/formatter";
 import { Rating, NumberInput, Button } from "@mantine/core";
@@ -11,9 +11,21 @@ type ProductInfoProps = {
 };
 
 const ProductInfo: FC<ProductInfoProps> = ({ product, special }) => {
-  console.log(product);
-  const { averageRate, name, price, category, tags } = product;
+  const { id, averageRate, name, price, category, tags } = product;
   const [quantity, setQuantity] = useState<number>(1);
+  const [loading, setLoading] = useState(false);
+
+  const updateCartQuantity = async () => {
+    if (!loading) {
+      setLoading(true);
+      const result = await updateCartItem(id, quantity);
+
+      if (result != null) {
+        setQuantity(quantity);
+        setLoading(false);
+      }
+    }
+  };
 
   return (
     <div className="rounded-lg p-5 md:p-8 bg-white flex flex-col col-span-12 md:col-span-5">
@@ -50,7 +62,7 @@ const ProductInfo: FC<ProductInfoProps> = ({ product, special }) => {
         <Button
           className="flex-1"
           variant="outline"
-          onClick={() => addToCart(product.id, quantity)}
+          onClick={updateCartQuantity}
         >
           Add to cart
         </Button>

@@ -16,14 +16,13 @@ export type CartItem = {
 };
 
 export type CartSection = {
-  artist: {
+  shop: {
     id: string;
-    username: string;
-    displayName: string;
+    shopName: string;
   };
   items: CartItem[];
 };
 
 export type CartData = {
-  artistItems: CartSection[];
+  shopItems: CartSection[];
 };

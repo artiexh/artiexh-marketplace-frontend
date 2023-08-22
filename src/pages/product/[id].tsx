@@ -55,7 +55,11 @@ const ProductDetailPage: NextPage<
               </Carousel.Slide>
             ))}
           </Carousel>
-          <ProductInfo product={product} special="Only 5 left" />
+          <ProductInfo
+            key={product.id}
+            product={product}
+            special="Only 5 left"
+          />
           <Description description={description} />
           <ShopCard className="col-span-12 md:col-span-5" artist={owner} />
         </div>

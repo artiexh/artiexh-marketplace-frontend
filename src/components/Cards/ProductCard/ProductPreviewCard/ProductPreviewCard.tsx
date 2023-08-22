@@ -4,6 +4,7 @@ import { Product } from "@/types/Product";
 import { currencyFormatter } from "@/utils/formatter";
 import clsx from "clsx";
 import { useRouter } from "next/router";
+import defaultImg from "../../../../../public/assets/default-thumbnail.jpg";
 
 interface IProductPreviewCardProps {
   data: Product;
@@ -24,7 +25,11 @@ const ProductPreviewCard = ({ data, className }: IProductPreviewCardProps) => {
       <div className="relative w-full aspect-square">
         <Image
           className="rounded-2xl rounded-bl-none object-cover"
-          src={data.thumbnailUrl}
+          src={
+            data?.thumbnailUrl?.includes("http")
+              ? data?.thumbnailUrl
+              : defaultImg
+          }
           alt="dogtor"
           fill
           priority

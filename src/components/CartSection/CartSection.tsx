@@ -2,16 +2,18 @@ import CartItemCard from "@/containers/Card/CartItemCard/CartItemCard";
 import { Button, Divider, Grid } from "@mantine/core";
 import LogoCheckbox from "../LogoCheckbox/LogoCheckbox";
 import Image from "next/image";
-import { CartSection } from "@/services/backend/types/Cart";
+import { CartData, CartItem, CartSection } from "@/services/backend/types/Cart";
 import { AnyAction } from "@reduxjs/toolkit";
 import { Dispatch } from "react";
-import { toggleSelectItems } from "@/store/slices/cartSlice";
+import { deleteItems, toggleSelectItems } from "@/store/slices/cartSlice";
+import { KeyedMutator } from "swr";
 
 type CartSectionProps = {
   cartSection: CartSection;
   dispatch: Dispatch<AnyAction>;
   isChecked: (id: string) => boolean;
   isCartPage?: boolean;
+  revalidateFunc?: KeyedMutator<CartData>;
 };
 
 export default function CartSection({
@@ -19,7 +21,23 @@ export default function CartSection({
   isChecked,
   dispatch,
   isCartPage = true,
+  revalidateFunc,
 }: CartSectionProps) {
+  const toggleCartItemHandler = (item: CartItem) => {
+    dispatch(
+      toggleSelectItems({
+        cartSection: {
+          shop: cartSection.shop,
+          items: [item],
+        },
+        isAll: false,
+      })
+    );
+  };
+
+  const deleteItemFromCart = (productId: string) => {
+    dispatch(deleteItems({ productId }));
+  };
   return (
     <div className="cart-section">
       <LogoCheckbox
@@ -28,7 +46,7 @@ export default function CartSection({
           dispatch(
             toggleSelectItems({
               cartSection: {
-                artist: cartSection.artist,
+                shop: cartSection.shop,
                 items: cartSection.items,
               },
               isAll: true,
@@ -49,8 +67,7 @@ export default function CartSection({
             />
           </div>
           <div className="text-sm sm:text-base">
-            <div>{cartSection.artist.displayName}</div>
-            <div>{cartSection.artist.username}</div>
+            <div>{cartSection.shop.shopName}</div>
           </div>
         </div>
         <div>
@@ -75,7 +92,7 @@ export default function CartSection({
               <Grid.Col span={2} className="my-auto">
                 Total
               </Grid.Col>
-              <Grid.Col span={1} className="my-auto">
+              <Grid.Col span={1} className="my-auto text-center">
                 Actions
               </Grid.Col>
             </>
@@ -88,19 +105,11 @@ export default function CartSection({
           <div key={item.id}>
             <CartItemCard
               cartItem={item}
-              selectEvent={() =>
-                dispatch(
-                  toggleSelectItems({
-                    cartSection: {
-                      artist: cartSection.artist,
-                      items: [item],
-                    },
-                    isAll: false,
-                  })
-                )
-              }
+              selectEvent={() => toggleCartItemHandler(item)}
+              deleteEvent={() => deleteItemFromCart(item.id)}
               isChecked={isChecked(item.id)}
               isCartPage={isCartPage}
+              revalidateFunc={revalidateFunc}
             />
             {index !== arr.length - 1 && (
               <Divider className="my-4 relative -left-2 sm:-left-6 !w-[calc(100%+16px)] sm:!w-[calc(100%+48px)]" />

@@ -26,6 +26,11 @@ export default function CheckoutPage() {
     (state: RootState) => state.cart.selectedItems
   );
 
+  console.log(selectedItems);
+  if (selectedItems.length === 0) {
+    return <>Please add item to your cart!</>;
+  }
+
   const dispatch = useDispatch();
   const [paymentMethod, setPaymentMethod] = useState("");
 
