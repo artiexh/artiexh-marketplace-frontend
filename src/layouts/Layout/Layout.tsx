@@ -8,7 +8,7 @@ const Layout = ({ children }: ILayoutProps) => {
   return (
     <div>
       <NavBar />
-      <div className="max-w-[80rem] mx-6 lg:mx-auto my-0">
+      <div className="md:max-w-[90vw] mx-3 md:mx-auto my-0">
         <div className="my-[8rem]">{children}</div>
       </div>
     </div>

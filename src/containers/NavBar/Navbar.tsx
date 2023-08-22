@@ -10,7 +10,7 @@ export default function NavBar(props: NavBarProps) {
   const router = useRouter();
   return (
     <div className="navbar fixed py-4 left-0 top-0 bg-white w-full z-50">
-      <div className="max-w-[80rem] mx-6 lg:mx-auto flex items-center justify-between">
+      <div className="md:max-w-[90vw] mx-3 md:mx-auto flex items-center justify-between">
         <div
           className="left-header flex items-center cursor-pointer"
           onClick={() => router.push(ROUTE.HOME_PAGE)}

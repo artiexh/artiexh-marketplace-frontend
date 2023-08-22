@@ -139,7 +139,10 @@ const CartPage: NextPage = () => {
   const totalPrice = selectedItems?.reduce(
     (total, item) =>
       total +
-      item.items.reduce((acc, cartItem) => acc + cartItem.price.amount, 0),
+      item.items.reduce(
+        (acc, cartItem) => acc + cartItem.price.amount * cartItem.quantity,
+        0
+      ),
     0
   );
 
@@ -147,7 +150,7 @@ const CartPage: NextPage = () => {
     <div className="cart-page">
       <div className="hidden card sm:flex justify-between items-center">
         <div className="font-bold text-[2rem] ">Tổng: {totalPrice} VND</div>
-        <div>
+        <div onClick={() => router.push(ROUTE.CHECKOUT)}>
           <Button className="bg-[#50207D] w-[200px] h-[3rem]">Checkout</Button>
         </div>
       </div>
@@ -167,7 +170,7 @@ const CartPage: NextPage = () => {
       </div>
       <div className="flex card sm:hidden justify-between items-center absolute bottom-0 w-[100vw] left-0">
         <div className="font-bold ">Tổng: {totalPrice} VND</div>
-        <div>
+        <div onClick={() => router.push(ROUTE.CHECKOUT)}>
           <Button className="bg-[#50207D] w-[120px] h-[3rem]">Checkout</Button>
         </div>
       </div>

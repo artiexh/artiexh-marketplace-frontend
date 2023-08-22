@@ -5,8 +5,9 @@ export const AUTH_ROUTE = {
 
 export const NOT_REQUIRE_AUTH_ROUTE = {
   HOME_PAGE: "/",
-  CART: "/cart",
   PRODUCT_LIST: "/product",
+  CART: "/cart",
+  CHECKOUT: "/checkout",
 };
 
 export const ROUTE = {

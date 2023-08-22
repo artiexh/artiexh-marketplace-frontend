@@ -11,12 +11,14 @@ type CartSectionProps = {
   cartSection: CartSection;
   dispatch: Dispatch<AnyAction>;
   isChecked: (id: string) => boolean;
+  isCartPage?: boolean;
 };
 
 export default function CartSection({
   cartSection,
   isChecked,
   dispatch,
+  isCartPage = true,
 }: CartSectionProps) {
   return (
     <div className="cart-section">
@@ -25,8 +27,10 @@ export default function CartSection({
         clickEvent={() =>
           dispatch(
             toggleSelectItems({
-              artistId: cartSection.artist.id,
-              items: cartSection.items,
+              cartSection: {
+                artist: cartSection.artist,
+                items: cartSection.items,
+              },
               isAll: true,
             })
           )
@@ -56,22 +60,26 @@ export default function CartSection({
       <Divider className="mt-5 mb-4 relative -left-2 sm:-left-6 !w-[calc(100%+16px)] sm:!w-[calc(100%+48px)]" />
       <div className="hidden sm:block">
         <Grid className="text-[#AFAFAF] font-bold text-sm md:text-base">
-          <Grid.Col span={2} className="my-auto">
+          <Grid.Col span={isCartPage ? 2 : 3} className="my-auto">
             Product
           </Grid.Col>
           <Grid.Col span={3} className="my-auto"></Grid.Col>
-          <Grid.Col span={2} className="my-auto">
+          <Grid.Col span={isCartPage ? 2 : 3} className="my-auto">
             Price
           </Grid.Col>
-          <Grid.Col span={2} className="my-auto">
+          <Grid.Col span={isCartPage ? 2 : 3} className="my-auto">
             Quantity
           </Grid.Col>
-          <Grid.Col span={2} className="my-auto">
-            Total
-          </Grid.Col>
-          <Grid.Col span={1} className="my-auto">
-            Actions
-          </Grid.Col>
+          {isCartPage ? (
+            <>
+              <Grid.Col span={2} className="my-auto">
+                Total
+              </Grid.Col>
+              <Grid.Col span={1} className="my-auto">
+                Actions
+              </Grid.Col>
+            </>
+          ) : null}
         </Grid>
         <Divider className="mt-2 mb-5 relative -left-2 sm:-left-6 !w-[calc(100%+16px)] sm:!w-[calc(100%+48px)]" />
       </div>
@@ -83,13 +91,16 @@ export default function CartSection({
               selectEvent={() =>
                 dispatch(
                   toggleSelectItems({
-                    artistId: cartSection.artist.id,
-                    items: [item],
+                    cartSection: {
+                      artist: cartSection.artist,
+                      items: [item],
+                    },
                     isAll: false,
                   })
                 )
               }
               isChecked={isChecked(item.id)}
+              isCartPage={isCartPage}
             />
             {index !== arr.length - 1 && (
               <Divider className="my-4 relative -left-2 sm:-left-6 !w-[calc(100%+16px)] sm:!w-[calc(100%+48px)]" />

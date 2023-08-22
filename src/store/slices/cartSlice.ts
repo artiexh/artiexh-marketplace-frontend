@@ -1,10 +1,9 @@
-import { CartItem } from "@/services/backend/types/Cart";
-import { SelectedItems } from "@/types/Cart";
+import { CartSection } from "@/services/backend/types/Cart";
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 
 export type CartState = {
-  selectedItems: SelectedItems[];
+  selectedItems: CartSection[];
 };
 
 const initialState: CartState = {
@@ -18,17 +17,18 @@ export const cartSlice = createSlice({
     toggleSelectItems: (
       state,
       action: PayloadAction<{
-        artistId: string;
-        items: CartItem[];
+        cartSection: CartSection;
         isAll: boolean;
       }>
     ) => {
       // find the cart section belong to artistId
       const selectedItems = state.selectedItems;
-      const { artistId, items, isAll } = action.payload;
+      const { cartSection, isAll } = action.payload;
+      const { artist, items } = cartSection;
+      const artistId = artist.id;
 
       const selectItem = selectedItems.find(
-        (item) => item.artistId == artistId
+        (item) => item.artist.id == artistId
       );
       let newArr = [...selectedItems];
 
@@ -37,12 +37,12 @@ export const cartSlice = createSlice({
         // if this artistId section already exist, remove it, otherwise, add it
 
         // remove this section belong to artistId
-        newArr = newArr.filter((item) => item.artistId != artistId);
+        newArr = newArr.filter((item) => item.artist.id != artistId);
 
         // if this artist section doesn exist yet, add it to the selected items
         if (Number(selectItem?.items?.length ?? 0) < items.length) {
           newArr.push({
-            artistId,
+            artist,
             items,
           });
         }
@@ -57,7 +57,7 @@ export const cartSlice = createSlice({
           // loop through the new array
           newArr.forEach((item) => {
             // selected the section belong to this artist
-            if (item.artistId == artistId) {
+            if (item.artist.id == artistId) {
               // if the item is selected, remove it
               if (nestedItem) {
                 item.items = item.items.filter(
@@ -72,7 +72,7 @@ export const cartSlice = createSlice({
           // otherwise, add new cart section
         } else {
           newArr.push({
-            artistId,
+            artist,
             items,
           });
         }
