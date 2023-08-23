@@ -37,6 +37,7 @@ export default function CartItemCard({
 
       if (result != null) {
         setQuantity(value);
+        revalidateFunc?.();
         setLoading(false);
       }
     }

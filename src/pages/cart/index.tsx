@@ -1,16 +1,19 @@
 import axiosClient from "@/services/backend/axiosClient";
-import { CartData } from "@/services/backend/types/Cart";
+import { CartData, CartItem, CartSection } from "@/services/backend/types/Cart";
 import { Button } from "@mantine/core";
 import { NextPage } from "next";
 import useSWR from "swr";
-import CartSection from "@/components/CartSection/CartSection";
+import CartSectionComponent from "@/components/CartSection/CartSection";
 import { useRouter } from "next/router";
 import { ROUTE } from "@/constants/route";
 import { RootState } from "@/store";
 import { useDispatch, useSelector } from "react-redux";
+import { useMemo } from "react";
 
 const CartPage: NextPage = () => {
   const router = useRouter();
+
+  // the selectedData saved in store
   const selectedItems = useSelector(
     (state: RootState) => state.cart.selectedItems
   );
@@ -26,16 +29,37 @@ const CartPage: NextPage = () => {
     }
   });
 
+  const flattedItems = selectedItems.map((item) => item.items).flat();
+
   const isChecked = (id: string) => {
-    return selectedItems
-      .map((item) => item.items)
-      .flat()
-      .some((cartItem) => cartItem.id == id);
+    return flattedItems.some((cartItem) => cartItem.id == id);
   };
 
-  // if (isLoading) return <></>;
+  // the actual calculated selected data from api
+  const selectedCartItems = useMemo(() => {
+    const items: CartSection[] = [];
+    flattedItems.forEach((item) => {
+      data?.shopItems.forEach((shopItem) => {
+        const selectedProducts: CartItem[] = [];
+        shopItem.items.forEach((i) => {
+          if (item.id === i.id) {
+            selectedProducts.push(i);
+          }
+        });
 
-  const totalPrice = selectedItems?.reduce(
+        if (selectedProducts.length > 0) {
+          items.push({
+            shop: shopItem.shop,
+            items: selectedProducts,
+          });
+        }
+      });
+    });
+
+    return items;
+  }, [data]);
+
+  const totalPrice = selectedCartItems?.reduce(
     (total, item) =>
       total +
       item.items.reduce(
@@ -65,7 +89,7 @@ const CartPage: NextPage = () => {
             key={idx}
             className="bg-white mt-10 p-2 sm:p-6 rounded-sm relative"
           >
-            <CartSection
+            <CartSectionComponent
               cartSection={cartSection}
               dispatch={dispatch}
               isChecked={isChecked}
