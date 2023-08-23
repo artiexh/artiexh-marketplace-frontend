@@ -37,7 +37,7 @@ const ShopProductsPage = () => {
       </div>
       <TableContainer
         fetchKey="products"
-        fetcher={(currentPage) => async () => {
+        fetcher={async (currentPage) => {
           const ret = (
             await axiosClient.get(
               `/products?_page=${currentPage}&_limit=${PAGE_SIZE}` +

@@ -12,13 +12,14 @@ const ShopCampaignsPage = () => {
   return (
     <TableContainer
       fetchKey="campaigns"
-      fetcher={(currentPage) => async () =>
+      fetcher={async (currentPage) =>
         (
           await axiosClient.get(
             `/campaigns?_page=${currentPage}&_limit=${PAGE_SIZE}` +
               new URLSearchParams(searchParams?.toString()).toString()
           )
-        ).data}
+        ).data
+      }
       columns={shopCampaignColumns}
       pagination
       tableProps={{ verticalSpacing: "sm", className: "font-semibold" }}

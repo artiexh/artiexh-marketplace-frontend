@@ -13,13 +13,14 @@ const ShopOrdersPage = () => {
   return (
     <TableContainer
       fetchKey="orders"
-      fetcher={(currentPage) => async () =>
+      fetcher={async (currentPage) =>
         (
           await axiosClient.get(
             `/orders?_page=${currentPage}&_limit=${PAGE_SIZE}` +
               new URLSearchParams(searchParams?.toString()).toString()
           )
-        ).data}
+        ).data
+      }
       columns={shopOrderColumns}
       pagination
       tableProps={{ verticalSpacing: "sm", className: "font-semibold" }}

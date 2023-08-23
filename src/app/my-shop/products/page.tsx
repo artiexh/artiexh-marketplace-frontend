@@ -37,15 +37,14 @@ const ShopProductsPage = () => {
       </div>
       <TableContainer
         fetchKey="products"
-        fetcher={(currentPage) => async () => {
-          const ret = (
+        fetcher={async (currentPage) =>
+          (
             await axiosClient.get(
               `/products?_page=${currentPage}&_limit=${PAGE_SIZE}` +
                 new URLSearchParams(searchParams?.toString()).toString()
             )
-          ).data;
-          return ret;
-        }}
+          ).data
+        }
         columns={shopProductColumns}
         pagination
         tableProps={{ verticalSpacing: "sm", className: "font-semibold" }}

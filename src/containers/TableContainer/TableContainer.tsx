@@ -10,7 +10,7 @@ type ITableContainerProps<T> = {
   fetchKey: string;
   pagination?: boolean;
   tableProps?: TableProps;
-  fetcher: (currentPage: number) => () => any;
+  fetcher: (currentPage: number) => any;
   className?: string;
   header?: (response?: PaginationResponseBase<any[]>) => React.ReactNode;
 };
@@ -28,7 +28,7 @@ const TableContainer = <T,>({
   //TODO: replace fetcher later, and replace any -> T too
   const { data: response } = useSWR<PaginationResponseBase<any[]>>(
     `/page_url/${fetchKey}?page=${currentPage}`,
-    fetcher(currentPage)
+    () => fetcher(currentPage)
   );
 
   return (
