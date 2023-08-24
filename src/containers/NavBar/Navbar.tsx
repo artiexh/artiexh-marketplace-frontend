@@ -1,12 +1,17 @@
 import Image from "next/image";
-import { Autocomplete } from "@mantine/core";
-import { IconShoppingCart } from "@tabler/icons-react";
+import { Autocomplete, HoverCard } from "@mantine/core";
+import { IconShoppingCart, IconUser } from "@tabler/icons-react";
 import { useRouter } from "next/router";
 import { ROUTE } from "@/constants/route";
+import { logout } from "@/services/backend/services/user";
+import { useStore } from "@nanostores/react";
+import { $user } from "@/store/user";
 
 type NavBarProps = {};
 
 export default function NavBar(props: NavBarProps) {
+  const user = useStore($user);
+
   const router = useRouter();
   return (
     <div className="navbar fixed py-4 left-0 top-0 bg-white w-full z-50">
@@ -26,11 +31,36 @@ export default function NavBar(props: NavBarProps) {
           </div>
           <div className="text-3xl ml-3 font-bold text-[#50207D]">Artiexh</div>
         </div>
-        <div className="w-[70%]">
+        <div className="w-[60%]">
           <Autocomplete data={[]} />
         </div>
-        <div className="right-header">
-          <IconShoppingCart onClick={() => router.push(ROUTE.CART)} />
+        <div className="right-header flex">
+          <IconShoppingCart
+            className="mr-10 cursor-pointer"
+            onClick={() => router.push(ROUTE.CART)}
+          />
+          {user != null ? (
+            <HoverCard width={200}>
+              <HoverCard.Target>
+                <IconUser className="cursor-pointer" />
+              </HoverCard.Target>
+              <HoverCard.Dropdown>
+                <div className="cursor-pointer">Account</div>
+                <div className="my-4 cursor-pointer">Shop</div>
+
+                <div onClick={logout} className="cursor-pointer">
+                  Logout
+                </div>
+              </HoverCard.Dropdown>
+            </HoverCard>
+          ) : (
+            <div
+              className="cursor-pointer"
+              onClick={() => router.push(ROUTE.SIGN_IN)}
+            >
+              Sign in
+            </div>
+          )}
         </div>
       </div>
     </div>

@@ -39,10 +39,6 @@ export default function CheckoutPage() {
     }
   });
 
-  if (selectedItems.length === 0 || data?.shopItems.length === 0) {
-    return <>Please add item to your cart!</>;
-  }
-
   const dispatch = useDispatch();
   const [paymentMethod, setPaymentMethod] = useState("");
 
@@ -89,6 +85,11 @@ export default function CheckoutPage() {
       ),
     0
   );
+
+  if (selectedItems.length === 0 || data?.shopItems.length === 0) {
+    return <>Please add item to your cart!</>;
+  }
+
   return (
     <div className="checkout-page lg:flex gap-16">
       <div className="checkout-items flex-1">

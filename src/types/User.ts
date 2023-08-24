@@ -5,7 +5,7 @@ export type User = {
   displayName: string;
   role: string;
   avatarUrl?: string;
-  subscriptionsTo: object[];
+  subscriptionsTo?: object[];
   email?: string;
   province: {
     id: string;
@@ -15,4 +15,6 @@ export type User = {
       name: string;
     };
   };
+  subscriptionsFrom?: object[];
+  shopName?: string;
 };

@@ -57,7 +57,7 @@ const CartPage: NextPage = () => {
     });
 
     return items;
-  }, [data]);
+  }, [data, selectedItems]);
 
   const totalPrice = selectedCartItems?.reduce(
     (total, item) =>

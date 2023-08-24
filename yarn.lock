@@ -374,6 +374,10 @@
   resolved "https://registry.yarnpkg.com/@mantine/utils/-/utils-6.0.13.tgz#a7adc128a2e7c07031c7221c1533800d0c80279a"
   integrity sha512-iqIU9wurqAeccVbWjM0yr1JGne5VP+ob55M03QAXOEN4+ck93VDTjCkZJR2RFhDcs5q0twQFoOmU/gULR8aKIA==
 
+"@nanostores/react@nanostores/react":
+  version "0.7.1"
+  resolved "https://codeload.github.com/nanostores/react/tar.gz/b71b8427c9ec9c780083544505495ce7b36b7059"
+
 "@next/env@13.4.4":
   version "13.4.4"
   resolved "https://registry.yarnpkg.com/@next/env/-/env-13.4.4.tgz#46b620f6bef97fe67a1566bf570dbb791d40c50a"
