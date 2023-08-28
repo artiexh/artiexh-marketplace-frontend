@@ -1,3 +1,4 @@
+import { CheckoutBody } from "@/types/Cart";
 import axiosClient from "../axiosClient";
 import { CartData } from "../types/Cart";
 
@@ -36,4 +37,15 @@ export const deleteCartItem = async (productId: string[]) => {
   }
 
   return cartItems;
+};
+
+export const checkout = async (values: CheckoutBody) => {
+  try {
+    const { data: result } = await axiosClient.post<any>(
+      "/order/checkout",
+      values
+    );
+  } catch (err) {
+    console.log(err);
+  }
 };

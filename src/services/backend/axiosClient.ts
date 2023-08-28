@@ -44,4 +44,7 @@ axiosClient.interceptors.response.use(undefined, (error) => {
   return Promise.reject(error);
 });
 
+export const fetcher = <T = any>(url: string) =>
+  axiosClient.get<T>(url).then((res) => res.data);
+
 export default axiosClient;

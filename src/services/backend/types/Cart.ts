@@ -19,6 +19,12 @@ export type CartSection = {
   shop: {
     id: string;
     shopName: string;
+    imageUrl: string;
+    owner: {
+      id: string;
+      username: string;
+      displayName: string;
+    };
   };
   items: CartItem[];
 };

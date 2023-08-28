@@ -61,11 +61,13 @@ export default function CartItemCard({
       <Grid className="hidden sm:flex text-sm md:text-base">
         <Grid.Col span={isCartPage ? 2 : 3} className="my-auto">
           <div className="relative">
-            <LogoCheckbox
-              configClass="absolute -top-2 -left-2"
-              clickEvent={selectEvent}
-              isChecked={isChecked}
-            />
+            {isCartPage && (
+              <LogoCheckbox
+                configClass="absolute -top-2 -left-2"
+                clickEvent={selectEvent}
+                isChecked={isChecked}
+              />
+            )}
             <img
               className="object-cover aspect-square w-[80px] md:w-[120px]  rounded-lg"
               src={cartItem.thumbnailUrl}
@@ -80,17 +82,21 @@ export default function CartItemCard({
           {cartItem.price.amount + cartItem.price.unit}
         </Grid.Col>
         <Grid.Col span={isCartPage ? 2 : 3} className="my-auto">
-          <NumberInput
-            className="w-[60px] md:w-[100px]"
-            value={quantity}
-            onChange={(value) => {
-              if (typeof value === "number") {
-                updateCartQuantity(value);
-              }
-            }}
-            defaultValue={1}
-            min={1}
-          />
+          {isCartPage ? (
+            <NumberInput
+              className="w-[60px] md:w-[100px]"
+              value={quantity}
+              onChange={(value) => {
+                if (typeof value === "number") {
+                  updateCartQuantity(value);
+                }
+              }}
+              defaultValue={1}
+              min={1}
+            />
+          ) : (
+            <div>{quantity}</div>
+          )}
         </Grid.Col>
         {isCartPage ? (
           <>

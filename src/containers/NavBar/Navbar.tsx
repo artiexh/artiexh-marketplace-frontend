@@ -45,8 +45,18 @@ export default function NavBar(props: NavBarProps) {
                 <IconUser className="cursor-pointer" />
               </HoverCard.Target>
               <HoverCard.Dropdown>
-                <div className="cursor-pointer">Account</div>
-                <div className="my-4 cursor-pointer">Shop</div>
+                <div
+                  onClick={() => router.push(`${ROUTE.PROFILE}/me`)}
+                  className="cursor-pointer"
+                >
+                  Account
+                </div>
+                <div
+                  onClick={() => router.push(ROUTE.SHOP)}
+                  className="my-4 cursor-pointer"
+                >
+                  Shop
+                </div>
 
                 <div onClick={logout} className="cursor-pointer">
                   Logout

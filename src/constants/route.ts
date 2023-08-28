@@ -13,4 +13,6 @@ export const NOT_REQUIRE_AUTH_ROUTE = {
 export const ROUTE = {
   ...AUTH_ROUTE,
   ...NOT_REQUIRE_AUTH_ROUTE,
+  SHOP: "/shop",
+  PROFILE: "/profile",
 };

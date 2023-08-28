@@ -40,27 +40,29 @@ export default function CartSection({
   };
   return (
     <div className="cart-section">
-      <LogoCheckbox
-        configClass="absolute -top-2 -left-2"
-        clickEvent={() =>
-          dispatch(
-            toggleSelectItems({
-              cartSection: {
-                shop: cartSection.shop,
-                items: cartSection.items,
-              },
-              isAll: true,
-            })
-          )
-        }
-        isChecked={cartSection.items.every((item) => isChecked(item.id))}
-      />
+      {isCartPage && (
+        <LogoCheckbox
+          configClass="absolute -top-2 -left-2"
+          clickEvent={() =>
+            dispatch(
+              toggleSelectItems({
+                cartSection: {
+                  shop: cartSection.shop,
+                  items: cartSection.items,
+                },
+                isAll: true,
+              })
+            )
+          }
+          isChecked={cartSection.items.every((item) => isChecked(item.id))}
+        />
+      )}
       <div className="flex justify-between items-center">
         <div className="flex items-center">
           <div>
             <Image
               className="object-fit rounded-full w-[40px] sm:w-[70px] aspect-square mr-3"
-              src="https://i0.wp.com/thatnhucuocsong.com.vn/wp-content/uploads/2022/01/anh-wibu.jpg?ssl=1"
+              src={cartSection.shop.imageUrl}
               alt="product-name"
               width={70}
               height={70}

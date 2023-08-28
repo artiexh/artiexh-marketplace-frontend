@@ -1,3 +1,9 @@
+import {
+  ATTACHMENT_TYPE_ENUM,
+  DELIVERY_TYPE_ENUM,
+  PRODUCT_STATUS_ENUM,
+  PRODUCT_TYPE_ENUM,
+} from "@/constants/common";
 import { User } from "./User";
 
 export type Tag = {
@@ -41,7 +47,7 @@ export type ArtistProductColumnType = Pick<
 export type Attaches = {
   id: string;
   url: string;
-  type: "IMAGE" | "VIDEO";
+  type: ATTACHMENT_TYPE_ENUM;
   title: string;
   description?: string;
 };
@@ -62,24 +68,29 @@ export type Category = {
 };
 
 export type CreateProductValues = {
+  status: PRODUCT_STATUS_ENUM;
   name: string;
-  category: string | null;
-  // memberOnly: boolean;
-  tags: string[];
-  description: string;
   price: Price;
-  thumbnail: string;
-  attaches: Attaches[];
-  maxItemsPerOrder: number;
+  categoryId: string;
+  description: string;
+  type: PRODUCT_TYPE_ENUM;
   remainingQuantity: number;
-  // pre-order
-  allowPreOrder: boolean;
-  publishDatetime: Date | null;
-  preOrderRange: (Date | null)[];
-  // shipping
-  allowShipping: boolean;
-  pickupLocation: string;
-  sameAsStoreAddress: boolean;
-  // payment
+  publishDatetime: Date;
+  maxItemsPerOrder: number;
+  deliveryType: DELIVERY_TYPE_ENUM;
   paymentMethods: string[];
+  tags?: string[];
+  attaches: Omit<Attaches, "id">[];
+  thumbnail?: Omit<Attaches, "id">;
+  allowPreOrder?: boolean;
+  allowShipping?: boolean;
+
+  //this will be updated later
+
+  // memberOnly: boolean;
+  // pre-order
+  // preOrderRange: (Date | null)[];
+  // shipping
+  // pickupLocation: string;
+  // payment
 };
