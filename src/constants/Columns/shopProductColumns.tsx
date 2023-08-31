@@ -4,7 +4,7 @@ import { Badge } from "@mantine/core";
 import { IconBallpen } from "@tabler/icons-react";
 import Image from "next/image";
 
-const artistProductColumns: TableColumns<ArtistProductColumnType> = [
+const shopProductColumns: TableColumns<ArtistProductColumnType> = [
   {
     title: "Name",
     key: "name",
@@ -15,7 +15,7 @@ const artistProductColumns: TableColumns<ArtistProductColumnType> = [
             src={record.thumbnailUrl}
             alt="product-thumb"
             fill
-            className="object-contain rounded-lg"
+            className="object-contain rounded-full"
           />
         </div>
         <div>{record.name}</div>
@@ -28,7 +28,7 @@ const artistProductColumns: TableColumns<ArtistProductColumnType> = [
     key: "publishDatetime",
   },
   {
-    title: "Number of orders",
+    title: "Quantity",
     dataIndex: "maxItemsPerOrder",
     key: "maxItemsPerOrder",
     className: "!text-center w-[10rem]",
@@ -41,6 +41,7 @@ const artistProductColumns: TableColumns<ArtistProductColumnType> = [
       <Badge
         variant="gradient"
         gradient={{ from: "teal", to: "lime", deg: 105 }}
+        classNames={{ inner: "!leading-tight" }}
       >
         {record.status}
       </Badge>
@@ -52,12 +53,14 @@ const artistProductColumns: TableColumns<ArtistProductColumnType> = [
     action: "EDIT",
     className: "!text-center",
     render: (_, actionHandler) => (
-      <IconBallpen
-        className="cursor-pointer"
-        onClick={() => actionHandler && actionHandler()}
-      />
+      <div className="flex justify-center">
+        <IconBallpen
+          className="cursor-pointer"
+          onClick={() => actionHandler && actionHandler()}
+        />
+      </div>
     ),
   },
 ];
 
-export default artistProductColumns;
+export default shopProductColumns;

@@ -14,3 +14,5 @@ export type Order = {
     shopName: string;
   };
 };
+
+export type ArtistOrderColumnType = Pick<Order, "id" | "paymentMethod">;

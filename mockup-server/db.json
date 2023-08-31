@@ -751,13 +751,5 @@
       "id": "7",
       "name": "Category 7"
     }
-  ],
-  "checkout": [
-    {
-      "id": 1,
-      "product": {
-        
-      }
-    }
   ]
 }
