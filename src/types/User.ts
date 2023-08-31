@@ -27,4 +27,6 @@ export type UserAddress = {
   id: string;
   isDefault: boolean;
   type: ADDRESS_TYPE_ENUM;
+  phone: string;
+  receiverName: string;
 };

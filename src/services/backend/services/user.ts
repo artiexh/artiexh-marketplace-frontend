@@ -8,3 +8,15 @@ export const logout = async () => {
     console.log(err);
   }
 };
+
+export const artistRegister = async (shopName: string) => {
+  try {
+    const data = await axiosClient.post("/registration/artist", {
+      shopName,
+    });
+    return data;
+  } catch (err) {
+    console.log(err);
+    return undefined;
+  }
+};
