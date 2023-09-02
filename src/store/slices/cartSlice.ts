@@ -34,6 +34,9 @@ export const cartSlice = createSlice({
 
       state.selectedItems = newArr;
     },
+    clearItems: (state) => {
+      state.selectedItems = [];
+    },
     toggleSelectItems: (
       state,
       action: PayloadAction<{
@@ -109,6 +112,6 @@ export const cartSlice = createSlice({
 });
 
 // Action creators are generated for each case reducer function
-export const { toggleSelectItems, deleteItems } = cartSlice.actions;
+export const { toggleSelectItems, deleteItems, clearItems } = cartSlice.actions;
 
 export default cartSlice.reducer;

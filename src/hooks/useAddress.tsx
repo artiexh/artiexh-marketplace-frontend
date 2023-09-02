@@ -7,20 +7,26 @@ import { UserAddress } from "@/types/User";
 import useSWR from "swr";
 
 const useAddress = () => {
-  const { data: addresses } = useSWR<UserAddress[]>("address", async () => {
-    try {
-      const { data } = (
-        await axiosClient<
-          CommonResponseBase<PaginationResponseBase<UserAddress>>
-        >("/user/address")
-      ).data;
-      return data.items;
-    } catch (e) {
-      return [];
+  const { data: addresses, mutate } = useSWR<UserAddress[]>(
+    "address",
+    async () => {
+      try {
+        const { data } = (
+          await axiosClient<
+            CommonResponseBase<PaginationResponseBase<UserAddress>>
+          >("/user/address")
+        ).data;
+        return data.items;
+      } catch (e) {
+        return [];
+      }
     }
-  });
+  );
 
-  return addresses;
+  return {
+    addresses,
+    mutate,
+  };
 };
 
 export default useAddress;

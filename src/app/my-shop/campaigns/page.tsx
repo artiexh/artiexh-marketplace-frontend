@@ -29,7 +29,7 @@ const ShopCampaignsPage = () => {
           <div className="text-3xl font-bold">My campaigns</div>
           <div className="text-[#AFAFAF] mt-1">
             {/* TODO: Replace with API call later or filter based on response */}
-            {response?.data.length} products need to be updated their status
+            {response?.data?.length} products need to be updated their status
           </div>
         </>
       )}

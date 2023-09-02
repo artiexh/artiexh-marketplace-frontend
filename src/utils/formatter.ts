@@ -27,3 +27,17 @@ export const urlFormatter = (baseUrl: string, values: Object) => {
   }
   return url;
 };
+
+export const getQueryString = (
+  params: { [key: string]: any },
+  excludeFields: string[]
+) => {
+  const searchParams = new URLSearchParams();
+  Object.keys(params).forEach((key) => {
+    if (params[key] != null && !excludeFields.includes(key)) {
+      searchParams.append(key, params[key]);
+    }
+  });
+
+  return searchParams.toString();
+};

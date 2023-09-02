@@ -10,6 +10,7 @@ import {
 } from "@/types/ResponseBase";
 import { Order } from "@/types/Order";
 import OrderCard from "@/components/OrderCard";
+import { getQueryString } from "@/utils/formatter";
 
 export default function OrderTab() {
   // readonly
@@ -24,7 +25,6 @@ export default function OrderTab() {
   });
 
   const setField = (key: string, value: string) => {
-    console.log(key, value);
     setParams({
       ...params,
       [key]: value,
@@ -33,16 +33,10 @@ export default function OrderTab() {
 
   const { data: orders } = useSWR([JSON.stringify(params)], async () => {
     try {
-      const searchParams = new URLSearchParams();
-      Object.keys(params).forEach((key) => {
-        if (params[key] != null && key !== "id") {
-          searchParams.append(key, params[key]);
-        }
-      });
       const { data } = (
         await axiosClient.get<
           CommonResponseBase<PaginationResponseBase<Order>>
-        >("/user/order?" + searchParams.toString())
+        >("/user/order?" + getQueryString(params, ["id"]))
       ).data;
       // console.log(data.items);
       return data.items ?? [];

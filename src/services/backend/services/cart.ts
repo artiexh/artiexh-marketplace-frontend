@@ -1,6 +1,8 @@
 import { CheckoutBody } from "@/types/Cart";
 import axiosClient from "../axiosClient";
 import { CartData } from "../types/Cart";
+import { CommonResponseBase } from "@/types/ResponseBase";
+import { Order } from "@/types/Order";
 
 export const updateCartItem = async (productId: string, quantity: number) => {
   let cartItems;
@@ -41,11 +43,15 @@ export const deleteCartItem = async (productId: string[]) => {
 
 export const checkout = async (values: CheckoutBody) => {
   try {
-    const { data: result } = await axiosClient.post<any>(
-      "/order/checkout",
-      values
-    );
+    const { data } = (
+      await axiosClient.post<CommonResponseBase<Order>>(
+        "/order/checkout",
+        values
+      )
+    ).data;
+    return data;
   } catch (err) {
     console.log(err);
+    return undefined;
   }
 };

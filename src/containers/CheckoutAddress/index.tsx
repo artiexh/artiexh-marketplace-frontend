@@ -4,9 +4,10 @@ import { useDisclosure } from "@mantine/hooks";
 import AddressModal from "../AddressModal";
 import { useContext, useEffect, useMemo } from "react";
 import { CheckoutContext } from "@/contexts/CheckoutContext";
+import CreateUpdateAddressModal from "../CreateUpdateAddressModal";
 
 export default function CheckoutAddress() {
-  const addresses = useAddress();
+  const { addresses } = useAddress();
   const [opened, { open, close }] = useDisclosure(false);
 
   const { selectedAddressId, setSelectedAddressId } =
@@ -33,23 +34,48 @@ export default function CheckoutAddress() {
           title="Địa chỉ của tôi"
         >
           <Divider />
-          <AddressModal addresses={addresses ?? []} />
+          {selectedAddress ? (
+            <AddressModal />
+          ) : (
+            <CreateUpdateAddressModal closeModal={close} />
+          )}
         </Modal>
       </div>
       <div className="flex justify-between mb-4 text-secondary font-bold">
         <div className="text-2xl">Địa chỉ giao hàng</div>
-        <div className="cursor-pointer" onClick={open}>
-          Edit
-        </div>
+        {selectedAddress && (
+          <div className="cursor-pointer" onClick={open}>
+            Edit
+          </div>
+        )}
       </div>
-      <div className="font-bold mb-2">
-        <span className="mr-3">Customer name</span> <span>0942734768</span>
-      </div>
-      <div>
-        {selectedAddress?.isDefault && <Badge className="mr-3">Mặc định</Badge>}
-        <Badge className="mr-5">{selectedAddress?.type}</Badge>
-        <span>{selectedAddress?.address}</span>
-      </div>
+      {selectedAddress ? (
+        <>
+          <div className="font-bold mb-2">
+            <span className="mr-3">{selectedAddress.receiverName}</span>{" "}
+            <span>{selectedAddress.phone}</span>
+          </div>
+          <div>
+            {selectedAddress?.isDefault && (
+              <Badge className="mr-3">Mặc định</Badge>
+            )}
+            <Badge className="mr-5">{selectedAddress?.type}</Badge>
+            <span>{selectedAddress?.address}</span>
+          </div>
+        </>
+      ) : (
+        <>
+          <div>
+            Hiện tại bạn chưa tạo địa chỉ nhận hàng của mình!{" "}
+            <span
+              className="font-bold text-primary cursor-pointer"
+              onClick={open}
+            >
+              Ấn vào link này để tạo ngay!
+            </span>
+          </div>
+        </>
+      )}
     </div>
   );
 }

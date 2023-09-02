@@ -11,11 +11,16 @@ import axiosClient from "@/services/backend/axiosClient";
 import { CartData, CartItem } from "@/services/backend/types/Cart";
 import useSWR from "swr";
 import { CartSection } from "@/services/backend/types/Cart";
-import useAddress from "@/hooks/useAddress";
 import CheckoutAddress from "@/containers/CheckoutAddress";
 import { checkout } from "@/services/backend/services/cart";
 import { CheckoutContext } from "@/contexts/CheckoutContext";
-import { PAYMENT_METHOD_ENUM } from "@/constants/common";
+import { NOTIFICATION_TYPE, PAYMENT_METHOD_ENUM } from "@/constants/common";
+import { clearItems } from "@/store/slices/cartSlice";
+import { useRouter } from "next/router";
+import { ROUTE } from "@/constants/route";
+import { IconSearchOff } from "@tabler/icons-react";
+import { getNotificationIcon } from "@/utils/mapper";
+import { notifications } from "@mantine/notifications";
 
 const PAYMENT_ITEM = [
   // {
@@ -54,6 +59,7 @@ export default function CheckoutPage() {
   });
 
   const dispatch = useDispatch();
+  const router = useRouter();
 
   const flattedItems = selectedItems.map((item) => item.items).flat();
 
@@ -109,7 +115,7 @@ export default function CheckoutPage() {
 
   const paymentSubmit = async () => {
     setLoading(true);
-    console.log({
+    const data = await checkout({
       addressId: selectedAddressId,
       paymentMethod: paymentMethod as PAYMENT_METHOD_ENUM,
       shops: selectedCartItems.map((cartItem) => ({
@@ -120,22 +126,40 @@ export default function CheckoutPage() {
         itemIds: cartItem.items.map((item) => item.id),
       })),
     });
-    await checkout({
-      addressId: selectedAddressId,
-      paymentMethod: paymentMethod as PAYMENT_METHOD_ENUM,
-      shops: selectedCartItems.map((cartItem) => ({
-        shopId: cartItem.shop.id,
-        note:
-          noteValues.find((item) => item.shopId === cartItem.shop.id)?.note ??
-          "",
-        itemIds: cartItem.items.map((item) => item.id),
-      })),
+
+    const isSuccess = data != null;
+
+    if (isSuccess) {
+      dispatch(clearItems());
+      router.push(`${ROUTE.ORDER_CONFIRM}/${data.id}`);
+    }
+
+    notifications.show({
+      message: isSuccess ? "Mua sản phẩm thành công!" : "Mua sản phẩm thất bại",
+      ...getNotificationIcon(
+        NOTIFICATION_TYPE[isSuccess ? "SUCCESS" : "FAILED"]
+      ),
     });
     setLoading(false);
   };
 
   if (selectedItems.length === 0 || data?.shopItems.length === 0) {
-    return <>Please add item to your cart!</>;
+    return (
+      <div className="text-center mt-[20%]">
+        <div className="flex justify-center">
+          <IconSearchOff width={150} height={150} />
+        </div>
+        <div className="text-xl mt-4">
+          Bạn vẫn chưa chọn sản phẩm nào để tiến hành thanh toán!
+        </div>
+        <div
+          className="mt-2 cursor-pointer text-primary"
+          onClick={() => router.push(ROUTE.CART)}
+        >
+          Ấn vào đây để quay lại giỏ hàng
+        </div>
+      </div>
+    );
   }
 
   return (

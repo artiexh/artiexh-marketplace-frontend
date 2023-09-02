@@ -64,3 +64,10 @@ export const ORDER_STATUS = {
 } as const;
 
 export type ORDER_STATUS_ENUM = keyof typeof ORDER_STATUS;
+
+export const NOTIFICATION_TYPE = {
+  SUCCESS: "SUCCESS",
+  FAILED: "FAILED",
+} as const;
+
+export type NOTIFICATION_TYPE_ENUM = keyof typeof NOTIFICATION_TYPE;

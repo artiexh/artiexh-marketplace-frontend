@@ -3,28 +3,53 @@
 import TableContainer from "@/containers/TableContainer";
 import { Button, Input } from "@mantine/core";
 import { IconPlus, IconSearch } from "@tabler/icons-react";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import axiosClient from "@/services/backend/axiosMockups/axiosMockupClient";
+import { usePathname, useRouter } from "next/navigation";
 import shopProductColumns from "@/constants/Columns/shopProductColumns";
-import { createQueryString } from "@/utils/searchParams";
-
-const PAGE_SIZE = 6;
+import { useState } from "react";
+import { getQueryString } from "@/utils/formatter";
+import axiosClient from "@/services/backend/axiosClient";
 
 const ShopProductsPage = () => {
   const router = useRouter();
   const pathname = usePathname();
-  const searchParams = useSearchParams();
+
+  const [params, setParams] = useState<{ [key: string]: any }>({
+    pageSize: 5,
+    pageNumber: 1,
+    sortBy: null,
+    sortDirection: "ASC",
+    statuses: null,
+    from: null,
+    to: null,
+    minPrice: null,
+    maxPrice: null,
+    averageRate: null,
+    provinceId: null,
+    categoryId: null,
+    keyword: null,
+  });
+
+  const setField = (key: string, value: any) => {
+    setParams({
+      ...params,
+      [key]: value,
+    });
+  };
 
   return (
     <div>
       <div className="flex justify-between mb-4">
         <Input
           icon={<IconSearch />}
-          onChange={(e) =>
+          onChange={(e) => {
+            setField("keyword", e.target.value);
             router.push(
-              createQueryString(searchParams, "_like", e.target.value)
-            )
-          }
+              `${pathname}?${getQueryString(
+                { ...params, keyword: e.target.value },
+                []
+              )}`
+            );
+          }}
         />
         <Button
           leftIcon={<IconPlus />}
@@ -37,14 +62,17 @@ const ShopProductsPage = () => {
       </div>
       <TableContainer
         fetchKey="products"
-        fetcher={async (currentPage) =>
-          (
+        fetcher={async (currentPage) => {
+          setField("pageNumber", currentPage);
+          return (
             await axiosClient.get(
-              `/products?_page=${currentPage}&_limit=${PAGE_SIZE}` +
-                new URLSearchParams(searchParams?.toString()).toString()
+              `/artist/product?${getQueryString(
+                { ...params, pageNumber: currentPage },
+                []
+              )}`
             )
-          ).data
-        }
+          ).data;
+        }}
         columns={shopProductColumns}
         pagination
         tableProps={{ verticalSpacing: "sm", className: "font-semibold" }}
@@ -54,7 +82,7 @@ const ShopProductsPage = () => {
             <div className="text-3xl font-bold">Products</div>
             <div className="text-[#AFAFAF] mt-1">
               {/* TODO: Replace with API call later or filter based on response */}
-              {response?.data.length} products need to be updated their status
+              {response?.items.length} products need to be updated their status
             </div>
           </>
         )}

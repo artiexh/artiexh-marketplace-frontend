@@ -2,25 +2,45 @@
 
 import shopOrderColumns from "@/constants/Columns/shopOrderColumns";
 import TableContainer from "@/containers/TableContainer";
-import axiosClient from "@/services/backend/axiosMockups/axiosMockupClient";
+import axiosClient from "@/services/backend/axiosClient";
+import { getQueryString } from "@/utils/formatter";
 import { useSearchParams } from "next/navigation";
-
-const PAGE_SIZE = 6;
+import { useState } from "react";
 
 const ShopOrdersPage = () => {
   const searchParams = useSearchParams();
 
+  const [params, setParams] = useState<{ [key: string]: any }>({
+    pageSize: 5,
+    pageNumber: 1,
+    sortBy: null,
+    sortDirection: "ASC",
+    statuses: null,
+    from: null,
+    to: null,
+  });
+
+  const setField = (key: string, value: any) => {
+    setParams({
+      ...params,
+      [key]: value,
+    });
+  };
+
   return (
     <TableContainer
       fetchKey="orders"
-      fetcher={async (currentPage) =>
-        (
+      fetcher={async (currentPage) => {
+        setField("pageNumber", currentPage);
+        return (
           await axiosClient.get(
-            `/orders?_page=${currentPage}&_limit=${PAGE_SIZE}` +
-              new URLSearchParams(searchParams?.toString()).toString()
+            `/artist/order?${getQueryString(
+              { ...params, pageNumber: currentPage },
+              []
+            )}`
           )
-        ).data
-      }
+        ).data;
+      }}
       columns={shopOrderColumns}
       pagination
       tableProps={{ verticalSpacing: "sm", className: "font-semibold" }}
@@ -30,7 +50,7 @@ const ShopOrdersPage = () => {
           <div className="text-3xl font-bold">Orders</div>
           <div className="text-[#AFAFAF] mt-1">
             {/* TODO: Replace with API call later or filter based on response */}
-            {response?.data.length} products need to be updated their status
+            {response?.items.length} products need to be updated their status
           </div>
         </>
       )}

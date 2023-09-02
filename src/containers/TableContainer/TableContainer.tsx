@@ -1,5 +1,8 @@
 import TableComponent from "@/components/TableComponent";
-import { PaginationResponseBase } from "@/types/ResponseBase";
+import {
+  CommonResponseBase,
+  PaginationResponseBase,
+} from "@/types/ResponseBase";
 import { TableColumns } from "@/types/Table";
 import { Pagination, TableProps } from "@mantine/core";
 import React, { useState } from "react";
@@ -26,18 +29,19 @@ const TableContainer = <T,>({
   const [currentPage, setCurrentPage] = useState<number>(1);
 
   //TODO: replace fetcher later, and replace any -> T too
-  const { data: response } = useSWR<PaginationResponseBase<any[]>>(
-    `/page_url/${fetchKey}?page=${currentPage}`,
-    () => fetcher(currentPage)
-  );
+  const { data: response } = useSWR<
+    CommonResponseBase<PaginationResponseBase<any>>
+  >(`/page_url/${fetchKey}?page=${currentPage}`, () => fetcher(currentPage));
+
+  console.log(response);
 
   return (
     <div className="py-5 px-7 bg-white rounded-lg">
-      {header && header(response)}
+      {header && header(response?.data)}
       <div className="flex flex-col items-center gap-4 w-full">
         <TableComponent
           columns={columns}
-          data={response?.data}
+          data={response?.data.items}
           tableProps={tableProps}
         />
         {pagination && (
@@ -45,7 +49,7 @@ const TableContainer = <T,>({
             value={currentPage}
             onChange={setCurrentPage}
             //TODO: change this to total of api call later
-            total={2}
+            total={response?.data.totalPage ?? 1}
             boundaries={2}
           />
         )}

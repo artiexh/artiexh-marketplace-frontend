@@ -29,4 +29,51 @@ export type UserAddress = {
   type: ADDRESS_TYPE_ENUM;
   phone: string;
   receiverName: string;
+  ward: {
+    id: string;
+    name: string;
+    fullName: string;
+    district: {
+      id: string;
+      name: string;
+      fullName: string;
+      province: {
+        id: string;
+        name: string;
+        fullName: string;
+        country: {
+          id: string;
+          name: string;
+        };
+      };
+    };
+  };
+};
+
+export type CreateUserAddress = Omit<UserAddress, "id" | "ward"> & {
+  wardId: string;
+};
+
+export type Province = {
+  id: string;
+  name: string;
+  fullName: string;
+  country: {
+    id: string;
+    name: string;
+  };
+};
+
+export type District = {
+  id: string;
+  name: string;
+  fullName: string;
+  province: Province;
+};
+
+export type Ward = {
+  id: string;
+  name: string;
+  fullName: string;
+  district: District;
 };

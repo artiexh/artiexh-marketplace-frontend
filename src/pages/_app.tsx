@@ -19,7 +19,7 @@ const nunito = Nunito({
 
 export default function App({ Component, pageProps }: AppProps) {
   const pathname = usePathname();
-  const isAuthPage = Object.values(AUTH_ROUTE).includes(pathname);
+  const isAuthPage = pathname && Object.values(AUTH_ROUTE).includes(pathname);
   return (
     <MantineProvider
       withGlobalStyles
@@ -87,7 +87,7 @@ export default function App({ Component, pageProps }: AppProps) {
         />
       </Head>
       <ModalsProvider>
-        <Notifications limit={5} autoClose={4000} />
+        <Notifications limit={5} autoClose={3000} position="top-right" />
         <SWRConfig>
           <Provider store={store}>
             <AuthGuard />

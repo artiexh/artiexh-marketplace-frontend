@@ -29,8 +29,8 @@ const shopProductColumns: TableColumns<ArtistProductColumnType> = [
   },
   {
     title: "Quantity",
-    dataIndex: "maxItemsPerOrder",
-    key: "maxItemsPerOrder",
+    dataIndex: "remainingQuantity",
+    key: "remainingQuantity",
     className: "!text-center w-[10rem]",
   },
   {
