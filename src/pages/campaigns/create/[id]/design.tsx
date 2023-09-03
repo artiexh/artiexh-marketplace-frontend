@@ -1,23 +1,8 @@
+import DesignItemCard from "@/components/Cards/DesignItemCard/DesignItemCard";
 import {
-  Box,
-  Decal,
-  OrbitControls,
-  useFBX,
-  useGLTF,
-  useSurfaceSampler,
-  useTexture,
-} from "@react-three/drei";
-import { Canvas, useFrame } from "@react-three/fiber";
-import React, {
-  createContext,
-  useContext,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
-import { Mesh } from "three";
-import { useLoader } from "@react-three/fiber";
-import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
+  DesignItem,
+  getDesignItemsFromLocalStorage,
+} from "@/utils/localStorage/designProduct";
 import {
   Button,
   ColorPicker,
@@ -25,15 +10,28 @@ import {
   Group,
   Image,
   SegmentedControl,
-  Text,
 } from "@mantine/core";
+import { modals } from "@mantine/modals";
+import { Decal, OrbitControls, useTexture } from "@react-three/drei";
+import { Canvas, useFrame, useLoader } from "@react-three/fiber";
 import {
+  IconAdjustmentsAlt,
   IconArrowLeft,
   IconMenu2,
   IconPalette,
   IconPhotoEdit,
 } from "@tabler/icons-react";
-import { IconAdjustmentsAlt } from "@tabler/icons-react";
+import { useRouter } from "next/router";
+import React, {
+  createContext,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
+import useSWR from "swr";
+import { Mesh } from "three";
+import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 
 function ToteBagContainer() {
   const { value } = useContext(MetaContext);
@@ -141,23 +139,23 @@ function TShirtContainer() {
               ></DecalWithImage>
             )}
           {/* {value.imagesContext.combination === "FULL_MIDDLE" &&
-            value.imagesContext.images[0] && (
-              <DecalWithImage
-                position={[0, 20, 0.96]}
-                
-                scale={[20, 20, 1]}
-                file={value.imagesContext.images[0].file}
-              ></DecalWithImage>
-            )} */}
+              value.imagesContext.images[0] && (
+                <DecalWithImage
+                  position={[0, 20, 0.96]}
+                  
+                  scale={[20, 20, 1]}
+                  file={value.imagesContext.images[0].file}
+                ></DecalWithImage>
+              )} */}
           {/* {value.imagesContext.combination === "BOTTOM_LEFT_CORNER" &&
-            value.imagesContext.images[0] && (
-              <DecalWithImage
-                position={[-12, 5.5, 1.45]}
-                rotation={[-0.001, 0, 0]}
-                scale={[7, 7, 1]}
-                file={value.imagesContext.images[0].file}
-              ></DecalWithImage>
-            )} */}
+              value.imagesContext.images[0] && (
+                <DecalWithImage
+                  position={[-12, 5.5, 1.45]}
+                  rotation={[-0.001, 0, 0]}
+                  scale={[7, 7, 1]}
+                  file={value.imagesContext.images[0].file}
+                ></DecalWithImage>
+              )} */}
         </mesh>
       </group>
     </>
@@ -183,7 +181,69 @@ const createImageUrl = (buffer, type) => {
 };
 
 export default function PortalPage() {
+  const router = useRouter();
+  const {
+    data: designItem,
+
+    isLoading,
+    mutate,
+  } = useSWR(["design-item"], async () => {
+    if (!router.isReady) return null;
+
+    const itemId = router.query.itemId;
+
+    if (itemId instanceof Array || !itemId) throw new Error("Invalid query");
+
+    const list = getDesignItemsFromLocalStorage();
+
+    return list.find((item) => item.id === itemId);
+  });
+
+  useEffect(() => {
+    mutate();
+  }, [router.query]);
+
   const [tab, setTab] = useState<"META" | "IMAGE" | "PALETTE">("META");
+
+  if (isLoading) return null;
+
+  if (!designItem) return null;
+
+  const openMenu = () => {
+    modals.open({
+      title: "Design items",
+      centered: true,
+      modalId: "design-items-modal",
+      children: (
+        <div className="w-full">
+          <div className="provider-list flex flex-col">
+            {getDesignItemsFromLocalStorage()?.map((item, index) => (
+              <div key={item.id} className="h-[200px]">
+                <DesignItemCard
+                  data={item}
+                  actions={
+                    <div className="w-full flex justify-between">
+                      <Button
+                        onClick={() => {
+                          router.push(
+                            `/campaigns/create/1/design?itemId=${item.id}`
+                          );
+                          modals.close("design-items-modal");
+                          mutate();
+                        }}
+                      >
+                        Edit
+                      </Button>
+                    </div>
+                  }
+                />
+              </div>
+            ))}
+          </div>
+        </div>
+      ),
+    });
+  };
 
   return (
     <MetaProvider>
@@ -199,7 +259,10 @@ export default function PortalPage() {
             >
               <IconArrowLeft className="w-8 aspect-square" />
             </Button>
-            <Button className="px-2 h-12 aspect-square w-fit rounded-full bg-white text-black border-none shadow-none outline-none hover:bg-black hover:text-white">
+            <Button
+              onClick={openMenu}
+              className="px-2 h-12 aspect-square w-fit rounded-full bg-white text-black border-none shadow-none outline-none hover:bg-black hover:text-white"
+            >
               <IconMenu2 className="w-8 aspect-square" />
             </Button>
           </div>
@@ -227,13 +290,20 @@ export default function PortalPage() {
             </Button>
           </div>
         </div>
-        <Canvas className="w-full h-full">
-          <ambientLight />
-          <pointLight position={[10, 10, 10]} />
-          <ToteBagContainer />
-        </Canvas>
+        {designItem && <DesignCanvas item={designItem} />}
       </div>
     </MetaProvider>
+  );
+}
+
+function DesignCanvas({ item }: { item: DesignItem }) {
+  return (
+    <Canvas className="w-full h-full" key={item.id}>
+      <ambientLight />
+      <pointLight position={[10, 10, 10]} />
+      {item.product.model === "TOTE_BAG" && <ToteBagContainer key={item.id} />}
+      {item.product.model === "T_SHIRT" && <TShirtContainer key={item.id} />}
+    </Canvas>
   );
 }
 
