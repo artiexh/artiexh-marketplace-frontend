@@ -28,7 +28,7 @@ export const navSections = [
     navList: [
       {
         id: "PROFILE",
-        label: "Profile",
+        label: "My shop",
         iconPath: "profile_icon.svg",
         href: "/profile",
       },

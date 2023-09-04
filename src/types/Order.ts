@@ -51,4 +51,4 @@ export type Order = {
 
 export type ArtistOrder = {};
 
-export type ArtistOrderColumnType = Pick<Order, "id" | "paymentMethod">;
+export type ArtistOrderColumnType = Order;

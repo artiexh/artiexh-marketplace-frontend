@@ -4,6 +4,6 @@ import { atom } from "nanostores";
 
 export const $user = atom<User | undefined>();
 
-export function setUser(user: User) {
+export function setUser(user: User | undefined) {
   $user.set(user);
 }

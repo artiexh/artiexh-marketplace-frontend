@@ -1,20 +1,20 @@
-import { CreateUserAddress } from "@/types/User";
+import { ArtistRegisterData, CreateUserAddress } from "@/types/User";
 import axiosClient from "../axiosClient";
+import { setUser } from "@/store/user";
 
 export const logout = async () => {
   try {
     const data = await axiosClient.post("/auth/logout");
+    setUser(undefined);
     console.log(data);
   } catch (err) {
     console.log(err);
   }
 };
 
-export const artistRegister = async (shopName: string) => {
+export const artistRegister = async (shopName: ArtistRegisterData) => {
   try {
-    const data = await axiosClient.post("/registration/artist", {
-      shopName,
-    });
+    const data = await axiosClient.post("/registration/artist", shopName);
     return data;
   } catch (err) {
     console.log(err);

@@ -4,12 +4,9 @@ import shopOrderColumns from "@/constants/Columns/shopOrderColumns";
 import TableContainer from "@/containers/TableContainer";
 import axiosClient from "@/services/backend/axiosClient";
 import { getQueryString } from "@/utils/formatter";
-import { useSearchParams } from "next/navigation";
 import { useState } from "react";
 
 const ShopOrdersPage = () => {
-  const searchParams = useSearchParams();
-
   const [params, setParams] = useState<{ [key: string]: any }>({
     pageSize: 5,
     pageNumber: 1,
@@ -41,7 +38,7 @@ const ShopOrdersPage = () => {
           )
         ).data;
       }}
-      columns={shopOrderColumns}
+      columns={shopOrderColumns()}
       pagination
       tableProps={{ verticalSpacing: "sm", className: "font-semibold" }}
       className="mt-2.5"

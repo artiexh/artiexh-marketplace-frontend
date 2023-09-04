@@ -11,9 +11,11 @@ import { Select } from "@mantine/core";
 export default function WardSelects({
   getInputProps,
   ward,
+  fieldName = "wardId",
 }: {
   getInputProps: any;
   ward?: Ward;
+  fieldName?: string;
 }) {
   const initialValue = ward
     ? {
@@ -149,7 +151,7 @@ export default function WardSelects({
               wardId: e ?? "",
             })
           }
-          {...getInputProps("wardId")}
+          {...getInputProps(fieldName)}
         />
       )}
     </div>

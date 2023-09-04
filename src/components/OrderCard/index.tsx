@@ -12,7 +12,6 @@ type OrderCard = {
 
 export default function OrderCard({ order }: OrderCard) {
   const router = useRouter();
-  console.log(order);
 
   return (
     <div

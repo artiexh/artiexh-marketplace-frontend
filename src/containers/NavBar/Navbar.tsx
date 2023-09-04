@@ -52,7 +52,7 @@ export default function NavBar(props: NavBarProps) {
                   Account
                 </div>
                 <div
-                  onClick={() => router.push(ROUTE.SHOP)}
+                  onClick={() => window.open(ROUTE.SHOP, "_blank")}
                   className="my-4 cursor-pointer"
                 >
                   Shop

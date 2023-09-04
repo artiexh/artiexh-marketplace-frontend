@@ -77,3 +77,11 @@ export type Ward = {
   fullName: string;
   district: District;
 };
+
+export type ArtistRegisterData = {
+  shopAddress: string;
+  shopImageUrl: string;
+  shopName: string;
+  shopPhone: string;
+  shopWardId: string;
+};

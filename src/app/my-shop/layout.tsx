@@ -26,7 +26,7 @@ export default function MyShopLayout({
         }
         onClickNav={(data) => router.push(data.href)}
       />
-      <div className="ease-soft-in-out xl:ml-[17.125rem] relative h-full max-h-screen rounded-xl transition-all duration-200 ps ps--active-y w-full p-6">
+      <div className="ease-soft-in-out xl:ml-[17.125rem] relative h-full rounded-xl transition-all duration-200 ps ps--active-y w-full p-6">
         {children}
       </div>
     </div>

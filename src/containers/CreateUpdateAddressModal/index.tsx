@@ -10,7 +10,6 @@ import { useForm } from "@mantine/form";
 import { useState } from "react";
 import WardSelects from "../WardSelects";
 import { notifications } from "@mantine/notifications";
-import { IconCircleCheckFilled } from "@tabler/icons-react";
 import {
   fromUserAddressToDefaultAddressFormValue,
   getNotificationIcon,
