@@ -83,17 +83,20 @@ export default function CartItemCard({
         </Grid.Col>
         <Grid.Col span={isCartPage ? 2 : 3} className="my-auto">
           {isCartPage ? (
-            <NumberInput
-              className="w-[60px] md:w-[100px]"
-              value={quantity}
-              onChange={(value) => {
-                if (typeof value === "number") {
-                  updateCartQuantity(value);
-                }
-              }}
-              defaultValue={1}
-              min={1}
-            />
+            cartItem.remainingQuantity > 0 && (
+              <NumberInput
+                className="w-[60px] md:w-[100px]"
+                value={quantity}
+                onChange={(value) => {
+                  if (typeof value === "number") {
+                    updateCartQuantity(value);
+                  }
+                }}
+                defaultValue={1}
+                min={1}
+                max={cartItem.remainingQuantity}
+              />
+            )
           ) : (
             <div>{quantity}</div>
           )}
@@ -132,18 +135,20 @@ export default function CartItemCard({
             </div>
             <div className="flex gap-2 items-center">
               <div>Số lượng:</div>
-              <NumberInput
-                className="w-[60px] md:w-[100px]"
-                value={quantity}
-                onChange={(value) => {
-                  console.log(value);
-                  if (typeof value === "number") {
-                    updateCartQuantity(value);
-                  }
-                }}
-                defaultValue={1}
-                min={1}
-              />
+              {cartItem.remainingQuantity > 0 && (
+                <NumberInput
+                  className="w-[60px] md:w-[100px]"
+                  value={quantity}
+                  onChange={(value) => {
+                    if (typeof value === "number") {
+                      updateCartQuantity(value);
+                    }
+                  }}
+                  defaultValue={1}
+                  min={1}
+                  max={cartItem.remainingQuantity}
+                />
+              )}
             </div>
           </div>
         </div>

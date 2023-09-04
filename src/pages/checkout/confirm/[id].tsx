@@ -11,12 +11,19 @@ import { useSearchParams } from "next/navigation";
 import { useRouter } from "next/router";
 import { ROUTE } from "@/constants/route";
 import { Button } from "@mantine/core";
+import { PAYMENT_METHOD } from "@/constants/common";
+import { useMemo } from "react";
 
 const CheckoutConfirmPage = () => {
   const params = useSearchParams();
   const router = useRouter();
+  const id = params?.get("id");
 
   const { data, isLoading } = useSWR([params?.get("id")], async () => {
+    if (id == null) {
+      return undefined;
+    }
+
     try {
       const { data } = await axiosClient.get<CommonResponseBase<Order>>(
         `/user/order/${params?.get("id")}`
@@ -42,7 +49,9 @@ const CheckoutConfirmPage = () => {
       <Button
         className="text-white bg-primary border-primary w-[10rem]"
         onClick={() => {
-          router.push(data != null ? ROUTE.HOME_PAGE : ROUTE.CART);
+          router.push(
+            data != null ? `${ROUTE.PROFILE}/order/${id}` : ROUTE.CART
+          );
         }}
       >
         {data != null ? "Kiểm tra đơn hàng" : "Quay lại giỏ hàng"}
@@ -50,64 +59,92 @@ const CheckoutConfirmPage = () => {
     </div>
   );
 
+  const confirmContent = useMemo(
+    () => getConfirmContent(data, isLoading),
+    [data, isLoading]
+  );
+
   return (
     <div className="checkout-confirm-page">
       <div className="text-center mt-[20%]">
-        {isLoading ? (
-          <>
-            <div>
-              <div className="flex justify-center">
-                <IconAlertTriangleFilled
-                  width={150}
-                  height={150}
-                  className="!text-yellow-400"
-                />
-              </div>
-              <div className="text-xl font-bold mt-6 mb-2">
-                Đang xử lý! Bạn chờ xí nhé!
-              </div>
-            </div>
-          </>
-        ) : data != null ? (
-          <>
-            <div className="flex justify-center">
-              <IconCircleCheckFilled
-                width={150}
-                height={150}
-                className="!text-green-500"
-              />
-            </div>
-            <div className="text-xl font-bold mt-6 mb-2">
-              Đơn hàng của bạn với mã số {data.id} đang được xử lý!
-            </div>
-            <div>
-              Vui lòng kiểm tra lại địa chỉ nhận hàng:{" "}
-              {data.shippingAddress.address}
-            </div>
-            <div className="flex mt-4 justify-center">
-              <ButtonGroup />
-            </div>
-          </>
-        ) : (
-          <>
-            <div>
-              <div className="flex justify-center">
-                <IconAlertCircleFilled
-                  width={150}
-                  height={150}
-                  className="!text-red-700"
-                />
-              </div>
-              <div className="text-xl font-bold mt-6 mb-2">
-                Đã có lỗi trong quá trình mua hàng! Vui lòng thử lại!
-              </div>
-              <ButtonGroup />
-            </div>
-          </>
-        )}
+        <div className="flex justify-center">{confirmContent.icon}</div>
+        <div className="text-xl font-bold mt-6 mb-2">
+          {confirmContent.mainContent}
+        </div>
+        <div>{confirmContent.subContent}</div>
+        <div className="flex mt-4 justify-center">
+          <ButtonGroup />
+        </div>
       </div>
     </div>
   );
+};
+
+const getConfirmContent = (data: Order | undefined, isLoading: boolean) => {
+  const confirmContent = {
+    icon: (
+      <IconAlertCircleFilled
+        width={150}
+        height={150}
+        className="!text-red-700"
+      />
+    ),
+    mainContent: "Đơn hàng không tồn tại!",
+    subContent: "",
+  };
+
+  if (isLoading) {
+    confirmContent.icon = (
+      <IconAlertTriangleFilled
+        width={150}
+        height={150}
+        className="!text-yellow-400"
+      />
+    );
+    confirmContent.mainContent = "Đang xử lý! Bạn chờ xí nhé!";
+  }
+
+  if (data) {
+    if (data.currentTransaction != null) {
+      if (data?.paymentMethod === PAYMENT_METHOD.VN_PAY) {
+        confirmContent.icon = (
+          <IconCircleCheckFilled
+            width={150}
+            height={150}
+            className="!text-green-500"
+          />
+        );
+        confirmContent.mainContent = "Thanh toán thành công!";
+        confirmContent.subContent = `Mã đơn hàng: ${data.id}`;
+      }
+    } else {
+      if (data?.paymentMethod === PAYMENT_METHOD.CASH) {
+        confirmContent.icon = (
+          <IconCircleCheckFilled
+            width={150}
+            height={150}
+            className="!text-green-500"
+          />
+        );
+        confirmContent.mainContent =
+          "Đơn hàng đã được xử lý thành công. Vui lòng chờ shop phản hồi";
+        confirmContent.subContent = `Mã đơn hàng: ${data.id}`;
+      } else {
+        confirmContent.icon = (
+          <IconAlertTriangleFilled
+            width={150}
+            height={150}
+            className="!text-red-700"
+          />
+        );
+        confirmContent.mainContent =
+          "Đơn hàng chưa được thanh toán thành công! Vui lòng thử lại!";
+        confirmContent.subContent = `Mã đơn hàng: ${data.id}`;
+      }
+    }
+  }
+
+  return confirmContent;
 };
 
 export default CheckoutConfirmPage;

@@ -12,9 +12,13 @@ import { CartData, CartItem } from "@/services/backend/types/Cart";
 import useSWR from "swr";
 import { CartSection } from "@/services/backend/types/Cart";
 import CheckoutAddress from "@/containers/CheckoutAddress";
-import { checkout } from "@/services/backend/services/cart";
+import { checkout, getPaymentLink } from "@/services/backend/services/cart";
 import { CheckoutContext } from "@/contexts/CheckoutContext";
-import { NOTIFICATION_TYPE, PAYMENT_METHOD_ENUM } from "@/constants/common";
+import {
+  NOTIFICATION_TYPE,
+  PAYMENT_METHOD,
+  PAYMENT_METHOD_ENUM,
+} from "@/constants/common";
 import { clearItems } from "@/store/slices/cartSlice";
 import { useRouter } from "next/router";
 import { ROUTE } from "@/constants/route";
@@ -23,11 +27,11 @@ import { getNotificationIcon } from "@/utils/mapper";
 import { notifications } from "@mantine/notifications";
 
 const PAYMENT_ITEM = [
-  // {
-  //   imgUrl: cashPaymentImg,
-  //   title: "By cash",
-  //   key: "CASH",
-  // },
+  {
+    imgUrl: cashPaymentImg,
+    title: "By cash",
+    key: "CASH",
+  },
   {
     imgUrl: vnpayImg,
     title: "VNPay Wallet",
@@ -130,8 +134,22 @@ export default function CheckoutPage() {
     const isSuccess = data != null;
 
     if (isSuccess) {
-      dispatch(clearItems());
-      router.push(`${ROUTE.ORDER_CONFIRM}/${data.id}`);
+      if (data[0].paymentMethod === PAYMENT_METHOD.VN_PAY) {
+        const paymentLink = await getPaymentLink(data[0].id);
+
+        if (paymentLink) {
+          window.open(paymentLink, "_blank");
+        } else {
+          notifications.show({
+            message: "Không tìm thấy link thanh toán",
+            ...getNotificationIcon(NOTIFICATION_TYPE.FAILED),
+          });
+        }
+        return;
+      } else {
+        dispatch(clearItems());
+        router.push(`${ROUTE.ORDER_CONFIRM}/${data[0].id}`);
+      }
     }
 
     notifications.show({
@@ -143,7 +161,11 @@ export default function CheckoutPage() {
     setLoading(false);
   };
 
-  if (selectedItems.length === 0 || data?.shopItems.length === 0) {
+  if (
+    selectedItems.length === 0 ||
+    data?.shopItems.length === 0 ||
+    flattedCheckoutItems.length === 0
+  ) {
     return (
       <div className="text-center mt-[20%]">
         <div className="flex justify-center">
@@ -240,12 +262,12 @@ export default function CheckoutPage() {
           <div className="text-2xl font-bold mt-10 mb-4">Order Summary</div>
           <div className="flex justify-between">
             <div>Subtotal {`(${flattedCheckoutItems.length} items)`}</div>
-            <div>{`${totalPrice}  ${flattedCheckoutItems[0].price.unit}`}</div>
+            <div>{`${totalPrice}  ${flattedCheckoutItems[0]?.price?.unit}`}</div>
           </div>
           <Divider className="my-2" />
           <div className="flex justify-between">
             <div>Total</div>
-            <div>{`${totalPrice}  ${flattedCheckoutItems[0].price.unit}`}</div>
+            <div>{`${totalPrice}  ${flattedCheckoutItems[0]?.price?.unit}`}</div>
           </div>
           <div className="flex justify-center mt-10 mb-4">
             <Button

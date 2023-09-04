@@ -27,7 +27,9 @@ const ProductDetailPage: NextPage<
   if (router.isFallback) return <div>Loading...</div>;
   if (!product) return <div>Product not found</div>;
 
-  const { description, id, attaches, owner } = product;
+  const { description, id, attaches, shop } = product;
+
+  console.log(product);
 
   return (
     <>
@@ -58,10 +60,14 @@ const ProductDetailPage: NextPage<
           <ProductInfo
             key={product.id}
             product={product}
-            special="Only 5 left"
+            special={
+              product.remainingQuantity > 0
+                ? `Số lượng còn lại: ${product.remainingQuantity}`
+                : "Đã hết hàng!"
+            }
           />
           <Description description={description} />
-          <ShopCard className="col-span-12 md:col-span-5" artist={owner} />
+          <ShopCard className="col-span-12 md:col-span-5" artist={shop} />
         </div>
         <h2 className="font-bold text-lg mt-10">Related products:</h2>
         <div className="interest-wrapper grid grid-cols-4 md:grid-cols-10 gap-5 mt-5">

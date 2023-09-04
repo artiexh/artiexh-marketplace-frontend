@@ -18,6 +18,20 @@ export type OwnerInfo = Omit<
   rating: number;
 };
 
+export type ShopInfo = {
+  id: string;
+  shopName: string;
+  owner: {
+    displayName: string;
+    id: string;
+    role: string;
+    shopName: string;
+    status: string;
+    username: string;
+  };
+  shopImageUrl: string;
+};
+
 export type Product = {
   id: string;
   name: string;
@@ -37,6 +51,7 @@ export type Product = {
   paymentMethods: PaymentMethod[];
   category: Category;
   thumbnailUrl: string; // URL
+  shop: ShopInfo;
 };
 
 export type ArtistProductColumnType = Pick<
@@ -65,6 +80,7 @@ export type Price = {
 export type Category = {
   id: string;
   name: string;
+  imageUrl: string;
 };
 
 export type CreateProductValues = {

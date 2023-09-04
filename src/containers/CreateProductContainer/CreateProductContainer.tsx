@@ -136,7 +136,7 @@ const CreateProductContainer = () => {
               label="Quantity"
               className="col-span-6 md:col-span-4"
               withAsterisk
-              min={0}
+              min={1}
               {...getInputProps("remainingQuantity")}
               disabled={isSubmitting}
             />
@@ -169,7 +169,7 @@ const CreateProductContainer = () => {
               label="Limit per order"
               className="col-span-6 md:col-span-4"
               withAsterisk
-              min={0}
+              min={1}
               {...getInputProps("maxItemsPerOrder")}
               disabled={isSubmitting}
             />

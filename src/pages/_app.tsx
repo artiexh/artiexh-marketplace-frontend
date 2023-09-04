@@ -10,8 +10,9 @@ import AuthGuard from "@/services/guards/AuthGuard";
 import Layout from "@/layouts/Layout/Layout";
 import { usePathname } from "next/navigation";
 import { AUTH_ROUTE } from "@/constants/route";
-import { store } from "@/store";
+import { persistor, store } from "@/store";
 import { Provider } from "react-redux";
+import { PersistGate } from "redux-persist/integration/react";
 
 const nunito = Nunito({
   subsets: ["latin", "vietnamese"],
@@ -90,10 +91,12 @@ export default function App({ Component, pageProps }: AppProps) {
         <Notifications limit={5} autoClose={3000} position="top-right" />
         <SWRConfig>
           <Provider store={store}>
-            <AuthGuard />
-            <Layout>
-              <Component {...pageProps} />
-            </Layout>
+            <PersistGate loading={null} persistor={persistor}>
+              <AuthGuard />
+              <Layout>
+                <Component {...pageProps} />
+              </Layout>
+            </PersistGate>
           </Provider>
         </SWRConfig>
       </ModalsProvider>

@@ -15,6 +15,7 @@ import PreviewList from "@/components/PreviewList";
 import ssrAxiosClient from "@/services/backend/axiosMockups/ssrAxiosMockupClient";
 import { useRouter } from "next/router";
 import { ROUTE } from "@/constants/route";
+import Image from "next/image";
 
 const TAG_COLORS = [
   "#FF9898",
@@ -107,7 +108,15 @@ const HomePage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = ({
                 key={index}
                 className="flex flex-col items-center flex-1 border p-4"
               >
-                <div className="bg-[#D9D9D9] rounded-full w-24 h-24" />
+                <div>
+                  <Image
+                    className="rounded-full aspect-square"
+                    src={category.imageUrl}
+                    alt="category-image"
+                    width={100}
+                    height={100}
+                  />
+                </div>
                 <div className="mt-3 text-center">{category.name}</div>
               </div>
             )),
@@ -146,7 +155,9 @@ export const getStaticProps = async (context: GetStaticPropsContext) => {
       axiosClient.get<CommonResponseBase<PaginationResponseBase<Product>>>(
         "/product?pageSize=5"
       ),
-      axiosClient.get<CommonResponseBase<PaginationResponseBase<Tag>>>("/tag"),
+      axiosClient.get<CommonResponseBase<PaginationResponseBase<Tag>>>(
+        "/tag?pageSize=12"
+      ),
       ssrAxiosClient.get<CommonResponseBase<HomeBranding>>(
         "/homepage_branding"
       ),

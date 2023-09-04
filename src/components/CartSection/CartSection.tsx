@@ -7,6 +7,7 @@ import { AnyAction } from "@reduxjs/toolkit";
 import { Dispatch } from "react";
 import { deleteItems, toggleSelectItems } from "@/store/slices/cartSlice";
 import { KeyedMutator } from "swr";
+import { useRouter } from "next/router";
 
 type CartSectionProps = {
   cartSection: CartSection;
@@ -23,6 +24,7 @@ export default function CartSection({
   isCartPage = true,
   revalidateFunc,
 }: CartSectionProps) {
+  const router = useRouter();
   const toggleCartItemHandler = (item: CartItem) => {
     dispatch(
       toggleSelectItems({
@@ -73,7 +75,9 @@ export default function CartSection({
           </div>
         </div>
         <div>
-          <Button className="text-primary font-bold">View shop</Button>
+          <Button className="text-primary font-bold" onClick={() => {}}>
+            View shop
+          </Button>
         </div>
       </div>
       <Divider className="mt-5 mb-4 relative -left-2 sm:-left-6 !w-[calc(100%+16px)] sm:!w-[calc(100%+48px)]" />
