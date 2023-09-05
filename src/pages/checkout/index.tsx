@@ -138,7 +138,7 @@ export default function CheckoutPage() {
         const paymentLink = await getPaymentLink(data[0].id);
 
         if (paymentLink) {
-          window.open(paymentLink, "_blank");
+          window.location.replace(paymentLink);
         } else {
           notifications.show({
             message: "Không tìm thấy link thanh toán",

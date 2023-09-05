@@ -7,7 +7,7 @@ import { CheckoutContext } from "@/contexts/CheckoutContext";
 import CreateUpdateAddressModal from "../CreateUpdateAddressModal";
 
 export default function CheckoutAddress() {
-  const { addresses } = useAddress();
+  const { addresses, mutate } = useAddress();
   const [opened, { open, close }] = useDisclosure(false);
 
   const { selectedAddressId, setSelectedAddressId } =
@@ -37,7 +37,10 @@ export default function CheckoutAddress() {
           {selectedAddress ? (
             <AddressModal />
           ) : (
-            <CreateUpdateAddressModal closeModal={close} />
+            <CreateUpdateAddressModal
+              closeModal={close}
+              revalidateFunc={mutate}
+            />
           )}
         </Modal>
       </div>

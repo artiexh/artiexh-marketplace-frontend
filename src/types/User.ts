@@ -18,6 +18,7 @@ export type User = {
   };
   subscriptionsFrom?: object[];
   shopName?: string;
+  cartItemCount: number;
 };
 
 export type ADDRESS_TYPE_ENUM = keyof typeof ADDRESS_TYPE;

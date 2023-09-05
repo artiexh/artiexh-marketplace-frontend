@@ -9,6 +9,7 @@ import { ROUTE } from "@/constants/route";
 import { RootState } from "@/store";
 import { useDispatch, useSelector } from "react-redux";
 import { useMemo } from "react";
+import { IconSearchOff } from "@tabler/icons-react";
 
 const CartPage: NextPage = () => {
   const router = useRouter();
@@ -68,6 +69,25 @@ const CartPage: NextPage = () => {
       ),
     0
   );
+
+  if (data?.shopItems.length === 0) {
+    return (
+      <div className="text-center mt-[20%]">
+        <div className="flex justify-center">
+          <IconSearchOff width={150} height={150} />
+        </div>
+        <div className="text-xl mt-4">
+          Bạn vẫn chưa chọn sản phẩm trong giỏ hàng!
+        </div>
+        <div
+          className="mt-2 cursor-pointer text-primary"
+          onClick={() => router.push(ROUTE.HOME_PAGE)}
+        >
+          Ấn vào đây tiếp tục mua sắm
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="cart-page">

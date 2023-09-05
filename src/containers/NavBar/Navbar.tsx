@@ -41,9 +41,13 @@ export default function NavBar(props: NavBarProps) {
               onClick={() => router.push(ROUTE.CART)}
             >
               <IconShoppingCart className="mr-10" />
-              <div className="bg-red-500 w-3 h-3 rounded-full flex justify-center items-center absolute top-0 right-0">
-                <div className="text-[0.5rem] text-white">1</div>
-              </div>
+              {Number(user?.cartItemCount) > 0 && (
+                <div className="bg-red-500 w-3 h-3 rounded-full flex justify-center items-center absolute top-0 right-0">
+                  <div className="text-[0.5rem] text-white">
+                    {user?.cartItemCount}
+                  </div>
+                </div>
+              )}
             </div>
           </div>
           {user != null ? (
