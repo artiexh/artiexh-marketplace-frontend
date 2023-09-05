@@ -49,7 +49,7 @@ const CreateProductContainer = () => {
 
   const mapTagDataToTagOption = (data: Tag[]) =>
     data?.map((tag) => ({
-      value: tag.id,
+      value: tag.name,
       label: tag.name,
     })) ?? [];
 
@@ -92,7 +92,7 @@ const CreateProductContainer = () => {
 
     console.log(values);
     setIsSubmitting(true);
-    await createProduct(values);
+    await createProduct({ ...values, weight: 10 });
     setIsSubmitting(false);
   };
 
@@ -401,7 +401,7 @@ const CreateProductContainer = () => {
             disabled={isSubmitting}
           />
           <Checkbox
-            value="BANK"
+            value="VN_PAY"
             label="Bank transfer"
             disabled={isSubmitting}
           />

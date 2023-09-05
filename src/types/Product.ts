@@ -100,6 +100,7 @@ export type CreateProductValues = {
   thumbnail?: Omit<Attaches, "id">;
   allowPreOrder?: boolean;
   allowShipping?: boolean;
+  weight: number;
 
   //this will be updated later
 

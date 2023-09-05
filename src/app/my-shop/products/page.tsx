@@ -8,6 +8,7 @@ import shopProductColumns from "@/constants/Columns/shopProductColumns";
 import { useState } from "react";
 import { getQueryString } from "@/utils/formatter";
 import axiosClient from "@/services/backend/axiosClient";
+import { ROUTE } from "@/constants/route";
 
 const ShopProductsPage = () => {
   const router = useRouter();
@@ -54,7 +55,7 @@ const ShopProductsPage = () => {
         <Button
           leftIcon={<IconPlus />}
           type="button"
-          onClick={() => router.push(pathname + "/create")}
+          onClick={() => router.push(`${ROUTE.SHOP}/products/create`)}
           variant="outline"
         >
           Create product

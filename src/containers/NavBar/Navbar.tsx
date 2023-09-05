@@ -35,10 +35,17 @@ export default function NavBar(props: NavBarProps) {
           <Autocomplete data={[]} />
         </div>
         <div className="right-header flex">
-          <IconShoppingCart
-            className="mr-10 cursor-pointer"
-            onClick={() => router.push(ROUTE.CART)}
-          />
+          <div className="mr-6">
+            <div
+              className="w-6 relative cursor-pointer"
+              onClick={() => router.push(ROUTE.CART)}
+            >
+              <IconShoppingCart className="mr-10" />
+              <div className="bg-red-500 w-3 h-3 rounded-full flex justify-center items-center absolute top-0 right-0">
+                <div className="text-[0.5rem] text-white">1</div>
+              </div>
+            </div>
+          </div>
           {user != null ? (
             <HoverCard width={200}>
               <HoverCard.Target>

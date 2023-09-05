@@ -117,4 +117,5 @@ export const DEFAULT_FORM_VALUES: CreateProductValues = {
   paymentMethods: [],
   tags: [],
   attaches: [],
+  weight: 0,
 };
