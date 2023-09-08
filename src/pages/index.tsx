@@ -2,7 +2,7 @@ import ProductPreviewCard from "@/components/Cards/ProductCard/ProductPreviewCar
 import axiosClient from "@/services/backend/axiosClient";
 import { Category, Product, Tag } from "@/types/Product";
 import { GetStaticPropsContext, InferGetStaticPropsType, NextPage } from "next";
-import productStyles from "@/styles/products/ProductList.module.scss";
+import productStyles from "@/styles/Products/ProductList.module.scss";
 import clsx from "clsx";
 import {
   CommonResponseBase,

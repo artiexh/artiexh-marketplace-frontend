@@ -6,7 +6,7 @@ import {
 } from "@/types/ResponseBase";
 import useSWR from "swr";
 import axiosClient from "@/services/backend/axiosClient";
-import productStyles from "@/styles/products/ProductList.module.scss";
+import productStyles from "@/styles/Products/ProductList.module.scss";
 import ProductPreviewCard from "@/components/Cards/ProductCard/ProductPreviewCard";
 import { Badge, Button, Input, Select, Pagination } from "@mantine/core";
 import { MobileFilter, Sidebar } from "@/components/ProductList";
