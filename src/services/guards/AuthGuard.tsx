@@ -11,7 +11,7 @@ import { CommonResponseBase } from "@/types/ResponseBase";
 const AuthGuard = () => {
   const router = useRouter();
   const pathname = usePathname();
-  const isAuthPage = Object.values(AUTH_ROUTE).includes(pathname);
+  const isAuthPage = Object.values(AUTH_ROUTE).includes(pathname || "");
 
   useEffect(() => {
     let mounted = true;
@@ -30,7 +30,7 @@ const AuthGuard = () => {
         if (
           mounted &&
           !Object.values(NOT_REQUIRE_AUTH_ROUTE).some((path) =>
-            pathname.includes(path)
+            pathname?.includes(path)
           )
         ) {
           router.push(AUTH_ROUTE.SIGN_IN);

@@ -9,7 +9,7 @@ interface ILayoutProps {
 
 const Layout = ({ children }: ILayoutProps) => {
   const pathname = usePathname();
-  const isAuthPage = Object.values(AUTH_ROUTE).includes(pathname);
+  const isAuthPage = Object.values(AUTH_ROUTE).includes(pathname || "");
 
   return (
     <div>
