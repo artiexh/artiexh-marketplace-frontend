@@ -1,13 +1,13 @@
 import { NOTIFICATION_TYPE, NOTIFICATION_TYPE_ENUM } from "@/constants/common";
-import { CreateUserAddress, UserAddress } from "@/types/User";
+import { CreateUserAddress, Address } from "@/types/User";
 import {
   IconCircleCheckFilled,
   IconExclamationCircle,
 } from "@tabler/icons-react";
 
 export const fromUserAddressToDefaultAddressFormValue: (
-  address: UserAddress
-) => CreateUserAddress = (address: UserAddress) => {
+  address: Address
+) => CreateUserAddress = (address: Address) => {
   const { ward, ...data } = address;
   return {
     ...data,

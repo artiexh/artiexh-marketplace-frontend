@@ -39,6 +39,7 @@ export default function MyProfilePage({ user }: MyProfileProps) {
           <Image
             className="rounded-full aspect-square "
             width={120}
+            height={120}
             src={
               user.avatarUrl?.includes("http") ? user.avatarUrl : defaultImage
             }

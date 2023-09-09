@@ -1,5 +1,5 @@
 import { CheckoutContext } from "@/contexts/CheckoutContext";
-import { UserAddress } from "@/types/User";
+import { Address } from "@/types/User";
 import { Badge, Checkbox } from "@mantine/core";
 import { useContext, useState } from "react";
 import CreateUpdateAddressModal from "../CreateUpdateAddressModal";
@@ -8,9 +8,9 @@ import useAddress from "@/hooks/useAddress";
 export default function AddressModal() {
   const { addresses, mutate } = useAddress();
   const [isEdit, setIsEdit] = useState(false);
-  const [selectedAddress, setSelectedAddress] = useState<UserAddress>();
+  const [selectedAddress, setSelectedAddress] = useState<Address>();
 
-  const switchEditStatus = (address: UserAddress) => {
+  const switchEditStatus = (address: Address) => {
     setIsEdit((prev) => !prev);
     setSelectedAddress(address);
   };
@@ -48,7 +48,7 @@ const AddressOption = ({
   switchEditStatus,
 }: {
   id: string;
-  address: UserAddress;
+  address: Address;
   switchEditStatus: () => void;
 }) => {
   const { selectedAddressId, setSelectedAddressId } =

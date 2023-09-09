@@ -3,7 +3,7 @@ import {
   createUserAddress,
   updateUserAddress,
 } from "@/services/backend/services/user";
-import { CreateUserAddress, UserAddress } from "@/types/User";
+import { CreateUserAddress, Address } from "@/types/User";
 import { createUpdateAddressValidation } from "@/utils/validations";
 import { TextInput, Select, Button, Checkbox } from "@mantine/core";
 import { useForm } from "@mantine/form";
@@ -24,7 +24,7 @@ export default function CreateUpdateAddressModal({
   closeModal: () => void;
   initialValues?: CreateUserAddress;
   isCreate?: boolean;
-  address?: UserAddress;
+  address?: Address;
   revalidateFunc?: () => void;
 }) {
   const initialValues = address

@@ -128,14 +128,15 @@ export default function CheckoutPage() {
           noteValues.find((item) => item.shopId === cartItem.shop.id)?.note ??
           "",
         itemIds: cartItem.items.map((item) => item.id),
+        shippingFee: 20000,
       })),
     });
 
     const isSuccess = data != null;
 
     if (isSuccess) {
-      if (data[0].paymentMethod === PAYMENT_METHOD.VN_PAY) {
-        const paymentLink = await getPaymentLink(data[0].id);
+      if (data.paymentMethod === PAYMENT_METHOD.VN_PAY) {
+        const paymentLink = await getPaymentLink(data.id);
 
         if (paymentLink) {
           window.location.replace(paymentLink);
@@ -148,7 +149,7 @@ export default function CheckoutPage() {
         return;
       } else {
         dispatch(clearItems());
-        router.push(`${ROUTE.ORDER_CONFIRM}/${data[0].id}`);
+        router.push(`${ROUTE.ORDER_CONFIRM}/${data.id}`);
       }
     }
 

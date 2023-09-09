@@ -1,4 +1,5 @@
 import { Price } from "@/types/Product";
+import { Ward } from "@/types/User";
 
 export const currencyFormatter = (countryCode: string, value: Price) =>
   new Intl.NumberFormat("vi-VN", {
@@ -40,4 +41,8 @@ export const getQueryString = (
   });
 
   return searchParams.toString();
+};
+
+export const getReadableWardAddress = (address: Ward | undefined) => {
+  return `${address?.fullName}, ${address?.district.fullName}, ${address?.district.province.fullName}`;
 };

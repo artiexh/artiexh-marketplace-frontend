@@ -6,14 +6,10 @@ import { useSearchParams } from "next/navigation";
 import { useRouter } from "next/router";
 import useSWR from "swr";
 import { Timeline, Text, Divider } from "@mantine/core";
-import {
-  IconGitBranch,
-  IconGitPullRequest,
-  IconGitCommit,
-  IconMessageDots,
-  IconChevronLeft,
-} from "@tabler/icons-react";
+import { IconChevronLeft } from "@tabler/icons-react";
 import Image from "next/image";
+import { ORDER_HISTORY_CONTENT_MAP } from "@/constants/common";
+import { getReadableWardAddress } from "@/utils/formatter";
 
 export default function OrderDetailPage() {
   const params = useSearchParams();
@@ -22,7 +18,7 @@ export default function OrderDetailPage() {
   const { data, isLoading } = useSWR([params?.get("id")], async () => {
     try {
       const { data } = await axiosClient.get<CommonResponseBase<Order>>(
-        `/user/order/${params?.get("id")}`
+        `/user/order-shop/${params?.get("id")}`
       );
 
       return data?.data ?? null;
@@ -38,7 +34,15 @@ export default function OrderDetailPage() {
     <div>Không tìm thấy đơn hàng!</div>;
   }
 
-  const address = data?.shippingAddress;
+  const getDateBasedOnStatus = (status: string) => {
+    let date = data?.orderHistories?.find(
+      (history: any) => history?.status === status
+    )?.datetime;
+
+    if (date) {
+      return new Date(date).toLocaleDateString();
+    }
+  };
 
   return (
     <div className="order-detail-page bg-white">
@@ -60,7 +64,7 @@ export default function OrderDetailPage() {
           <div className="font-bold text-[24px] mb-1 text-primary">
             Địa chỉ nhận hàng
           </div>
-          <div>
+          {/* <div>
             <span className="font-bold">Tên người nhận: </span>
             {data?.shippingAddress.receiverName}
           </div>
@@ -73,71 +77,58 @@ export default function OrderDetailPage() {
             <span>
               {`${address?.address}, ${address?.ward.fullName}, ${address?.ward.district.fullName}, ${address?.ward.district.province.fullName}`}
             </span>
-          </div>
+          </div> */}
         </div>
         <div className="order-info">
-          <Timeline active={1} bulletSize={24} lineWidth={2}>
-            <Timeline.Item
-              bullet={<IconGitBranch size={12} />}
-              title="New branch"
-            >
-              <Text color="dimmed" size="sm">
-                You&apos;ve created new branch{" "}
-                <Text variant="link" component="span" inherit>
-                  fix-notifications
-                </Text>{" "}
-                from master
-              </Text>
-              <Text size="xs" mt={4}>
-                2 hours ago
-              </Text>
-            </Timeline.Item>
-
-            <Timeline.Item bullet={<IconGitCommit size={12} />} title="Commits">
-              <Text color="dimmed" size="sm">
-                You&apos;ve pushed 23 commits to
-                <Text variant="link" component="span" inherit>
-                  fix-notifications branch
+          <Timeline
+            active={(data?.orderHistories.length ?? 1) - 1}
+            bulletSize={24}
+            lineWidth={2}
+          >
+            {Object.keys(ORDER_HISTORY_CONTENT_MAP).map((status) => (
+              <Timeline.Item
+                key={status}
+                bullet={ORDER_HISTORY_CONTENT_MAP[status].icon}
+                title={ORDER_HISTORY_CONTENT_MAP[status].content}
+              >
+                <Text size="xs" mt={4}>
+                  {getDateBasedOnStatus(status)}
                 </Text>
-              </Text>
-              <Text size="xs" mt={4}>
-                52 minutes ago
-              </Text>
-            </Timeline.Item>
-            <Timeline.Item
-              title="Pull request"
-              bullet={<IconGitPullRequest size={12} />}
-              lineVariant="dashed"
-            >
-              <Text color="dimmed" size="sm">
-                You&apos;ve submitted a pull request
-                <Text variant="link" component="span" inherit>
-                  Fix incorrect notification message (#187)
-                </Text>
-              </Text>
-              <Text size="xs" mt={4}>
-                34 minutes ago
-              </Text>
-            </Timeline.Item>
-            <Timeline.Item
-              title="Code review"
-              bullet={<IconMessageDots size={12} />}
-            >
-              <Text color="dimmed" size="sm">
-                <Text variant="link" component="span" inherit>
-                  Robert Gluesticker
-                </Text>{" "}
-                left a code review on your pull request
-              </Text>
-              <Text size="xs" mt={4}>
-                12 minutes ago
-              </Text>
-            </Timeline.Item>
+              </Timeline.Item>
+            ))}
           </Timeline>
         </div>
       </div>
       <Divider />
+      <div>
+        <div className="p-10">
+          <div className="font-bold text-[24px] mb-1 text-primary">
+            Thông tin shop:
+          </div>
+          <div className="flex items-center mb-4 bg-primary p-4">
+            <div>
+              <Image
+                className="rounded-full mr-8 aspect-square"
+                src={data?.shop.shopImageUrl ?? ""}
+                width={60}
+                height={60}
+                alt="shop-img"
+              />
+            </div>
+            <div className="text-white">{data?.shop.shopName}</div>
+          </div>
+          <div>
+            <span className="font-bold">
+              Địa chỉ: {getReadableWardAddress(data?.shop.shopWard)}
+            </span>
+          </div>
+        </div>
+        <Divider />
+      </div>
       <div className="p-10">
+        <div className="font-bold text-[24px] mb-1 text-primary">
+          Chi tiết đơn hàng:
+        </div>
         <div className="flex justify-between items-center">
           <div className="flex">
             <div>

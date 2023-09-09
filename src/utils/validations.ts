@@ -1,8 +1,4 @@
-import {
-  ArtistRegisterData,
-  CreateUserAddress,
-  UserAddress,
-} from "@/types/User";
+import { ArtistRegisterData, CreateUserAddress, Address } from "@/types/User";
 import { FormValidateInput } from "@mantine/form/lib/types";
 
 const phoneNumberRegex = /^(\+\d{1,3}\s?)?\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}$/;

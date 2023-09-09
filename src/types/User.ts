@@ -23,7 +23,7 @@ export type User = {
 
 export type ADDRESS_TYPE_ENUM = keyof typeof ADDRESS_TYPE;
 
-export type UserAddress = {
+export type Address = {
   address: string;
   id: string;
   isDefault: boolean;
@@ -51,7 +51,7 @@ export type UserAddress = {
   };
 };
 
-export type CreateUserAddress = Omit<UserAddress, "id" | "ward"> & {
+export type CreateUserAddress = Omit<Address, "id" | "ward"> & {
   wardId: string;
 };
 

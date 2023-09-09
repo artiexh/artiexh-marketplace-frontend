@@ -1,3 +1,11 @@
+import {
+  IconCircleX,
+  IconMoodCheck,
+  IconMoodDollar,
+  IconShoppingCart,
+  IconTruckDelivery,
+} from "@tabler/icons-react";
+
 export const PRODUCT_STATUS = {
   DELETED: "DELETED",
   NOT_AVAILABLE: "NOT_AVAILABLE",
@@ -71,3 +79,30 @@ export const NOTIFICATION_TYPE = {
 } as const;
 
 export type NOTIFICATION_TYPE_ENUM = keyof typeof NOTIFICATION_TYPE;
+
+export const ORDER_HISTORY_CONTENT_MAP: {
+  [key: string]: { content: string; icon: JSX.Element };
+} = {
+  CREATED: {
+    content: "Đơn hàng được tạo",
+    icon: <IconShoppingCart size={12} />,
+  },
+  PAID: {
+    content: "Đơn hàng đã được thanh toán",
+    icon: <IconMoodDollar size={12} />,
+  },
+  SHIPPED: {
+    content: "Đơn hàng đã được vận chuyển",
+    icon: <IconTruckDelivery size={12} />,
+  },
+  DELIVERED: {
+    content: "Đơn hàng đã được nhận",
+    icon: <IconMoodCheck size={12} />,
+  },
+  CANCELLED: {
+    content: "Đơn hàng đã bị hủy",
+    icon: <IconCircleX size={12} />,
+  },
+};
+
+export type ORDER_HISTORY_STATUS_ENUM = keyof typeof ORDER_HISTORY_CONTENT_MAP;

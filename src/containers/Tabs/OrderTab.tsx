@@ -36,7 +36,7 @@ export default function OrderTab() {
       const { data } = (
         await axiosClient.get<
           CommonResponseBase<PaginationResponseBase<Order>>
-        >("/user/order?" + getQueryString(params, ["id"]))
+        >("/user/order-shop?" + getQueryString(params, ["id"]))
       ).data;
       // console.log(data.items);
       return data.items ?? [];

@@ -1,5 +1,10 @@
-import { ORDER_STATUS_ENUM, PAYMENT_METHOD_ENUM } from "@/constants/common";
-import { UserAddress } from "./User";
+import {
+  DELIVERY_TYPE_ENUM,
+  ORDER_HISTORY_STATUS_ENUM,
+  ORDER_STATUS_ENUM,
+  PAYMENT_METHOD_ENUM,
+} from "@/constants/common";
+import { Address, Ward } from "./User";
 
 type OrderTransaction = {
   id: string;
@@ -28,25 +33,36 @@ type OrderItemDetail = {
   type: string;
   remainingQuantity: number;
   publishDatetime: string;
-  deliveryType: string;
+  deliveryType: DELIVERY_TYPE_ENUM;
   quantity: number;
 };
 
 export type Order = {
-  createdDate: string;
   id: string;
-  modifiedDate: string;
-  note: string;
-  paymentMethod: PAYMENT_METHOD_ENUM;
-  shippingAddress: UserAddress;
-  orderDetails: OrderItemDetail[];
   shop: {
     id: string;
     shopImageUrl: string;
     shopName: string;
+    shopWard: Ward;
   };
-  currentTransaction: OrderTransaction;
+  note: string;
   status: ORDER_STATUS_ENUM;
+  modifiedDate: string;
+  createdDate: string;
+  orderDetails: OrderItemDetail[];
+  shippingFee: number;
+  orderHistories: {
+    status: ORDER_HISTORY_STATUS_ENUM;
+    datetime: string;
+  }[];
+};
+
+export type TotalOrder = {
+  id: string;
+  orders: Order[];
+  shippingAddress: Address;
+  paymentMethod: PAYMENT_METHOD_ENUM;
+  currentTransaction?: OrderTransaction;
 };
 
 export type ArtistOrder = {};

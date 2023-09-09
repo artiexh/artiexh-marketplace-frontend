@@ -1,5 +1,5 @@
 import axiosClient from "@/services/backend/axiosClient";
-import { Order } from "@/types/Order";
+import { Order, TotalOrder } from "@/types/Order";
 import { CommonResponseBase } from "@/types/ResponseBase";
 import {
   IconCircleCheckFilled,
@@ -25,7 +25,7 @@ const CheckoutConfirmPage = () => {
     }
 
     try {
-      const { data } = await axiosClient.get<CommonResponseBase<Order>>(
+      const { data } = await axiosClient.get<CommonResponseBase<TotalOrder>>(
         `/user/order/${params?.get("id")}`
       );
 
@@ -50,7 +50,7 @@ const CheckoutConfirmPage = () => {
         className="text-white bg-primary border-primary w-[10rem]"
         onClick={() => {
           router.push(
-            data != null ? `${ROUTE.PROFILE}/order/${id}` : ROUTE.CART
+            data != null ? `${ROUTE.PROFILE}/total-order/${id}` : ROUTE.CART
           );
         }}
       >
@@ -63,6 +63,8 @@ const CheckoutConfirmPage = () => {
     () => getConfirmContent(data, isLoading),
     [data, isLoading]
   );
+
+  console.log(confirmContent);
 
   return (
     <div className="checkout-confirm-page">
@@ -80,7 +82,11 @@ const CheckoutConfirmPage = () => {
   );
 };
 
-const getConfirmContent = (data: Order | undefined, isLoading: boolean) => {
+const getConfirmContent = (
+  data: TotalOrder | undefined,
+  isLoading: boolean
+) => {
+  console.log(data);
   const confirmContent = {
     icon: (
       <IconAlertCircleFilled
@@ -106,17 +112,15 @@ const getConfirmContent = (data: Order | undefined, isLoading: boolean) => {
 
   if (data) {
     if (data.currentTransaction != null) {
-      if (data?.paymentMethod === PAYMENT_METHOD.VN_PAY) {
-        confirmContent.icon = (
-          <IconCircleCheckFilled
-            width={150}
-            height={150}
-            className="!text-green-500"
-          />
-        );
-        confirmContent.mainContent = "Thanh toán thành công!";
-        confirmContent.subContent = `Mã đơn hàng: ${data.id}`;
-      }
+      confirmContent.icon = (
+        <IconCircleCheckFilled
+          width={150}
+          height={150}
+          className="!text-green-500"
+        />
+      );
+      confirmContent.mainContent = "Thanh toán thành công!";
+      confirmContent.subContent = `Mã đơn hàng: ${data.id}`;
     } else {
       if (data?.paymentMethod === PAYMENT_METHOD.CASH) {
         confirmContent.icon = (
