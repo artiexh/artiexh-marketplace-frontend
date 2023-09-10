@@ -11,29 +11,12 @@ const shopOrderColumns: () => TableColumns<ArtistOrderColumnType> = () => {
     {
       title: "ID",
       key: "id",
-      render: (record) => (
-        <div className="flex items-center gap-5">
-          <div className="relative w-16 aspect-square">
-            <Image
-              src={record.orderDetails[0].thumbnailUrl ?? ""}
-              alt="product-thumb"
-              fill
-              className="object-contain rounded-full"
-            />
-          </div>
-          <div>{record.id}</div>
-        </div>
-      ),
+      render: (record) => <div>{record.id}</div>,
     },
     {
-      title: "Name",
-      key: "name",
-      render: (record) => <div>{record.orderDetails[0].name}</div>,
-    },
-    {
-      title: "Quantity",
-      key: "Quantity",
-      render: (record) => <div>{record.orderDetails[0].quantity}</div>,
+      title: "User",
+      key: "user",
+      render: (record) => <div>{record.user.displayName}</div>,
     },
     {
       title: "Payment",

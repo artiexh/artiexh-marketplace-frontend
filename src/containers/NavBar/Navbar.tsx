@@ -69,7 +69,13 @@ export default function NavBar(props: NavBarProps) {
                   Shop
                 </div>
 
-                <div onClick={logout} className="cursor-pointer">
+                <div
+                  onClick={async () => {
+                    await logout();
+                    router.push(ROUTE.SIGN_IN);
+                  }}
+                  className="cursor-pointer"
+                >
                   Logout
                 </div>
               </HoverCard.Dropdown>

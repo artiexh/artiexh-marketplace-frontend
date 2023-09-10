@@ -4,7 +4,7 @@ import {
   ORDER_STATUS_ENUM,
   PAYMENT_METHOD_ENUM,
 } from "@/constants/common";
-import { Address, Ward } from "./User";
+import { Address, User, Ward } from "./User";
 
 type OrderTransaction = {
   id: string;
@@ -65,6 +65,24 @@ export type TotalOrder = {
   currentTransaction?: OrderTransaction;
 };
 
-export type ArtistOrder = {};
+export type ArtistOrder = {
+  id: string;
+  user: User;
+  shippingAddress: Address;
+  note: string;
+  paymentMethod: PAYMENT_METHOD_ENUM;
+  status: string;
+  modifiedDate: string;
+  createdDate: string;
+  shippingFee: number;
+};
 
-export type ArtistOrderColumnType = Order;
+export type ArtistOrderDetail = ArtistOrder & {
+  orderDetails: OrderItemDetail[];
+  orderHistories: {
+    status: ORDER_HISTORY_STATUS_ENUM;
+    datetime: string;
+  }[];
+};
+
+export type ArtistOrderColumnType = ArtistOrder;

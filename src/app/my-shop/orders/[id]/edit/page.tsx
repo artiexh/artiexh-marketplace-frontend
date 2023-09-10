@@ -2,7 +2,7 @@
 
 import { ROUTE } from "@/constants/route";
 import axiosClient from "@/services/backend/axiosClient";
-import { Order } from "@/types/Order";
+import { ArtistOrderDetail, Order } from "@/types/Order";
 import { CommonResponseBase } from "@/types/ResponseBase";
 import { useRouter, useSearchParams } from "next/navigation";
 import useSWR from "swr";
@@ -22,9 +22,9 @@ const ShopEditOrderPage = ({ params }: { params: { id: string } }) => {
 
   const { data, isLoading } = useSWR([params.id], async () => {
     try {
-      const { data } = await axiosClient.get<CommonResponseBase<Order>>(
-        `/artist/order/${params.id}`
-      );
+      const { data } = await axiosClient.get<
+        CommonResponseBase<ArtistOrderDetail>
+      >(`/artist/order-shop/${params.id}`);
 
       return data?.data ?? null;
     } catch (err: any) {
@@ -61,9 +61,9 @@ const ShopEditOrderPage = ({ params }: { params: { id: string } }) => {
           <div className="font-bold text-[24px] mb-3 text-primary">
             Trạng thái đơn hàng
           </div>
-          <div>
-            Tình trạng: {ORDER_STATUS[data?.status ?? "PREPARING"]?.name}
-          </div>
+          {/* <div>
+            Tình trạng: {ORDER_STATUS[data?.status as any ?? "PREPARING"]?.name}
+          </div> */}
         </div>
         <div>
           <Button className="bg-primary">Cập nhật thông tin giao hàng</Button>
@@ -90,7 +90,7 @@ const ShopEditOrderPage = ({ params }: { params: { id: string } }) => {
             </span>
           </div>
         </div>
-        <div className="order-info">
+        {/* <div className="order-info">
           <Timeline active={1} bulletSize={24} lineWidth={2}>
             <Timeline.Item
               bullet={<IconGitBranch size={12} />}
@@ -149,7 +149,7 @@ const ShopEditOrderPage = ({ params }: { params: { id: string } }) => {
               </Text>
             </Timeline.Item>
           </Timeline>
-        </div>
+        </div> */}
       </div>
       <Divider />
       <div className="p-10">

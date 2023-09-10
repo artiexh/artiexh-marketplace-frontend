@@ -31,7 +31,7 @@ const ShopOrdersPage = () => {
         setField("pageNumber", currentPage);
         return (
           await axiosClient.get(
-            `/artist/order?${getQueryString(
+            `/artist/order-shop?${getQueryString(
               { ...params, pageNumber: currentPage },
               []
             )}`

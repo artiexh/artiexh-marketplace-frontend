@@ -2,11 +2,10 @@ import { RootState } from "@/store";
 import { useDispatch, useSelector } from "react-redux";
 import { Button, Divider, TextInput } from "@mantine/core";
 import CartSectionComponent from "@/components/CartSection/CartSection";
-import cashPaymentImg from "../../../public/assets/cash.svg";
 import vnpayImg from "../../../public/assets/vn_pay.svg";
 import Image from "next/image";
 import LogoCheckbox from "@/components/LogoCheckbox/LogoCheckbox";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import axiosClient from "@/services/backend/axiosClient";
 import { CartData, CartItem } from "@/services/backend/types/Cart";
 import useSWR from "swr";
@@ -25,13 +24,9 @@ import { ROUTE } from "@/constants/route";
 import { IconSearchOff } from "@tabler/icons-react";
 import { getNotificationIcon } from "@/utils/mapper";
 import { notifications } from "@mantine/notifications";
+import { getShippingFee } from "@/services/backend/services/order";
 
 const PAYMENT_ITEM = [
-  {
-    imgUrl: cashPaymentImg,
-    title: "By cash",
-    key: "CASH",
-  },
   {
     imgUrl: vnpayImg,
     title: "VNPay Wallet",
@@ -52,6 +47,7 @@ export default function CheckoutPage() {
       note: string;
     }[]
   >([]);
+  const [shippingFee, setShippingFee] = useState<number>(0);
 
   const { data, mutate } = useSWR<CartData>("cart", async () => {
     try {
@@ -117,6 +113,33 @@ export default function CheckoutPage() {
     0
   );
 
+  useEffect(() => {
+    const getTotalShippingFee = () => {
+      let total = 0;
+      const promiseArr = [] as any;
+
+      selectedCartItems.forEach((item) => {
+        promiseArr.push(
+          getShippingFee({
+            addressId: selectedAddressId,
+            shopId: item.shop.id,
+            tags: [],
+            totalWeight: 10,
+          })
+        );
+      });
+
+      Promise.all(promiseArr)
+        .then((res) => {
+          res.forEach((item) => {
+            total += item;
+          });
+        })
+        .then(() => setShippingFee(total));
+    };
+    getTotalShippingFee();
+  }, [selectedAddressId, selectedCartItems]);
+
   const paymentSubmit = async () => {
     setLoading(true);
     const data = await checkout({
@@ -128,7 +151,7 @@ export default function CheckoutPage() {
           noteValues.find((item) => item.shopId === cartItem.shop.id)?.note ??
           "",
         itemIds: cartItem.items.map((item) => item.id),
-        shippingFee: 20000,
+        shippingFee,
       })),
     });
 
@@ -265,10 +288,16 @@ export default function CheckoutPage() {
             <div>Subtotal {`(${flattedCheckoutItems.length} items)`}</div>
             <div>{`${totalPrice}  ${flattedCheckoutItems[0]?.price?.unit}`}</div>
           </div>
+          <div className="flex justify-between">
+            <div>Shipping fee: {`(${flattedCheckoutItems.length} items)`}</div>
+            <div>{`${shippingFee}  ${flattedCheckoutItems[0]?.price?.unit}`}</div>
+          </div>
           <Divider className="my-2" />
           <div className="flex justify-between">
             <div>Total</div>
-            <div>{`${totalPrice}  ${flattedCheckoutItems[0]?.price?.unit}`}</div>
+            <div>{`${totalPrice + shippingFee}  ${
+              flattedCheckoutItems[0]?.price?.unit
+            }`}</div>
           </div>
           <div className="flex justify-center mt-10 mb-4">
             <Button

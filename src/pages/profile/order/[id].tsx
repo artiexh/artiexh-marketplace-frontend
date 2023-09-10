@@ -8,7 +8,7 @@ import useSWR from "swr";
 import { Timeline, Text, Divider } from "@mantine/core";
 import { IconChevronLeft } from "@tabler/icons-react";
 import Image from "next/image";
-import { ORDER_HISTORY_CONTENT_MAP } from "@/constants/common";
+import { ORDER_HISTORY_CONTENT_MAP, ORDER_STATUS } from "@/constants/common";
 import { getReadableWardAddress } from "@/utils/formatter";
 
 export default function OrderDetailPage() {
@@ -33,6 +33,10 @@ export default function OrderDetailPage() {
   if (!data) {
     <div>Không tìm thấy đơn hàng!</div>;
   }
+
+  // const payment = () => {
+
+  // }
 
   const getDateBasedOnStatus = (status: string) => {
     let date = data?.orderHistories?.find(
@@ -62,8 +66,13 @@ export default function OrderDetailPage() {
       <div className="flex justify-between p-10">
         <div className="user-info mr-4">
           <div className="font-bold text-[24px] mb-1 text-primary">
-            Địa chỉ nhận hàng
+            Tình trạng đơn hàng
           </div>
+          {/* {data?.status === ORDER_STATUS.PAYING.code ? (
+            <div className="cursor-pointer mt-4 text-primary">
+              Nhấn vào đây để tiến hàng thanh toán
+            </div>
+          ) : null} */}
           {/* <div>
             <span className="font-bold">Tên người nhận: </span>
             {data?.shippingAddress.receiverName}
@@ -129,33 +138,35 @@ export default function OrderDetailPage() {
         <div className="font-bold text-[24px] mb-1 text-primary">
           Chi tiết đơn hàng:
         </div>
-        <div className="flex justify-between items-center">
-          <div className="flex">
-            <div>
-              <Image
-                className="aspect-square rounded-lg mr-3"
-                src={data?.orderDetails[0].thumbnailUrl ?? ""}
-                width={150}
-                height={150}
-                alt="order-img"
-              />
-            </div>
-            <div>
-              <div className="text-lg font-semibold">
-                {data?.orderDetails[0]?.name}
+        {data?.orderDetails.map((orderDetail) => (
+          <div
+            className="flex justify-between items-center"
+            key={orderDetail.id}
+          >
+            <div className="flex">
+              <div>
+                <Image
+                  className="aspect-square rounded-lg mr-4"
+                  src={orderDetail.thumbnailUrl ?? ""}
+                  width={100}
+                  height={100}
+                  alt="order-img"
+                />
               </div>
-              <div>{data?.orderDetails[0].type}</div>
-              <div>x{data?.orderDetails[0].quantity}</div>
+              <div>
+                <div className="text-lg font-semibold">{orderDetail.name}</div>
+                <div>{orderDetail.type}</div>
+                <div>Số lượng: {orderDetail.quantity}</div>
+              </div>
             </div>
-          </div>
-          <div>
             <div>
-              {data?.orderDetails[0].price.amount}{" "}
-              {data?.orderDetails[0].price.unit}
+              <div>
+                Tổng cộng: {orderDetail.price.amount * orderDetail.quantity}{" "}
+                {orderDetail.price.unit}
+              </div>
             </div>
-            <div>(Phương thức thanh toán: {data?.paymentMethod})</div>
           </div>
-        </div>
+        ))}
       </div>
     </div>
   );
