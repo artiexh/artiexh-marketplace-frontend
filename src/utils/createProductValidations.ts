@@ -33,26 +33,8 @@ export const createProductValidation: FormValidateInput<CreateProductValues> = {
     if (maxItems < 0) return "Max items per order must be at least 0";
     return null;
   },
-  // attaches: (thumbnail) => {
-  //   if (
-  //     thumbnail.length === 0 ||
-  //     !thumbnail.some((item) => item.type === "THUMBNAIL")
-  //   )
-  //     return "Thumbnail is required";
-  //   return null;
-  // },
-
-  // pre-order
-  publishDatetime: (publishDate, _formValues) => {
-    // if (!formValues.allowPreOrder) return null;
-    if (!publishDate) return "Publish date is required";
-    if (publishDate.getTime() < Date.now())
-      return "Publish date must be in the future";
-    // if (
-    //   !!formValues.preOrderRange[1] &&
-    //   publishDate.getTime() < formValues.preOrderRange[1].getTime()
-    // )
-    //   return "Publish date must be after preorder ended";
+  thumbnail: (thumbnail) => {
+    if (!thumbnail) return "Thumbnail is required";
     return null;
   },
   weight: (weight) => {
@@ -71,7 +53,6 @@ export const CURRENCIES = ["USD", "VND", "EUR", "YEN"];
 
 export const DEFAULT_FORM_VALUES: CreateProductValues = {
   status: PRODUCT_STATUS.AVAILABLE,
-  // general
   name: "",
   price: {
     amount: 1,
@@ -79,20 +60,12 @@ export const DEFAULT_FORM_VALUES: CreateProductValues = {
   },
   categoryId: "1",
   description: "",
-  // memberOnly: false,
   type: "NORMAL",
   remainingQuantity: 0,
-  // pre-order
-  // allowPreOrder: false,
   publishDatetime: new Date(),
   deliveryType: "SHIP",
   maxItemsPerOrder: 0, // 0 = unlimited
-  // preOrderRange: [null, null],
-  // shipping
-  // allowShipping: false,
-  // pickupLocation: '',
-  // sameAsStoreAddress: false,
-  // payment
+  allowShipping: false,
   thumbnail: undefined,
   paymentMethods: [],
   tags: [],

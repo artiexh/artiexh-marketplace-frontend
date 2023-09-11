@@ -1,7 +1,9 @@
 import Thumbnail from "@/components/CreateProduct/Thumbnail";
-import { ATTACHMENT_TYPE } from "@/constants/common";
+import { ATTACHMENT_TYPE, NOTIFICATION_TYPE } from "@/constants/common";
+import { ROUTE } from "@/constants/route";
 import useCategories from "@/hooks/useCategories";
 import useTags from "@/hooks/useTags";
+import { publicUploadFile } from "@/services/backend/services/media";
 import { createProduct } from "@/services/backend/services/product";
 import { CreateProductValues, Tag } from "@/types/Product";
 import {
@@ -9,6 +11,7 @@ import {
   createProductValidation,
   CURRENCIES,
 } from "@/utils/createProductValidations";
+import { getNotificationIcon } from "@/utils/mapper";
 import {
   Button,
   Checkbox,
@@ -20,9 +23,10 @@ import {
   TextInput,
   Textarea,
 } from "@mantine/core";
-import { DatePickerInput } from "@mantine/dates";
 import { useForm } from "@mantine/form";
+import { notifications } from "@mantine/notifications";
 import clsx from "clsx";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 const CreateProductContainer = () => {
@@ -65,7 +69,8 @@ const CreateProductContainer = () => {
     setTags(mapTagDataToTagOption(tagList?.data.items ?? []) ?? []);
   }, [tagList]);
 
-  const { publishDatetime, attaches } = values;
+  const { attaches } = values;
+  const router = useRouter();
 
   const categoryOptions = categories?.data?.items?.map?.((category) => ({
     value: category.id,
@@ -73,16 +78,6 @@ const CreateProductContainer = () => {
   }));
 
   const submitHandler = async (values: CreateProductValues) => {
-    if (values?.thumbnail) {
-      values.attaches.push(values?.thumbnail);
-      delete values.thumbnail;
-    }
-
-    if (values.allowPreOrder) {
-      values.status = "PRE_ORDER";
-    }
-    delete values.allowPreOrder;
-
     if (values.allowShipping) {
       values.deliveryType = "SHIP";
     } else {
@@ -90,9 +85,61 @@ const CreateProductContainer = () => {
     }
     delete values.allowShipping;
 
-    setIsSubmitting(true);
-    await createProduct(values);
-    setIsSubmitting(false);
+    if (!values.thumbnail) {
+      notifications.show({
+        message: "Xin hãy upload ảnh sản phẩm của bạn",
+        ...getNotificationIcon(NOTIFICATION_TYPE["FAILED"]),
+      });
+      return;
+    }
+
+    Promise.all([
+      publicUploadFile(values.attaches ?? []),
+      publicUploadFile([values.thumbnail]),
+    ])
+      .then(async (res) => {
+        const attachments = res[0]?.data.data.fileResponses;
+        const thumbnail = res[1]?.data.data.fileResponses[0];
+
+        if (!attachments || !thumbnail) return;
+
+        const result = await createProduct({
+          ...values,
+          attaches: [
+            ...attachments?.map((attachment) => ({
+              url: attachment.presignedUrl,
+              type: ATTACHMENT_TYPE.OTHER,
+              title: attachment.fileName,
+              description: attachment.fileName,
+            })),
+            {
+              url: thumbnail.presignedUrl,
+              type: ATTACHMENT_TYPE.THUMBNAIL,
+              title: thumbnail.fileName,
+              description: thumbnail.fileName,
+            },
+          ],
+        });
+
+        if (result?.data.data == null) {
+          notifications.show({
+            message: "Tao sản phẩm thất bại! Xin hãy thử lại!",
+            ...getNotificationIcon(NOTIFICATION_TYPE["FAILED"]),
+          });
+        } else {
+          notifications.show({
+            message: "Tao sản phẩm thành công!",
+            ...getNotificationIcon(NOTIFICATION_TYPE["SUCCESS"]),
+          });
+          router.push(`${ROUTE.SHOP}/products`);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      })
+      .finally(() => {
+        setIsSubmitting(false);
+      });
   };
 
   return (
@@ -224,12 +271,16 @@ const CreateProductContainer = () => {
             </Input.Wrapper>
             <Input.Wrapper label="Attachments" className="mt-3">
               <div className="grid grid-cols-3 gap-3">
-                {attaches.map((attach, index) => (
+                {attaches?.map((attach, index) => (
                   <Thumbnail
                     // Make this unique
-                    key={`${index}-${Math.random()}`}
+                    url={URL.createObjectURL(attach)}
+                    key={`${index}-${attach.name}-${Math.random()}`}
                     setFile={(file) => {
-                      setFieldValue(`attaches.${index}`, file);
+                      const cloneAttaches = [...attaches];
+                      cloneAttaches[index] = file;
+                      console.log(attaches, cloneAttaches);
+                      setFieldValue(`attaches`, cloneAttaches);
                     }}
                     clearable
                     onClear={() => {
@@ -237,9 +288,10 @@ const CreateProductContainer = () => {
                     }}
                   />
                 ))}
-                {attaches.length < 6 && (
+                {attaches?.length < 6 && (
                   <Thumbnail
                     setFile={(file) => {
+                      console.log(attaches);
                       setFieldValue(`attaches`, [...attaches, file]);
                     }}
                     addNode
@@ -248,75 +300,6 @@ const CreateProductContainer = () => {
               </div>
             </Input.Wrapper>
           </div>
-        </div>
-      </div>
-      <div className="card pre-order-wrapper">
-        <div className="flex justify-between">
-          <h2 className="text-xl font-bold">Pre-order information</h2>
-          <Switch
-            label="Allow pre-order"
-            size="md"
-            offLabel={<span className="text-sm">|</span>}
-            onLabel={<span className="text-base">O</span>}
-            {...getInputProps("allowPreOrder", {
-              type: "checkbox",
-            })}
-            onChange={(e) => {
-              getInputProps("allowPreOrder").onChange(e);
-              if (!e.target.checked) {
-                // For submission
-                clearFieldError("preOrderRange");
-                clearFieldError("publishDatetime");
-              } else {
-                validateField("preOrderRange");
-                validateField("publishDatetime");
-              }
-            }}
-            disabled={isSubmitting}
-          />
-        </div>
-        <div
-          className={clsx(
-            "grid grid-cols-12 transition-all gap-5 md:gap-x-10"
-            // allowPreOrder
-            //   ? "opacity-100 mt-5"
-            //   : "h-0 pointer-events-none opacity-0"
-          )}
-        >
-          <DatePickerInput
-            type="range"
-            label="Pre-order date range"
-            placeholder="Pick dates range"
-            className="col-span-12 md:col-span-6"
-            withAsterisk
-            numberOfColumns={2}
-            {...getInputProps("preOrderRange")}
-            onChange={(value) => {
-              const [start, end] = value;
-              // Manual validation since does not trigger validation for other field
-              if (start && end && publishDatetime && end <= publishDatetime) {
-                clearFieldError("publishDatetime");
-              }
-              setFieldValue("preOrderRange", value);
-            }}
-            disabled={isSubmitting}
-          />
-          <DatePickerInput
-            label="Release date"
-            placeholder="Pick a date"
-            className="col-span-12 md:col-span-6"
-            withAsterisk
-            {...getInputProps("publishDatetime")}
-            // onChange={(value) => {
-            //   const [start, end] = preOrderRange;
-            //   // Manual validation since does not trigger validation for other field
-            //   if (start && end && value && end <= value) {
-            //     clearFieldError("preOrderRange");
-            //   }
-            //   setFieldValue("publishDatetime", value);
-            // }}
-            disabled={isSubmitting}
-          />
         </div>
       </div>
       <div className="card shipping-payment-wrapper">
@@ -347,7 +330,7 @@ const CreateProductContainer = () => {
             //   : "h-0 pointer-events-none opacity-0"
           )}
         >
-          <TextInput
+          {/* <TextInput
             label="Pick up at"
             className="col-span-12 md:col-span-10"
             // {...getInputProps("pickupLocation")}
@@ -377,7 +360,7 @@ const CreateProductContainer = () => {
               // }}
               disabled={isSubmitting}
             />
-          </Input.Wrapper>
+          </Input.Wrapper> */}
         </div>
         <h2 className="text-xl font-bold mt-5">Payment information</h2>
         <Checkbox.Group

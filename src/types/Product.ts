@@ -98,16 +98,13 @@ export type CreateProductValues = {
   tags?: string[];
   attaches: File[];
   thumbnail?: File;
-  allowPreOrder?: boolean;
-  allowShipping?: boolean;
   weight: number;
+  allowShipping?: boolean;
+};
 
-  //this will be updated later
-
-  // memberOnly: boolean;
-  // pre-order
-  // preOrderRange: (Date | null)[];
-  // shipping
-  // pickupLocation: string;
-  // payment
+export type CreateProductBodyValues = Omit<
+  CreateProductValues,
+  "attaches" | "thumbnail"
+> & {
+  attaches: Omit<Attaches, "id">[];
 };

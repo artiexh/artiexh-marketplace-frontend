@@ -37,7 +37,7 @@ const Thumbnail: FC<ThumbnailProps> = ({
     if (!file.type.startsWith("image/")) return;
     const reader = new FileReader();
     reader.onloadend = () => {
-      setImageUrl(reader.result as string);
+      if (!addNode) setImageUrl(reader.result as string);
       setDataUrl && setDataUrl(reader.result as string);
       setCustomFile && setCustomFile({ file, url: reader.result as string });
     };
