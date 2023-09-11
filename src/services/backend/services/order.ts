@@ -1,5 +1,6 @@
 import { CommonResponseBase } from "@/types/ResponseBase";
 import axiosClient from "../axiosClient";
+import { ArtistOrderDetail, UpdateShippingBody } from "@/types/Order";
 
 export type ShippingFeeBody = {
   addressId: string;
@@ -16,6 +17,21 @@ export const getShippingFee = async (data: ShippingFeeBody) => {
       params: data,
     });
     return result.data.data.fee;
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+export const updateShippingInformation = async (
+  id: string,
+  value: UpdateShippingBody
+) => {
+  try {
+    const result = await axiosClient.put<CommonResponseBase<ArtistOrderDetail>>(
+      `/artist/order-shop/${id}/shipping`,
+      value
+    );
+    return result.data.data;
   } catch (err) {
     console.log(err);
   }

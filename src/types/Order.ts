@@ -88,3 +88,17 @@ export type ArtistOrderDetail = ArtistOrder & {
 };
 
 export type ArtistOrderColumnType = ArtistOrder;
+
+export type UpdateShippingBody = {
+  // pickAddress: string;
+  // pickDistrict: string;
+  // pickWard: string;
+  // pickProvince: string;
+  // pickTel: string;
+  // pickName: string;
+  // returnAddress: string;
+  // returnDistrict: string;
+  // returnTel: string;
+  // returnName: string;
+  value: number;
+};

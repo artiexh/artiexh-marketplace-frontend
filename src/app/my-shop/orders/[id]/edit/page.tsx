@@ -2,20 +2,22 @@
 
 import { ROUTE } from "@/constants/route";
 import axiosClient from "@/services/backend/axiosClient";
-import { ArtistOrderDetail, Order } from "@/types/Order";
+import { ArtistOrderDetail } from "@/types/Order";
 import { CommonResponseBase } from "@/types/ResponseBase";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import useSWR from "swr";
 import { Timeline, Text, Divider, Button } from "@mantine/core";
-import {
-  IconGitBranch,
-  IconGitPullRequest,
-  IconGitCommit,
-  IconMessageDots,
-  IconChevronLeft,
-} from "@tabler/icons-react";
+import { IconChevronLeft } from "@tabler/icons-react";
 import Image from "next/image";
-import { ORDER_STATUS } from "@/constants/common";
+import {
+  NOTIFICATION_TYPE,
+  ORDER_HISTORY_CONTENT_MAP,
+  ORDER_STATUS,
+} from "@/constants/common";
+import { useState } from "react";
+import { updateShippingInformation } from "@/services/backend/services/order";
+import { notifications } from "@mantine/notifications";
+import { getNotificationIcon } from "@/utils/mapper";
 
 const ShopEditOrderPage = ({ params }: { params: { id: string } }) => {
   const router = useRouter();
@@ -35,11 +37,53 @@ const ShopEditOrderPage = ({ params }: { params: { id: string } }) => {
     }
   });
 
+  const [loading, setLoading] = useState<boolean>(false);
+
   const address = data?.shippingAddress;
 
   if (!data) {
     <div>Không tìm thấy đơn hàng!</div>;
   }
+
+  const getDateBasedOnStatus = (status: string) => {
+    let date = data?.orderHistories?.find(
+      (history: any) => history?.status === status
+    )?.datetime;
+
+    if (date) {
+      return new Date(date).toLocaleDateString();
+    }
+  };
+
+  const updateShippingInformationHandler = async () => {
+    if (data?.id) {
+      setLoading(true);
+      const result = await updateShippingInformation(data.id, {
+        value: 100000,
+        // pickAddress: data.shippingAddress.address,
+        // pickDistrict: data.shippingAddress.ward.district.fullName,
+        // pickTel: data.shippingAddress.phone,
+        // pickName: data.shippingAddress.receiverName,
+        // returnAddress: data.shippingAddress.address,
+        // returnDistrict: data.shippingAddress.ward.district.fullName,
+        // returnTel: data.shippingAddress.phone,
+        // returnName: data.shippingAddress.receiverName,
+      });
+
+      if (result) {
+        notifications.show({
+          message: "Cập nhật thành công",
+          ...getNotificationIcon(NOTIFICATION_TYPE["SUCCESS"]),
+        });
+      } else {
+        notifications.show({
+          message: "Cập nhật thất bại! Vui lòng thử lại",
+          ...getNotificationIcon(NOTIFICATION_TYPE["FAILED"]),
+        });
+      }
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="order-detail-page bg-white mb-10">
@@ -64,10 +108,29 @@ const ShopEditOrderPage = ({ params }: { params: { id: string } }) => {
           {/* <div>
             Tình trạng: {ORDER_STATUS[data?.status as any ?? "PREPARING"]?.name}
           </div> */}
+          <Timeline
+            active={(data?.orderHistories.length ?? 1) - 1}
+            bulletSize={24}
+            lineWidth={2}
+          >
+            {Object.keys(ORDER_HISTORY_CONTENT_MAP).map((status) => (
+              <Timeline.Item
+                key={status}
+                bullet={ORDER_HISTORY_CONTENT_MAP[status].icon}
+                title={ORDER_HISTORY_CONTENT_MAP[status].content}
+              >
+                <Text size="xs" mt={4}>
+                  {getDateBasedOnStatus(status)}
+                </Text>
+              </Timeline.Item>
+            ))}
+          </Timeline>
         </div>
-        <div>
-          <Button className="bg-primary">Cập nhật thông tin giao hàng</Button>
-        </div>
+        {data?.status === ORDER_STATUS.PREPARING.code && (
+          <div onClick={updateShippingInformationHandler}>
+            <Button className="bg-primary">Cập nhật thông tin giao hàng</Button>
+          </div>
+        )}
       </div>
       <Divider />
       <div className="flex justify-between p-10">
