@@ -96,8 +96,8 @@ export type CreateProductValues = {
   deliveryType: DELIVERY_TYPE_ENUM;
   paymentMethods: string[];
   tags?: string[];
-  attaches: Omit<Attaches, "id">[];
-  thumbnail?: Omit<Attaches, "id">;
+  attaches: File[];
+  thumbnail?: File;
   allowPreOrder?: boolean;
   allowShipping?: boolean;
   weight: number;

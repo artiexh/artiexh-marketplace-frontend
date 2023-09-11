@@ -8,8 +8,15 @@ import useSWR from "swr";
 import { Timeline, Text, Divider } from "@mantine/core";
 import { IconChevronLeft } from "@tabler/icons-react";
 import Image from "next/image";
-import { ORDER_HISTORY_CONTENT_MAP, ORDER_STATUS } from "@/constants/common";
+import {
+  NOTIFICATION_TYPE,
+  ORDER_HISTORY_CONTENT_MAP,
+  ORDER_STATUS,
+} from "@/constants/common";
 import { getReadableWardAddress } from "@/utils/formatter";
+import { getPaymentLink } from "@/services/backend/services/cart";
+import { getNotificationIcon } from "@/utils/mapper";
+import { notifications } from "@mantine/notifications";
 
 export default function OrderDetailPage() {
   const params = useSearchParams();
@@ -34,9 +41,20 @@ export default function OrderDetailPage() {
     <div>Không tìm thấy đơn hàng!</div>;
   }
 
-  // const payment = () => {
+  const payment = async () => {
+    if (data?.orderId) {
+      const paymentLink = await getPaymentLink(data.orderId);
 
-  // }
+      if (paymentLink) {
+        window.location.replace(paymentLink);
+      } else {
+        notifications.show({
+          message: "Không tìm thấy link thanh toán",
+          ...getNotificationIcon(NOTIFICATION_TYPE.FAILED),
+        });
+      }
+    }
+  };
 
   const getDateBasedOnStatus = (status: string) => {
     let date = data?.orderHistories?.find(
@@ -68,25 +86,11 @@ export default function OrderDetailPage() {
           <div className="font-bold text-[24px] mb-1 text-primary">
             Tình trạng đơn hàng
           </div>
-          {/* {data?.status === ORDER_STATUS.PAYING.code ? (
-            <div className="cursor-pointer mt-4 text-primary">
+          {data?.status === ORDER_STATUS.PAYING.code ? (
+            <div className="cursor-pointer mt-4 text-primary" onClick={payment}>
               Nhấn vào đây để tiến hàng thanh toán
             </div>
-          ) : null} */}
-          {/* <div>
-            <span className="font-bold">Tên người nhận: </span>
-            {data?.shippingAddress.receiverName}
-          </div>
-          <div>
-            <span className="font-bold">Số điện thoại: </span>
-            {data?.shippingAddress.phone}
-          </div>
-          <div>
-            <span className="font-bold">Địa chỉ: </span>
-            <span>
-              {`${address?.address}, ${address?.ward.fullName}, ${address?.ward.district.fullName}, ${address?.ward.district.province.fullName}`}
-            </span>
-          </div> */}
+          ) : null}
         </div>
         <div className="order-info">
           <Timeline
@@ -106,6 +110,31 @@ export default function OrderDetailPage() {
               </Timeline.Item>
             ))}
           </Timeline>
+        </div>
+      </div>
+      <Divider />
+      <div className="flex justify-between p-10">
+        <div className="user-info mr-4">
+          <div className="font-bold text-[24px] mb-1 text-primary">
+            Địa chỉ nhận hàng
+          </div>
+
+          <div>
+            <span className="font-bold">Tên người nhận: </span>
+            {data?.shippingAddress.receiverName}
+          </div>
+          <div>
+            <span className="font-bold">Số điện thoại: </span>
+            {data?.shippingAddress.phone}
+          </div>
+          <div>
+            <span className="font-bold">Địa chỉ: </span>
+            <span>
+              {`${data?.shippingAddress.address}, ${getReadableWardAddress(
+                data?.shippingAddress.ward
+              )}`}
+            </span>
+          </div>
         </div>
       </div>
       <Divider />

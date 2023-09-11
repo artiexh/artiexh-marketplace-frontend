@@ -90,9 +90,8 @@ const CreateProductContainer = () => {
     }
     delete values.allowShipping;
 
-    console.log(values);
     setIsSubmitting(true);
-    await createProduct({ ...values, weight: 10 });
+    await createProduct(values);
     setIsSubmitting(false);
   };
 
@@ -184,6 +183,14 @@ const CreateProductContainer = () => {
               {...getInputProps("categoryId")}
               disabled={isSubmitting}
             />
+            <NumberInput
+              label="Weight"
+              className="col-span-12"
+              withAsterisk
+              min={1}
+              {...getInputProps("weight")}
+              disabled={isSubmitting}
+            />
             <Textarea
               label="Description"
               className="col-span-12 row-span-6 order-1 md:order-none"
@@ -199,13 +206,8 @@ const CreateProductContainer = () => {
           <div className="image-wrapper flex flex-col md:w-6/12">
             <Input.Wrapper label="Thumbnail" withAsterisk>
               <Thumbnail
-                setDataUrl={(dataUrl) => {
-                  setFieldValue("thumbnail", {
-                    url: "https://fastly.picsum.photos/id/888/200/300.jpg?hmac=WJcjbSQSOOzfBpPsUKZHZzjBCJjDv43RwJ8P8Ag2xj4",
-                    type: ATTACHMENT_TYPE.THUMBNAIL,
-                    title: "",
-                    description: "",
-                  });
+                setFile={(file) => {
+                  setFieldValue("thumbnail", file);
                 }}
                 error={errors.thumbnail as string}
                 defaultPlaceholder={
@@ -225,15 +227,9 @@ const CreateProductContainer = () => {
                 {attaches.map((attach, index) => (
                   <Thumbnail
                     // Make this unique
-                    key={`${attach.title}-${index}-${Math.random()}`}
-                    url={attach.url}
-                    setCustomFile={({ file, url }) => {
-                      setFieldValue(`attaches.${index}`, {
-                        url: "https://fastly.picsum.photos/id/888/200/300.jpg?hmac=WJcjbSQSOOzfBpPsUKZHZzjBCJjDv43RwJ8P8Ag2xj4",
-                        type: ATTACHMENT_TYPE.OTHER,
-                        title: file.name,
-                        description: "",
-                      });
+                    key={`${index}-${Math.random()}`}
+                    setFile={(file) => {
+                      setFieldValue(`attaches.${index}`, file);
                     }}
                     clearable
                     onClear={() => {
@@ -243,13 +239,8 @@ const CreateProductContainer = () => {
                 ))}
                 {attaches.length < 6 && (
                   <Thumbnail
-                    setCustomFile={({ file, url }) => {
-                      setFieldValue(`attaches.${attaches.length}`, {
-                        url: "https://fastly.picsum.photos/id/888/200/300.jpg?hmac=WJcjbSQSOOzfBpPsUKZHZzjBCJjDv43RwJ8P8Ag2xj4",
-                        type: ATTACHMENT_TYPE.OTHER,
-                        title: file.name,
-                        description: "",
-                      });
+                    setFile={(file) => {
+                      setFieldValue(`attaches`, [...attaches, file]);
                     }}
                     addNode
                   />

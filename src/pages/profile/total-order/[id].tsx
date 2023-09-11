@@ -107,17 +107,27 @@ export default function OrderDetailPage() {
         {data?.orders.map((order) => (
           <div key={order.id}>
             <div>
-              <div className="flex items-center mb-4 bg-primary p-4">
-                <div>
-                  <Image
-                    className="rounded-full mr-8 aspect-square"
-                    src={order.shop.shopImageUrl}
-                    width={60}
-                    height={60}
-                    alt="shop-img"
-                  />
+              <div className="flex items-center justify-between bg-primary mb-4 p-4">
+                <div className="flex items-center">
+                  <div>
+                    <Image
+                      className="rounded-full mr-8 aspect-square"
+                      src={order.shop.shopImageUrl}
+                      width={60}
+                      height={60}
+                      alt="shop-img"
+                    />
+                  </div>
+                  <div className="text-white">{order.shop.shopName}</div>
                 </div>
-                <div className="text-white">{order.shop.shopName}</div>
+                <div
+                  className="text-white cursor-pointer"
+                  onClick={() =>
+                    router.push(`${ROUTE.PROFILE}/order/${order.id}`)
+                  }
+                >
+                  Xem đơn hàng
+                </div>
               </div>
               {order.orderDetails.map((orderDetail) => (
                 <div

@@ -47,6 +47,7 @@ export type Order = {
   };
   note: string;
   status: ORDER_STATUS_ENUM;
+  orderId: string;
   modifiedDate: string;
   createdDate: string;
   orderDetails: OrderItemDetail[];
@@ -55,6 +56,7 @@ export type Order = {
     status: ORDER_HISTORY_STATUS_ENUM;
     datetime: string;
   }[];
+  shippingAddress: Address;
 };
 
 export type TotalOrder = {

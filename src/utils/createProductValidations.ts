@@ -55,31 +55,10 @@ export const createProductValidation: FormValidateInput<CreateProductValues> = {
     //   return "Publish date must be after preorder ended";
     return null;
   },
-  // preOrderRange: (preOrderDates, formValues) => {
-  //   if (!formValues.allowPreOrder) return null;
-  //   if (!preOrderDates[0]) return "Preorder start date is required";
-  //   if (!preOrderDates[1]) return "Preorder end date is required";
-  //   // Not gonna happen since mantine handles this
-  //   // if (preOrderDates[0].getTime() > preOrderDates[1].getTime())
-  //   // return 'Preorder start date must be before preorder end date';
-  //   if (!!formValues.publishDatetime && preOrderDates[1].getTime() < Date.now())
-  //     return "Preorder end date must be in the future";
-  //   // Make sure pre-order end date is before or on publish date
-  //   if (
-  //     !!formValues.publishDatetime &&
-  //     preOrderDates[1].getTime() > formValues.publishDatetime.getTime()
-  //   )
-  //     return "Preorder end date must be before or on publish date";
-  //   return null;
-  // },
-  // delivery
-  // pickupLocation: (location, formValues) => {
-  //   if (formValues.allowShipping) return null;
-  //   if (!location) return "Pickup location is required";
-  //   if (location.trim().length < 5) return "Pickup location is too short";
-  //   return null;
-  // },
-
+  weight: (weight) => {
+    if (weight <= 0) return "Product weight must be greater than zero";
+    return null;
+  },
   // payment
   paymentMethods: (methods) =>
     validationHandler(
@@ -114,6 +93,7 @@ export const DEFAULT_FORM_VALUES: CreateProductValues = {
   // pickupLocation: '',
   // sameAsStoreAddress: false,
   // payment
+  thumbnail: undefined,
   paymentMethods: [],
   tags: [],
   attaches: [],
