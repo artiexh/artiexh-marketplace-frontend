@@ -43,11 +43,11 @@ const HomePage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = ({
 
   return (
     <div className="home-page flex flex-col gap-8 lg:gap-16">
-      <HeroSection
+      {/* <HeroSection
         promotionElements={homeBranding?.promotions ?? []}
         carouselElements={homeBranding?.campaigns ?? []}
         className="flex h-[12rem] lg:h-[27rem] gap-4 w-[100vw] lg:w-full -ml-6 md:mx-auto"
-      />
+      /> */}
       <div>
         <div>Trending tags:</div>
         <PreviewList
@@ -146,28 +146,21 @@ export const getStaticProps = async (context: GetStaticPropsContext) => {
   let homeBranding: HomeBranding | null = null;
   let categories: Category[] = [];
   try {
-    const [
-      { data: productRes },
-      { data: hotTagsRes },
-      { data: homeBrandingRes },
-      { data: categoryRes },
-    ] = await Promise.all([
-      axiosClient.get<CommonResponseBase<PaginationResponseBase<Product>>>(
-        "/product?pageSize=5"
-      ),
-      axiosClient.get<CommonResponseBase<PaginationResponseBase<Tag>>>(
-        "/tag?pageSize=12"
-      ),
-      ssrAxiosClient.get<CommonResponseBase<HomeBranding>>(
-        "/homepage_branding"
-      ),
-      axiosClient.get<CommonResponseBase<PaginationResponseBase<Category>>>(
-        "/category?pageSize=8"
-      ),
-    ]);
+    const [{ data: productRes }, { data: hotTagsRes }, { data: categoryRes }] =
+      await Promise.all([
+        axiosClient.get<CommonResponseBase<PaginationResponseBase<Product>>>(
+          "/product?pageSize=5"
+        ),
+        axiosClient.get<CommonResponseBase<PaginationResponseBase<Tag>>>(
+          "/tag?pageSize=12"
+        ),
+
+        axiosClient.get<CommonResponseBase<PaginationResponseBase<Category>>>(
+          "/category?pageSize=8"
+        ),
+      ]);
     hotProducts = productRes.data.items;
     hotTags = hotTagsRes.data.items;
-    homeBranding = homeBrandingRes.data;
     categories = categoryRes.data.items;
   } catch (e) {
     console.error(e);
