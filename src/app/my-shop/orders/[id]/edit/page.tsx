@@ -22,7 +22,7 @@ import { getNotificationIcon } from "@/utils/mapper";
 const ShopEditOrderPage = ({ params }: { params: { id: string } }) => {
   const router = useRouter();
 
-  const { data, isLoading } = useSWR([params.id], async () => {
+  const { data, isLoading, mutate } = useSWR([params.id], async () => {
     try {
       const { data } = await axiosClient.get<
         CommonResponseBase<ArtistOrderDetail>
@@ -58,17 +58,9 @@ const ShopEditOrderPage = ({ params }: { params: { id: string } }) => {
   const updateShippingInformationHandler = async () => {
     if (data?.id) {
       setLoading(true);
-      const result = await updateShippingInformation(data.id, {
-        value: 100000,
-        // pickAddress: data.shippingAddress.address,
-        // pickDistrict: data.shippingAddress.ward.district.fullName,
-        // pickTel: data.shippingAddress.phone,
-        // pickName: data.shippingAddress.receiverName,
-        // returnAddress: data.shippingAddress.address,
-        // returnDistrict: data.shippingAddress.ward.district.fullName,
-        // returnTel: data.shippingAddress.phone,
-        // returnName: data.shippingAddress.receiverName,
-      });
+      const result = await updateShippingInformation(data.id);
+
+      console.log(result);
 
       if (result) {
         notifications.show({
@@ -82,6 +74,7 @@ const ShopEditOrderPage = ({ params }: { params: { id: string } }) => {
         });
       }
       setLoading(false);
+      mutate();
     }
   };
 

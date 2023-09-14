@@ -1,12 +1,12 @@
 import { useEffect } from "react";
 import axiosClient from "../backend/axiosClient";
-import { AxiosError } from "axios";
 import { useRouter } from "next/router";
 import { AUTH_ROUTE, NOT_REQUIRE_AUTH_ROUTE, ROUTE } from "@/constants/route";
 import { usePathname } from "next/navigation";
-import { $user } from "@/store/user";
+import { setShop, setUser } from "@/store/user";
 import { User } from "@/types/User";
 import { CommonResponseBase } from "@/types/ResponseBase";
+import { Shop } from "@/types/Shop";
 
 const AuthGuard = () => {
   const router = useRouter();
@@ -21,7 +21,17 @@ const AuthGuard = () => {
           "https://api.artiexh.com/api/v1/account/me"
         );
 
-        $user.set(data.data);
+        setUser(data.data);
+
+        const { data: shopData } = await axiosClient.get<
+          CommonResponseBase<Shop>
+        >("/shop", {
+          params: {
+            ownerId: data.data.id,
+          },
+        });
+
+        setShop(shopData.data);
 
         if (mounted && isAuthPage) {
           router.push(ROUTE.HOME_PAGE);

@@ -1,11 +1,13 @@
 import { ArtistRegisterData, CreateUserAddress } from "@/types/User";
 import axiosClient from "../axiosClient";
-import { setUser } from "@/store/user";
+import { setShop, setUser } from "@/store/user";
 
 export const logout = async () => {
   try {
     const data = await axiosClient.post("/auth/logout");
     setUser(undefined);
+    setShop(undefined);
+
     console.log(data);
   } catch (err) {
     console.log(err);

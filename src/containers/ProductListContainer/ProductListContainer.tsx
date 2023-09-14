@@ -76,8 +76,8 @@ const ProductListContainer: FC<ProductListContainerProps> = ({
     // Updates on reload
     setValues({
       categoryId: (params.categoryId as string) || DEFAULT_FILTERS.categoryId,
-      // minPrice: Number(params.minPrice) || DEFAULT_FILTERS.minPrice,
-      // maxPrice: Number(params.maxPrice) || DEFAULT_FILTERS.maxPrice,
+      minPrice: Number(params.minPrice) || DEFAULT_FILTERS.minPrice,
+      maxPrice: Number(params.maxPrice) || DEFAULT_FILTERS.maxPrice,
       // averageRate: Number(params.averageRate) || DEFAULT_FILTERS.averageRate,
     });
   }, [params, setValues]);

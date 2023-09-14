@@ -22,14 +22,11 @@ export const getShippingFee = async (data: ShippingFeeBody) => {
   }
 };
 
-export const updateShippingInformation = async (
-  id: string,
-  value: UpdateShippingBody
-) => {
+export const updateShippingInformation = async (id: string) => {
   try {
     const result = await axiosClient.put<CommonResponseBase<ArtistOrderDetail>>(
       `/artist/order-shop/${id}/shipping`,
-      value
+      {}
     );
     return result.data.data;
   } catch (err) {

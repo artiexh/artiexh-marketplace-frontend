@@ -92,7 +92,7 @@ export const ORDER_HISTORY_CONTENT_MAP: {
     icon: <IconMoodDollar size={12} />,
   },
   SHIPPED: {
-    content: "Đơn hàng đã được vận chuyển",
+    content: "Đơn hàng đang được vận chuyển",
     icon: <IconTruckDelivery size={12} />,
   },
   DELIVERED: {
