@@ -1,40 +1,34 @@
 export type CartItem = {
-  id: number;
+  id: string;
   status: string;
-  currency: string;
   name: string;
-  price: number;
+  price: {
+    amount: number;
+    unit: string;
+  };
   description: string;
   type: string;
-  remainingQuantity: string;
+  remainingQuantity: number;
   publishDatetime: string;
   deliveryType: string;
   quantity: number;
-  attaches: {
-    id: number;
-    url: string;
-    type: string;
-    title: string;
-  }[];
+  thumbnailUrl: string;
 };
 
 export type CartSection = {
-  artistInfo: {
-    id: number;
-    username: string;
-    displayName: string;
-    province: {
-      id: number;
-      name: string;
-      country: {
-        id: number;
-        name: string;
-      };
+  shop: {
+    id: string;
+    shopName: string;
+    imageUrl: string;
+    owner: {
+      id: string;
+      username: string;
+      displayName: string;
     };
   };
   items: CartItem[];
 };
 
 export type CartData = {
-  artistItems: CartSection[];
+  shopItems: CartSection[];
 };

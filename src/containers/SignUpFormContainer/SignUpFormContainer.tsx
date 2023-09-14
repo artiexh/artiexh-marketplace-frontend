@@ -1,3 +1,4 @@
+import { ROUTE } from "@/constants/route";
 import axiosClient from "@/services/backend/axiosClient";
 import { User } from "@/types/User";
 import { Button, Divider, TextInput, PasswordInput } from "@mantine/core";
@@ -51,7 +52,7 @@ const SignUpFormContainer = () => {
     try {
       const { email, password, username, displayName } = values;
       const { data } = await axiosClient.post<User>(
-        "http://localhost:8081/api/v1/registration/user",
+        "https://api.artiexh.com/api/v1/registration/user",
         {
           email,
           password,
@@ -62,7 +63,7 @@ const SignUpFormContainer = () => {
       console.log(data);
       // TODO:
       // Save this
-      router.push("/");
+      router.push(ROUTE.HOME_PAGE);
     } catch (error) {
       // TODO:
       // Handle 401 invalid credentials

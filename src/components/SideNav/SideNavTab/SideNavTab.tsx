@@ -4,17 +4,18 @@ import Image from "next/image";
 
 type Props = {
   isChosen: boolean;
-  onClickTab: () => void;
-} & NavInfo;
+  onClick: (data: NavInfo) => void;
+  data: NavInfo;
+};
 
-const SideNavTab = ({ label, iconPath, isChosen, onClickTab }: Props) => {
+const SideNavTab = ({ isChosen, onClick, data }: Props) => {
   return (
     <div
       className={clsx(
         "mt-0.5 cursor-pointer flex text-sm mx-4 items-center px-4 py-2.5",
         isChosen && "rounded-lg bg-white text-slate-700 font-semibold"
       )}
-      onClick={onClickTab}
+      onClick={() => onClick(data)}
     >
       <div
         className={clsx(
@@ -28,13 +29,13 @@ const SideNavTab = ({ label, iconPath, isChosen, onClickTab }: Props) => {
             !isChosen &&
               "brightness-0 saturate-100 invert(11%) sepia(13%) saturate(2254%) hue-rotate(178deg) brightness(94%) contrast(88%)"
           )}
-          src={`/assets/icons/${iconPath}`}
-          alt={label}
+          src={`/assets/icons/${data.iconPath}`}
+          alt={data.label}
           width={12}
           height={12}
         />
       </div>
-      <div>{label}</div>
+      <div>{data.label}</div>
     </div>
   );
 };

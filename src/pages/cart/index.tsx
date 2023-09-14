@@ -1,103 +1,119 @@
-import Layout from "@/layouts/Layout/Layout";
-import axiosClient from "@/services/backend/haiEndpointCC";
-import { CartData, CartItem } from "@/services/backend/types/Cart";
+import axiosClient from "@/services/backend/axiosClient";
+import { CartData, CartItem, CartSection } from "@/services/backend/types/Cart";
 import { Button } from "@mantine/core";
 import { NextPage } from "next";
 import useSWR from "swr";
-import { useState } from "react";
-import CartSection from "@/components/CartSection/CartSection";
-
-type SelectedItems = {
-  artistId: number;
-  items: CartItem[];
-};
+import CartSectionComponent from "@/components/CartSection/CartSection";
+import { useRouter } from "next/router";
+import { ROUTE } from "@/constants/route";
+import { RootState } from "@/store";
+import { useDispatch, useSelector } from "react-redux";
+import { useMemo } from "react";
+import { IconSearchOff } from "@tabler/icons-react";
 
 const CartPage: NextPage = () => {
-  const { data, isLoading } = useSWR<CartData>("cart", async () => {
+  const router = useRouter();
+
+  // the selectedData saved in store
+  const selectedItems = useSelector(
+    (state: RootState) => state.cart.selectedItems
+  );
+
+  const dispatch = useDispatch();
+
+  const { data, mutate } = useSWR<CartData>("cart", async () => {
     try {
-      const { data } = (await axiosClient("/cart")).data;
+      const { data } = (await axiosClient("/cart"))?.data;
       return data;
     } catch (e) {
-      console.log(e);
       return null;
     }
   });
-  const [selectedItems, setSelectedItems] = useState<SelectedItems[]>([]);
 
-  const toggleSelectItems = (
-    artistId: number,
-    items: CartItem[],
-    isAll = false
-  ) => {
-    const selectItem = selectedItems.find((item) => item.artistId == artistId);
-    let newArr = [...selectedItems];
-    if (isAll) {
-      newArr = selectedItems.filter((item) => item.artistId != artistId);
+  const flattedItems = selectedItems.map((item) => item.items).flat();
 
-      if (!selectItem) {
-        newArr.push({
-          artistId,
-          items,
-        });
-      }
-    } else {
-      console.log(selectItem);
-      if (selectItem) {
-        const nestedItem = selectItem.items.find(
-          (item) => (item.id = items[0].id)
-        );
-        newArr.forEach((item) => {
-          if (item.artistId == artistId) {
-            if (nestedItem) {
-              item.items = item.items.filter((item) => item.id != items[0].id);
-            } else {
-              item.items.push(items[0]);
-            }
+  const isChecked = (id: string) => {
+    return flattedItems.some((cartItem) => cartItem.id == id);
+  };
+
+  // the actual calculated selected data from api
+  const selectedCartItems = useMemo(() => {
+    const items: CartSection[] = [];
+    flattedItems.forEach((item) => {
+      data?.shopItems.forEach((shopItem) => {
+        const selectedProducts: CartItem[] = [];
+        shopItem.items.forEach((i) => {
+          if (item.id === i.id) {
+            selectedProducts.push(i);
           }
         });
-      } else {
-        newArr.push({
-          artistId,
-          items,
-        });
-      }
-    }
-    setSelectedItems(newArr);
-  };
 
-  const isChecked = (id: number) => {
-    return selectedItems
-      .map((item) => item.items)
-      .flat()
-      .some((cartItem) => cartItem.id == id);
-  };
+        if (selectedProducts.length > 0) {
+          items.push({
+            shop: shopItem.shop,
+            items: selectedProducts,
+          });
+        }
+      });
+    });
 
-  if (isLoading) return <></>;
+    return items;
+  }, [data, selectedItems]);
 
-  const totalPrice = selectedItems?.reduce(
+  const totalPrice = selectedCartItems?.reduce(
     (total, item) =>
-      total + item.items.reduce((acc, cartItem) => acc + cartItem.price, 0),
+      total +
+      item.items.reduce(
+        (acc, cartItem) => acc + cartItem.price.amount * cartItem.quantity,
+        0
+      ),
     0
   );
 
+  if (data?.shopItems.length === 0) {
+    return (
+      <div className="text-center mt-[20%]">
+        <div className="flex justify-center">
+          <IconSearchOff width={150} height={150} />
+        </div>
+        <div className="text-xl mt-4">
+          Bạn vẫn chưa chọn sản phẩm trong giỏ hàng!
+        </div>
+        <div
+          className="mt-2 cursor-pointer text-primary"
+          onClick={() => router.push(ROUTE.HOME_PAGE)}
+        >
+          Ấn vào đây tiếp tục mua sắm
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <Layout>
+    <div className="cart-page">
       <div className="hidden card sm:flex justify-between items-center">
         <div className="font-bold text-[2rem] ">Tổng: {totalPrice} VND</div>
         <div>
-          <Button className="bg-[#50207D] w-[200px] h-[3rem]">Checkout</Button>
+          <Button
+            disabled={selectedItems.length === 0}
+            onClick={() => router.push(ROUTE.CHECKOUT)}
+            className="bg-[#50207D] w-[200px] h-[3rem]"
+          >
+            Checkout
+          </Button>
         </div>
       </div>
       <div>
-        {data?.artistItems.map((cartSection, idx) => (
+        {data?.shopItems?.map((cartSection, idx) => (
           <div
             key={idx}
             className="bg-white mt-10 p-2 sm:p-6 rounded-sm relative"
           >
-            <CartSection
+            <CartSectionComponent
               cartSection={cartSection}
-              toggleSelectItems={toggleSelectItems}
+              dispatch={dispatch}
               isChecked={isChecked}
+              revalidateFunc={mutate}
             />
           </div>
         ))}
@@ -105,10 +121,16 @@ const CartPage: NextPage = () => {
       <div className="flex card sm:hidden justify-between items-center absolute bottom-0 w-[100vw] left-0">
         <div className="font-bold ">Tổng: {totalPrice} VND</div>
         <div>
-          <Button className="bg-[#50207D] w-[120px] h-[3rem]">Checkout</Button>
+          <Button
+            disabled={selectedItems.length === 0}
+            className="bg-[#50207D] w-[120px] h-[3rem]"
+            onClick={() => router.push(ROUTE.CHECKOUT)}
+          >
+            Checkout
+          </Button>
         </div>
       </div>
-    </Layout>
+    </div>
   );
 };
 

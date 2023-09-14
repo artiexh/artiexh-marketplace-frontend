@@ -1,13 +1,35 @@
+import {
+  ATTACHMENT_TYPE_ENUM,
+  DELIVERY_TYPE_ENUM,
+  PRODUCT_STATUS_ENUM,
+  PRODUCT_TYPE_ENUM,
+} from "@/constants/common";
 import { User } from "./User";
 
 export type Tag = {
+  id: string;
   name: string;
-  description: string;
-  color: string;
 };
 
-export type OwnerInfo = User & {
+export type OwnerInfo = Omit<
+  User,
+  "role" | "email" | "subscriptionsTo" | "avatarUrl" | "status"
+> & {
   rating: number;
+};
+
+export type ShopInfo = {
+  id: string;
+  shopName: string;
+  owner: {
+    displayName: string;
+    id: string;
+    role: string;
+    shopName: string;
+    status: string;
+    username: string;
+  };
+  shopImageUrl: string;
 };
 
 export type Product = {
@@ -16,8 +38,8 @@ export type Product = {
   price: Price;
   description: string;
   tags: string[];
-  ownerInfo: OwnerInfo;
-  ratings: number;
+  owner: OwnerInfo;
+  averageRate: number;
   attaches: Attaches[];
   status: "DELETE" | "AVAILABLE" | "SOLD_OUT" | "HIDDEN";
   type: "NORMAL" | "PRE_ORDER";
@@ -29,6 +51,7 @@ export type Product = {
   paymentMethods: PaymentMethod[];
   category: Category;
   thumbnailUrl: string; // URL
+  shop: ShopInfo;
 };
 
 export type ArtistProductColumnType = Pick<
@@ -39,7 +62,7 @@ export type ArtistProductColumnType = Pick<
 export type Attaches = {
   id: string;
   url: string;
-  type: "IMAGE" | "VIDEO";
+  type: ATTACHMENT_TYPE_ENUM;
   title: string;
   description?: string;
 };
@@ -50,34 +73,38 @@ export type PaymentMethod = {
 };
 
 export type Price = {
-  value: number;
+  amount: number;
   unit: string;
 };
 
 export type Category = {
   id: string;
   name: string;
+  imageUrl: string;
 };
 
 export type CreateProductValues = {
+  status: PRODUCT_STATUS_ENUM;
   name: string;
-  category: string | null;
-  // memberOnly: boolean;
-  tags: string[];
-  description: string;
   price: Price;
-  thumbnail: string;
-  attaches: Attaches[];
-  maxItemsPerOrder: number;
+  categoryId: string;
+  description: string;
+  type: PRODUCT_TYPE_ENUM;
   remainingQuantity: number;
-  // pre-order
-  allowPreOrder: boolean;
-  publishDatetime: Date | null;
-  preOrderRange: (Date | null)[];
-  // shipping
-  allowShipping: boolean;
-  pickupLocation: string;
-  sameAsStoreAddress: boolean;
-  // payment
+  publishDatetime: Date;
+  maxItemsPerOrder: number;
+  deliveryType: DELIVERY_TYPE_ENUM;
   paymentMethods: string[];
+  tags?: string[];
+  attaches: File[];
+  thumbnail?: File;
+  weight: number;
+  allowShipping?: boolean;
+};
+
+export type CreateProductBodyValues = Omit<
+  CreateProductValues,
+  "attaches" | "thumbnail"
+> & {
+  attaches: Omit<Attaches, "id">[];
 };

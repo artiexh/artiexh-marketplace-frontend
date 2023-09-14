@@ -1,14 +1,17 @@
-import { fetcher } from '@/services/backend/axiosMockups/axiosMockupClient';
-import { Category } from '@/types/Product';
-import { CommonResponseBase } from '@/types/ResponseBase';
-import useSwr from 'swr';
+import { fetcher } from "@/services/backend/axiosClient";
+import { Category } from "@/types/Product";
+import {
+  CommonResponseBase,
+  PaginationResponseBase,
+} from "@/types/ResponseBase";
+import useSwr from "swr";
 
 const useCategories = () => {
-	const result = useSwr(['categories'], () =>
-		fetcher<CommonResponseBase<Category[]>>('/categories')
-	);
+  const result = useSwr(["categories"], () =>
+    fetcher<CommonResponseBase<PaginationResponseBase<Category>>>("/category")
+  );
 
-	return result;
+  return result;
 };
 
 export default useCategories;

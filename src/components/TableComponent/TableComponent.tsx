@@ -1,7 +1,5 @@
-import { TableColumns } from "@/types/Table";
 import { Table, TableProps } from "@mantine/core";
 import { tableDataMapper } from "./tableMapper";
-import { useRouter } from "next/router";
 
 interface ITableComponentProps<T> {
   columns: any[];
@@ -14,8 +12,6 @@ const TableComponent = <T,>({
   data,
   tableProps,
 }: ITableComponentProps<T>) => {
-  const router = useRouter();
-
   const actionMapper = (
     action?: string
   ): ((record: any) => void) | undefined => {
