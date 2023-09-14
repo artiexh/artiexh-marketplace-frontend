@@ -83,9 +83,9 @@ function ToteBagContainer() {
             value.imagesContext.images[0] && (
               <DecalWithImage
                 debug
-                position={[0, 0, 2]}
+                position={[0, 20, 1]}
                 rotation={[-0.001, 0, 0]}
-                scale={[20, 20, 1]}
+                scale={[20, 20, 1.1]}
                 file={value.imagesContext.images[0].file}
               ></DecalWithImage>
             )}

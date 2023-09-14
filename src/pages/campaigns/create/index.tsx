@@ -11,6 +11,7 @@ export default function CampaignsPage() {
     <div className="max-w-[1280px] mx-auto flex flex-col gap-y-4 h-screen justify-center">
       <div className="w-full flex justify-end">
         <Button
+          className="text-black hover:text-white"
           onClick={() => router.push("/campaigns/create/1")}
           variant="default"
         >

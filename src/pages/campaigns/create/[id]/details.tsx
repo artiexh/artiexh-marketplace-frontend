@@ -17,13 +17,8 @@ export default function CampaignsPage() {
 
   return (
     <div className="max-w-[1280px] mx-auto flex flex-col gap-y-4 h-screen justify-center">
-      <div className="w-full flex justify-end">
-        <Button
-          onClick={() => router.push("/campaigns/create/1")}
-          variant="default"
-        >
-          Pick product
-        </Button>
+      <div className="w-full flex ">
+        <h1>Campaign 1</h1>
       </div>
       <div className="flex gap-x-11">
         <div className="provider-detail w-[500px] h-[680px] bg-white rounded-md"></div>
@@ -43,6 +38,7 @@ export default function CampaignsPage() {
                   actions={
                     <div className="w-full flex justify-between">
                       <Button
+                        className="text-black hover:text-white"
                         onClick={() =>
                           router.push(
                             `/campaigns/create/1/design?itemId=${item.id}`

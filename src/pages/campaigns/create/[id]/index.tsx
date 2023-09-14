@@ -74,7 +74,10 @@ export default function CampaignsPage() {
           <span className="text-2xl">Provider name</span>
         </div>
         <div className="right-side">
-          <Button onClick={() => router.push("/campaigns/create/1/details")}>
+          <Button
+            className="text-black hover:text-white"
+            onClick={() => router.push("/campaigns/create/1/details")}
+          >
             Start to design!
           </Button>
         </div>
@@ -114,6 +117,7 @@ export default function CampaignsPage() {
               actions={
                 <div className="w-full flex justify-between">
                   <Button
+                    className="text-black hover:text-white"
                     onClick={() => {
                       const list = getDesignItemsFromLocalStorage();
                       if (
@@ -155,6 +159,7 @@ export default function CampaignsPage() {
                     Add
                   </Button>
                   <Button
+                    className="text-black hover:text-white"
                     onClick={() => {
                       const list = getDesignItemsFromLocalStorage();
 
