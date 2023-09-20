@@ -3,6 +3,7 @@ import axiosClient from "../axiosClient";
 import { CartData } from "../types/Cart";
 import { CommonResponseBase } from "@/types/ResponseBase";
 import { Order, TotalOrder } from "@/types/Order";
+import { updateUserInformation } from "@/utils/user";
 
 export const updateCartItem = async (productId: string, quantity: number) => {
   let cartItems;
@@ -17,6 +18,7 @@ export const updateCartItem = async (productId: string, quantity: number) => {
     });
 
     cartItems = result;
+    await updateUserInformation();
   } catch (err) {
     console.log(err);
   }
@@ -32,8 +34,8 @@ export const deleteCartItem = async (productId: string[]) => {
         productIds: productId,
       },
     });
-
     cartItems = result;
+    await updateUserInformation();
   } catch (err) {
     console.log(err);
   }
@@ -49,6 +51,9 @@ export const checkout = async (values: CheckoutBody) => {
         values
       )
     ).data;
+
+    await updateUserInformation();
+
     return data;
   } catch (err) {
     console.log(err);
