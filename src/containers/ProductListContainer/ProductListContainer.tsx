@@ -11,7 +11,7 @@ import ProductPreviewCard from "@/components/Cards/ProductCard/ProductPreviewCar
 import { Badge, Button, Input, Select, Pagination } from "@mantine/core";
 import { MobileFilter, Sidebar } from "@/components/ProductList";
 import { FC, useEffect, useState } from "react";
-import { urlFormatter } from "@/utils/formatter";
+import { getQueryString } from "@/utils/formatter";
 import { useRouter } from "next/router";
 import MobileSort from "@/components/ProductList/MobileSort";
 import { useForm } from "@mantine/form";
@@ -31,6 +31,8 @@ const ProductListContainer: FC<ProductListContainerProps> = ({
   const router = useRouter();
   const params = router.query;
 
+  console.log(params);
+
   const [pagination, setPagination] = useState({
     pageSize: 8,
     pageNumber: 1,
@@ -45,10 +47,13 @@ const ProductListContainer: FC<ProductListContainerProps> = ({
     (key) =>
       axiosClient
         .get<CommonResponseBase<PaginationResponseBase<Product>>>(
-          urlFormatter("/product", {
-            ...pagination,
-            ...params,
-          })
+          `/product?${getQueryString(
+            {
+              ...pagination,
+              ...params,
+            },
+            []
+          )}`
         )
         .then((res) => res.data.data)
   );
@@ -65,9 +70,8 @@ const ProductListContainer: FC<ProductListContainerProps> = ({
     // For pagination
     setPagination((prev) => ({
       ...prev,
-      pageNumber: 1,
+      pageNumber: Number(params.pageNumber as string) || 1,
       sortDirection: (params.sortDirection as string) || prev.sortDirection,
-
       // sortBy: (params.sortBy as string) || prev.sortBy,
     }));
   }, [params]);
@@ -89,23 +93,26 @@ const ProductListContainer: FC<ProductListContainerProps> = ({
     // Update pagination
     setPagination((prev) => ({ ...prev, sortDirection: direction }));
     //  Format the URL
-    const url = urlFormatter("/product", {
-      ...pagination,
-      ...params,
-      // sortBy: key,
-      sortDirection: direction,
-    });
-    router.replace(url, undefined, { shallow: true });
+    const url = getQueryString(
+      {
+        ...pagination,
+        ...params,
+        // sortBy: key,
+        sortDirection: direction,
+      },
+      []
+    );
+    router.replace(`/product?${url}`, undefined, { shallow: true });
   };
 
   const submitHandler = (filters = {}) => {
-    const url = urlFormatter("/product", { ...filters, ...pagination });
-    router.replace(url, undefined, { shallow: true });
+    const url = getQueryString({ ...filters, ...pagination }, []);
+    router.replace(`/product?${url}`, undefined, { shallow: true });
   };
 
   const resetHandler = () => {
+    router.replace(`/product`, undefined, { shallow: true });
     setValues(DEFAULT_FILTERS);
-    submitHandler();
   };
 
   const openOverlay = (type: "filter" | "sortBy") => {
@@ -203,12 +210,18 @@ const ProductListContainer: FC<ProductListContainerProps> = ({
           <div className="flex justify-center mt-6 mb-20">
             <Pagination
               value={pagination.pageNumber}
-              onChange={(e) =>
-                setPagination({
-                  ...pagination,
-                  pageNumber: e,
-                })
-              }
+              onChange={(e) => {
+                const url = getQueryString(
+                  {
+                    ...pagination,
+                    ...params,
+                    pageNumber: e,
+                  },
+                  []
+                );
+                router.replace(`/product?${url}`, undefined, { shallow: true });
+                setPagination((prev) => ({ ...prev, pageNumber: e }));
+              }}
               total={products?.totalPage ?? 0}
             />
           </div>
