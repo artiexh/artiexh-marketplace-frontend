@@ -65,7 +65,7 @@ export const getPaymentLink = async (id: string) => {
   try {
     const { data } = (
       await axiosClient.get<CommonResponseBase<{ paymentUrl: string }>>(
-        `order/${id}/payment`
+        `order/${id}/payment?confirmUrl=${window.location.origin}/checkout/confirm`
       )
     ).data;
 
