@@ -9,6 +9,12 @@ export const navSections = [
         href: "/my-shop/products",
       },
       {
+        id: "DESIGN INVENTORY",
+        label: "Design Inventory",
+        iconPath: "dashboard_icon.svg",
+        href: "/my-shop/design-inventory",
+      },
+      {
         id: "ORDERS",
         label: "Orders",
         iconPath: "tables_icon.svg",
