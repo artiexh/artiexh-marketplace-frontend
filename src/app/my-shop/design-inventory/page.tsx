@@ -1,93 +1,133 @@
 "use client";
 
-import TableContainer from "@/containers/TableContainer";
-import { Button, Input } from "@mantine/core";
-import { IconPlus, IconSearch } from "@tabler/icons-react";
-import { usePathname, useRouter } from "next/navigation";
-import shopProductColumns from "@/constants/Columns/shopProductColumns";
+import { fetcher } from "@/services/backend/axiosClient";
+import { SimpleDesignItem } from "@/types/DesignItem";
+import {
+  CommonResponseBase,
+  PaginationResponseBase,
+} from "@/types/ResponseBase";
+import { Button } from "@mantine/core";
+import clsx from "clsx";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { getQueryString } from "@/utils/formatter";
-import axiosClient from "@/services/backend/axiosClient";
-import { ROUTE } from "@/constants/route";
+import useSWR from "swr";
 
 const DesignInventoryPage = () => {
   const router = useRouter();
-  const pathname = usePathname();
+  const [selectedDesign, setSelectedDesign] = useState<
+    SimpleDesignItem | undefined
+  >();
+  const { data: response, isLoading } = useSWR<
+    CommonResponseBase<PaginationResponseBase<SimpleDesignItem>>
+  >("/inventory-item", () => fetcher("/inventory-item"));
 
-  const [params, setParams] = useState<{ [key: string]: any }>({
-    pageSize: 5,
-    pageNumber: 1,
-    sortBy: null,
-    sortDirection: "ASC",
-    statuses: null,
-    from: null,
-    to: null,
-    minPrice: null,
-    maxPrice: null,
-    averageRate: null,
-    provinceId: null,
-    categoryId: null,
-    keyword: null,
-  });
+  if (isLoading) return null;
 
-  const setField = (key: string, value: any) => {
-    setParams({
-      ...params,
-      [key]: value,
-    });
-  };
-
-  return (
-    <div>
-      <div className="flex justify-between mb-4">
-        <Input
-          icon={<IconSearch />}
-          onChange={(e) => {
-            setField("keyword", e.target.value);
-            router.push(
-              `${pathname}?${getQueryString(
-                { ...params, keyword: e.target.value },
-                []
-              )}`
-            );
-          }}
-        />
+  if (response?.data.totalSize === 0) {
+    return (
+      <div className="h-screen w-full flex flex-col justify-center items-center">
+        <h1>You have no design item. Create your first design now!</h1>
         <Button
-          leftIcon={<IconPlus />}
-          type="button"
-          onClick={() => router.push(`/product-design`)}
-          variant="outline"
+          className="mt-5"
+          onClick={() => router.push("/product-design")}
+          variant="default"
         >
-          Design new product
+          Create new design
         </Button>
       </div>
-      <TableContainer
-        fetchKey="products"
-        fetcher={async (currentPage) => {
-          setField("pageNumber", currentPage);
-          return (
-            await axiosClient.get(
-              `/artist/product?${getQueryString(
-                { ...params, pageNumber: currentPage },
-                []
-              )}`
-            )
-          ).data;
-        }}
-        columns={shopProductColumns}
-        pagination
-        tableProps={{ verticalSpacing: "sm", className: "font-semibold" }}
-        className="mt-2.5"
-        header={(response) => (
-          <>
-            <div className="text-3xl font-bold">Products</div>
-            <div className="text-[#AFAFAF] mt-1">
-              {/* TODO: Replace with API call later or filter based on response */}
-              {response?.items.length} products need to be updated their status
+    );
+  }
+
+  return (
+    <div className="h-screen w-full flex flex-col justify-center items-center">
+      <div className="flex w-full justify-end">
+        <Button
+          onClick={() => router.push("/product-design")}
+          variant="default"
+        >
+          Create new design
+        </Button>
+      </div>
+      <div className="w-full flex gap-x-5">
+        <div className="detail-wrapper flex-1">
+          {typeof selectedDesign === "undefined" ? (
+            <h1>Pick a design to see detail!</h1>
+          ) : (
+            <div className="design-detail-card p-4 bg-white rounded-md">
+              <div className="w-full aspect-video bg-primary rounded-md" />
+              <h1>{selectedDesign.name}</h1>
+              <div className="flex w-full">
+                <div>
+                  <strong>Product base:</strong>
+                  <span>{selectedDesign.variant.productBase.name}</span>
+                </div>
+              </div>
+              <div>
+                <h3 className="text-xl font-semibold">Varaints</h3>
+                <div className="grid grid-cols-2 gap-x-2 mt-2">
+                  {selectedDesign.variant.variantCombinations.map(
+                    (combination) => {
+                      const combinationOption =
+                        selectedDesign.variant.productBase.productOptions.find(
+                          (option) => option.id === combination.optionId
+                        );
+                      return (
+                        <div className="col-span-1" key={combination.optionId}>
+                          <strong>{combinationOption?.name}: </strong>
+                          <span>
+                            {
+                              combinationOption?.optionValues.find(
+                                (value) =>
+                                  value.id === combination.optionValueId
+                              )?.name
+                            }
+                          </span>
+                        </div>
+                      );
+                    }
+                  )}
+                </div>
+              </div>
+              <div className="actions w-full flex justify-end">
+                <Button
+                  className="text-black hover:text-white"
+                  onClick={() =>
+                    router.push(`/product-design/${selectedDesign.id}`)
+                  }
+                >
+                  Edit!
+                </Button>
+              </div>
             </div>
-          </>
-        )}
-      />
+          )}
+        </div>
+        <div className="inventory-list flex-1">
+          {response?.data.items?.map((designItem) => (
+            <div
+              onClick={() => setSelectedDesign(designItem)}
+              key={designItem.id}
+              className={clsx(
+                "bg-white rounded-md p-3.5 cursor-pointer",
+                selectedDesign?.id === designItem.id && "border border-primary"
+              )}
+            >
+              <div className="size-description flex gap-x-3">
+                <div className="w-20 aspect-square bg-primary rounded-md" />
+                <div className="flex flex-col gap-y-3">
+                  <div className="text-2xl font-semibold">
+                    {designItem.name}
+                  </div>
+                  <div>
+                    <span>
+                      Product base: {designItem.variant.productBase.name}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
     </div>
   );
 };

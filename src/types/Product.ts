@@ -5,6 +5,7 @@ import {
   PRODUCT_TYPE_ENUM,
 } from "@/constants/common";
 import { User } from "./User";
+import { Attaches } from "./common";
 
 export type Tag = {
   id: string;
@@ -58,14 +59,6 @@ export type ArtistProductColumnType = Pick<
   Product,
   "name" | "publishDatetime" | "maxItemsPerOrder" | "status" | "thumbnailUrl"
 >;
-
-export type Attaches = {
-  id: string;
-  url: string;
-  type: ATTACHMENT_TYPE_ENUM;
-  title: string;
-  description?: string;
-};
 
 export type PaymentMethod = {
   id: string;

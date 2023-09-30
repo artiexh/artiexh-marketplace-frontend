@@ -11,6 +11,8 @@ const Layout = ({ children }: ILayoutProps) => {
   const pathname = usePathname();
   const isAuthPage = Object.values(AUTH_ROUTE).includes(pathname || "");
 
+  if (pathname?.includes("product-design")) return children;
+
   return (
     <div>
       <NavBar />

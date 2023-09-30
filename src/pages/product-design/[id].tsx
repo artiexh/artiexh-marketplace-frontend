@@ -1,23 +1,6 @@
-import {
-  Box,
-  Decal,
-  OrbitControls,
-  useFBX,
-  useGLTF,
-  useSurfaceSampler,
-  useTexture,
-} from "@react-three/drei";
-import { Canvas, useFrame } from "@react-three/fiber";
-import React, {
-  createContext,
-  useContext,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
-import { Mesh } from "three";
-import { useLoader } from "@react-three/fiber";
-import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
+import { fetcher } from "@/services/backend/axiosClient";
+import { SimpleDesignItem } from "@/types/DesignItem";
+import { CommonResponseBase } from "@/types/ResponseBase";
 import {
   Button,
   ColorPicker,
@@ -25,165 +8,28 @@ import {
   Group,
   Image,
   SegmentedControl,
-  Text,
 } from "@mantine/core";
-import {
-  IconArrowLeft,
-  IconMenu2,
-  IconPalette,
-  IconPhotoEdit,
-} from "@tabler/icons-react";
+import { Canvas } from "@react-three/fiber";
+import { IconPalette, IconPhotoEdit } from "@tabler/icons-react";
 import { IconAdjustmentsAlt } from "@tabler/icons-react";
+import { IconArrowLeft, IconMenu2 } from "@tabler/icons-react";
+import { useRouter } from "next/router";
+import { createContext, useContext, useEffect, useRef, useState } from "react";
+import useSWR from "swr";
+import { TShirtContainer } from "./portal";
 
-export function ToteBagContainer() {
-  const { value } = useContext(MetaContext);
-  const glbBody = useLoader(GLTFLoader, "/3d/tote-bag/tote_body.glb");
-  const glbStrap = useLoader(GLTFLoader, "/3d/tote-bag/tote_strap.glb");
+export default function DesignPortal() {
+  const router = useRouter();
 
-  useFrame(() => {
-    // decalRef.current?.translateY(0.001);
-  });
+  const { id } = router.query;
 
-  const { nodes: bodyNodes, materials: bodyMaterials } = glbBody;
-  console.log("🚀 ~ file: portal.tsx:27 ~ Playground ~ bodyNodes:", bodyNodes);
-  const { nodes: strapNodes, materials: strapMaterials } = glbStrap;
-
-  return (
-    <>
-      <OrbitControls enableDamping enablePan enableRotate enableZoom />
-      <group>
-        <mesh
-          key="tote_strap"
-          castShadow
-          receiveShadow
-          geometry={strapNodes["tote_strap"].geometry}
-          material={strapMaterials["tote_strap"]}
-          position={[0, -25, 0]}
-        >
-          <meshStandardMaterial color={value.palette.strap} />
-        </mesh>
-        <mesh
-          key="embroidery_line"
-          castShadow
-          receiveShadow
-          geometry={bodyNodes["embroidery_line"].geometry}
-          material={bodyMaterials["embroidery_line"]}
-          position={[0, -25, 0]}
-        >
-          <meshStandardMaterial color={value.palette.embroideryLine} />
-        </mesh>
-        <mesh
-          key="tote_body"
-          castShadow
-          receiveShadow
-          geometry={bodyNodes["tote_bag"].geometry}
-          material={bodyMaterials["tote_bag"]}
-          position={[0, -25, 0]}
-        >
-          <meshStandardMaterial color={value.palette.body} />
-          {value.imagesContext.combination === "FULL_MIDDLE" &&
-            value.imagesContext.images[0] && (
-              <DecalWithImage
-                debug
-                position={[0, 0, 2]}
-                rotation={[-0.001, 0, 0]}
-                scale={[20, 20, 1]}
-                file={value.imagesContext.images[0].file}
-              ></DecalWithImage>
-            )}
-          {value.imagesContext.combination === "BOTTOM_LEFT_CORNER" &&
-            value.imagesContext.images[0] && (
-              <DecalWithImage
-                position={[-12, 5.5, 1.45]}
-                rotation={[-0.001, 0, 0]}
-                scale={[7, 7, 1]}
-                file={value.imagesContext.images[0].file}
-              ></DecalWithImage>
-            )}
-        </mesh>
-      </group>
-    </>
-  );
-}
-
-export function TShirtContainer() {
-  const { value } = useContext(MetaContext);
-  const glbBody = useLoader(GLTFLoader, "/3d/tshirt/tshirt.glb");
-  const texture = useTexture("/assets/chisataki.jpg");
-
-  useFrame(() => {
-    // decalRef.current?.translateY(0.001);
-  });
-
-  const { nodes: bodyNodes, materials: bodyMaterials } = glbBody;
-  console.log("🚀 ~ file: portal.tsx:27 ~ Playground ~ bodyNodes:", bodyNodes);
-
-  return (
-    <>
-      <OrbitControls enableDamping enablePan enableRotate enableZoom />
-      <group>
-        <mesh
-          key="tshirt"
-          castShadow
-          receiveShadow
-          geometry={bodyNodes["tshirt"].geometry}
-          material={bodyMaterials["tshirt"]}
-          position={[0, 0, 0]}
-        >
-          <meshStandardMaterial color={value.palette.body} />
-          {value.imagesContext.combination === "FULL_MIDDLE" &&
-            value.imagesContext.images[0] && (
-              <DecalWithImage
-                scale={[0.15, 0.15, 0.09]}
-                position={[0.06, -0.24, 0.1]}
-                rotation={[-0.001, 0, 0]}
-                file={value.imagesContext.images[0].file}
-              ></DecalWithImage>
-            )}
-          {/* {value.imagesContext.combination === "FULL_MIDDLE" &&
-            value.imagesContext.images[0] && (
-              <DecalWithImage
-                position={[0, 20, 0.96]}
-                
-                scale={[20, 20, 1]}
-                file={value.imagesContext.images[0].file}
-              ></DecalWithImage>
-            )} */}
-          {/* {value.imagesContext.combination === "BOTTOM_LEFT_CORNER" &&
-            value.imagesContext.images[0] && (
-              <DecalWithImage
-                position={[-12, 5.5, 1.45]}
-                rotation={[-0.001, 0, 0]}
-                scale={[7, 7, 1]}
-                file={value.imagesContext.images[0].file}
-              ></DecalWithImage>
-            )} */}
-        </mesh>
-      </group>
-    </>
-  );
-}
-
-function DecalWithImage(
-  props: React.ComponentProps<typeof Decal> & { file: string }
-) {
-  const { file, ...rest } = props;
-  const decalRef = useRef<Mesh | null>(null);
-  const texture = useTexture(file);
-
-  return <Decal {...rest} map={texture} ref={decalRef}></Decal>;
-}
-
-const createImageUrl = (buffer, type) => {
-  const blob = new Blob([buffer], { type });
-  const urlCreator = window.URL || window.webkitURL;
-  const imageUrl = urlCreator.createObjectURL(blob);
-  console.log(imageUrl);
-  return imageUrl;
-};
-
-export default function PortalPage() {
   const [tab, setTab] = useState<"META" | "IMAGE" | "PALETTE">("META");
+
+  const { data: response, isLoading } = useSWR<
+    CommonResponseBase<SimpleDesignItem>
+  >(["/design-inventory", id], () => fetcher(`/inventory-item/${id}`));
+
+  console.log("🚀 ~ file: [id].tsx:13 ~ DesignPortal ~ response:", response);
 
   return (
     <MetaProvider>
@@ -230,7 +76,7 @@ export default function PortalPage() {
         <Canvas className="w-full h-full">
           <ambientLight />
           <pointLight position={[10, 10, 10]} />
-          <ToteBagContainer />
+          <TShirtContainer />
         </Canvas>
       </div>
     </MetaProvider>
@@ -415,6 +261,14 @@ function ConfigPaletteTab() {
     </div>
   );
 }
+
+const createImageUrl = (buffer: BlobPart, type: string) => {
+  const blob = new Blob([buffer], { type });
+  const urlCreator = window.URL || window.webkitURL;
+  const imageUrl = urlCreator.createObjectURL(blob);
+  console.log(imageUrl);
+  return imageUrl;
+};
 
 function ConfigImageTab() {
   const { value, uploadImages, changeImageMode } = useContext(MetaContext);
