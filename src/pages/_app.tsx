@@ -20,6 +20,7 @@ const nunito = Nunito({
 
 export default function App({ Component, pageProps }: AppProps) {
   const pathname = usePathname();
+  console.log("🚀 ~ file: _app.tsx:23 ~ App ~ pathname:", pathname);
   const isAuthPage = pathname && Object.values(AUTH_ROUTE).includes(pathname);
   return (
     <MantineProvider

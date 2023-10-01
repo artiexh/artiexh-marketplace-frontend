@@ -6,7 +6,7 @@ import {
   CommonResponseBase,
   PaginationResponseBase,
 } from "@/types/ResponseBase";
-import { Button } from "@mantine/core";
+import { Button, Pagination } from "@mantine/core";
 import clsx from "clsx";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -17,6 +17,13 @@ const DesignInventoryPage = () => {
   const [selectedDesign, setSelectedDesign] = useState<
     SimpleDesignItem | undefined
   >();
+
+  const [params, setParams] = useState({
+    pageSize: 8,
+    pageNumber: 1,
+    category: null,
+    sortDirection: "ASC",
+  });
   const { data: response, isLoading } = useSWR<
     CommonResponseBase<PaginationResponseBase<SimpleDesignItem>>
   >("/inventory-item", () => fetcher("/inventory-item"));
@@ -39,7 +46,7 @@ const DesignInventoryPage = () => {
   }
 
   return (
-    <div className="h-screen w-full flex flex-col justify-center items-center">
+    <div className="h-screen w-full flex flex-col mt-10">
       <div className="flex w-full justify-end">
         <Button
           onClick={() => router.push("/product-design")}
@@ -48,44 +55,49 @@ const DesignInventoryPage = () => {
           Create new design
         </Button>
       </div>
-      <div className="w-full flex gap-x-5">
-        <div className="detail-wrapper flex-1">
+      <div className="w-full flex gap-x-5 mt-4">
+        <div className="detail-wrapper flex-1 flex justify-center items-center">
           {typeof selectedDesign === "undefined" ? (
-            <h1>Pick a design to see detail!</h1>
+            <h1 className="mb-48">Pick a design to see detail!</h1>
           ) : (
-            <div className="design-detail-card p-4 bg-white rounded-md">
-              <div className="w-full aspect-video bg-primary rounded-md" />
-              <h1>{selectedDesign.name}</h1>
-              <div className="flex w-full">
-                <div>
-                  <strong>Product base:</strong>
-                  <span>{selectedDesign.variant.productBase.name}</span>
-                </div>
-              </div>
+            <div className="design-detail-card p-4 bg-white rounded-md w-full h-full flex flex-col justify-between">
               <div>
-                <h3 className="text-xl font-semibold">Varaints</h3>
-                <div className="grid grid-cols-2 gap-x-2 mt-2">
-                  {selectedDesign.variant.variantCombinations.map(
-                    (combination) => {
-                      const combinationOption =
-                        selectedDesign.variant.productBase.productOptions.find(
-                          (option) => option.id === combination.optionId
+                <div className="w-full aspect-video bg-primary rounded-md" />
+                <h1 className="mt-4">{selectedDesign.name}</h1>
+                <div className="flex w-full">
+                  <div>
+                    <strong>Product base:</strong>
+                    <span>{selectedDesign.variant.productBase.name}</span>
+                  </div>
+                </div>
+                <div>
+                  <h3 className="text-xl font-semibold">Varaints</h3>
+                  <div className="grid grid-cols-2 gap-x-2 mt-2">
+                    {selectedDesign.variant.variantCombinations.map(
+                      (combination) => {
+                        const combinationOption =
+                          selectedDesign.variant.productBase.productOptions.find(
+                            (option) => option.id === combination.optionId
+                          );
+                        return (
+                          <div
+                            className="col-span-1"
+                            key={combination.optionId}
+                          >
+                            <strong>{combinationOption?.name}: </strong>
+                            <span>
+                              {
+                                combinationOption?.optionValues.find(
+                                  (value) =>
+                                    value.id === combination.optionValueId
+                                )?.name
+                              }
+                            </span>
+                          </div>
                         );
-                      return (
-                        <div className="col-span-1" key={combination.optionId}>
-                          <strong>{combinationOption?.name}: </strong>
-                          <span>
-                            {
-                              combinationOption?.optionValues.find(
-                                (value) =>
-                                  value.id === combination.optionValueId
-                              )?.name
-                            }
-                          </span>
-                        </div>
-                      );
-                    }
-                  )}
+                      }
+                    )}
+                  </div>
                 </div>
               </div>
               <div className="actions w-full flex justify-end">
@@ -101,7 +113,7 @@ const DesignInventoryPage = () => {
             </div>
           )}
         </div>
-        <div className="inventory-list flex-1">
+        <div className="inventory-list flex-1 flex flex-col gap-y-4">
           {response?.data.items?.map((designItem) => (
             <div
               onClick={() => setSelectedDesign(designItem)}
@@ -126,6 +138,18 @@ const DesignInventoryPage = () => {
               </div>
             </div>
           ))}
+          <div className="flex justify-center mt-6 mb-20">
+            <Pagination
+              value={params.pageNumber}
+              onChange={(e) => {
+                setParams((prev) => ({
+                  ...prev,
+                  pageNumber: e,
+                }));
+              }}
+              total={response?.data?.totalPage ?? 0}
+            />
+          </div>
         </div>
       </div>
     </div>

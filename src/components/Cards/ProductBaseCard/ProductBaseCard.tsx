@@ -22,7 +22,7 @@ export default function ProductBaseCard({
   return (
     <div
       className={clsx(
-        "bg-white rounded-2xl aspect-3/5 w-full cursor-pointer hover:border-primary hover:border",
+        "bg-white rounded-2xl aspect-3/5 w-full cursor-pointer",
         classNames?.root
       )}
       onClick={onClick}

@@ -106,17 +106,15 @@ export function ToteBagContainer() {
   );
 }
 
-export function TShirtContainer() {
+export function TShirtContainer({ children }: { children?: React.ReactNode }) {
   const { value } = useContext(MetaContext);
   const glbBody = useLoader(GLTFLoader, "/3d/tshirt/tshirt.glb");
-  const texture = useTexture("/assets/chisataki.jpg");
 
   useFrame(() => {
     // decalRef.current?.translateY(0.001);
   });
 
   const { nodes: bodyNodes, materials: bodyMaterials } = glbBody;
-  console.log("🚀 ~ file: portal.tsx:27 ~ Playground ~ bodyNodes:", bodyNodes);
 
   return (
     <>
@@ -131,33 +129,7 @@ export function TShirtContainer() {
           position={[0, 0, 0]}
         >
           <meshStandardMaterial color={value.palette.body} />
-          {value.imagesContext.combination === "FULL_MIDDLE" &&
-            value.imagesContext.images[0] && (
-              <DecalWithImage
-                scale={[0.15, 0.15, 0.09]}
-                position={[0.06, -0.24, 0.1]}
-                rotation={[-0.001, 0, 0]}
-                file={value.imagesContext.images[0].file}
-              ></DecalWithImage>
-            )}
-          {/* {value.imagesContext.combination === "FULL_MIDDLE" &&
-            value.imagesContext.images[0] && (
-              <DecalWithImage
-                position={[0, 20, 0.96]}
-                
-                scale={[20, 20, 1]}
-                file={value.imagesContext.images[0].file}
-              ></DecalWithImage>
-            )} */}
-          {/* {value.imagesContext.combination === "BOTTOM_LEFT_CORNER" &&
-            value.imagesContext.images[0] && (
-              <DecalWithImage
-                position={[-12, 5.5, 1.45]}
-                rotation={[-0.001, 0, 0]}
-                scale={[7, 7, 1]}
-                file={value.imagesContext.images[0].file}
-              ></DecalWithImage>
-            )} */}
+          {children}
         </mesh>
       </group>
     </>
