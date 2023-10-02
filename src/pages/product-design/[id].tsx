@@ -1,37 +1,33 @@
 import { fetcher } from "@/services/backend/axiosClient";
 import { SimpleDesignItem } from "@/types/DesignItem";
+import { ImageConfig, SimpleProductBase } from "@/types/ProductBase";
 import { CommonResponseBase } from "@/types/ResponseBase";
+import { Accordion, Button, FileButton, Group } from "@mantine/core";
+import { useForm } from "@mantine/form";
+import { Decal, useTexture } from "@react-three/drei";
+import { Canvas } from "@react-three/fiber";
 import {
-  Accordion,
-  Button,
-  ColorPicker,
-  FileButton,
-  Group,
-  SegmentedControl,
-} from "@mantine/core";
-import { Canvas, useStore } from "@react-three/fiber";
-import { IconPalette, IconPhotoEdit } from "@tabler/icons-react";
-import { IconAdjustmentsAlt } from "@tabler/icons-react";
-import { IconArrowLeft, IconMenu2 } from "@tabler/icons-react";
+  IconAdjustmentsAlt,
+  IconArrowLeft,
+  IconFileCheck,
+  IconMenu2,
+  IconPhotoEdit,
+} from "@tabler/icons-react";
+import clsx from "clsx";
+import Image from "next/image";
 import { useRouter } from "next/router";
 import {
   Dispatch,
+  ImgHTMLAttributes,
   SetStateAction,
-  createContext,
-  useContext,
   useEffect,
   useRef,
   useState,
 } from "react";
 import useSWR from "swr";
-import { TShirtContainer } from "./portal";
-import { ImageConfig, SimpleProductBase } from "@/types/ProductBase";
-import logoImage from "../../../public/assets/logo.svg";
-import Image from "next/image";
-import clsx from "clsx";
-import { useForm } from "@mantine/form";
-import { Decal, useTexture } from "@react-three/drei";
 import { Mesh } from "three";
+import logoImage from "../../../public/assets/logo.svg";
+import { TShirtContainer } from "./portal";
 
 function ConfigMenu({
   tab,
@@ -73,6 +69,28 @@ function ConfigMenu({
   );
 }
 
+function DecalWithImageContainer(
+  props: React.ComponentProps<typeof Decal> & {
+    file: string | File;
+    name: string;
+  }
+) {
+  const { file, name, ...rest } = props;
+  const { data, isLoading } = useSWR([name], async () => {
+    if (typeof file === "string") return file;
+    const { type } = file;
+    const buffer = await file.arrayBuffer();
+    const imageUrl = createImageUrl(buffer, type);
+    return imageUrl;
+  });
+
+  if (isLoading) return null;
+
+  if (typeof data !== "string") return null;
+
+  return <DecalWithImage {...rest} file={data} />;
+}
+
 function DecalWithImage(
   props: React.ComponentProps<typeof Decal> & { file: string }
 ) {
@@ -81,6 +99,29 @@ function DecalWithImage(
   const texture = useTexture(file);
 
   return <Decal {...rest} map={texture} ref={decalRef}></Decal>;
+}
+
+function ImageLoaderForFile({
+  src,
+  name,
+  ...rest
+}: Omit<ImgHTMLAttributes<HTMLImageElement>, "src"> & {
+  src: File | string;
+  name: string;
+}) {
+  const { data, isLoading } = useSWR([name], async () => {
+    if (src instanceof File) {
+      const { type } = src;
+      const buffer = await src.arrayBuffer();
+      const imageUrl = createImageUrl(buffer, type);
+      return imageUrl;
+    }
+    return src;
+  });
+
+  if (isLoading) return null;
+
+  return <img {...rest} src={data} />;
 }
 
 export default function DesignPortal() {
@@ -99,8 +140,8 @@ export default function DesignPortal() {
   const form = useForm<{
     sets: Array<{
       code: string;
-      manufacturingImage?: any;
-      mockupImage?: any;
+      manufacturingImage?: string | File;
+      mockupImage?: string | File;
     }>;
   }>({
     initialValues: {
@@ -133,23 +174,22 @@ export default function DesignPortal() {
         <ambientLight />
         <pointLight position={[10, 10, 10]} />
         <TShirtContainer>
-          {combination?.images.map(
-            (set) =>
-              form.values.sets.find((i) => i.code === set.code)
-                ?.mockupImage && (
-                <DecalWithImage
-                  key={set.code}
-                  debug
-                  position={set.position}
-                  rotation={set.rotate}
-                  scale={set.scale}
-                  file={
-                    form.values.sets.find((i) => i.code === set.code)
-                      ?.mockupImage
-                  }
-                ></DecalWithImage>
-              )
-          )}
+          {combination?.images.map((set) => {
+            const image = form.values.sets.find(
+              (i) => i.code === set.code
+            )?.mockupImage;
+            return image ? (
+              <DecalWithImageContainer
+                name={set.code}
+                key={set.code}
+                debug
+                position={set.position}
+                rotation={set.rotate}
+                scale={set.scale}
+                file={image}
+              ></DecalWithImageContainer>
+            ) : null;
+          })}
         </TShirtContainer>
       </Canvas>
     </div>
@@ -209,7 +249,11 @@ function ImageCombinationPicker({
               >
                 <span className="font-semibold">{el.name}</span>
                 {combination?.code === el.code ? (
-                  <Image src={logoImage} className="w-6 aspect-square" />
+                  <Image
+                    src={logoImage}
+                    className="w-6 aspect-square"
+                    alt="logo"
+                  />
                 ) : (
                   <div></div>
                 )}
@@ -242,21 +286,23 @@ function ImageCombinationPicker({
                       {imageSet.name}
                     </Accordion.Control>
                     <Accordion.Panel>
-                      {el.mockupImage && <img src={el.mockupImage} />}
                       <Group position="center">
+                        <h3>Mockup image</h3>
+                        {el.mockupImage && (
+                          <ImageLoaderForFile
+                            name={imageSet.code}
+                            src={el.mockupImage}
+                          />
+                        )}
                         <FileButton
                           key={imageSet.code}
                           onChange={async (e) => {
                             const file = e;
                             if (!file) return;
-                            const { type } = file;
-                            const buffer = await file.arrayBuffer();
-                            const imageUrl = createImageUrl(buffer, type);
                             form.setFieldValue(
                               `sets.${index}.mockupImage`,
-                              imageUrl
+                              file
                             );
-                            console.log(form.values);
                           }}
                           accept="image/png,image/jpeg"
                         >
@@ -270,6 +316,40 @@ function ImageCombinationPicker({
                           )}
                         </FileButton>
                       </Group>
+                      <Group position="center">
+                        <h3>Manufacturing image</h3>
+                        <div className="flex justify-between items-center w-full">
+                          {el.manufacturingImage && (
+                            <div className="w-1/2 flex gap-x-1">
+                              <IconFileCheck className="w-6 aspect-square text-green-600 " />
+                              <span className="whitespace-nowrap overflow-hidden text-ellipsis w-3/4">
+                                {(el.manufacturingImage as File)?.name}
+                              </span>
+                            </div>
+                          )}
+                          <FileButton
+                            key={imageSet.code}
+                            onChange={async (e) => {
+                              const file = e;
+                              if (!file) return;
+                              form.setFieldValue(
+                                `sets.${index}.manufacturingImage`,
+                                file
+                              );
+                            }}
+                            accept="image/png,image/jpeg"
+                          >
+                            {(props) => (
+                              <Button
+                                {...props}
+                                className=" px-2 rounded-full bg-white text-black border border-black shadow-none outline-none hover:bg-black hover:text-white"
+                              >
+                                Upload image
+                              </Button>
+                            )}
+                          </FileButton>
+                        </div>
+                      </Group>
                     </Accordion.Panel>
                   </Accordion.Item>
                 );
@@ -281,54 +361,3 @@ function ImageCombinationPicker({
     </div>
   );
 }
-
-// function ConfigImageTab() {
-//   const { value, uploadImages, changeImageMode } = useContext(MetaContext);
-//   const resetRef = useRef<() => void>(null);
-
-//   useEffect(() => {
-//     resetRef.current?.();
-//   }, []);
-
-//   return (
-//     <div className="config-tab bg-white w-72 h-4/5 right-5 top-[10%] fixed z-10 rounded-lg">
-//       <SegmentedControl
-//         value={value.imagesContext.combination}
-//         onChange={changeImageMode}
-//         data={[
-//           { label: "Full middle", value: "FULL_MIDDLE" },
-//           { label: "Bottom left", value: "BOTTOM_LEFT_CORNER" },
-//         ]}
-//       />
-//       <h3>Mode: {value.imagesContext.combination}</h3>
-//       {value.imagesContext.images[0] && (
-//         <Image src={value.imagesContext.images[0].file} />
-//       )}
-//       <Group position="center">
-//         <FileButton
-//           key={value.imagesContext.combination}
-//           resetRef={resetRef}
-//           onChange={async (e) => {
-//             const file = e;
-//             console.log("🚀 ~ file: portal.tsx:375 ~ onChange={ ~ file:", file);
-//             if (!file) return;
-//             const { type } = file;
-//             const buffer = await file.arrayBuffer();
-//             const imageUrl = createImageUrl(buffer, type);
-//             uploadImages((prev) => [{ file: imageUrl }]);
-//           }}
-//           accept="image/png,image/jpeg"
-//         >
-//           {(props) => (
-//             <Button
-//               {...props}
-//               className="px-2 mt-3 rounded-full bg-white text-black border-none shadow-none outline-none hover:bg-black hover:text-white"
-//             >
-//               Upload image
-//             </Button>
-//           )}
-//         </FileButton>
-//       </Group>
-//     </div>
-//   );
-// }

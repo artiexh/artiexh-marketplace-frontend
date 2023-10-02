@@ -18,7 +18,7 @@ const AuthGuard = () => {
     const validate = async () => {
       try {
         const { data } = await axiosClient.get<CommonResponseBase<User>>(
-          "https://api.artiexh.com/api/v1/account/me"
+          "/account/me"
         );
 
         setUser(data.data);

@@ -7,7 +7,7 @@ import { User } from "@/types/User";
 export const updateUserInformation = async () => {
   try {
     const { data } = await axiosClient.get<CommonResponseBase<User>>(
-      "https://api.artiexh.com/api/v1/account/me"
+      "/account/me"
     );
 
     setUser(data.data);

@@ -1,13 +1,12 @@
 import ProductBaseCard from "@/components/Cards/ProductBaseCard/ProductBaseCard";
-import axiosClient, { fetcher } from "@/services/backend/axiosClient";
-import { createDesignItemApi } from "@/services/backend/services/designInventory";
+import { fetcher } from "@/services/backend/axiosClient";
 import { ProductBaseDetail, SimpleProductBase } from "@/types/ProductBase";
 import { SimpleProductVariant } from "@/types/ProductVariant";
 import {
   CommonResponseBase,
   PaginationResponseBase,
 } from "@/types/ResponseBase";
-import { currencyFormatter, getQueryString } from "@/utils/formatter";
+import { currencyFormatter } from "@/utils/formatter";
 import { Carousel } from "@mantine/carousel";
 import { Button, Modal, Pagination } from "@mantine/core";
 import { UseFormReturnType, useForm } from "@mantine/form";
@@ -19,6 +18,7 @@ import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
 import useSWR from "swr";
 import defaultImg from "../../../public/assets/default-thumbnail.jpg";
+import { createDesignItemApi } from "@/services/backend/services/designInventory";
 
 type SidebarProps = {
   form: UseFormReturnType<Partial<any>>;
@@ -165,7 +165,12 @@ function ProductBaseDetailModalContent({
             {!productBase?.attaches.length ? (
               <Carousel.Slide>
                 <div className="flex h-[460px] bg-white">
-                  <Image src={defaultImg} className="object-contain" fill />
+                  <Image
+                    src={defaultImg}
+                    className="object-contain"
+                    fill
+                    alt="default"
+                  />
                 </div>
               </Carousel.Slide>
             ) : null}
@@ -225,7 +230,6 @@ function VariantAndProviderPicker({
       params.set("productBaseId", productBase.id.toString());
 
       Object.entries(queryObject).forEach(([key, value]) => {
-        params.append("optionIds", key);
         params.append("optionValueIds", value);
       });
       console.log("🚀 ~ file: index.tsx:145 ~ params:", params);
@@ -236,6 +240,20 @@ function VariantAndProviderPicker({
   useEffect(() => {
     mutate();
   }, [queryObject]);
+
+  const createDesignItem = async (variantId: string) => {
+    try {
+      const { data: res } = await createDesignItemApi({
+        variantId: variantId,
+        name: "Untitled",
+      });
+      if (res.status === 200) {
+        router.push(`/product-design/${res.data.id}`);
+      }
+    } catch (e) {
+      console.log("🚀 ~ file: index.tsx:247 ~ createDesignItem ~ e:", e);
+    }
+  };
 
   return (
     <div className="w-full flex flex-col gap-y-5">
