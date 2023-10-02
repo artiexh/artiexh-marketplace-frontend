@@ -2,22 +2,38 @@
 
 import DesignItemCard from "@/components/Cards/DesignItemCard/DesignItemCard";
 import { fetcher } from "@/services/backend/axiosClient";
+import { calculateDesignItemProviderConfigApi } from "@/services/backend/services/designInventory";
 import { SimpleDesignItem } from "@/types/DesignItem";
 import {
   CommonResponseBase,
   PaginationResponseBase,
 } from "@/types/ResponseBase";
-import { Button, Pagination } from "@mantine/core";
-import clsx from "clsx";
+import {
+  Accordion,
+  Button,
+  Indicator,
+  Pagination,
+  Table,
+  Tooltip,
+} from "@mantine/core";
+import {
+  IconArchive,
+  IconCircleMinus,
+  IconCirclePlus,
+  IconEye,
+} from "@tabler/icons-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import useSWR from "swr";
 
-const DesignInventoryPage = () => {
+export default function CreateCampaignPage() {
   const router = useRouter();
   const [selectedDesign, setSelectedDesign] = useState<
     SimpleDesignItem | undefined
   >();
+  const [step, setStep] = useState(0);
+
+  const [collection, setCollection] = useState<SimpleDesignItem[]>([]);
 
   const [params, setParams] = useState({
     pageSize: 8,
@@ -34,7 +50,10 @@ const DesignInventoryPage = () => {
   if (response?.data.totalSize === 0) {
     return (
       <div className="h-screen w-full flex flex-col justify-center items-center">
-        <h1>You have no design item. Create your first design now!</h1>
+        <h1>
+          You have no design item to create campaign. Create your first design
+          now!
+        </h1>
         <Button
           className="mt-5"
           onClick={() => router.push("/product-design")}
@@ -46,14 +65,30 @@ const DesignInventoryPage = () => {
     );
   }
 
+  if (step === 1) {
+    //Pick provider step
+    return <PickProviderStep data={collection ?? []} />;
+  }
+
+  //pick design step
   return (
     <div className="h-screen w-full flex flex-col mt-10">
-      <div className="flex w-full justify-end">
+      <div className="flex w-full gap-x-4 justify-end items-center">
+        <Indicator
+          classNames={{
+            root: "h-fit",
+            indicator: "py-2",
+          }}
+          label={collection.length}
+        >
+          <IconArchive className="w-6" />
+        </Indicator>
         <Button
-          onClick={() => router.push("/product-design")}
+          disabled={collection.length === 0}
+          onClick={() => setStep(1)}
           variant="default"
         >
-          Create new design
+          Pick provider
         </Button>
       </div>
       <div className="w-full flex gap-x-5 mt-4">
@@ -119,12 +154,42 @@ const DesignInventoryPage = () => {
             <DesignItemCard
               key={designItem.id}
               data={designItem}
-              classNames={{
-                root:
-                  selectedDesign?.id === designItem.id
-                    ? "border border-primary"
-                    : undefined,
-              }}
+              actions={
+                <div className="flex gap-x-2">
+                  <Tooltip label="View design detail">
+                    <IconEye
+                      className="w-6 aspect-square"
+                      onClick={() => setSelectedDesign(designItem)}
+                    />
+                  </Tooltip>
+                  {collection
+                    .map((el) => el.id.toString())
+                    .indexOf(designItem.id.toString()) === -1 ? (
+                    <Tooltip label="Add design to campaign">
+                      <IconCirclePlus
+                        className="w-6 aspect-square"
+                        onClick={() =>
+                          setCollection((prev) => [...prev, designItem])
+                        }
+                      />
+                    </Tooltip>
+                  ) : (
+                    <Tooltip label="Remove design from campaign">
+                      <IconCircleMinus
+                        className="w-6 aspect-square"
+                        onClick={() =>
+                          setCollection((prev) =>
+                            prev.filter(
+                              (str) =>
+                                str.id.toString() !== designItem.id.toString()
+                            )
+                          )
+                        }
+                      />
+                    </Tooltip>
+                  )}
+                </div>
+              }
             />
           ))}
           <div className="flex justify-center mt-6 mb-20">
@@ -143,6 +208,52 @@ const DesignInventoryPage = () => {
       </div>
     </div>
   );
-};
+}
 
-export default DesignInventoryPage;
+function PickProviderStep({ data }: { data: SimpleDesignItem[] }) {
+  const { data: response, isLoading } = useSWR("test", () =>
+    calculateDesignItemProviderConfigApi(data)
+  );
+  console.log(
+    "🚀 ~ file: page.tsx:215 ~ PickProviderStep ~ response:",
+    response
+  );
+
+  if (isLoading) return null;
+
+  return (
+    <Accordion>
+      {response?.data.items.map((item) => (
+        <Accordion.Item value={item.providerName} key={item.providerName}>
+          <Accordion.Control>
+            <div>{item.providerName}</div>
+          </Accordion.Control>
+          <Accordion.Panel>
+            {
+              <Table>
+                <Table.Thead>
+                  <Table.Tr>
+                    <Table.Th>Design</Table.Th>
+                    <Table.Th>Price</Table.Th>
+                    <Table.Th>Time</Table.Th>
+                  </Table.Tr>
+                </Table.Thead>
+                <Table.Tbody>
+                  {item.designItems?.map((designItem) => (
+                    <Table.Tr key={designItem.name}>
+                      <Table.Td>{designItem.name}</Table.Td>
+                      <Table.Td>{designItem.config?.basePriceAmount}</Table.Td>
+                      <Table.Td>
+                        {designItem.config?.manufacturingTime}
+                      </Table.Td>
+                    </Table.Tr>
+                  ))}
+                </Table.Tbody>
+              </Table>
+            }
+          </Accordion.Panel>
+        </Accordion.Item>
+      )) ?? null}
+    </Accordion>
+  );
+}
