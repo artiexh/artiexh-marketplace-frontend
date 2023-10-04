@@ -8,9 +8,13 @@ import {
   CommonResponseBase,
   PaginationResponseBase,
 } from "@/types/ResponseBase";
+import { storeDesignItemsForCampaign } from "@/utils/localStorage/campaign";
 import {
   Accordion,
+  AccordionControlProps,
+  ActionIcon,
   Button,
+  Center,
   Indicator,
   Pagination,
   Table,
@@ -18,10 +22,12 @@ import {
 } from "@mantine/core";
 import {
   IconArchive,
+  IconCircle,
   IconCircleMinus,
   IconCirclePlus,
   IconEye,
 } from "@tabler/icons-react";
+import clsx from "clsx";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import useSWR from "swr";
@@ -211,6 +217,8 @@ export default function CreateCampaignPage() {
 }
 
 function PickProviderStep({ data }: { data: SimpleDesignItem[] }) {
+  const router = useRouter();
+  const [provider, setProvider] = useState<string>();
   const { data: response, isLoading } = useSWR("test", () =>
     calculateDesignItemProviderConfigApi(data)
   );
@@ -219,41 +227,70 @@ function PickProviderStep({ data }: { data: SimpleDesignItem[] }) {
     response
   );
 
+  const createCampaign = () => {
+    const id = Math.random() * 1000;
+    storeDesignItemsForCampaign(data, id.toString());
+    router.push(`/my-shop/campaigns/${id}`);
+  };
+
   if (isLoading) return null;
 
   return (
-    <Accordion>
-      {response?.data.items.map((item) => (
-        <Accordion.Item value={item.providerName} key={item.providerName}>
-          <Accordion.Control>
-            <div>{item.providerName}</div>
-          </Accordion.Control>
-          <Accordion.Panel>
-            {
-              <Table>
-                <Table.Thead>
-                  <Table.Tr>
-                    <Table.Th>Design</Table.Th>
-                    <Table.Th>Price</Table.Th>
-                    <Table.Th>Time</Table.Th>
-                  </Table.Tr>
-                </Table.Thead>
-                <Table.Tbody>
-                  {item.designItems?.map((designItem) => (
-                    <Table.Tr key={designItem.name}>
-                      <Table.Td>{designItem.name}</Table.Td>
-                      <Table.Td>{designItem.config?.basePriceAmount}</Table.Td>
-                      <Table.Td>
-                        {designItem.config?.manufacturingTime}
-                      </Table.Td>
-                    </Table.Tr>
-                  ))}
-                </Table.Tbody>
-              </Table>
-            }
-          </Accordion.Panel>
-        </Accordion.Item>
-      )) ?? null}
-    </Accordion>
+    <>
+      <div className="w-full flex justify-end">
+        <Button disabled={!provider} onClick={createCampaign}>
+          Create campaign!
+        </Button>
+      </div>
+      <Accordion multiple={true} chevronPosition="left">
+        {response?.data.items.map((item) => (
+          <Accordion.Item value={item.providerName} key={item.providerName}>
+            <Center>
+              <Accordion.Control>
+                <div>{item.providerName}</div>
+              </Accordion.Control>
+              <ActionIcon variant="subtle" color="gray" className="ml-4">
+                {provider === item.providerName ? (
+                  <img
+                    src="/assets/logo.svg"
+                    onClick={() => setProvider(undefined)}
+                  />
+                ) : (
+                  <IconCircle
+                    className="w-10"
+                    size={24}
+                    width={24}
+                    height={24}
+                    onClick={() => setProvider(item.providerName)}
+                  />
+                )}
+              </ActionIcon>
+            </Center>
+            <Accordion.Panel>
+              {
+                <Table>
+                  <thead>
+                    <tr>
+                      <th>Design</th>
+                      <th>Price</th>
+                      <th>Time</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {item.designItems?.map((designItem) => (
+                      <tr key={designItem.name}>
+                        <td>{designItem.name}</td>
+                        <td>{designItem.config?.basePriceAmount}</td>
+                        <td>{designItem.config?.manufacturingTime}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </Table>
+              }
+            </Accordion.Panel>
+          </Accordion.Item>
+        )) ?? null}
+      </Accordion>
+    </>
   );
 }

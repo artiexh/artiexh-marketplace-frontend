@@ -1,5 +1,6 @@
 "use client";
 
+import AuthGuard from "@/services/guards/AuthGuard";
 import "@/styles/globals.css";
 import { MantineProvider } from "@mantine/core";
 import { Nunito } from "next/font/google";
@@ -16,6 +17,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
+      <AuthGuard />
       <body>
         <MantineProvider
           withGlobalStyles

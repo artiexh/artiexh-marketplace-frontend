@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import axiosClient from "../backend/axiosClient";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 import { AUTH_ROUTE, NOT_REQUIRE_AUTH_ROUTE, ROUTE } from "@/constants/route";
 import { usePathname } from "next/navigation";
 import { setShop, setUser } from "@/store/user";

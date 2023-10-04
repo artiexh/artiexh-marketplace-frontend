@@ -47,7 +47,7 @@ type ProviderConfigByDesignItem = {
           basePriceAmount: number;
           businessCode: string;
           manufacturingTime: string;
-          minQuantity: 1;
+          minQuantity: number;
         }
       | undefined;
   }[];
@@ -67,54 +67,34 @@ export const calculateDesignItemProviderConfigApi = async (
     },
   });
 
-  console.log("🚀 ~ file: designInventory.ts:62 ~ res:", res);
-  if (res.data.totalSize === 0)
-    return {
-      path: "string",
-      timestamp: 1,
-      status: 200,
-      data: {
-        items: [],
-        page: 0,
-        pageSize: 10,
-        totalPage: 1,
-        totalSize: 0,
-      },
-    };
-
-  const firstElement = res.data.items[0];
-
-  const mapper: ProviderConfigByDesignItem[] = firstElement.providerConfigs.map(
-    (provider) => {
-      return {
-        providerName: provider.businessCode,
-        designItems: res.data.items
-          .filter((el) =>
-            designItems
-              .map((i) => i.variantId.toString())
-              .includes(el.id.toString())
-          )
-          .filter(
-            (el) =>
-              el.providerConfigs.find(
-                (c) => c.businessCode === provider.businessCode
-              ) !== null
-          )
-          .map((c) => {
-            return {
-              id: c.id.toString(),
-              name: designItems.find(
-                (i) => i.variantId.toString() === c.id.toString()
-              )!.name,
-              config: c.providerConfigs.find(
-                (c) => c.businessCode === provider.businessCode
-              ),
-            };
-          }),
-      };
-    }
-  );
-  console.log("🚀 ~ file: designInventory.ts:115 ~ mapper:", mapper);
+  const mapper: ProviderConfigByDesignItem[] = [
+    {
+      providerName: " Provider 1",
+      designItems: designItems.map((item) => ({
+        name: item.name,
+        id: item.id.toString(),
+        config: {
+          basePriceAmount: 1000000,
+          businessCode: item.combinationCode,
+          manufacturingTime: "6 days",
+          minQuantity: 10,
+        },
+      })),
+    },
+    {
+      providerName: " Provider 2",
+      designItems: designItems.map((item) => ({
+        name: item.name,
+        id: item.id.toString(),
+        config: {
+          basePriceAmount: 2000000,
+          businessCode: item.combinationCode,
+          manufacturingTime: "8 days",
+          minQuantity: 100,
+        },
+      })),
+    },
+  ];
 
   return {
     path: "string",

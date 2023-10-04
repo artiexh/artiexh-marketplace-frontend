@@ -3,7 +3,7 @@
 import shopCampaignColumns from "@/constants/Columns/shopCampaignColumns";
 import { ROUTE } from "@/constants/route";
 import TableContainer from "@/containers/TableContainer";
-import axiosClient from "@/services/backend/axiosMockups/axiosMockupClient";
+import axiosClient from "@/services/backend/axiosClient";
 import { Button } from "@mantine/core";
 import { IconPlus } from "@tabler/icons-react";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -30,7 +30,7 @@ const ShopCampaignsPage = () => {
         fetcher={async (currentPage) =>
           (
             await axiosClient.get(
-              `/campaigns?_page=${currentPage}&_limit=${PAGE_SIZE}` +
+              `/campaign?page=${currentPage}&pageSize=${PAGE_SIZE}` +
                 new URLSearchParams(searchParams?.toString()).toString()
             )
           ).data
