@@ -8,6 +8,7 @@ import { useDisclosure } from "@mantine/hooks";
 import { useState } from "react";
 import { artistRegister } from "@/services/backend/services/user";
 import ArtistRegisterModal from "../ArtistRegisterModal";
+import ImageWithFallback from "@/components/ImageWithFallback/ImageWithFallback";
 
 type MyProfileProps = {
   user: User;
@@ -36,7 +37,8 @@ export default function MyProfilePage({ user }: MyProfileProps) {
       </Modal>
       <div className="bg-white py-6 px-10 relative mt-[200px]">
         <div className="absolute -top-16">
-          <Image
+          <ImageWithFallback
+            fallback="/assets/default-thumbnail.jpg"
             className="rounded-full aspect-square "
             width={120}
             height={120}

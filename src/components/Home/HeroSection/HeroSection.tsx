@@ -2,6 +2,7 @@ import clsx from "clsx";
 import { Carousel } from "@mantine/carousel";
 import { Campaign, Promotion } from "@/types/HomeBranding";
 import Image from "next/image";
+import ImageWithFallback from "@/components/ImageWithFallback/ImageWithFallback";
 
 type HeroSectionProps = {
   className?: string;
@@ -43,7 +44,8 @@ export default function HeroSection({
       <div className="hidden lg:flex flex-col w-full gap-8 flex-1 ">
         {promotionElements.map((promotion) => (
           <div className="flex-1 relative rounded-md" key={promotion.id}>
-            <Image
+            <ImageWithFallback
+              fallback="/assets/default-thumbnail.jpg"
               src={promotion.url}
               fill
               alt={promotion.id}

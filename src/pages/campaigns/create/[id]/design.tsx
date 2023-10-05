@@ -255,13 +255,13 @@ export default function PortalPage() {
           <div className="flex gap-x-3 navigation">
             <Button
               variant="outline"
-              className="px-2 h-12 aspect-square w-fit rounded-full bg-white text-black border-none shadow-none outline-none hover:bg-black hover:text-white"
+              className="px-2 h-12 aspect-square w-fit rounded-full border-none shadow-none outline-none"
             >
               <IconArrowLeft className="w-8 aspect-square" />
             </Button>
             <Button
               onClick={openMenu}
-              className="px-2 h-12 aspect-square w-fit rounded-full bg-white text-black border-none shadow-none outline-none hover:bg-black hover:text-white"
+              className="px-2 h-12 aspect-square w-fit rounded-full border-none shadow-none outline-none"
             >
               <IconMenu2 className="w-8 aspect-square" />
             </Button>
@@ -270,21 +270,21 @@ export default function PortalPage() {
             <Button
               onClick={() => setTab("META")}
               variant="outline"
-              className="px-2 h-10 aspect-square w-fit rounded-full bg-white text-black border-none shadow-none outline-none hover:bg-black hover:text-white"
+              className="px-2 h-10 aspect-square w-fit rounded-full border-none shadow-none outline-none"
             >
               <IconAdjustmentsAlt className="w-6 aspect-square" />
             </Button>
             <Button
               onClick={() => setTab("IMAGE")}
               variant="outline"
-              className="px-2 h-10 aspect-square w-fit rounded-full bg-white text-black border-none shadow-none outline-none hover:bg-black hover:text-white"
+              className="px-2 h-10 aspect-square w-fit rounded-full border-none shadow-none outline-none"
             >
               <IconPhotoEdit className="w-6 aspect-square my-2" />
             </Button>
             <Button
               onClick={() => setTab("PALETTE")}
               variant="outline"
-              className="px-2 h-10 aspect-square w-fit rounded-full bg-white text-black border-none shadow-none outline-none hover:bg-black hover:text-white"
+              className="px-2 h-10 aspect-square w-fit rounded-full border-none shadow-none outline-none"
             >
               <IconPalette className="w-6 aspect-square" />
             </Button>

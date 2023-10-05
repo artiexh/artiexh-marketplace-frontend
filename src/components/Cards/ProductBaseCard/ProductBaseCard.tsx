@@ -3,6 +3,7 @@ import clsx from "clsx";
 import Image from "next/image";
 import { MouseEventHandler } from "react";
 import defaultImg from "../../../../public/assets/default-thumbnail.jpg";
+import ImageWithFallback from "@/components/ImageWithFallback/ImageWithFallback";
 
 type ProductBaseCardProps = {
   data: SimpleProductBase;
@@ -28,7 +29,8 @@ export default function ProductBaseCard({
       onClick={onClick}
     >
       <div className="relative w-full aspect-square">
-        <Image
+        <ImageWithFallback
+          fallback="/assets/default-thumbnail.jpg"
           className="rounded-2xl rounded-bl-none object-cover"
           src={thumbnail?.url.includes("http") ? thumbnail.url : defaultImg}
           alt="dogtor"

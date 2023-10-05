@@ -18,3 +18,16 @@ export const publicUploadFile = async (files: File[]) => {
     console.log(err);
   }
 };
+
+export const privateUploadFiles = async (files: File[]) =>
+  axiosClient.post<
+    CommonResponseBase<{
+      fileResponses: {
+        id: string;
+        presignedUrl: string;
+        fileName: string;
+      }[];
+    }>
+  >("/media/upload", {
+    file: files,
+  });

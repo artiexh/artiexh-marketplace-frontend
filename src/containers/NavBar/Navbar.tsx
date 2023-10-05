@@ -6,6 +6,7 @@ import { ROUTE } from "@/constants/route";
 import { logout } from "@/services/backend/services/user";
 import { useStore } from "@nanostores/react";
 import { $user } from "@/store/user";
+import ImageWithFallback from "@/components/ImageWithFallback/ImageWithFallback";
 
 type NavBarProps = {};
 

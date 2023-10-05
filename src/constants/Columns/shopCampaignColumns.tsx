@@ -1,3 +1,4 @@
+import ImageWithFallback from "@/components/ImageWithFallback/ImageWithFallback";
 import { ArtistCampaignColumnType } from "@/types/Campaign";
 import { TableColumns } from "@/types/Table";
 import { priceToString } from "@/utils/price";
@@ -12,7 +13,8 @@ const shopCampaignColumns: TableColumns<ArtistCampaignColumnType> = [
     render: (record) => (
       <div className="flex items-center gap-5">
         <div className="relative w-16 aspect-square">
-          <Image
+          <ImageWithFallback
+            fallback="/assets/default-thumbnail.jpg"
             src={record.thumb}
             alt="product-thumb"
             fill

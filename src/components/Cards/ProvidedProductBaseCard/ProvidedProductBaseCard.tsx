@@ -1,3 +1,4 @@
+import ImageWithFallback from "@/components/ImageWithFallback/ImageWithFallback";
 import { Price } from "@/types/Product";
 import { currencyFormatter } from "@/utils/formatter";
 import clsx from "clsx";
@@ -35,7 +36,8 @@ export default function ProvidedProductBaseCard({
   return (
     <div className={clsx("bg-white rounded-2xl aspect-3/5 w-full", className)}>
       <div className="relative w-full aspect-square">
-        <Image
+        <ImageWithFallback
+          fallback="/assets/default-thumbnail.jpg"
           className=" rounded-2xl rounded-bl-none object-cover"
           src={"/assets/carue.png"}
           alt="dogtor"

@@ -103,7 +103,6 @@ const DesignInventoryPage = () => {
               </div>
               <div className="actions w-full flex justify-end">
                 <Button
-                  className="text-black hover:text-white"
                   onClick={() =>
                     router.push(`/product-design/${selectedDesign.id}`)
                   }
@@ -117,6 +116,7 @@ const DesignInventoryPage = () => {
         <div className="inventory-list flex-1 flex flex-col gap-y-4">
           {response?.data.items?.map((designItem) => (
             <DesignItemCard
+              onClick={() => setSelectedDesign(designItem)}
               key={designItem.id}
               data={designItem}
               classNames={{

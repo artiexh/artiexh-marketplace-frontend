@@ -35,4 +35,25 @@ export type SimpleDesignItem = {
   variantId: number;
 };
 
-export type DesignItemDetail = {};
+export type DesignItemDetail = {
+  combinationCode: string;
+  id: number;
+  imageSet: Array<DesignImageSet>;
+  name: string;
+  variant: {
+    id: number;
+    productBase: SimpleProductBase;
+    providerConfigs: {
+      basePriceAmount: number;
+      businessCode: string;
+      manufacturingTime: string;
+      minQuantity: number;
+    }[];
+    variantCombinations: {
+      optionId: number;
+      optionValueId: number;
+      variantId: number;
+    }[];
+  };
+  variantId: number;
+}{};

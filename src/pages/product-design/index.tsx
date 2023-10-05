@@ -23,6 +23,7 @@ import { CategoryItem } from "@/components/ProductList";
 import { MAX_CATEGORIES } from "@/constants/ProductList";
 import { Category } from "@/types/Product";
 import { IconArrowUp } from "@tabler/icons-react";
+import ImageWithFallback from "@/components/ImageWithFallback/ImageWithFallback";
 
 type SidebarProps = {
   form: UseFormReturnType<Partial<any>>;
@@ -243,7 +244,8 @@ function ProductBaseDetailModalContent({
             {productBase?.attaches.map((image) => (
               <Carousel.Slide key={image.id}>
                 <div className="flex h-[460px] bg-white">
-                  <Image
+                  <ImageWithFallback
+                    fallback="/assets/default-thumbnail.jpg"
                     src={image.url}
                     className="object-contain"
                     alt={image.title}
@@ -255,7 +257,8 @@ function ProductBaseDetailModalContent({
             {!productBase?.attaches.length ? (
               <Carousel.Slide>
                 <div className="flex h-[460px] bg-white">
-                  <Image
+                  <ImageWithFallback
+                    fallback="/assets/default-thumbnail.jpg"
                     src={defaultImg}
                     className="object-contain"
                     fill
@@ -266,7 +269,8 @@ function ProductBaseDetailModalContent({
             ) : null}
           </Carousel>
           <div className="size-description flex gap-x-3 mt-3">
-            <Image
+            <ImageWithFallback
+              fallback="/assets/default-thumbnail.jpg"
               src={productBase?.sizeDescriptionUrl ?? defaultImg}
               className="object-contain"
               alt="description"
@@ -320,7 +324,7 @@ function VariantAndProviderPicker({
     isLoading,
     mutate,
   } = useSWR<CommonResponseBase<PaginationResponseBase<SimpleProductVariant>>>(
-    "/product-variant",
+    ["/product-variant", queryObject],
     () => {
       const params = new URLSearchParams();
       params.set("productBaseId", productBase.id.toString());
@@ -331,46 +335,24 @@ function VariantAndProviderPicker({
         .forEach(([key, value]) => {
           params.append("optionValueIds", value as string);
         });
-      console.log("🚀 ~ file: index.tsx:145 ~ params:", params);
       return fetcher("/product-variant?" + params.toString());
     }
   );
 
-  const [filter, setFilter] = useState<Record<string, string[]>>({});
+  const { data: optionSuggestionRes } = useSWR<
+    CommonResponseBase<Record<string, string[]>>
+  >(["option-suggestion", productBase.id, queryObject], () => {
+    const params = new URLSearchParams();
+    params.set("productBaseId", productBase.id.toString());
 
-  const filterOption = () => {
-    const newFilter: Record<string, string[]> = {};
-    variantResponse?.data.items.forEach((variant) => {
-      if (variant.productBase.id === productBase.id) {
-        variant.variantCombinations.forEach((combination) => {
-          if (!newFilter[combination.optionId.toString()]) {
-            newFilter[combination.optionId.toString()] = [
-              combination.optionValueId.toString(),
-            ];
-          } else {
-            if (
-              newFilter[combination.optionId.toString()].indexOf(
-                combination.optionValueId.toString()
-              ) === -1
-            ) {
-              newFilter[combination.optionId.toString()].push(
-                combination.optionValueId.toString()
-              );
-            }
-          }
-        });
-      }
-    });
-    setFilter(newFilter);
-  };
+    Object.entries(queryObject)
+      .filter(([key, value]) => value !== undefined)
+      .forEach(([key, value]) => {
+        params.append("optionValueIds", value as string);
+      });
 
-  useEffect(() => {
-    mutate();
-  }, [queryObject]);
-
-  useEffect(() => {
-    if (!isLoading) filterOption();
-  }, [variantResponse]);
+    return fetcher("/option/active-option?" + params.toString());
+  });
 
   const createDesignItem = async (variantId: string) => {
     try {
@@ -391,20 +373,12 @@ function VariantAndProviderPicker({
   )
     ? variantResponse?.data.items.find((variant) => {
         return variant.variantCombinations.every((combination) => {
-          console.log(
-            "🚀 ~ file: index.tsx:296 ~ variant.variantCombinations.every ~ combination:",
-            combination
-          );
           return (
             queryObject[combination.optionId] === combination.optionValueId
           );
         });
       })
     : undefined;
-  console.log(
-    "🚀 ~ file: index.tsx:298 ~ validVariant ~ validVariant:",
-    validVariant
-  );
 
   return (
     <div className="w-full flex flex-col gap-y-5">
@@ -447,7 +421,11 @@ function VariantAndProviderPicker({
                           }));
                         }
                       }}
-                      disabled={!filter[option.id]?.includes(value.id)}
+                      disabled={
+                        !optionSuggestionRes?.data[option.id]?.includes(
+                          value.id.toString()
+                        )
+                      }
                       variant={
                         queryObject[option.id] === value.id.toString()
                           ? "filled"
@@ -469,31 +447,35 @@ function VariantAndProviderPicker({
       </div>
       <div className="provider-picker">
         <h2 className="font-semibold text-xl mb-3">Avaialable provider</h2>
-        {validVariant?.providerConfigs?.map((config) => (
-          <div key={config.businessCode}>
-            <div className="size-description flex gap-x-3">
-              <div className="w-20 aspect-square bg-primary rounded-md" />
-              <div className="flex flex-col justify-between">
-                <div>
-                  <div className="text-lg font-semibold">Provider named</div>
-                  <div className="mt-1 text-sm text-gray-400">
-                    <span>Manufacturing time: {config.manufacturingTime}</span>{" "}
-                    -<span>Minimum quantity: {config.minQuantity}</span>
+        <div className="flex flex-col gap-y-4">
+          {validVariant?.providerConfigs?.map((config) => (
+            <div key={config.businessCode}>
+              <div className="size-description flex gap-x-3">
+                <div className="w-20 aspect-square bg-primary rounded-md" />
+                <div className="flex flex-col justify-between">
+                  <div>
+                    <div className="text-lg font-semibold">Provider named</div>
+                    <div className="mt-1 text-sm text-gray-400">
+                      <span>
+                        Manufacturing time: {config.manufacturingTime}
+                      </span>{" "}
+                      -<span>Minimum quantity: {config.minQuantity}</span>
+                    </div>
                   </div>
-                </div>
-                <div className="flex justify-end">
-                  <span className="font-semibold">
-                    From:{" "}
-                    {currencyFormatter("VND", {
-                      amount: config.basePriceAmount,
-                      unit: "VND",
-                    })}
-                  </span>
+                  <div className="flex justify-end">
+                    <span className="font-semibold">
+                      From:{" "}
+                      {currencyFormatter("VND", {
+                        amount: config.basePriceAmount,
+                        unit: "VND",
+                      })}
+                    </span>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
     </div>
   );

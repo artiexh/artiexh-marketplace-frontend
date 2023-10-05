@@ -1,8 +1,8 @@
 import { fetcher } from "@/services/backend/axiosClient";
-import { SimpleDesignItem } from "@/types/DesignItem";
+import { DesignItemDetail, SimpleDesignItem } from "@/types/DesignItem";
 import { ImageConfig, SimpleProductBase } from "@/types/ProductBase";
 import { CommonResponseBase } from "@/types/ResponseBase";
-import { Accordion, Button, FileButton, Group } from "@mantine/core";
+import { Accordion, Button, FileButton, Group, Text } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { Decal, useTexture } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
@@ -20,6 +20,8 @@ import {
   Dispatch,
   ImgHTMLAttributes,
   SetStateAction,
+  createContext,
+  useContext,
   useEffect,
   useRef,
   useState,
@@ -28,6 +30,8 @@ import useSWR from "swr";
 import { Mesh } from "three";
 import logoImage from "../../../public/assets/logo.svg";
 import { TShirtContainer } from "./portal";
+import { updateImageCombinationApi } from "@/services/backend/services/designInventory";
+import { modals } from "@mantine/modals";
 
 function ConfigMenu({
   tab,
@@ -41,11 +45,11 @@ function ConfigMenu({
       <div className="flex gap-x-3 navigation">
         <Button
           variant="outline"
-          className="px-2 h-12 aspect-square w-fit rounded-full bg-white text-black border-none shadow-none outline-none hover:bg-black hover:text-white"
+          className="px-2 h-12 aspect-square w-fit rounded-full border-none shadow-none outline-none"
         >
           <IconArrowLeft className="w-8 aspect-square" />
         </Button>
-        <Button className="px-2 h-12 aspect-square w-fit rounded-full bg-white text-black border-none shadow-none outline-none hover:bg-black hover:text-white">
+        <Button className="px-2 h-12 aspect-square w-fit rounded-full border-none shadow-none outline-none">
           <IconMenu2 className="w-8 aspect-square" />
         </Button>
       </div>
@@ -53,14 +57,14 @@ function ConfigMenu({
         <Button
           onClick={() => setTab("META")}
           variant="outline"
-          className="px-2 h-10 aspect-square w-fit rounded-full bg-white text-black border-none shadow-none outline-none hover:bg-black hover:text-white"
+          className="px-2 h-10 aspect-square w-fit rounded-full border-none shadow-none outline-none"
         >
           <IconAdjustmentsAlt className="w-6 aspect-square" />
         </Button>
         <Button
           onClick={() => setTab("IMAGE")}
-          variant="outline"
-          className="px-2 h-10 aspect-square w-fit rounded-full bg-white text-black border-none shadow-none outline-none hover:bg-black hover:text-white"
+          variant="filled"
+          className="px-2 h-10 aspect-square w-fit rounded-full border-none shadow-none outline-none"
         >
           <IconPhotoEdit className="w-6 aspect-square my-2" />
         </Button>
@@ -124,6 +128,8 @@ function ImageLoaderForFile({
   return <img {...rest} src={data} />;
 }
 
+const DesignItemContext = createContext<DesignItemDetail | null>(null);
+
 export default function DesignPortal() {
   const router = useRouter();
 
@@ -149,50 +155,61 @@ export default function DesignPortal() {
     },
   });
 
-  const { data: response, isLoading } = useSWR<
-    CommonResponseBase<SimpleDesignItem>
-  >(["/design-inventory", id], () => fetcher(`/inventory-item/${id}`));
+  const {
+    data: response,
+    isLoading,
+    mutate,
+  } = useSWR<CommonResponseBase<DesignItemDetail>>(
+    ["/design-inventory", id],
+    () => fetcher(`/inventory-item/${id}`)
+  );
+
+  useEffect(() => {
+    mutate();
+  }, [combination]);
 
   const productBase = response?.data.variant.productBase;
 
   if (isLoading || !productBase) return null;
 
   return (
-    <div className="!w-screen !h-screen">
-      <div className="left-side absolute h-4/5 left-[2%] top-[5%] z-10">
-        <ConfigMenu setTab={setTab} tab={tab} />
+    <DesignItemContext.Provider value={response.data}>
+      <div className="!w-screen !h-screen">
+        <div className="left-side absolute h-4/5 left-[2%] top-[5%] z-10">
+          <ConfigMenu setTab={setTab} tab={tab} />
+        </div>
+        {tab === "IMAGE" && (
+          <ImageCombinationPicker
+            combination={combination}
+            setCombination={setCombination}
+            form={form}
+            data={productBase.imageCombinations}
+          />
+        )}
+        <Canvas className="w-full h-full">
+          <ambientLight />
+          <pointLight position={[10, 10, 10]} />
+          <TShirtContainer>
+            {combination?.images.map((set) => {
+              const image = form.values.sets.find(
+                (i) => i.code === set.code
+              )?.mockupImage;
+              return image ? (
+                <DecalWithImageContainer
+                  name={set.code}
+                  key={set.code}
+                  debug
+                  position={set.position}
+                  rotation={set.rotate}
+                  scale={set.scale}
+                  file={image}
+                ></DecalWithImageContainer>
+              ) : null;
+            })}
+          </TShirtContainer>
+        </Canvas>
       </div>
-      {tab === "IMAGE" && (
-        <ImageCombinationPicker
-          combination={combination}
-          setCombination={setCombination}
-          form={form}
-          data={productBase.imageCombinations}
-        />
-      )}
-      <Canvas className="w-full h-full">
-        <ambientLight />
-        <pointLight position={[10, 10, 10]} />
-        <TShirtContainer>
-          {combination?.images.map((set) => {
-            const image = form.values.sets.find(
-              (i) => i.code === set.code
-            )?.mockupImage;
-            return image ? (
-              <DecalWithImageContainer
-                name={set.code}
-                key={set.code}
-                debug
-                position={set.position}
-                rotation={set.rotate}
-                scale={set.scale}
-                file={image}
-              ></DecalWithImageContainer>
-            ) : null;
-          })}
-        </TShirtContainer>
-      </Canvas>
-    </div>
+    </DesignItemContext.Provider>
   );
 }
 
@@ -219,6 +236,7 @@ function ImageCombinationPicker({
     name: string;
   };
 }) {
+  const designItem = useContext(DesignItemContext);
   const [step, setStep] = useState(0);
 
   useEffect(() => {
@@ -229,6 +247,40 @@ function ImageCombinationPicker({
         })) ?? [],
     });
   }, [combination]);
+
+  if (designItem === null) return null;
+
+  const handleChangeCombination = async (data: {
+    code: string;
+    images: ImageConfig[];
+    name: string;
+  }) => {
+    if (designItem.combinationCode) {
+      modals.openConfirmModal({
+        modalId: "confirm-change-combination",
+        title: "Please confirm your action",
+        children: (
+          <Text size="sm">
+            The change of your combination might remove all of your setup in the
+            images tab, are you sure you want to do it?
+          </Text>
+        ),
+        labels: { confirm: "Confirm", cancel: "Cancel" },
+        onCancel: () => {
+          modals.close("confirm-change-combination");
+        },
+        onConfirm: async () => {
+          await updateImageCombinationApi(designItem, data.code);
+          setCombination(data);
+          setStep(1);
+        },
+      });
+    } else {
+      await updateImageCombinationApi(designItem, data.code);
+      setCombination(data);
+      setStep(1);
+    }
+  };
 
   return (
     <div className="config-tab bg-white w-72 h-4/5 right-5 top-[10%] fixed z-10 rounded-lg p-4">
@@ -242,10 +294,7 @@ function ImageCombinationPicker({
                 className={clsx(
                   "bg-white rounded-md hover:border hover:border-primary flex p-2 justify-between cursor-pointer"
                 )}
-                onClick={() => {
-                  setCombination(el);
-                  setStep(1);
-                }}
+                onClick={() => handleChangeCombination(el)}
               >
                 <span className="font-semibold">{el.name}</span>
                 {combination?.code === el.code ? (

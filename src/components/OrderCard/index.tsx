@@ -5,6 +5,7 @@ import Image from "next/image";
 import { useRouter } from "next/router";
 import { ROUTE } from "@/constants/route";
 import { ORDER_STATUS } from "@/constants/common";
+import ImageWithFallback from "../ImageWithFallback/ImageWithFallback";
 
 type OrderCard = {
   order: Order;
@@ -32,7 +33,8 @@ export default function OrderCard({ order }: OrderCard) {
       <Divider />
       <div className="order-card-body p-4 flex justify-between">
         <div className="flex">
-          <Image
+          <ImageWithFallback
+            fallback="/assets/default-thumbnail.jpg"
             className="aspect-square"
             src={img}
             width={100}

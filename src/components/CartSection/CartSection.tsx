@@ -8,6 +8,7 @@ import { Dispatch } from "react";
 import { deleteItems, toggleSelectItems } from "@/store/slices/cartSlice";
 import { KeyedMutator } from "swr";
 import { useRouter } from "next/router";
+import ImageWithFallback from "../ImageWithFallback/ImageWithFallback";
 
 type CartSectionProps = {
   cartSection: CartSection;
@@ -62,7 +63,8 @@ export default function CartSection({
       <div className="flex justify-between items-center">
         <div className="flex items-center">
           <div>
-            <Image
+            <ImageWithFallback
+              fallback="/assets/default-thumbnail.jpg"
               className="object-fit rounded-full w-[40px] sm:w-[70px] aspect-square mr-3"
               src={cartSection.shop.imageUrl}
               alt="product-name"

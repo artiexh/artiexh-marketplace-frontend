@@ -3,7 +3,11 @@ import {
   PaginationResponseBase,
 } from "@/types/ResponseBase";
 import axiosClient from "../axiosClient";
-import { DesignImageSet, SimpleDesignItem } from "@/types/DesignItem";
+import {
+  DesignImageSet,
+  DesignItemDetail,
+  SimpleDesignItem,
+} from "@/types/DesignItem";
 import { SimpleProductVariant } from "@/types/ProductVariant";
 
 export const createDesignItemApi = (body: {
@@ -15,25 +19,55 @@ export const createDesignItemApi = (body: {
   });
 
 export const updateImageCombinationApi = (
-  designItemId: SimpleDesignItem["id"],
+  designItem: DesignItemDetail,
   combination: SimpleDesignItem["combinationCode"]
 ) => {
-  //TODO: call api later
-  //TODO: reset the image combination also
+  return axiosClient.post<CommonResponseBase<DesignItemDetail>>(
+    "/inventory-item",
+    {
+      id: designItem.id,
+      combinationCode: combination,
+      imageSet: [],
+      name: designItem.name,
+      variantId: designItem.variantId,
+    }
+  );
 };
 
 export const updateImageSetApi = (
-  designItemId: SimpleDesignItem["id"],
+  designItem: SimpleDesignItem,
   imageSets: DesignImageSet[]
 ) => {
   //TODO: call api later
+  return axiosClient.post<CommonResponseBase<SimpleDesignItem>>(
+    "/inventory-item",
+    {
+      id: designItem.id,
+      combinationCode: designItem.combinationCode,
+      imageSet: imageSets,
+      name: designItem.name,
+      variantId: designItem.variantId,
+    }
+  );
 };
 
 export const updateGeneralInformation = (
-  designItemId: SimpleDesignItem["id"],
-  generalInfo: object
+  designItem: SimpleDesignItem,
+  generalInfo: {
+    name: string;
+  }
 ) => {
   //TODO: call api later
+  return axiosClient.post<CommonResponseBase<SimpleDesignItem>>(
+    "/inventory-item",
+    {
+      id: designItem.id,
+      combinationCode: designItem.combinationCode,
+      imageSet: designItem.imageSet,
+      name: generalInfo.name,
+      variantId: designItem.variantId,
+    }
+  );
 };
 
 //TODO: remove later

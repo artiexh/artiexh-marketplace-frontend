@@ -16,7 +16,7 @@ const Layout = ({ children }: ILayoutProps) => {
   return (
     <div>
       <NavBar />
-      <div className="md:max-w-[90vw] mx-3 md:mx-auto my-0">
+      <div className="md:max-w-[1280px] mx-3 md:mx-auto my-0">
         <div className={clsx(!isAuthPage && "my-[8rem]")}>{children}</div>
       </div>
     </div>

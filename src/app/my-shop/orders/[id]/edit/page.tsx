@@ -18,6 +18,7 @@ import { useState } from "react";
 import { updateShippingInformation } from "@/services/backend/services/order";
 import { notifications } from "@mantine/notifications";
 import { getNotificationIcon } from "@/utils/mapper";
+import ImageWithFallback from "@/components/ImageWithFallback/ImageWithFallback";
 
 const ShopEditOrderPage = ({ params }: { params: { id: string } }) => {
   const router = useRouter();
@@ -212,7 +213,8 @@ const ShopEditOrderPage = ({ params }: { params: { id: string } }) => {
         <div className="flex justify-between items-center">
           <div className="flex">
             <div>
-              <Image
+              <ImageWithFallback
+                fallback="/assets/default-thumbnail.jpg"
                 className="aspect-square rounded-lg mr-3"
                 src={data?.orderDetails[0].thumbnailUrl ?? ""}
                 width={150}

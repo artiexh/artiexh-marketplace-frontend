@@ -144,7 +144,6 @@ export default function CreateCampaignPage() {
               </div>
               <div className="actions w-full flex justify-end">
                 <Button
-                  className="text-black hover:text-white"
                   onClick={() =>
                     router.push(`/product-design/${selectedDesign.id}`)
                   }

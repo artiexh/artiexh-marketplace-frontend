@@ -5,6 +5,7 @@ import { currencyFormatter } from "@/utils/formatter";
 import clsx from "clsx";
 import { useRouter } from "next/router";
 import defaultImg from "../../../../../public/assets/default-thumbnail.jpg";
+import ImageWithFallback from "@/components/ImageWithFallback/ImageWithFallback";
 
 interface IProductPreviewCardProps {
   data: Product;
@@ -23,7 +24,8 @@ const ProductPreviewCard = ({ data, className }: IProductPreviewCardProps) => {
       onClick={() => router.push(`/product/${data.id}`)}
     >
       <div className="relative w-full aspect-square">
-        <Image
+        <ImageWithFallback
+          fallback="/assets/default-thumbnail.jpg"
           className="rounded-2xl rounded-bl-none object-cover"
           src={
             data?.thumbnailUrl?.includes("http")

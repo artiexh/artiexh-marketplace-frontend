@@ -16,6 +16,7 @@ import ssrAxiosClient from "@/services/backend/axiosMockups/ssrAxiosMockupClient
 import { useRouter } from "next/router";
 import { ROUTE } from "@/constants/route";
 import Image from "next/image";
+import ImageWithFallback from "@/components/ImageWithFallback/ImageWithFallback";
 
 const TAG_COLORS = [
   "#FF9898",
@@ -109,7 +110,8 @@ const HomePage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = ({
                 className="flex flex-col items-center flex-1 border p-4"
               >
                 <div>
-                  <Image
+                  <ImageWithFallback
+                    fallback="/assets/default-thumbnail.jpg"
                     className="rounded-full aspect-square"
                     src={category.imageUrl}
                     alt="category-image"

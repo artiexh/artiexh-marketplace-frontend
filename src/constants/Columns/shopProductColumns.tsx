@@ -1,3 +1,4 @@
+import ImageWithFallback from "@/components/ImageWithFallback/ImageWithFallback";
 import { ArtistProductColumnType } from "@/types/Product";
 import { TableColumns } from "@/types/Table";
 import { Badge } from "@mantine/core";
@@ -11,7 +12,8 @@ const shopProductColumns: TableColumns<ArtistProductColumnType> = [
     render: (record) => (
       <div className="flex items-center gap-5">
         <div className="relative w-16 aspect-square">
-          <Image
+          <ImageWithFallback
+            fallback="/assets/default-thumbnail.jpg"
             src={record.thumbnailUrl}
             alt="product-thumb"
             fill
