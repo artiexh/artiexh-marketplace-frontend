@@ -29,24 +29,32 @@ export const updateImageCombinationApi = (
       combinationCode: combination,
       imageSet: [],
       name: designItem.name,
-      variantId: designItem.variantId,
+      description: designItem.description,
+      tags: designItem.tags,
+      variantId: designItem.variant.id,
     }
   );
 };
 
 export const updateImageSetApi = (
-  designItem: SimpleDesignItem,
+  designItem: DesignItemDetail,
   imageSets: DesignImageSet[]
 ) => {
   //TODO: call api later
-  return axiosClient.post<CommonResponseBase<SimpleDesignItem>>(
+  return axiosClient.post<CommonResponseBase<DesignItemDetail>>(
     "/inventory-item",
     {
       id: designItem.id,
       combinationCode: designItem.combinationCode,
-      imageSet: imageSets,
+      imageSet: imageSets.map((el) => ({
+        positionCode: el.positionCode,
+        mockupImageId: el.mockupImage?.id,
+        manufacturingImageId: el.manufacturingImage?.id,
+      })),
       name: designItem.name,
-      variantId: designItem.variantId,
+      description: designItem.description,
+      tags: designItem.tags,
+      variantId: designItem.variant.id,
     }
   );
 };
@@ -55,6 +63,8 @@ export const updateGeneralInformation = (
   designItem: SimpleDesignItem,
   generalInfo: {
     name: string;
+    description: string;
+    tags: string;
   }
 ) => {
   //TODO: call api later
@@ -65,7 +75,9 @@ export const updateGeneralInformation = (
       combinationCode: designItem.combinationCode,
       imageSet: designItem.imageSet,
       name: generalInfo.name,
-      variantId: designItem.variantId,
+      description: generalInfo.description,
+      tags: generalInfo.tags,
+      variantId: designItem.variant.id,
     }
   );
 };

@@ -1,13 +1,27 @@
 import { SimpleProductBase } from "./ProductBase";
 
 export type DesignImageSet = {
+  manufacturingImage?: {
+    fileName: string;
+    id: string;
+  };
+  mockupImage?: {
+    fileName: string;
+    id: string;
+  };
+  positionCode: string;
+};
+
+export type CustomDesignImageSet = {
   manufacturingImage: {
     fileName: string;
     id: number;
+    file?: string | File;
   };
   mockupImage: {
     fileName: string;
     id: number;
+    file?: string | File;
   };
   positionCode: string;
 };
@@ -17,6 +31,8 @@ export type SimpleDesignItem = {
   id: number;
   imageSet: Array<DesignImageSet>;
   name: string;
+  description: string;
+  tags: string[];
   variant: {
     id: number;
     productBase: SimpleProductBase;
@@ -40,6 +56,8 @@ export type DesignItemDetail = {
   id: number;
   imageSet: Array<DesignImageSet>;
   name: string;
+  description: string;
+  tags: string[];
   variant: {
     id: number;
     productBase: SimpleProductBase;
@@ -55,5 +73,4 @@ export type DesignItemDetail = {
       variantId: number;
     }[];
   };
-  variantId: number;
-}{};
+};

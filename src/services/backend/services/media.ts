@@ -19,7 +19,7 @@ export const publicUploadFile = async (files: File[]) => {
   }
 };
 
-export const privateUploadFiles = async (files: File[]) =>
+export const privateUploadFiles = (files: File[]) =>
   axiosClient.post<
     CommonResponseBase<{
       fileResponses: {
@@ -30,4 +30,9 @@ export const privateUploadFiles = async (files: File[]) =>
     }>
   >("/media/upload", {
     file: files,
+  });
+
+export const getPrivateFile = (id: string) =>
+  axiosClient.get(`/media/download/${id}`, {
+    responseType: "arraybuffer",
   });

@@ -26,12 +26,19 @@ import {
   useRef,
   useState,
 } from "react";
-import useSWR from "swr";
+import useSWR, { SWRResponse } from "swr";
 import { Mesh } from "three";
 import logoImage from "../../../public/assets/logo.svg";
 import { TShirtContainer } from "./portal";
-import { updateImageCombinationApi } from "@/services/backend/services/designInventory";
+import {
+  updateImageCombinationApi,
+  updateImageSetApi,
+} from "@/services/backend/services/designInventory";
 import { modals } from "@mantine/modals";
+import {
+  getPrivateFile,
+  privateUploadFiles,
+} from "@/services/backend/services/media";
 
 function ConfigMenu({
   tab,
@@ -128,7 +135,9 @@ function ImageLoaderForFile({
   return <img {...rest} src={data} />;
 }
 
-const DesignItemContext = createContext<DesignItemDetail | null>(null);
+const DesignItemContext = createContext<SWRResponse<
+  CommonResponseBase<DesignItemDetail>
+> | null>(null);
 
 export default function DesignPortal() {
   const router = useRouter();
@@ -137,17 +146,19 @@ export default function DesignPortal() {
 
   const [tab, setTab] = useState<"META" | "IMAGE">("META");
 
-  const [combination, setCombination] = useState<{
-    code: string;
-    images: ImageConfig[];
-    name: string;
-  }>();
-
   const form = useForm<{
     sets: Array<{
       code: string;
-      manufacturingImage?: string | File;
-      mockupImage?: string | File;
+      manufacturingImage?: {
+        id?: string;
+        file: string | File;
+        fileName: string;
+      };
+      mockupImage?: {
+        id?: string;
+        file: string | File;
+        fileName: string;
+      };
     }>;
   }>({
     initialValues: {
@@ -155,33 +166,62 @@ export default function DesignPortal() {
     },
   });
 
-  const {
-    data: response,
-    isLoading,
-    mutate,
-  } = useSWR<CommonResponseBase<DesignItemDetail>>(
+  const swrRes = useSWR<CommonResponseBase<DesignItemDetail>>(
     ["/design-inventory", id],
-    () => fetcher(`/inventory-item/${id}`)
+    async () => {
+      const res = await fetcher<CommonResponseBase<DesignItemDetail>>(
+        `/inventory-item/${id}`
+      );
+      const imageSet = res.data.imageSet ?? [];
+      const files = await Promise.all(
+        imageSet.map((set) => getPrivateFile(set.mockupImage.id.toString()))
+      );
+
+      return {
+        ...res,
+        data: {
+          ...res.data,
+          imageSet: res.data.imageSet.map((set, index) => {
+            const buffer = Buffer.from(files[index].data, "binary").toString(
+              "base64"
+            );
+            let image = `data:${files[index].headers["content-type"]};base64,${buffer}`;
+            console.log(
+              "🚀 ~ file: [id].tsx:190 ~ imageSet:res.data.imageSet.map ~ image:",
+              image
+            );
+            return {
+              ...set,
+              mockupImage: {
+                ...set.mockupImage,
+                file: image,
+              },
+            };
+          }),
+        },
+      };
+    }
   );
 
-  useEffect(() => {
-    mutate();
-  }, [combination]);
+  const { data: response, isLoading, mutate } = swrRes;
 
   const productBase = response?.data.variant.productBase;
 
   if (isLoading || !productBase) return null;
 
+  const combination = response.data.variant.productBase.imageCombinations.find(
+    (combination) => combination.code === response.data.combinationCode
+  );
+
   return (
-    <DesignItemContext.Provider value={response.data}>
+    <DesignItemContext.Provider value={swrRes}>
       <div className="!w-screen !h-screen">
         <div className="left-side absolute h-4/5 left-[2%] top-[5%] z-10">
           <ConfigMenu setTab={setTab} tab={tab} />
         </div>
-        {tab === "IMAGE" && (
+        {!isLoading && tab === "IMAGE" && (
           <ImageCombinationPicker
             combination={combination}
-            setCombination={setCombination}
             form={form}
             data={productBase.imageCombinations}
           />
@@ -192,8 +232,9 @@ export default function DesignPortal() {
           <TShirtContainer>
             {combination?.images.map((set) => {
               const image = form.values.sets.find(
-                (i) => i.code === set.code
+                (i) => i.positionCode === set.code
               )?.mockupImage;
+
               return image ? (
                 <DecalWithImageContainer
                   name={set.code}
@@ -202,7 +243,7 @@ export default function DesignPortal() {
                   position={set.position}
                   rotation={set.rotate}
                   scale={set.scale}
-                  file={image}
+                  file={image.file}
                 ></DecalWithImageContainer>
               ) : null;
             })}
@@ -224,31 +265,40 @@ const createImageUrl = (buffer: BlobPart, type: string) => {
 function ImageCombinationPicker({
   data,
   form,
-  setCombination,
   combination,
 }: {
   data: SimpleProductBase["imageCombinations"];
   form: any;
-  setCombination: any;
   combination?: {
     code: string;
     images: ImageConfig[];
     name: string;
   };
 }) {
-  const designItem = useContext(DesignItemContext);
-  const [step, setStep] = useState(0);
+  const swrRes = useContext(DesignItemContext);
+  const [step, setStep] = useState(combination ? 1 : 0);
+  const designItem = swrRes?.data?.data;
 
   useEffect(() => {
-    form.setValues({
-      sets:
-        combination?.images.map((set) => ({
-          code: set.code,
-        })) ?? [],
-    });
+    if (combination?.code !== form.values.combinationCode) {
+      console.log(designItem?.imageSet);
+      form.setValues({
+        combinationCode: combination?.code,
+        sets:
+          designItem?.imageSet.map((set, index) => ({
+            positionCode: set.positionCode,
+            mockupImage: {
+              file: set.mockupImage.file,
+              id: set.mockupImage.id.toString(),
+              fileName: set.mockupImage.fileName,
+            },
+          })) ?? [],
+      });
+    }
   }, [combination]);
+  console.log("🚀 ~ file: [id].tsx:270 ~ combination:", form.values);
 
-  if (designItem === null) return null;
+  if (!designItem) return null;
 
   const handleChangeCombination = async (data: {
     code: string;
@@ -271,13 +321,13 @@ function ImageCombinationPicker({
         },
         onConfirm: async () => {
           await updateImageCombinationApi(designItem, data.code);
-          setCombination(data);
+          swrRes.mutate();
           setStep(1);
         },
       });
     } else {
       await updateImageCombinationApi(designItem, data.code);
-      setCombination(data);
+      swrRes.mutate();
       setStep(1);
     }
   };
@@ -292,12 +342,17 @@ function ImageCombinationPicker({
               <div
                 key={el.code}
                 className={clsx(
-                  "bg-white rounded-md hover:border hover:border-primary flex p-2 justify-between cursor-pointer"
+                  "bg-white rounded-md flex p-2 justify-between",
+                  designItem.combinationCode !== el.code && "cursor-pointer"
                 )}
-                onClick={() => handleChangeCombination(el)}
+                onClick={
+                  designItem?.combinationCode === el.code
+                    ? undefined
+                    : () => handleChangeCombination(el)
+                }
               >
                 <span className="font-semibold">{el.name}</span>
-                {combination?.code === el.code ? (
+                {designItem?.combinationCode === el.code ? (
                   <Image
                     src={logoImage}
                     className="w-6 aspect-square"
@@ -322,7 +377,7 @@ function ImageCombinationPicker({
           </div>
           <div className="flex flex-col gap-y-2 mt-2">
             <Accordion multiple={true}>
-              {form.values.sets?.map((el, index) => {
+              {combination?.images?.map((el, index) => {
                 const imageSet = combination?.images.find(
                   (i) => i.code === el.code
                 );
@@ -337,10 +392,16 @@ function ImageCombinationPicker({
                     <Accordion.Panel>
                       <Group position="center">
                         <h3>Mockup image</h3>
-                        {el.mockupImage && (
+                        {form.values.sets.find(
+                          (s) => s.positionCode === imageSet.code
+                        )?.mockupImage?.file && (
                           <ImageLoaderForFile
                             name={imageSet.code}
-                            src={el.mockupImage}
+                            src={
+                              form.values.sets.find(
+                                (s) => s.positionCode === imageSet.code
+                              )?.mockupImage?.file
+                            }
                           />
                         )}
                         <FileButton
@@ -348,10 +409,23 @@ function ImageCombinationPicker({
                           onChange={async (e) => {
                             const file = e;
                             if (!file) return;
-                            form.setFieldValue(
-                              `sets.${index}.mockupImage`,
-                              file
-                            );
+                            const { data: res } = await privateUploadFiles([
+                              file,
+                            ]);
+                            await updateImageSetApi(designItem, [
+                              {
+                                positionCode: imageSet.code,
+                                mockupImage: {
+                                  id: res.data.fileResponses[0].id,
+                                  fileName: res.data.fileResponses[0].fileName,
+                                },
+                              },
+                            ]);
+                            form.setFieldValue(`sets.${index}.mockupImage`, {
+                              id: res.data.fileResponses[0].id,
+                              fileName: res.data.fileResponses[0].fileName,
+                              file: file,
+                            });
                           }}
                           accept="image/png,image/jpeg"
                         >
