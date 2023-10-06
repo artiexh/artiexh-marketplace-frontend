@@ -144,7 +144,15 @@ function DecalWithImageContainer(
 
   if (typeof data !== "string") return null;
 
-  return <DecalWithImage {...rest} file={data} />;
+  return (
+    <DecalWithImage
+      {...rest}
+      file={data}
+      scale={[0.2, 0.2, 0.09]}
+      position={[0, 0, 0.1]}
+      rotation={[-0.001, 0, 0]}
+    />
+  );
 }
 
 function DecalWithImage(
