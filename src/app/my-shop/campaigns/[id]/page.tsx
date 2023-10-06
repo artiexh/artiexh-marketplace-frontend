@@ -1,6 +1,7 @@
 "use client";
 
 import Thumbnail from "@/components/CreateProduct/Thumbnail";
+import ImageWithFallback from "@/components/ImageWithFallback/ImageWithFallback";
 import useCategories from "@/hooks/useCategories";
 import useTags from "@/hooks/useTags";
 import { createCampaignApi } from "@/services/backend/services/campaign";
@@ -27,23 +28,17 @@ export default function CampaignDetailPage() {
   const router = useRouter();
   const params = useParams();
 
-  const { id } = params;
-
-  const [customProduct, setCustomProduct] = useState<SimpleDesignItem>();
-  const [dirtyList, setDirtyList] = useState<string[]>([]);
-  console.log(
-    "🚀 ~ file: page.tsx:31 ~ CampaignDetailPage ~ dirtyList:",
-    dirtyList
-  );
+  const id = params!.id as string;
 
   const designItems = getDesignItemsForCampaign(id);
-  console.log(
-    "🚀 ~ file: page.tsx:13 ~ CampaignDetailPage ~ designItems:",
-    designItems
+
+  const [customProduct, setCustomProduct] = useState<SimpleDesignItem>(
+    designItems[0]
   );
+  const [dirtyList, setDirtyList] = useState<string[]>([]);
 
   return (
-    <div className="flex gap-6">
+    <div className="flex gap-6 mt-14">
       <div className="custom-product-list flex flex-col gap-y-6">
         {designItems.map((i) => (
           <Indicator
@@ -55,10 +50,23 @@ export default function CampaignDetailPage() {
             <div
               onClick={() => setCustomProduct(i)}
               className={clsx(
-                "w-20 h-20 rounded-md",
-                i.id === customProduct?.id ? "bg-primary" : "bg-gray-600"
+                "w-20 h-20 rounded-md relative",
+                i.id === customProduct?.id ? "border border-primary " : ""
               )}
-            ></div>
+            >
+              <ImageWithFallback
+                className={clsx(
+                  i.id === customProduct?.id ? "border border-primary " : ""
+                )}
+                fill
+                alt="test"
+                src={
+                  i.variant.productBase.attaches.find(
+                    (el) => el.type === "THUMBNAIL"
+                  )?.url
+                }
+              />
+            </div>
           </Indicator>
         ))}
       </div>
@@ -170,10 +178,10 @@ function CustomProductForm({
   return (
     <>
       <form onSubmit={onSubmit(submitHandler)}>
-        <div key={customProduct.id} className="card general-wrapper">
-          <h2 className="text-xl font-bold">General information</h2>
+        <div className="card general-wrapper">
+          <h2 className="text-3xl font-bold">General information</h2>
           <div className="flex flex-col-reverse md:flex-row mt-5 gap-10">
-            <div className="grid grid-cols-12 w-full gap-5 md:gap-x-10">
+            <div className="grid grid-cols-12 w-6/12 gap-5 md:gap-x-10">
               <TextInput
                 label="Product name"
                 className="col-span-12"
@@ -201,6 +209,17 @@ function CustomProductForm({
                 {...getInputProps(`customProducts.${index}.tags`)}
                 disabled={isSubmitting}
               />
+              <Select
+                data={categoryOptions || []}
+                className="col-span-12 md:col-span-8 order-1 md:order-none"
+                label="Category"
+                nothingFound="Nothing found"
+                searchable
+                withAsterisk
+                allowDeselect
+                {...getInputProps(`customProducts.${index}.productCategoryId`)}
+                disabled={isSubmitting}
+              />
               <NumberInput
                 label="Quantity"
                 className="col-span-6 md:col-span-4"
@@ -209,6 +228,20 @@ function CustomProductForm({
                 {...getInputProps(`customProducts.${index}.quantity`)}
                 disabled={isSubmitting}
               />
+
+              <Textarea
+                label="Description"
+                className="col-span-12 row-span-6 order-1 md:order-none"
+                classNames={{
+                  root: "flex flex-col",
+                  wrapper: "flex-1",
+                  input: "h-full",
+                }}
+                {...getInputProps(`customProducts.${index}.description`)}
+                disabled={isSubmitting}
+              />
+            </div>
+            <div className="image-wrapper flex flex-col md:w-6/12">
               <div className="flex col-span-12 md:col-span-8 order-1 md:order-none">
                 <NumberInput
                   label="Price"
@@ -242,30 +275,7 @@ function CustomProductForm({
                 {...getInputProps(`customProducts.${index}.limitPerOrder`)}
                 disabled={isSubmitting}
               />
-              <Select
-                data={categoryOptions || []}
-                className="col-span-12 md:col-span-8 order-1 md:order-none"
-                label="Category"
-                nothingFound="Nothing found"
-                searchable
-                withAsterisk
-                allowDeselect
-                {...getInputProps(`customProducts.${index}.productCategoryId`)}
-                disabled={isSubmitting}
-              />
-              <Textarea
-                label="Description"
-                className="col-span-12 row-span-6 order-1 md:order-none"
-                classNames={{
-                  root: "flex flex-col",
-                  wrapper: "flex-1",
-                  input: "h-full",
-                }}
-                {...getInputProps(`customProducts.${index}.description`)}
-                disabled={isSubmitting}
-              />
-            </div>
-            <div className="image-wrapper flex flex-col md:w-6/12">
+
               <Input.Wrapper label="Attachments" className="mt-3">
                 <div className="grid grid-cols-3 gap-3">
                   {attaches?.length < 6 && (
@@ -286,6 +296,46 @@ function CustomProductForm({
             </div>
           </div>
         </div>
+        <div className="card general-wrapper mt-4">
+          <h2 className="text-3xl font-bold">Manufacturing information</h2>
+          <div className="flex gap-x-12 mt-5">
+            <DescriptionItem
+              title="Product base"
+              content={customProduct.variant.productBase.name}
+              className="text-xl"
+            />
+            <DescriptionItem
+              title="Provider"
+              content="Provider 1"
+              className="text-xl"
+            />
+          </div>
+          <div className="mt-5">
+            <div className="text-xl font-bold">Variants</div>
+            <div className="flex flex-wrap gap-x-9 mt-3">
+              {customProduct.variant.variantCombinations.map((combination) => {
+                const option =
+                  customProduct.variant.productBase.productOptions.find(
+                    (i) => i.id === combination.optionId
+                  );
+
+                if (!option) return null;
+
+                return (
+                  <DescriptionItem
+                    key={option?.id}
+                    title={option?.name}
+                    content={
+                      option.optionValues.find(
+                        (v) => v.id === combination.optionValueId
+                      )?.name ?? "N/A"
+                    }
+                  />
+                );
+              })}
+            </div>
+          </div>
+        </div>
         <div className="flex w-full justify-end mt-4">
           <Button type="submit" className="!text-white">
             Submit
@@ -293,5 +343,22 @@ function CustomProductForm({
         </div>
       </form>
     </>
+  );
+}
+
+function DescriptionItem({
+  className,
+  title,
+  content,
+}: {
+  className?: string;
+  title: string;
+  content: string;
+}) {
+  return (
+    <span className={clsx(className)}>
+      <strong>{title}: </strong>
+      {content}
+    </span>
   );
 }
