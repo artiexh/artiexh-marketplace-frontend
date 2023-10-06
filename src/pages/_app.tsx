@@ -100,9 +100,12 @@ export default function App({ Component, pageProps }: AppProps) {
           <Notifications limit={5} autoClose={3000} position="top-right" />
           <SWRConfig>
             <Provider store={store}>
+              {/* @ts-ignore */}
               <PersistGate loading={null} persistor={persistor}>
                 <AuthGuard />
+                {/* @ts-ignore */}
                 <Layout>
+                  {/* @ts-ignore */}
                   <Component {...pageProps} />
                 </Layout>
               </PersistGate>

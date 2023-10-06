@@ -72,6 +72,7 @@ export default function CampaignDetailPage() {
       </div>
       <div className="form-wrapper flex-1">
         {designItems && (
+          //@ts-ignore
           <CustomProductForm
             data={designItems}
             customProduct={customProduct}
@@ -121,10 +122,13 @@ function CustomProductForm({
   } = form;
 
   useEffect(() => {
-    if (form.isDirty() && !dirtyList.includes(data.id))
-      setDirtyList((prev) => [...prev, data.id]);
-    else if (!form.isDirty() && dirtyList.includes(data.id))
-      setDirtyList((prev) => prev.filter((i) => i !== data.id));
+    if (!customProduct) return;
+    if (form.isDirty() && !dirtyList.includes(customProduct.id))
+      setDirtyList((prev: any) => [...prev, customProduct.id]);
+    else if (!form.isDirty() && dirtyList.includes(customProduct.id))
+      setDirtyList((prev: any) =>
+        prev.filter((i: any) => i !== customProduct.id)
+      );
   }, [form]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { data: tagList } = useTags();
@@ -173,6 +177,7 @@ function CustomProductForm({
 
   if (index === -1) return null;
 
+  //@ts-ignore
   const { attaches = [] } = form.values.customProducts[index];
 
   return (

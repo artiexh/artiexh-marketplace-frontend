@@ -98,20 +98,20 @@ const DesignInventoryPage = () => {
                       }
                     />
                   </div>
-                  <h1 className="mt-4">{selectedDesign.name}</h1>
+                  <h1 className="mt-4">{selectedDesign!.name}</h1>
                   <div className="flex w-full">
                     <div>
                       <strong>Product base:</strong>
-                      <span>{selectedDesign.variant.productBase.name}</span>
+                      <span>{selectedDesign!.variant.productBase.name}</span>
                     </div>
                   </div>
                   <div>
                     <h3 className="text-xl font-semibold">Varaints</h3>
                     <div className="grid grid-cols-2 gap-x-2 mt-2">
-                      {selectedDesign.variant.variantCombinations.map(
+                      {selectedDesign!.variant.variantCombinations.map(
                         (combination) => {
                           const combinationOption =
-                            selectedDesign.variant.productBase.productOptions.find(
+                            selectedDesign!.variant.productBase.productOptions.find(
                               (option) => option.id === combination.optionId
                             );
                           return (

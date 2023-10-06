@@ -312,6 +312,7 @@ function VariantAndProviderPicker({
     Record<string, string | undefined>
   >(
     productBase.productOptions.reduce((prev, cur) => {
+      /* @ts-ignore */
       prev[cur.id.toString()] = undefined;
       return prev;
     }, {})
@@ -372,6 +373,7 @@ function VariantAndProviderPicker({
     ? variantResponse?.data.items.find((variant) => {
         return variant.variantCombinations.every((combination) => {
           return (
+            //@ts-ignore
             queryObject[combination.optionId] === combination.optionValueId
           );
         });
