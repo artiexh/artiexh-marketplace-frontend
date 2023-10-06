@@ -1,8 +1,9 @@
 "use client";
 
 import DesignItemCard from "@/components/Cards/DesignItemCard/DesignItemCard";
+import ImageWithFallback from "@/components/ImageWithFallback/ImageWithFallback";
 import { fetcher } from "@/services/backend/axiosClient";
-import { calculateDesignItemProviderConfigApi } from "@/services/backend/services/designInventory";
+import { calculateDesignItemConfig } from "@/services/backend/services/campaign";
 import { SimpleDesignItem } from "@/types/DesignItem";
 import {
   CommonResponseBase,
@@ -42,14 +43,27 @@ export default function CreateCampaignPage() {
   const [collection, setCollection] = useState<SimpleDesignItem[]>([]);
 
   const [params, setParams] = useState({
-    pageSize: 8,
+    pageSize: 5,
     pageNumber: 1,
     category: null,
     sortDirection: "ASC",
   });
-  const { data: response, isLoading } = useSWR<
-    CommonResponseBase<PaginationResponseBase<SimpleDesignItem>>
-  >("/inventory-item", () => fetcher("/inventory-item"));
+  const {
+    data: response,
+    isLoading,
+    mutate,
+  } = useSWR<CommonResponseBase<PaginationResponseBase<SimpleDesignItem>>>(
+    ["/inventory-items", params.pageNumber],
+    () => {
+      console.log(params);
+      return fetcher(
+        `/inventory-item?${new URLSearchParams({
+          pageSize: params.pageSize.toString(),
+          pageNumber: params.pageNumber.toString(),
+        }).toString()}`
+      );
+    }
+  );
 
   if (isLoading) return null;
 
@@ -98,13 +112,23 @@ export default function CreateCampaignPage() {
         </Button>
       </div>
       <div className="w-full flex gap-x-5 mt-4">
-        <div className="detail-wrapper flex-1 flex justify-center items-center">
+        <div className="detail-wrapper flex-1 flex justify-center items-center h-[700px]">
           {typeof selectedDesign === "undefined" ? (
             <h1 className="mb-48">Pick a design to see detail!</h1>
           ) : (
             <div className="design-detail-card p-4 bg-white rounded-md w-full h-full flex flex-col justify-between">
               <div>
-                <div className="w-full aspect-video bg-primary rounded-md" />
+                <div className="w-full aspect-video relative rounded-md">
+                  <ImageWithFallback
+                    alt="test"
+                    fill
+                    src={
+                      selectedDesign?.variant.productBase.attaches.find(
+                        (a) => a.type === "THUMBNAIL"
+                      )?.url
+                    }
+                  />
+                </div>
                 <h1 className="mt-4">{selectedDesign.name}</h1>
                 <div className="flex w-full">
                   <div>
@@ -143,13 +167,30 @@ export default function CreateCampaignPage() {
                 </div>
               </div>
               <div className="actions w-full flex justify-end">
-                <Button
-                  onClick={() =>
-                    router.push(`/product-design/${selectedDesign.id}`)
-                  }
-                >
-                  Edit!
-                </Button>
+                {collection
+                  .map((el) => el.id.toString())
+                  .indexOf(selectedDesign.id.toString()) === -1 ? (
+                  <Button
+                    onClick={() =>
+                      setCollection((prev) => [...prev, selectedDesign])
+                    }
+                  >
+                    Add
+                  </Button>
+                ) : (
+                  <Button
+                    onClick={() =>
+                      setCollection((prev) =>
+                        prev.filter(
+                          (str) =>
+                            str.id.toString() !== selectedDesign.id.toString()
+                        )
+                      )
+                    }
+                  >
+                    Remove
+                  </Button>
+                )}
               </div>
             </div>
           )}
@@ -218,12 +259,8 @@ export default function CreateCampaignPage() {
 function PickProviderStep({ data }: { data: SimpleDesignItem[] }) {
   const router = useRouter();
   const [provider, setProvider] = useState<string>();
-  const { data: response, isLoading } = useSWR("test", () =>
-    calculateDesignItemProviderConfigApi(data)
-  );
-  console.log(
-    "🚀 ~ file: page.tsx:215 ~ PickProviderStep ~ response:",
-    response
+  const { data: response, isLoading } = useSWR(["provider-configs"], () =>
+    calculateDesignItemConfig(data.map((e) => e.id.toString()))
   );
 
   const createCampaign = () => {
@@ -242,14 +279,20 @@ function PickProviderStep({ data }: { data: SimpleDesignItem[] }) {
         </Button>
       </div>
       <Accordion multiple={true} chevronPosition="left">
-        {response?.data.items.map((item) => (
-          <Accordion.Item value={item.providerName} key={item.providerName}>
+        {response?.data.data.map((item) => (
+          <Accordion.Item value={item.businessName} key={item.businessCode}>
             <Center>
               <Accordion.Control>
-                <div>{item.providerName}</div>
+                <div>
+                  {item.businessName} - Tổng giá:{" "}
+                  {item.designItems.reduce(
+                    (prev, cur) => cur.config?.basePriceAmount ?? 0 + prev,
+                    0
+                  )}
+                </div>
               </Accordion.Control>
               <ActionIcon variant="subtle" color="gray" className="ml-4">
-                {provider === item.providerName ? (
+                {provider === item.businessCode ? (
                   <img
                     src="/assets/logo.svg"
                     onClick={() => setProvider(undefined)}
@@ -260,7 +303,7 @@ function PickProviderStep({ data }: { data: SimpleDesignItem[] }) {
                     size={24}
                     width={24}
                     height={24}
-                    onClick={() => setProvider(item.providerName)}
+                    onClick={() => setProvider(item.businessCode)}
                   />
                 )}
               </ActionIcon>

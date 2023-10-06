@@ -9,7 +9,7 @@ const isValidUrl = (url: string) => {
   }
 };
 
-const fallbackImage = "/imgs/img-placeholder.jpg";
+const fallbackImage = "/assets/default-thumbnail.jpg";
 
 type ImageWithFallbackProps = Omit<
   React.ComponentProps<typeof Image>,

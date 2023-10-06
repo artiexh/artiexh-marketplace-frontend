@@ -59,24 +59,28 @@ export const updateImageSetApi = (
   );
 };
 
-export const updateGeneralInformation = (
-  designItem: SimpleDesignItem,
+export const updateGeneralInformationApi = (
+  designItem: DesignItemDetail,
   generalInfo: {
     name: string;
-    description: string;
-    tags: string;
+    description?: string;
+    tags?: string[];
   }
 ) => {
   //TODO: call api later
-  return axiosClient.post<CommonResponseBase<SimpleDesignItem>>(
+  return axiosClient.post<CommonResponseBase<DesignItemDetail>>(
     "/inventory-item",
     {
       id: designItem.id,
       combinationCode: designItem.combinationCode,
-      imageSet: designItem.imageSet,
+      imageSet: designItem.imageSet.map((el) => ({
+        positionCode: el.positionCode,
+        mockupImageId: el.mockupImage?.id,
+        manufacturingImageId: el.manufacturingImage?.id,
+      })),
       name: generalInfo.name,
       description: generalInfo.description,
-      tags: generalInfo.tags,
+      tags: generalInfo.tags ?? [],
       variantId: designItem.variant.id,
     }
   );
@@ -155,3 +159,6 @@ export const calculateDesignItemProviderConfigApi = async (
     },
   };
 };
+
+export const deleteDesignItemApi = (id: string) =>
+  axiosClient.delete(`/inventory-item/${id}`);

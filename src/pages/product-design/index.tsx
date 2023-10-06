@@ -119,18 +119,22 @@ function SideBar({ resetHandler, submitHandler }: SidebarProps) {
 
 export default function ProductDesignPage() {
   const form = useForm();
+  const [apiParams, setApiParams] = useState({
+    pageSize: 8,
+    pageNumber: 1,
+    category: null,
+    sortDirection: "ASC",
+  });
   const {
     data: response,
     isLoading,
     mutate,
   } = useSWR<CommonResponseBase<PaginationResponseBase<SimpleProductBase>>>(
-    ["/product-base", form.values],
+    ["/product-base", form.values, apiParams],
     () => {
       const params = new URLSearchParams();
-      console.log(
-        "🚀 ~ file: index.tsx:122 ~ ProductDesignPage ~ params:",
-        form.values
-      );
+      params.set("pageSize", apiParams.pageSize.toString());
+      params.set("pageNumber", apiParams.pageNumber.toString());
       Object.keys(form.values).forEach((key) => {
         if (form.values[key]) {
           params.set(key, form.values[key] as string);
@@ -142,12 +146,6 @@ export default function ProductDesignPage() {
 
   const productBaseId = useRef<string>();
   const [opened, { open, close }] = useDisclosure(false);
-  const [params, setParams] = useState({
-    pageSize: 8,
-    pageNumber: 1,
-    category: null,
-    sortDirection: "ASC",
-  });
 
   const submitHandler = (data: Record<string, string>) => {
     console.log("🚀 ~ file: index.tsx:142 ~ submitHandler ~ data:", data);
@@ -194,9 +192,9 @@ export default function ProductDesignPage() {
             </div>
             <div className="flex justify-center mt-6 mb-20">
               <Pagination
-                value={params.pageNumber}
+                value={apiParams.pageNumber}
                 onChange={(e) => {
-                  setParams((prev) => ({
+                  setApiParams((prev) => ({
                     ...prev,
                     pageNumber: e,
                   }));
