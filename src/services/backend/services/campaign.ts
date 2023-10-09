@@ -5,11 +5,77 @@ type CustomProductBody = {
   inventoryItemId: string;
 };
 
+export type CamapignDetail = {
+  campaignHistories: [
+    {
+      action: string;
+      eventTime: string;
+      message: string;
+    }
+  ];
+  customProducts: {
+    attaches: {
+      description: string;
+      id: string;
+      title: string;
+      type: string;
+      url: string;
+    }[];
+    category: {
+      id: string;
+      imageUrl: string;
+      name: string;
+    };
+    createdDate: string;
+    description: string;
+    id: string;
+    limitPerOrder: string;
+    modifiedDate: string;
+    name: string;
+    price: {
+      amount: string;
+      unit: string;
+    };
+    quantity: string;
+    tags: string[];
+  }[];
+  id: string;
+  owner: {
+    avatarUrl: string;
+    displayName: string;
+    id: string;
+    province: {
+      country: {
+        id: string;
+        name: string;
+        provinces: string[];
+      };
+      districts: {
+        fullName: string;
+        id: string;
+        name: string;
+        province: string;
+        wards: {
+          district: string;
+          fullName: string;
+          id: string;
+          name: string;
+        }[];
+      }[];
+      fullName: string;
+      id: string;
+      name: string;
+    };
+    username: string;
+  };
+  status: "CANCELED";
+};
+
 export const createCampaignApi = (body: {
   customProducts: CustomProductBody[];
   providerId: string;
 }) =>
-  axiosClient.post("/campaign", {
+  axiosClient.post<CommonResponseBase<CamapignDetail>>("/campaign", {
     ...body,
   });
 
@@ -59,3 +125,14 @@ export const calculateDesignItemConfig = (ids: string[]) => {
     `/campaign/provider?${params.toString()}`
   );
 };
+
+export const updateCampaignStatusApi = (
+  id: string,
+  body: {
+    message: string;
+    status: string;
+  }
+) =>
+  axiosClient.patch(`/campaign/${id}/status`, {
+    ...body,
+  });

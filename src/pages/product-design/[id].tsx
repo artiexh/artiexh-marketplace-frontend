@@ -312,13 +312,23 @@ type MetaConfigurationProps = {
 function MetaConfiguration({ designItem }: MetaConfigurationProps) {
   const queryClient = useQueryClient();
   const { data: tagList } = useTags();
-  const { onSubmit, getInputProps, isDirty, reset } = useForm<MetaFieldsForm>({
-    initialValues: {
+  const { onSubmit, getInputProps, isDirty, reset, setValues, resetDirty } =
+    useForm<MetaFieldsForm>({
+      initialValues: {
+        name: designItem.name,
+        description: designItem.description,
+        tags: designItem.tags ?? [],
+      },
+    });
+
+  useEffect(() => {
+    setValues({
       name: designItem.name,
       description: designItem.description,
       tags: designItem.tags ?? [],
-    },
-  });
+    });
+    resetDirty();
+  }, [designItem]);
 
   // FETCH TAGS FROM SERVER
   const mapTagDataToTagOption = (data: Tag[]) =>
@@ -353,7 +363,6 @@ function MetaConfiguration({ designItem }: MetaConfigurationProps) {
         ],
         data
       );
-      reset();
     },
   });
 

@@ -3,7 +3,10 @@
 import DesignItemCard from "@/components/Cards/DesignItemCard/DesignItemCard";
 import ImageWithFallback from "@/components/ImageWithFallback/ImageWithFallback";
 import { fetcher } from "@/services/backend/axiosClient";
-import { calculateDesignItemConfig } from "@/services/backend/services/campaign";
+import {
+  calculateDesignItemConfig,
+  createCampaignApi,
+} from "@/services/backend/services/campaign";
 import { SimpleDesignItem } from "@/types/DesignItem";
 import {
   CommonResponseBase,
@@ -263,10 +266,14 @@ function PickProviderStep({ data }: { data: SimpleDesignItem[] }) {
     calculateDesignItemConfig(data.map((e) => e.id.toString()))
   );
 
-  const createCampaign = () => {
-    const id = Math.random() * 1000;
-    storeDesignItemsForCampaign(data, id.toString());
-    router.push(`/my-shop/campaigns/${id}`);
+  const createCampaign = async () => {
+    const res = await createCampaignApi({
+      customProducts: data.map((el) => ({
+        inventoryItemId: el.id.toString(),
+      })),
+      providerId: provider as string,
+    });
+    router.push(`/my-shop/campaigns/${res.data.data.id}`);
   };
 
   if (isLoading) return null;

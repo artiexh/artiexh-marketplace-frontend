@@ -4,9 +4,15 @@ import Thumbnail from "@/components/CreateProduct/Thumbnail";
 import ImageWithFallback from "@/components/ImageWithFallback/ImageWithFallback";
 import useCategories from "@/hooks/useCategories";
 import useTags from "@/hooks/useTags";
-import { createCampaignApi } from "@/services/backend/services/campaign";
+import axiosClient from "@/services/backend/axiosClient";
+import {
+  CamapignDetail,
+  createCampaignApi,
+  updateCampaignStatusApi,
+} from "@/services/backend/services/campaign";
 import { SimpleDesignItem } from "@/types/DesignItem";
 import { Tag } from "@/types/Product";
+import { CommonResponseBase } from "@/types/ResponseBase";
 import { CURRENCIES } from "@/utils/createProductValidations";
 import { getDesignItemsForCampaign } from "@/utils/localStorage/campaign";
 import {
@@ -20,6 +26,7 @@ import {
   Textarea,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
+import { useQuery } from "@tanstack/react-query";
 import clsx from "clsx";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -30,12 +37,23 @@ export default function CampaignDetailPage() {
 
   const id = params!.id as string;
 
-  const designItems = getDesignItemsForCampaign(id);
+  const { data: res, isLoading } = useQuery({
+    queryKey: ["campaign", { id: id }],
+    queryFn: async () => {
+      const res = await axiosClient.get<CommonResponseBase<CamapignDetail>>(
+        `/campaign/${id}`
+      );
 
-  const [customProduct, setCustomProduct] = useState<SimpleDesignItem>(
-    designItems[0]
-  );
+      return res.data;
+    },
+  });
+  console.log("🚀 ~ file: page.tsx:49 ~ CampaignDetailPage ~ res:", res);
+  const [customProduct, setCustomProduct] = useState<SimpleDesignItem>();
   const [dirtyList, setDirtyList] = useState<string[]>([]);
+
+  if (isLoading || !res?.data) return null;
+
+  const designItems = res!.data.customProducts;
 
   return (
     <div className="flex gap-6 mt-14">
@@ -60,11 +78,7 @@ export default function CampaignDetailPage() {
                 )}
                 fill
                 alt="test"
-                src={
-                  i.variant.productBase.attaches.find(
-                    (el) => el.type === "THUMBNAIL"
-                  )?.url
-                }
+                src={""}
               />
             </div>
           </Indicator>
@@ -91,17 +105,21 @@ function CustomProductForm({
   setDirtyList,
   customProduct,
 }: {
-  data: SimpleDesignItem[];
+  data: CamapignDetail["customProducts"];
   dirtyList: any;
   setDirtyList: any;
   customProduct?: SimpleDesignItem;
 }) {
+  const params = useParams();
+
+  const id = params!.id as string;
   const form = useForm({
     initialValues: {
       customProducts: data.map((el) => ({
         inventoryItemId: el.id,
         name: el.name,
         price: {},
+        categoryId: el.category.id.toString(),
       })),
     },
     validateInputOnBlur: true,
@@ -186,7 +204,10 @@ function CustomProductForm({
         <div className="card general-wrapper">
           <h2 className="text-3xl font-bold">General information</h2>
           <div className="flex flex-col-reverse md:flex-row mt-5 gap-10">
-            <div className="grid grid-cols-12 w-6/12 gap-5 md:gap-x-10">
+            <div
+              className="grid grid-cols-12 w-6/12 gap-5 md:gap-x-10"
+              key={index}
+            >
               <TextInput
                 label="Product name"
                 className="col-span-12"
@@ -215,6 +236,7 @@ function CustomProductForm({
                 disabled={isSubmitting}
               />
               <Select
+                disabled
                 data={categoryOptions || []}
                 className="col-span-12 md:col-span-8 order-1 md:order-none"
                 label="Category"
@@ -222,8 +244,7 @@ function CustomProductForm({
                 searchable
                 withAsterisk
                 allowDeselect
-                {...getInputProps(`customProducts.${index}.productCategoryId`)}
-                disabled={isSubmitting}
+                {...getInputProps(`customProducts.${index}.categoryId`)}
               />
               <NumberInput
                 label="Quantity"
@@ -301,12 +322,12 @@ function CustomProductForm({
             </div>
           </div>
         </div>
-        <div className="card general-wrapper mt-4">
+        {/* <div className="card general-wrapper mt-4">
           <h2 className="text-3xl font-bold">Manufacturing information</h2>
           <div className="flex gap-x-12 mt-5">
             <DescriptionItem
               title="Product base"
-              content={customProduct.variant.productBase.name}
+              content="Product base name"
               className="text-xl"
             />
             <DescriptionItem
@@ -340,9 +361,18 @@ function CustomProductForm({
               })}
             </div>
           </div>
-        </div>
+        </div> */}
         <div className="flex w-full justify-end mt-4">
-          <Button type="submit" className="!text-white">
+          <Button
+            onClick={async () => {
+              const res = await updateCampaignStatusApi(id, {
+                message: "User submit campaign to admin",
+                status: "WAITING",
+              });
+            }}
+            type="submit"
+            className="!text-white"
+          >
             Submit
           </Button>
         </div>

@@ -1,8 +1,10 @@
 import ImageWithFallback from "@/components/ImageWithFallback/ImageWithFallback";
+import { updateCampaignStatusApi } from "@/services/backend/services/campaign";
 import { ArtistCampaignColumnType } from "@/types/Campaign";
 import { TableColumns } from "@/types/Table";
 import { priceToString } from "@/utils/price";
 import { Badge } from "@mantine/core";
+import { IconTrash } from "@tabler/icons-react";
 import { IconBallpen } from "@tabler/icons-react";
 import Image from "next/image";
 
@@ -59,11 +61,20 @@ const shopCampaignColumns: TableColumns<ArtistCampaignColumnType> = [
     key: "action",
     action: "EDIT",
     className: "!text-center",
-    render: (_, actionHandler) => (
+    render: (record, actionHandler) => (
       <div className="flex justify-center">
         <IconBallpen
           className="cursor-pointer"
           onClick={() => actionHandler && actionHandler()}
+        />
+        <IconTrash
+          className="cursor-pointer"
+          onClick={() =>
+            updateCampaignStatusApi(record.id, {
+              message: "Cancel campaign",
+              status: "CANCELED",
+            })
+          }
         />
       </div>
     ),
