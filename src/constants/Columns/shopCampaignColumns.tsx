@@ -65,7 +65,8 @@ const shopCampaignColumns: TableColumns<ArtistCampaignColumnType> = [
       <div className="flex justify-center">
         <IconBallpen
           className="cursor-pointer"
-          onClick={() => actionHandler && actionHandler()}
+          //@ts-ignore
+          onClick={() => record?.onClickEdit && record?.onClickEdit()}
         />
         <IconTrash
           className="cursor-pointer"

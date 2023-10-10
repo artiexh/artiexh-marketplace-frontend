@@ -27,14 +27,30 @@ const ShopCampaignsPage = () => {
       </div>
       <TableContainer
         fetchKey="campaigns"
-        fetcher={async (currentPage) =>
-          (
+        fetcher={async (currentPage) => {
+          const res = (
             await axiosClient.get(
               `/campaign?page=${currentPage}&pageSize=${PAGE_SIZE}` +
                 new URLSearchParams(searchParams?.toString()).toString()
             )
-          ).data
-        }
+          ).data;
+          const finalRes = {
+            ...res,
+            data: {
+              ...res.data,
+              items: res.data.items?.map((el: any) => ({
+                ...el,
+                onClickEdit: () =>
+                  router.push(`${ROUTE.SHOP}/campaigns/${el.id}`),
+              })),
+            },
+          };
+          console.log(
+            "🚀 ~ file: page.tsx:38 ~ fetcher={ ~ finalRes:",
+            finalRes
+          );
+          return finalRes;
+        }}
         columns={shopCampaignColumns}
         pagination
         tableProps={{ verticalSpacing: "sm", className: "font-semibold" }}

@@ -1,11 +1,58 @@
 import { CommonResponseBase } from "@/types/ResponseBase";
 import axiosClient from "../axiosClient";
+import { DesignItemDetail, SimpleDesignItem } from "@/types/DesignItem";
+import { ProductBaseDetail } from "@/types/ProductBase";
 
 type CustomProductBody = {
   inventoryItemId: string;
 };
 
+export type CustomProduct = {
+  attaches: {
+    description: string;
+    id: string;
+    title: string;
+    type: string;
+    url: string;
+  }[];
+  category: {
+    id: string;
+    imageUrl: string;
+    name: string;
+  };
+  createdDate: string;
+  description: string;
+  id: string;
+  limitPerOrder: string;
+  modifiedDate: string;
+  name: string;
+  price: {
+    amount: string;
+    unit: string;
+  };
+  quantity: string;
+  tags: string[];
+  providerConfig: {
+    basePriceAmount: number;
+    manufacturingTime: string;
+    minQuantity: number;
+  };
+  inventoryItem: Omit<SimpleDesignItem, "variant"> & {
+    productBase: Pick<ProductBaseDetail, "id" | "name" | "imageCombinations">;
+    variant: {
+      id: string;
+      variantCombination: {
+        optionName: string;
+        valueName: string;
+        value: string;
+      }[];
+    };
+  };
+};
+
 export type CamapignDetail = {
+  name: string;
+  description?: string;
   campaignHistories: [
     {
       action: string;
@@ -13,32 +60,8 @@ export type CamapignDetail = {
       message: string;
     }
   ];
-  customProducts: {
-    attaches: {
-      description: string;
-      id: string;
-      title: string;
-      type: string;
-      url: string;
-    }[];
-    category: {
-      id: string;
-      imageUrl: string;
-      name: string;
-    };
-    createdDate: string;
-    description: string;
-    id: string;
-    limitPerOrder: string;
-    modifiedDate: string;
-    name: string;
-    price: {
-      amount: string;
-      unit: string;
-    };
-    quantity: string;
-    tags: string[];
-  }[];
+  providerId: string;
+  customProducts: CustomProduct[];
   id: string;
   owner: {
     avatarUrl: string;
@@ -68,10 +91,22 @@ export type CamapignDetail = {
     };
     username: string;
   };
-  status: "CANCELED";
+  provider: {
+    address: string;
+    businessCode: string;
+    businessName: string;
+    categories: string[];
+    contactName: string;
+    email: string;
+    imageUrl: string;
+    phone: string;
+  };
+  status: string;
 };
 
 export const createCampaignApi = (body: {
+  name: string;
+  description?: string;
   customProducts: CustomProductBody[];
   providerId: string;
 }) =>
@@ -135,4 +170,51 @@ export const updateCampaignStatusApi = (
 ) =>
   axiosClient.patch(`/campaign/${id}/status`, {
     ...body,
+  });
+
+export const updateCampaignGeneralInfoApi = (
+  campaign: CamapignDetail,
+  generalInfo: {
+    name: string;
+    description?: string;
+  }
+) =>
+  axiosClient.put(`/campaign/${campaign.id}`, {
+    name: generalInfo.name,
+    description: generalInfo.description,
+    providerId: campaign.provider.businessCode,
+    customProducts: campaign.customProducts.map((prod) => {
+      return {
+        attaches: prod.attaches,
+        description: prod.description,
+        inventoryItemId: prod.inventoryItem.id,
+        limitPerOrder: prod.limitPerOrder,
+        name: prod.name,
+        price: prod.price,
+        quantity: prod.quantity,
+        tags: prod.tags,
+      };
+    }),
+  });
+
+export const updateCampaignCustomProductsApi = (
+  campaign: CamapignDetail,
+  customProducts: Pick<
+    CustomProduct,
+    | "attaches"
+    | "description"
+    | "limitPerOrder"
+    | "name"
+    | "price"
+    | "quantity"
+    | "tags"
+  > & {
+    inventoryItemId: string;
+  }
+) =>
+  axiosClient.put(`/campaign/${campaign.id}`, {
+    name: campaign.name,
+    description: campaign.description,
+    providerId: campaign.provider.businessCode,
+    customProducts: customProducts,
   });

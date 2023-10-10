@@ -22,8 +22,12 @@ import {
   Indicator,
   Pagination,
   Table,
+  TextInput,
+  Textarea,
   Tooltip,
 } from "@mantine/core";
+import { useForm } from "@mantine/form";
+import { modals } from "@mantine/modals";
 import {
   IconArchive,
   IconCircle,
@@ -33,7 +37,7 @@ import {
 } from "@tabler/icons-react";
 import clsx from "clsx";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import useSWR from "swr";
 
 export default function CreateCampaignPage() {
@@ -259,21 +263,61 @@ export default function CreateCampaignPage() {
   );
 }
 
-function PickProviderStep({ data }: { data: SimpleDesignItem[] }) {
+const CreateModalBody = ({
+  data,
+  providerId,
+}: {
+  data: SimpleDesignItem[];
+  providerId: string;
+}) => {
   const router = useRouter();
-  const [provider, setProvider] = useState<string>();
-  const { data: response, isLoading } = useSWR(["provider-configs"], () =>
-    calculateDesignItemConfig(data.map((e) => e.id.toString()))
-  );
-
-  const createCampaign = async () => {
+  const form = useForm<{
+    name: string;
+    description?: string;
+  }>();
+  const submitHandler = async () => {
     const res = await createCampaignApi({
+      ...form.values,
       customProducts: data.map((el) => ({
         inventoryItemId: el.id.toString(),
       })),
-      providerId: provider as string,
+      providerId: providerId,
     });
+    modals.close("create-campaign-info");
     router.push(`/my-shop/campaigns/${res.data.data.id}`);
+  };
+  return (
+    <form
+      onSubmit={form.onSubmit(submitHandler)}
+      className="flex flex-col gap-4"
+    >
+      <TextInput label="Campaign name" {...form.getInputProps("name")} />
+      <Textarea label="Description" {...form.getInputProps("description")} />
+      <div className="flex justify-end ">
+        <Button type="submit">Submit</Button>
+      </div>
+    </form>
+  );
+};
+
+function PickProviderStep({ data }: { data: SimpleDesignItem[] }) {
+  const [provider, setProvider] = useState<string>();
+  const { data: response, isLoading } = useSWR(
+    ["provider-configs", provider, ...data.map((el) => el.id)],
+    () => calculateDesignItemConfig(data.map((e) => e.id.toString()))
+  );
+
+  const createCampaign = async () => {
+    console.log("hellu");
+    modals.open({
+      modalId: "create-campaign-info",
+      title: "Input campaign information",
+      classNames: {
+        content: "!w-fit !h-fit top-1/3 left-[40%]",
+      },
+      centered: true,
+      children: <CreateModalBody data={data} providerId={provider as string} />,
+    });
   };
 
   if (isLoading) return null;

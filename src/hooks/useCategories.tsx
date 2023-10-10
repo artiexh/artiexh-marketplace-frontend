@@ -8,7 +8,9 @@ import useSwr from "swr";
 
 const useCategories = () => {
   const result = useSwr(["categories"], () =>
-    fetcher<CommonResponseBase<PaginationResponseBase<Category>>>("/category")
+    fetcher<CommonResponseBase<PaginationResponseBase<Category>>>(
+      "/category?pageSize=100"
+    )
   );
 
   return result;

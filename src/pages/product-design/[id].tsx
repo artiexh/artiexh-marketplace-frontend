@@ -749,7 +749,28 @@ function ImageSetPicker({ currentCombination }: ImageSetPickerProps) {
                     )}
                   </FileButton>
                 </Group>
-                <Group position="center">
+                <div>
+                  <h3>Manufacturing image</h3>
+                  <FileUpload
+                    value={
+                      manufacturingImage
+                        ? {
+                            fileName: manufacturingImage.fileName,
+                            file: manufacturingImage.fileName,
+                          }
+                        : undefined
+                    }
+                    onChange={async (e) => {
+                      const file = e;
+                      if (!file) return;
+                      updateManufacturingImageSetMutation.mutateAsync({
+                        positionCode: imageSet.code,
+                        file: file,
+                      });
+                    }}
+                  />
+                </div>
+                {/* <Group position="center">
                   <h3>Manufacturing image</h3>
                   <div className="flex justify-between items-center w-full">
                     {manufacturingImage && (
@@ -782,7 +803,7 @@ function ImageSetPicker({ currentCombination }: ImageSetPickerProps) {
                       )}
                     </FileButton>
                   </div>
-                </Group>
+                </Group> */}
               </Accordion.Panel>
             </Accordion.Item>
           );
@@ -803,6 +824,7 @@ type CombinationCodePickerProps = {
 import logoImage from "../../../public/assets/logo.svg";
 import { Tag } from "@/types/Product";
 import useTags from "@/hooks/useTags";
+import FileUpload from "@/components/FileUpload/FileUpload";
 
 function CombinationCodePicker({ combinations }: CombinationCodePickerProps) {
   const queryClient = useQueryClient();

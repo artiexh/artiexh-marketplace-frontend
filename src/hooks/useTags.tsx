@@ -8,7 +8,9 @@ import useSwr from "swr";
 
 const useTags = () => {
   const result = useSwr(["tags"], () =>
-    fetcher<CommonResponseBase<PaginationResponseBase<Tag>>>("/tag?pageSize=12")
+    fetcher<CommonResponseBase<PaginationResponseBase<Tag>>>(
+      "/tag?pageSize=100"
+    )
   );
 
   return result;
