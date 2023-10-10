@@ -66,6 +66,14 @@ export default function CampaignDetailPage() {
     refetch();
   };
 
+  const deleteCampaignHandler = async () => {
+    const res = await updateCampaignStatusApi(id, {
+      message: "Cancel campaign",
+      status: "CANCELED",
+    });
+    refetch();
+  };
+
   if (isLoading || !res?.data) return null;
 
   const customProducts = res!.data.customProducts;
@@ -79,7 +87,16 @@ export default function CampaignDetailPage() {
             <h1 className="text-2xl">{res.data.name}</h1>
           </div>
 
-          <div className="h-fit">
+          <div className="h-fit flex gap-x-3">
+            <Button
+              disabled={["APPROVED", "REJECTED", "CANCELED"].includes(
+                res.data.status
+              )}
+              onClick={deleteCampaignHandler}
+              className="mb-0"
+            >
+              Delete
+            </Button>
             <Button
               disabled={res.data.status !== "DRAFT"}
               onClick={submitCampaignHandler}
@@ -218,7 +235,7 @@ function CustomProductForm({
           unit: "VND",
         },
         attaches: [],
-        limitPerOrder: undefined,
+        limitPerOrder: el.limitPerOrder,
       })),
     },
     validateInputOnBlur: true,

@@ -70,12 +70,8 @@ const shopCampaignColumns: TableColumns<ArtistCampaignColumnType> = [
         />
         <IconTrash
           className="cursor-pointer"
-          onClick={() =>
-            updateCampaignStatusApi(record.id, {
-              message: "Cancel campaign",
-              status: "CANCELED",
-            })
-          }
+          //@ts-ignore
+          onClick={() => record?.onClickDelete && record?.onClickDelete()}
         />
       </div>
     ),

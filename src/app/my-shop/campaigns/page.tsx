@@ -4,6 +4,7 @@ import shopCampaignColumns from "@/constants/Columns/shopCampaignColumns";
 import { ROUTE } from "@/constants/route";
 import TableContainer from "@/containers/TableContainer";
 import axiosClient from "@/services/backend/axiosClient";
+import { updateCampaignStatusApi } from "@/services/backend/services/campaign";
 import { Button } from "@mantine/core";
 import { IconPlus } from "@tabler/icons-react";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -42,13 +43,15 @@ const ShopCampaignsPage = () => {
                 ...el,
                 onClickEdit: () =>
                   router.push(`${ROUTE.SHOP}/campaigns/${el.id}`),
+                onClickDelete: async () => {
+                  await updateCampaignStatusApi(el.id, {
+                    message: "Cancel campaign",
+                    status: "CANCELED",
+                  });
+                },
               })),
             },
           };
-          console.log(
-            "🚀 ~ file: page.tsx:38 ~ fetcher={ ~ finalRes:",
-            finalRes
-          );
           return finalRes;
         }}
         columns={shopCampaignColumns}
