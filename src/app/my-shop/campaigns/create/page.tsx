@@ -303,7 +303,7 @@ const CreateModalBody = ({
 function PickProviderStep({ data }: { data: SimpleDesignItem[] }) {
   const [provider, setProvider] = useState<string>();
   const { data: response, isLoading } = useSWR(
-    ["provider-configs", provider, ...data.map((el) => el.id)],
+    ["provider-configs", ...data.map((el) => el.id)],
     () => calculateDesignItemConfig(data.map((e) => e.id.toString()))
   );
 
@@ -334,13 +334,19 @@ function PickProviderStep({ data }: { data: SimpleDesignItem[] }) {
           <Accordion.Item value={item.businessName} key={item.businessCode}>
             <Center>
               <Accordion.Control>
-                <div>
-                  {item.businessName} - Tổng giá:{" "}
-                  {item.designItems.reduce(
-                    (prev, cur) => cur.config?.basePriceAmount ?? 0 + prev,
-                    0
-                  )}
-                </div>
+                {item.designItems.length === data.length ? (
+                  <div>
+                    {item.businessName} - Tổng giá:
+                    {item.designItems.reduce(
+                      (prev, cur) => cur.config?.basePriceAmount ?? 0 + prev,
+                      0
+                    )}
+                  </div>
+                ) : (
+                  <div className="!text-gray-500">
+                    {item.businessName} - Có sản phẩm không hỗ trợ
+                  </div>
+                )}
               </Accordion.Control>
               <ActionIcon variant="subtle" color="gray" className="ml-4">
                 {provider === item.businessCode ? (
@@ -350,11 +356,19 @@ function PickProviderStep({ data }: { data: SimpleDesignItem[] }) {
                   />
                 ) : (
                   <IconCircle
-                    className="w-10"
+                    className={clsx(
+                      "w-10",
+                      item.designItems.length !== data.length &&
+                        "text-gray-500 cursor-default"
+                    )}
                     size={24}
                     width={24}
                     height={24}
-                    onClick={() => setProvider(item.businessCode)}
+                    onClick={
+                      item.designItems.length === data.length
+                        ? () => setProvider(item.businessCode)
+                        : undefined
+                    }
                   />
                 )}
               </ActionIcon>
@@ -370,13 +384,28 @@ function PickProviderStep({ data }: { data: SimpleDesignItem[] }) {
                     </tr>
                   </thead>
                   <tbody>
-                    {item.designItems?.map((designItem) => (
-                      <tr key={designItem.name}>
-                        <td>{designItem.name}</td>
-                        <td>{designItem.config?.basePriceAmount}</td>
-                        <td>{designItem.config?.manufacturingTime}</td>
-                      </tr>
-                    ))}
+                    {data?.map((designItem) => {
+                      const configItem = item.designItems.find(
+                        (el) => el.id === designItem.id
+                      );
+
+                      if (!configItem) {
+                        return (
+                          <tr className="text-red-600" key={designItem.name}>
+                            <td>{designItem.name}</td>
+                            <td>Không hỗ trợ</td>
+                            <td>Không hỗ trợ</td>
+                          </tr>
+                        );
+                      }
+                      return (
+                        <tr key={designItem.name}>
+                          <td>{designItem.name}</td>
+                          <td>{configItem.config.basePriceAmount}</td>
+                          <td>{configItem.config.manufacturingTime}</td>
+                        </tr>
+                      );
+                    })}
                   </tbody>
                 </Table>
               }
