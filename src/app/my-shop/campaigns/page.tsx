@@ -31,7 +31,7 @@ const ShopCampaignsPage = () => {
         fetcher={async (currentPage) => {
           const res = (
             await axiosClient.get(
-              `/campaign?page=${currentPage}&pageSize=${PAGE_SIZE}` +
+              `/campaign?pageNumber=${currentPage}&pageSize=${PAGE_SIZE}` +
                 new URLSearchParams(searchParams?.toString()).toString()
             )
           ).data;
