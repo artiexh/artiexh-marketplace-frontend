@@ -36,17 +36,13 @@ import {
 } from "@tabler/icons-react";
 import { IconAdjustmentsAlt } from "@tabler/icons-react";
 
-export function ToteBagContainer() {
+export function ToteBagContainer({ children }: { children?: React.ReactNode }) {
   const { value } = useContext(MetaContext);
   const glbBody = useLoader(GLTFLoader, "/3d/tote-bag/tote_body.glb");
   const glbStrap = useLoader(GLTFLoader, "/3d/tote-bag/tote_strap.glb");
 
-  useFrame(() => {
-    // decalRef.current?.translateY(0.001);
-  });
-
   const { nodes: bodyNodes, materials: bodyMaterials } = glbBody;
-  console.log("🚀 ~ file: portal.tsx:27 ~ Playground ~ bodyNodes:", bodyNodes);
+
   const { nodes: strapNodes, materials: strapMaterials } = glbStrap;
 
   return (
@@ -82,25 +78,7 @@ export function ToteBagContainer() {
           position={[0, -25, 0]}
         >
           <meshStandardMaterial color={value.palette.body} />
-          {value.imagesContext.combination === "FULL_MIDDLE" &&
-            value.imagesContext.images[0] && (
-              <DecalWithImage
-                debug
-                position={[0, 0, 2]}
-                rotation={[-0.001, 0, 0]}
-                scale={[20, 20, 1]}
-                file={value.imagesContext.images[0].file}
-              ></DecalWithImage>
-            )}
-          {value.imagesContext.combination === "BOTTOM_LEFT_CORNER" &&
-            value.imagesContext.images[0] && (
-              <DecalWithImage
-                position={[-12, 5.5, 1.45]}
-                rotation={[-0.001, 0, 0]}
-                scale={[7, 7, 1]}
-                file={value.imagesContext.images[0].file}
-              ></DecalWithImage>
-            )}
+          {children}
         </mesh>
       </group>
     </>

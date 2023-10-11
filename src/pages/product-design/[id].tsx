@@ -42,7 +42,7 @@ import {
   useRef,
   useState,
 } from "react";
-import { TShirtContainer } from "./portal";
+import { TShirtContainer, ToteBagContainer } from "./portal";
 import { Decal, useTexture } from "@react-three/drei";
 import useSWR from "swr";
 import { createImageUrl } from "@/utils/three";
@@ -131,7 +131,9 @@ export default function DesignPortalPage() {
     >
       <div className="!w-screen !h-screen">
         <ConfigMenu />
-        <DesignPortalContainer />
+        <DesignPortalContainer
+          modelCode={res.data.variant.productBase.model3DCode}
+        />
       </div>
     </MockupImagesProvider>
   );
@@ -171,14 +173,21 @@ function DecalWithImage(
   return <Decal {...rest} map={texture} ref={decalRef}></Decal>;
 }
 
-function DesignPortalContainer() {
+function DesignPortalContainer({ modelCode }: { modelCode: string }) {
   const imageQueryResults = useContext(MockupImagesContext);
+
+  let WrapperContainer = null;
+
+  if (modelCode === "T_SHIRT") WrapperContainer = TShirtContainer;
+  if (modelCode === "TOTE_BAG") WrapperContainer = ToteBagContainer;
+
+  if (WrapperContainer === null) return null;
 
   return (
     <Canvas className="w-full h-full">
       <ambientLight />
       <pointLight position={[10, 10, 10]} />
-      <TShirtContainer>
+      <WrapperContainer>
         {imageQueryResults
           .filter((el) => !el.isLoading)
           .map((el) => {
@@ -196,7 +205,7 @@ function DesignPortalContainer() {
               />
             );
           })}
-      </TShirtContainer>
+      </WrapperContainer>
     </Canvas>
   );
 }
