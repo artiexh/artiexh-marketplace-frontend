@@ -98,7 +98,7 @@ export default function CampaignDetailPage() {
               Delete
             </Button>
             <Button
-              disabled={res.data.status !== "DRAFT"}
+              disabled={!["DRAFT", "REQUEST_CHANGE"].includes(res.data.status)}
               onClick={submitCampaignHandler}
               className="mb-0"
             >
@@ -114,7 +114,7 @@ export default function CampaignDetailPage() {
         </Tabs.List>
         <Tabs.Panel value="general-info">
           <CampaignGeneralInfoForm
-            disabled={res.data.status !== "DRAFT"}
+            disabled={!["DRAFT", "REQUEST_CHANGE"].includes(res.data.status)}
             data={{
               name: res.data.name,
               description: res.data.description,
@@ -125,7 +125,7 @@ export default function CampaignDetailPage() {
 
         <Tabs.Panel value="custom-products">
           <CustomProductForm
-            disabled={res.data.status !== "DRAFT"}
+            disabled={!["DRAFT", "REQUEST_CHANGE"].includes(res.data.status)}
             data={customProducts}
           />
         </Tabs.Panel>
