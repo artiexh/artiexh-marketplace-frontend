@@ -452,7 +452,7 @@ function CustomProductForm({
                         )}
                       />
 
-                      <Input.Wrapper label="Attachments" className="mt-3">
+                      {/* <Input.Wrapper label="Attachments" className="mt-3">
                         <div className="grid grid-cols-3 gap-3">
                           {attaches?.length < 6 && (
                             <Thumbnail
@@ -468,7 +468,7 @@ function CustomProductForm({
                             />
                           )}
                         </div>
-                      </Input.Wrapper>
+                      </Input.Wrapper> */}
                     </div>
                   </div>
                 </div>
