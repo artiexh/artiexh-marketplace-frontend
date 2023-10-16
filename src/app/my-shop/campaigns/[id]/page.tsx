@@ -25,6 +25,7 @@ import {
   Input,
   MultiSelect,
   NumberInput,
+  Popover,
   Select,
   Stepper,
   Tabs,
@@ -36,6 +37,8 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import clsx from "clsx";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import _ from "lodash";
+import { IconHelpCircle } from "@tabler/icons-react";
 
 export default function CampaignDetailPage() {
   const router = useRouter();
@@ -209,38 +212,65 @@ function CampaignGeneralInfoForm({
 }
 
 function CustomProductForm({
-  data,
+  data: rawData,
   disabled = false,
 }: {
   data: CamapignDetail["customProducts"];
   disabled?: boolean;
 }) {
+  const data = rawData.sort((a, b) => Number(a.id) - Number(b.id));
   const [customProduct, setCustomProduct] = useState<CustomProduct>(data[0]);
   const [dirtyList, setDirtyList] = useState<string[]>([]);
   const queryClient = useQueryClient();
   const params = useParams();
 
   const id = params!.id as string;
-  const { values, getInputProps, onSubmit, setFieldValue, isDirty } = useForm({
-    initialValues: {
-      customProducts: data.map((el) => ({
-        inventoryItemId: el.inventoryItem.id,
-        name: el.name,
-        tags: el.tags,
-        categoryId: el.category.id.toString(),
-        description: el.description,
-        quantity: el.providerConfig.minQuantity,
-        price: {
-          amount: el.providerConfig.basePriceAmount,
-          unit: "VND",
+  const { values, getInputProps, onSubmit, validate, isDirty, errors } =
+    useForm({
+      validate: {
+        customProducts: {
+          price: (value, values, path) => {
+            const index = Number(path.split(".")[1]);
+            const config = data.find(
+              (x) =>
+                x.inventoryItem.id ===
+                values.customProducts?.[index]?.inventoryItemId
+            );
+            if (config && config.providerConfig.basePriceAmount >= value) {
+              return `Price of this product should be greater than ${config.providerConfig.basePriceAmount}`;
+            }
+            return null;
+          },
+          quantity: (value, values, path) => {
+            const index = Number(path.split(".")[1]);
+            const config = data.find(
+              (x) =>
+                x.inventoryItem.id ===
+                values.customProducts?.[index]?.inventoryItemId
+            );
+            if (config && config.providerConfig.minQuantity > value) {
+              return `Quantiy of this product should be equal or greater than ${config.providerConfig.minQuantity}`;
+            }
+            return null;
+          },
         },
-        attaches: [],
-        limitPerOrder: el.limitPerOrder,
-      })),
-    },
-    validateInputOnBlur: true,
-    validateInputOnChange: true,
-  });
+      },
+      initialValues: {
+        customProducts: data.map((el) => ({
+          inventoryItemId: el.inventoryItem.id,
+          name: el.name,
+          tags: el.tags,
+          categoryId: el.category.id.toString(),
+          description: el.description,
+          quantity: el.providerConfig.minQuantity,
+          price: el.providerConfig.basePriceAmount + 1,
+          attaches: [],
+          limitPerOrder: el.limitPerOrder,
+        })),
+      },
+      validateInputOnBlur: true,
+      validateInputOnChange: true,
+    });
 
   useEffect(() => {
     if (!customProduct) return;
@@ -293,7 +323,10 @@ function CustomProductForm({
           inventoryItemId: prod.inventoryItemId,
           limitPerOrder: prod.limitPerOrder,
           name: prod.name,
-          price: prod.price,
+          price: {
+            amount: prod.price,
+            unit: "VND",
+          },
           quantity: prod.quantity,
           tags: prod.tags,
         })) as any) ?? []
@@ -308,6 +341,8 @@ function CustomProductForm({
   const index = data.map((el) => el.id).indexOf(customProduct?.id ?? "");
 
   const { attaches = [] } = values.customProducts[index] ?? {};
+
+  console.log(values);
 
   return (
     <>
@@ -380,21 +415,13 @@ function CustomProductForm({
                       <Select
                         disabled
                         data={categoryOptions || []}
-                        className="col-span-12 md:col-span-8 order-1 md:order-none"
+                        className="col-span-12 order-1 md:order-none"
                         label="Category"
                         nothingFound="Nothing found"
                         searchable
                         withAsterisk
                         allowDeselect
                         {...getInputProps(`customProducts.${index}.categoryId`)}
-                      />
-                      <NumberInput
-                        disabled={disabled}
-                        label="Quantity"
-                        className="col-span-6 md:col-span-4"
-                        withAsterisk
-                        min={1}
-                        {...getInputProps(`customProducts.${index}.quantity`)}
                       />
 
                       <Textarea
@@ -411,41 +438,86 @@ function CustomProductForm({
                         )}
                       />
                     </div>
-                    <div className="image-wrapper flex flex-col md:w-6/12">
+                    <div className="image-wrapper flex flex-col md:w-6/12 gap-5">
                       <div className="flex col-span-12 md:col-span-8 order-1 md:order-none">
                         <NumberInput
                           disabled={disabled}
-                          label="Price"
-                          withAsterisk
+                          classNames={{
+                            label: "w-full flex items-center",
+                          }}
+                          label={
+                            <div className="flex justify-between items-center w-full">
+                              <span className="flex items-center gap-x-1">
+                                <span>
+                                  {`Price (Min: ${customProduct.providerConfig.basePriceAmount})`}{" "}
+                                </span>
+                                <Popover position="top" withArrow shadow="md">
+                                  <Popover.Target>
+                                    <IconHelpCircle
+                                      size={16}
+                                      className="text-primary"
+                                    />
+                                  </Popover.Target>
+                                  <Popover.Dropdown
+                                    style={{ pointerEvents: "none" }}
+                                  >
+                                    <span>
+                                      Your profit = product price - sale price
+                                    </span>
+                                  </Popover.Dropdown>
+                                </Popover>
+                              </span>
+                              <span className="text-gray-500">{`Your profit: ${
+                                Number(values.customProducts[index].price) -
+                                customProduct.providerConfig.basePriceAmount
+                              }`}</span>
+                            </div>
+                          }
                           className="flex-[3]"
                           hideControls
-                          classNames={{
-                            input: "rounded-r-none",
-                          }}
                           min={1}
-                          {...getInputProps(
-                            `customProducts.${index}.price.amount`
-                          )}
-                        />
-                        <Select
-                          disabled={disabled}
-                          data={CURRENCIES}
-                          label="Unit"
-                          withAsterisk
-                          className="flex-[2]"
-                          classNames={{
-                            input: "rounded-l-none",
-                          }}
-                          {...getInputProps(
-                            `customProducts.${index}.price.unit`
-                          )}
+                          {...getInputProps(`customProducts.${index}.price`)}
                         />
                       </div>
                       <NumberInput
                         disabled={disabled}
+                        classNames={{
+                          label: "w-fit flex items-center",
+                        }}
+                        label={
+                          <div className="flex">
+                            <span className="flex gap-x-1 items-center">
+                              <span>
+                                {`Quantity (Min: ${customProduct.providerConfig.minQuantity})`}{" "}
+                              </span>
+                              <Popover position="top" withArrow shadow="md">
+                                <Popover.Target>
+                                  <IconHelpCircle
+                                    size={16}
+                                    className="text-primary"
+                                  />
+                                </Popover.Target>
+                                <Popover.Dropdown
+                                  style={{ pointerEvents: "none" }}
+                                >
+                                  <span>
+                                    The manufacturing provider only accept the
+                                    quantity that is greater than the minimum
+                                    quantity
+                                  </span>
+                                </Popover.Dropdown>
+                              </Popover>
+                            </span>
+                          </div>
+                        }
+                        className="col-span-12 md:col-span-4"
+                        min={1}
+                        {...getInputProps(`customProducts.${index}.quantity`)}
+                      />
+                      <NumberInput
+                        disabled={disabled}
                         label="Limit per order"
                         className="col-span-6 md:col-span-4"
-                        withAsterisk
                         min={1}
                         {...getInputProps(
                           `customProducts.${index}.limitPerOrder`
