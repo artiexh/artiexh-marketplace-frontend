@@ -2,7 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-
 @layer components {
   /* Insert component classes here */
   .gradient {
@@ -38,17 +37,6 @@ html {
 
 * {
   box-sizing: border-box;
-}
-
-html,
-body,
-#main {
-  width: 100%;
-  height: 100%;
-  margin: 0;
-  padding: 0;
-  overflow: hidden;
-  user-select: none;
 }
 
 #example {
@@ -162,9 +150,9 @@ button {
   gap: 15px;
   padding: 15px 30px;
 }
-button:hover {
+/* button:hover {
   color: white !important;
-}
+} */
 
 /* CUSTOMIZER */
 
@@ -210,7 +198,7 @@ button:hover {
 }
 
 .zoom:hover {
-  color: #50207D;
+  color: #50207d;
 }
 
 /* PICKER */
@@ -282,8 +270,8 @@ button:hover {
 }
 
 .decals--position:hover {
-  color: #50207D;
-  border: 1px solid #50207D56;
+  color: #50207d;
+  border: 1px solid #50207d56;
 }
 
 .upload {
@@ -304,12 +292,12 @@ button:hover {
   position: absolute;
   top: 40px;
   right: 40px;
-  background-color: #50207D;
-  box-shadow: inset 0 0 0 0.09px #50207D;
+  background-color: #50207d;
+  box-shadow: inset 0 0 0 0.09px #50207d;
 }
 
 .exit:hover {
-  box-shadow: inset -250px 0 0 0 #50207D;
+  box-shadow: inset -250px 0 0 0 #50207d;
 }
 
 @media screen and (max-width: 600px) {

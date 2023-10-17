@@ -25,6 +25,7 @@ import { IconSearchOff } from "@tabler/icons-react";
 import { getNotificationIcon } from "@/utils/mapper";
 import { notifications } from "@mantine/notifications";
 import { getShippingFee } from "@/services/backend/services/order";
+import { isNumber } from "lodash";
 
 const PAYMENT_ITEM = [
   {
@@ -142,6 +143,7 @@ export default function CheckoutPage() {
 
   const paymentSubmit = async () => {
     setLoading(true);
+    console.log(shippingFee);
     const data = await checkout({
       addressId: selectedAddressId,
       paymentMethod: paymentMethod as PAYMENT_METHOD_ENUM,
@@ -151,7 +153,8 @@ export default function CheckoutPage() {
           noteValues.find((item) => item.shopId === cartItem.shop.id)?.note ??
           "",
         itemIds: cartItem.items.map((item) => item.id),
-        shippingFee,
+        shippingFee: 0,
+        // isNumber(shippingFee) ? shippingFee : 0
       })),
     });
 
@@ -290,12 +293,14 @@ export default function CheckoutPage() {
           </div>
           <div className="flex justify-between">
             <div>Shipping fee: {`(${flattedCheckoutItems.length} items)`}</div>
-            <div>{`${shippingFee}  ${flattedCheckoutItems[0]?.price?.unit}`}</div>
+            {/* <div>{`${isNumber(shippingFee) ? shippingFee : 0}  ${
+              flattedCheckoutItems[0]?.price?.unit
+            }`}</div> */}
           </div>
           <Divider className="my-2" />
           <div className="flex justify-between">
             <div>Total</div>
-            <div>{`${totalPrice + shippingFee}  ${
+            <div>{`${totalPrice + (isNumber(shippingFee) ? shippingFee : 0)}  ${
               flattedCheckoutItems[0]?.price?.unit
             }`}</div>
           </div>
