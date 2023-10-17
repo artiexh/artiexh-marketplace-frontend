@@ -462,7 +462,8 @@ function CustomProductForm({
                                     style={{ pointerEvents: "none" }}
                                   >
                                     <span>
-                                      Your profit = product price - sale price
+                                      Your profit = product price - min sale
+                                      price
                                     </span>
                                   </Popover.Dropdown>
                                 </Popover>
