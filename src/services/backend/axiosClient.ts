@@ -1,3 +1,7 @@
+import {
+  CommonResponseBase,
+  PaginationResponseBase,
+} from "@/types/ResponseBase";
 import axios from "axios";
 
 const axiosClient = axios.create({
@@ -46,5 +50,10 @@ axiosClient.interceptors.response.use(undefined, (error) => {
 
 export const fetcher = <T = any>(url: string) =>
   axiosClient.get<T>(url).then((res) => res.data);
+
+export const paginationFetcher = <T = unknown>(url: string): Promise<T[]> =>
+  axiosClient
+    .get<CommonResponseBase<PaginationResponseBase<T>>>(url)
+    .then((res) => res.data.data.items);
 
 export default axiosClient;
