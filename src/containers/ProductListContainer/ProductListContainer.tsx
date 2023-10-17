@@ -31,13 +31,11 @@ const ProductListContainer: FC<ProductListContainerProps> = ({
   const router = useRouter();
   const params = router.query;
 
-  console.log(params);
-
   const [pagination, setPagination] = useState({
     pageSize: 8,
     pageNumber: 1,
-    // sortBy: 'cost',
-    sortDirection: "ASC",
+    // sortBy: "cost",
+    // sortDirection: "ASC",
   });
 
   const [showPopup, setShowPopup] = useState("");
@@ -71,7 +69,7 @@ const ProductListContainer: FC<ProductListContainerProps> = ({
     setPagination((prev) => ({
       ...prev,
       pageNumber: Number(params.pageNumber as string) || 1,
-      sortDirection: (params.sortDirection as string) || prev.sortDirection,
+      // sortDirection: (params.sortDirection as string) || prev.sortDirection,
       // sortBy: (params.sortBy as string) || prev.sortBy,
     }));
   }, [params]);
@@ -106,8 +104,10 @@ const ProductListContainer: FC<ProductListContainerProps> = ({
   };
 
   const submitHandler = (filters = {}) => {
-    const url = getQueryString({ ...filters, ...pagination }, []);
-    router.replace(`/product?${url}`, undefined, { shallow: true });
+    const url = getQueryString({ ...filters }, []);
+    router.replace(`/product${url ? `?${url}` : ""}`, undefined, {
+      shallow: true,
+    });
   };
 
   const resetHandler = () => {
@@ -178,11 +178,11 @@ const ProductListContainer: FC<ProductListContainerProps> = ({
         />
         <div className="col-span-9">
           <div className="justify-between items-center hidden lg:flex">
-            <div className="flex gap-3">
+            {/* <div className="flex gap-3">
               {tags.map((tag) => (
                 <Badge key={tag.id}>{tag.name}</Badge>
               ))}
-            </div>
+            </div> */}
             {/* <Select
 								data={SORT_OPTIONS}
 								onChange={onSort}

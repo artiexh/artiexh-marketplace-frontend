@@ -59,12 +59,12 @@ const Sidebar: FC<SidebarProps> = ({
           {...getInputProps("maxPrice")}
         />
       </div>
-      <Divider className="my-3" />
-      <h3 className="font-bold text-lg">Đánh giá</h3>
+      {/* <Divider className="my-3" /> */}
+      {/* <h3 className="font-bold text-lg">Đánh giá</h3>
       <div className="flex items-center gap-3">
         <Rating color="purple" {...getInputProps("averageRate")} />
         <span className="text-subtext text-sm">trở lên</span>
-      </div>
+      </div> */}
       <Divider className="my-3" />
       <h3 className="font-bold text-lg">Danh mục</h3>
       <div className="flex flex-col gap-3 mt-3">
@@ -105,7 +105,7 @@ const Sidebar: FC<SidebarProps> = ({
         )}
       </div>
       <Divider className="my-3" />
-      <h3 className="font-bold text-lg">Nơi bán</h3>
+      {/* <h3 className="font-bold text-lg">Nơi bán</h3>
       <Checkbox.Group
         className="flex flex-col gap-3 mt-3"
         {...getInputProps("locations")}
@@ -144,8 +144,8 @@ const Sidebar: FC<SidebarProps> = ({
             )}
           </div>
         )}
-      </Checkbox.Group>
-      <Divider className="my-3" />
+      </Checkbox.Group> */}
+      {/* <Divider className="my-3" /> */}
       <Button
         className="bg-primary w-full"
         onClick={() => submitHandler(filters)}

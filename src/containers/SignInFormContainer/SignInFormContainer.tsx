@@ -1,7 +1,7 @@
 import { ROUTE } from "@/constants/route";
 import axiosClient from "@/services/backend/axiosClient";
 import { User } from "@/types/User";
-import { Button, Divider, TextInput, PasswordInput } from "@mantine/core";
+import { Button, PasswordInput, TextInput } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { useRouter } from "next/router";
 import { useState } from "react";
@@ -80,34 +80,6 @@ const SignInFormContainer = () => {
       <Button type="submit" className="bg-primary" disabled={isSubmitting}>
         Đăng nhập
       </Button>
-      <Divider label="Hoặc đăng nhập bằng" labelPosition="center" />
-      <div className="flex flex-row sm:flex-col gap-3">
-        <Button
-          className="flex-1 p-2"
-          color="blue"
-          variant="outline"
-          disabled={isSubmitting}
-          onClick={() => {
-            router.push(
-              `${
-                process.env.NEXT_PUBLIC_AUTH_ENDPOINT
-              }/oauth2/authorization/google?redirect_uri=${encodeURIComponent(
-                `${location.origin}/auth/callback`
-              )}`
-            );
-          }}
-        >
-          Google
-        </Button>
-        <Button
-          className="flex-1 p-2"
-          color="red"
-          variant="outline"
-          disabled={isSubmitting}
-        >
-          Facebook
-        </Button>
-      </div>
     </form>
   );
 };

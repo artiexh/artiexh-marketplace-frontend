@@ -66,7 +66,7 @@ const MobileFilter: FC<MobileFilterProps> = ({
           </Accordion.Panel>
         </Accordion.Item>
 
-        <Accordion.Item value="ratings">
+        {/* <Accordion.Item value="ratings">
           <Accordion.Control>Đánh giá</Accordion.Control>
           <Accordion.Panel>
             <div className="flex items-center gap-3">
@@ -74,7 +74,7 @@ const MobileFilter: FC<MobileFilterProps> = ({
               <span className="text-subtext text-sm">trở lên</span>
             </div>
           </Accordion.Panel>
-        </Accordion.Item>
+        </Accordion.Item> */}
 
         <Accordion.Item value="category">
           <Accordion.Control>Danh mục</Accordion.Control>
@@ -121,7 +121,7 @@ const MobileFilter: FC<MobileFilterProps> = ({
           </Accordion.Panel>
         </Accordion.Item>
 
-        <Accordion.Item value="locations">
+        {/* <Accordion.Item value="locations">
           <Accordion.Control>Nơi bán</Accordion.Control>
           <Accordion.Panel>
             <Checkbox.Group
@@ -164,9 +164,9 @@ const MobileFilter: FC<MobileFilterProps> = ({
               )}
             </Checkbox.Group>
           </Accordion.Panel>
-        </Accordion.Item>
+        </Accordion.Item> */}
       </Accordion>
-      <Divider />
+      {/* <Divider /> */}
       <div className="px-5 py-3 flex gap-3">
         <Button
           className="bg-primary w-full h-10"
