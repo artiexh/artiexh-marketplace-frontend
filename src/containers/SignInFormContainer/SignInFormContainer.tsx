@@ -43,7 +43,11 @@ const SignInFormContainer = () => {
       console.log(data);
       // TODO:
       // Save this
-      router.push(ROUTE.HOME_PAGE);
+      if (typeof router.query["redirect_uri"] === "string") {
+        router.push(router.query["redirect_uri"]);
+      } else {
+        router.push(ROUTE.HOME_PAGE);
+      }
     } catch (error) {
       // TODO:
       // Handle 401 invalid credentials
