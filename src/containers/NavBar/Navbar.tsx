@@ -59,16 +59,18 @@ export default function NavBar(props: NavBarProps) {
               <HoverCard.Dropdown>
                 <div
                   onClick={() => router.push(`${ROUTE.PROFILE}/me`)}
-                  className="cursor-pointer"
+                  className="cursor-pointer mb-4"
                 >
                   Account
                 </div>
-                <div
-                  onClick={() => window.open(ROUTE.SHOP, "_blank")}
-                  className="my-4 cursor-pointer"
-                >
-                  Shop
-                </div>
+                {user.role === "ARTIST" && (
+                  <div
+                    onClick={() => window.open(ROUTE.SHOP, "_blank")}
+                    className="mb-4 cursor-pointer"
+                  >
+                    Shop
+                  </div>
+                )}
 
                 <div
                   onClick={async () => {
