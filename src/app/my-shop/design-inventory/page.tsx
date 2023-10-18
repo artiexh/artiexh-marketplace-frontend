@@ -91,7 +91,10 @@ const DesignInventoryPage = () => {
             <h1 className="mb-48">Pick a design to see detail!</h1>
           )}
           {selectedDesign && (
-            <DesignItemDetailCard designItemId={selectedDesign.id.toString()} />
+            <DesignItemDetailCard
+              setSelectedDesign={setSelectedDesign}
+              designItemId={selectedDesign.id.toString()}
+            />
           )}
         </div>
         <div className="inventory-list flex-1 flex flex-col gap-y-4">
@@ -133,18 +136,28 @@ const DesignInventoryPage = () => {
 
 type DesignItemDetailCardProps = {
   designItemId: string;
+  setSelectedDesign: Function;
 };
 
-function DesignItemDetailCard({ designItemId }: DesignItemDetailCardProps) {
+function DesignItemDetailCard({
+  designItemId,
+  setSelectedDesign,
+}: DesignItemDetailCardProps) {
+  const router = useRouter();
   const { data: response, isLoading } = useSWR<
     CommonResponseBase<DesignItemDetail>
   >(["/inventory-items/[id]", designItemId], () => {
     return fetcher(`/inventory-item/${designItemId}`);
   });
 
-  const editHandler = () => {};
+  const editHandler = () => {
+    router.push(`/product-design/${designItemId}`);
+  };
 
-  const deleteHandler = () => {};
+  const deleteHandler = async () => {
+    await deleteDesignItemApi(designItemId);
+    setSelectedDesign(undefined);
+  };
 
   return (
     <>
