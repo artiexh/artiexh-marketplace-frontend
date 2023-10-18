@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import { NextRouter } from "next/router";
 
 type AuthWrapperProps = {
-  children: React.ReactNode;
+  children: any;
   router: NextRouter | ReturnType<typeof useRouter>;
   roles?: ("USER" | "ARTIST")[];
 };
