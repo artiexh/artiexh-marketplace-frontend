@@ -1,5 +1,5 @@
-import { PrivateImageLoader } from "@/app/my-shop/design-inventory/page";
 import ImageWithFallback from "@/components/ImageWithFallback/ImageWithFallback";
+import PrivateImageLoader from "@/components/PrivateImageLoader/PrivateImageLoader";
 import { SimpleDesignItem } from "@/types/DesignItem";
 import clsx from "clsx";
 import { DOMAttributes } from "react";

@@ -57,7 +57,7 @@ import clsx from "clsx";
 import Image from "next/image";
 import { useForm } from "@mantine/form";
 
-export function ImageLoaderForFile({
+function ImageLoaderForFile({
   src,
   name,
   ...rest

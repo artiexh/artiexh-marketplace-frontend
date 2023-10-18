@@ -2,6 +2,7 @@
 
 import DesignItemCard from "@/components/Cards/DesignItemCard/DesignItemCard";
 import ImageWithFallback from "@/components/ImageWithFallback/ImageWithFallback";
+import PrivateImageLoader from "@/components/PrivateImageLoader/PrivateImageLoader";
 import { fetcher } from "@/services/backend/axiosClient";
 import { deleteDesignItemApi } from "@/services/backend/services/designInventory";
 import { getPrivateFile } from "@/services/backend/services/media";
@@ -136,22 +137,6 @@ const DesignInventoryPage = () => {
     </div>
   );
 };
-
-export function PrivateImageLoader({
-  id,
-  ...rest
-}: { id?: string } & React.ComponentProps<typeof ImageWithFallback>) {
-  const { data, isLoading } = useQuery(["image", id], async () => {
-    if (!id) return "";
-    const res = await getPrivateFile(id);
-    const buffer = Buffer.from(res.data, "binary").toString("base64");
-    let image = `data:${res.headers["content-type"]};base64,${buffer}`;
-
-    return image;
-  });
-
-  return <ImageWithFallback {...rest} src={data} />;
-}
 
 type DesignItemDetailCardProps = {
   designItemId: string;
