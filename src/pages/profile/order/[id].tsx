@@ -202,11 +202,11 @@ function OrderDetailPage() {
   );
 }
 
-OrderDetailPage.getLayout = function getLayout(page: React.ReactNode) {
+OrderDetailPage.getLayout = function getLayout(page: any) {
   return <Wrapper>{page}</Wrapper>;
 };
 
-function Wrapper({ children }: { children: React.ReactNode }) {
+function Wrapper({ children }: { children: any }) {
   const router = useRouter();
   return <AuthWrapper router={router}>{children}</AuthWrapper>;
 }
