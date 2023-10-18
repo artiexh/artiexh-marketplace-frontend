@@ -218,7 +218,10 @@ function DesignItemDetailCard({ designItemId }: DesignItemDetailCardProps) {
                             if (!option || !value) return null;
 
                             return (
-                              <List.Item className="text-sm col-span-1">
+                              <List.Item
+                                key={combination.optionId}
+                                className="text-sm col-span-1"
+                              >
                                 <span className="font-semibold">
                                   {option.name}
                                 </span>
@@ -257,6 +260,7 @@ function DesignItemDetailCard({ designItemId }: DesignItemDetailCardProps) {
                             if (!customSet) {
                               return (
                                 <List.Item
+                                  key={set.code}
                                   icon={
                                     <IconAlertCircleFilled
                                       size={18}
@@ -275,6 +279,7 @@ function DesignItemDetailCard({ designItemId }: DesignItemDetailCardProps) {
 
                             return (
                               <List.Item
+                                key={set.code}
                                 icon={
                                   <IconCircleCheckFilled
                                     size={18}

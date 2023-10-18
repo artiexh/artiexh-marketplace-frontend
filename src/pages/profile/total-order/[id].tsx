@@ -172,8 +172,12 @@ function OrderDetailPage() {
 }
 
 OrderDetailPage.getLayout = function getLayout(page: React.ReactNode) {
-  const router = useRouter();
-  return <AuthWrapper router={router}>{page}</AuthWrapper>;
+  return <Wrapper>{page}</Wrapper>;
 };
+
+function Wrapper({ children }: { children: React.ReactNode }) {
+  const router = useRouter();
+  return <AuthWrapper router={router}>{children}</AuthWrapper>;
+}
 
 export default OrderDetailPage;
