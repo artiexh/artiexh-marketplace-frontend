@@ -49,6 +49,11 @@ export type SimpleDesignItem = {
     }[];
   };
   variantId: number;
+  thumbnail?: {
+    fileName: string;
+    id: string;
+    name: string;
+  };
 };
 
 export type DesignItemDetail = {
@@ -72,5 +77,10 @@ export type DesignItemDetail = {
       optionValueId: number;
       variantId: number;
     }[];
+  };
+  thumbnail?: {
+    fileName: string;
+    id: string;
+    name: string;
   };
 };

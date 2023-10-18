@@ -4,11 +4,13 @@ import DesignItemCard from "@/components/Cards/DesignItemCard/DesignItemCard";
 import ImageWithFallback from "@/components/ImageWithFallback/ImageWithFallback";
 import { fetcher } from "@/services/backend/axiosClient";
 import { deleteDesignItemApi } from "@/services/backend/services/designInventory";
+import { getPrivateFile } from "@/services/backend/services/media";
 import { DesignItemDetail, SimpleDesignItem } from "@/types/DesignItem";
 import {
   CommonResponseBase,
   PaginationResponseBase,
 } from "@/types/ResponseBase";
+import { createImageUrl } from "@/utils/three";
 import {
   ActionIcon,
   Button,
@@ -26,6 +28,7 @@ import {
   IconEditCircle,
   IconTrash,
 } from "@tabler/icons-react";
+import { useQuery } from "@tanstack/react-query";
 import clsx from "clsx";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -134,6 +137,22 @@ const DesignInventoryPage = () => {
   );
 };
 
+export function PrivateImageLoader({
+  id,
+  ...rest
+}: { id?: string } & React.ComponentProps<typeof ImageWithFallback>) {
+  const { data, isLoading } = useQuery(["image", id], async () => {
+    if (!id) return "";
+    const res = await getPrivateFile(id);
+    const buffer = Buffer.from(res.data, "binary").toString("base64");
+    let image = `data:${res.headers["content-type"]};base64,${buffer}`;
+
+    return image;
+  });
+
+  return <ImageWithFallback {...rest} src={data} />;
+}
+
 type DesignItemDetailCardProps = {
   designItemId: string;
   setSelectedDesign: Function;
@@ -197,15 +216,11 @@ function DesignItemDetailCard({
                 </div>
               </div>
               <div className="relative w-full aspect-[4.5/3] rounded-md">
-                <ImageWithFallback
+                <PrivateImageLoader
+                  id={response?.data.thumbnail?.id.toString()}
                   alt="test"
                   className="rounded-md"
                   fill
-                  src={
-                    response?.data?.variant.productBase.attaches.find(
-                      (a) => a.type === "THUMBNAIL"
-                    )?.url
-                  }
                 />
               </div>
               <div className="content flex flex-col justify-between flex-1">

@@ -1,3 +1,4 @@
+import { PrivateImageLoader } from "@/app/my-shop/design-inventory/page";
 import ImageWithFallback from "@/components/ImageWithFallback/ImageWithFallback";
 import { SimpleDesignItem } from "@/types/DesignItem";
 import clsx from "clsx";
@@ -28,14 +29,10 @@ export default function DesignItemCard({
     >
       <div className="size-description flex gap-x-3">
         <div className="w-20 aspect-square relative rounded-md">
-          <ImageWithFallback
+          <PrivateImageLoader
+            id={data.thumbnail?.id.toString()}
             alt="test"
             fill
-            src={
-              data?.variant.productBase.attaches.find(
-                (a) => a.type === "THUMBNAIL"
-              )?.url
-            }
           />
         </div>
         <div className="flex flex-col justify-between flex-1">

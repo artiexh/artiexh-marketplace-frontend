@@ -17,7 +17,7 @@ import {
   Textarea,
   Transition,
 } from "@mantine/core";
-import { Canvas } from "@react-three/fiber";
+import { Canvas, useThree } from "@react-three/fiber";
 import {
   IconAdjustmentsAlt,
   IconArrowLeft,
@@ -57,7 +57,7 @@ import clsx from "clsx";
 import Image from "next/image";
 import { useForm } from "@mantine/form";
 
-function ImageLoaderForFile({
+export function ImageLoaderForFile({
   src,
   name,
   ...rest
@@ -173,6 +173,9 @@ function DecalWithImage(
   return <Decal {...rest} map={texture} ref={decalRef}></Decal>;
 }
 
+import { extend } from "@react-three/fiber";
+extend({ ConfigMenu });
+
 function DesignPortalContainer({ modelCode }: { modelCode: string }) {
   const imageQueryResults = useContext(MockupImagesContext);
 
@@ -184,7 +187,12 @@ function DesignPortalContainer({ modelCode }: { modelCode: string }) {
   if (WrapperContainer === null) return null;
 
   return (
-    <Canvas className="w-full h-full">
+    <Canvas
+      className="w-full h-full"
+      gl={{ preserveDrawingBuffer: true }}
+      id="portal-canvas"
+      camera={{ fov: 15, near: 0.1, far: 1000, position: [0, 0, 5] }}
+    >
       <ambientLight />
       <pointLight position={[10, 10, 10]} />
       <WrapperContainer>
@@ -598,11 +606,31 @@ function ImageSetPicker({ currentCombination }: ImageSetPickerProps) {
   const updateMockupImageSetMutation = useMutation({
     mutationFn: async (body: { positionCode: string; file: File }) => {
       const { positionCode, file } = body;
+
       if (!designItemRes?.data) throw new Error("There is something wrong");
       const { data: fileRes } = await privateUploadFiles([file]);
 
       const firstImage = fileRes.data.fileResponses[0];
       if (!firstImage) throw new Error("There is something wrong");
+      const canvasElemnt = document.querySelector(
+        "#portal-canvas canvas"
+      ) as HTMLCanvasElement | null;
+      if (!canvasElemnt) throw new Error("There is something wrong");
+
+      const blob = await (() =>
+        new Promise<Blob | null>((resolve) => {
+          canvasElemnt.toBlob((blob) => resolve(blob));
+        }))();
+
+      console.log("🚀 ~ file: [id].tsx:625 ~ mutationFn: ~ blob:", blob);
+      let thumbnail: string | undefined = designItemRes.data.thumbnail?.id;
+      if (blob) {
+        const { data: fileRes } = await privateUploadFiles([
+          new File([blob], "thumbnail.jpg"),
+        ]);
+        thumbnail = fileRes.data.fileResponses[0].id;
+      }
+
       const res = await updateImageSetApi(
         designItemRes.data,
         designItemRes.data.imageSet.some(
@@ -628,7 +656,8 @@ function ImageSetPicker({ currentCombination }: ImageSetPickerProps) {
                   fileName: firstImage.fileName,
                 },
               },
-            ]
+            ],
+        thumbnail
       );
 
       return res.data;
