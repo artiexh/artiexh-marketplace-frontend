@@ -34,8 +34,8 @@ const ProductListContainer: FC<ProductListContainerProps> = ({
   const [pagination, setPagination] = useState({
     pageSize: 8,
     pageNumber: 1,
-    // sortBy: "cost",
-    // sortDirection: "ASC",
+    sortBy: "id",
+    sortDirection: "DESC",
   });
 
   const [showPopup, setShowPopup] = useState("");

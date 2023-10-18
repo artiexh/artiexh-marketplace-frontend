@@ -62,7 +62,7 @@ export default function MyProfilePage({ user }: MyProfileProps) {
           </div>
         </div>
       </div>
-      <Tabs defaultValue="order">
+      <Tabs defaultValue="account">
         <div className="bg-white mt-2 py-4 px-6 mb-6">
           <Tabs.List>
             {tabs.map((tab) => (

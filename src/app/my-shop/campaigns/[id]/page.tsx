@@ -1,8 +1,8 @@
 "use client";
 
-import Thumbnail from "@/components/CreateProduct/Thumbnail";
 import FileUpload from "@/components/FileUpload/FileUpload";
 import ImageWithFallback from "@/components/ImageWithFallback/ImageWithFallback";
+import { NOTIFICATION_TYPE } from "@/constants/common";
 import useCategories from "@/hooks/useCategories";
 import useTags from "@/hooks/useTags";
 import axiosClient from "@/services/backend/axiosClient";
@@ -13,16 +13,13 @@ import {
   updateCampaignGeneralInfoApi,
   updateCampaignStatusApi,
 } from "@/services/backend/services/campaign";
-import { SimpleDesignItem } from "@/types/DesignItem";
 import { Tag } from "@/types/Product";
 import { CommonResponseBase } from "@/types/ResponseBase";
-import { CURRENCIES } from "@/utils/createProductValidations";
-import { getDesignItemsForCampaign } from "@/utils/localStorage/campaign";
+import { getNotificationIcon } from "@/utils/mapper";
 import {
   Badge,
   Button,
   Indicator,
-  Input,
   MultiSelect,
   NumberInput,
   Popover,
@@ -33,12 +30,12 @@ import {
   Textarea,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
+import { notifications } from "@mantine/notifications";
+import { IconHelpCircle } from "@tabler/icons-react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import clsx from "clsx";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import _ from "lodash";
-import { IconHelpCircle } from "@tabler/icons-react";
 
 export default function CampaignDetailPage() {
   const router = useRouter();
@@ -66,6 +63,19 @@ export default function CampaignDetailPage() {
       message: "Submit to admin",
       status: "WAITING",
     });
+
+    if (res != null) {
+      notifications.show({
+        message: "Gửi yêu cầu thành công",
+        ...getNotificationIcon(NOTIFICATION_TYPE.SUCCESS),
+      });
+    } else {
+      notifications.show({
+        message: "Gửi yêu cầu thất bại! Vui lòng thử lại!",
+        ...getNotificationIcon(NOTIFICATION_TYPE.FAILED),
+      });
+    }
+
     refetch();
   };
 
@@ -74,6 +84,19 @@ export default function CampaignDetailPage() {
       message: "Cancel campaign",
       status: "CANCELED",
     });
+
+    if (res != null) {
+      notifications.show({
+        message: "Xóa thành công",
+        ...getNotificationIcon(NOTIFICATION_TYPE.SUCCESS),
+      });
+    } else {
+      notifications.show({
+        message: "Xóa thất bại! Vui lòng thử lại!",
+        ...getNotificationIcon(NOTIFICATION_TYPE.FAILED),
+      });
+    }
+
     refetch();
   };
 
@@ -162,6 +185,21 @@ function CampaignGeneralInfoForm({
     const res = await updateCampaignGeneralInfoApi(campaignRes.data, {
       ...form.values,
     });
+
+    console.log(res);
+
+    if (res != null) {
+      notifications.show({
+        message: "Chỉnh sửa thành công",
+        ...getNotificationIcon(NOTIFICATION_TYPE.SUCCESS),
+      });
+    } else {
+      notifications.show({
+        message: "Chỉnh sửa thất bại! Vui lòng thử lại!",
+        ...getNotificationIcon(NOTIFICATION_TYPE.FAILED),
+      });
+    }
+
     queryClient.refetchQueries(["campaign", { id: params!.id as string }]);
   };
 
@@ -331,10 +369,21 @@ function CustomProductForm({
           tags: prod.tags,
         })) as any) ?? []
       );
+
+      console.log(1);
+
+      notifications.show({
+        message: "Chỉnh sửa thành công!",
+        ...getNotificationIcon(NOTIFICATION_TYPE.SUCCESS),
+      });
+
       setDirtyList([]);
       queryClient.refetchQueries(["campaign", { id: params!.id as string }]);
     } catch (e) {
-      console.log("🚀 ~ file: page.tsx:153 ~ submitHandler ~ e:", e);
+      notifications.show({
+        message: "Chỉnh sửa thất bại! Vui lòng thử lại",
+        ...getNotificationIcon(NOTIFICATION_TYPE.FAILED),
+      });
     }
   };
 
