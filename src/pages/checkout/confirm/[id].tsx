@@ -13,6 +13,7 @@ import { ROUTE } from "@/constants/route";
 import { Button } from "@mantine/core";
 import { PAYMENT_METHOD } from "@/constants/common";
 import { useMemo } from "react";
+import AuthWrapper from "@/services/guards/AuthWrapper";
 
 const CheckoutConfirmPage = () => {
   const params = useSearchParams();
@@ -149,6 +150,11 @@ const getConfirmContent = (
   }
 
   return confirmContent;
+};
+
+CheckoutConfirmPage.getLayout = function getLayout(page: React.ReactNode) {
+  const router = useRouter();
+  return <AuthWrapper router={router}>{page}</AuthWrapper>;
 };
 
 export default CheckoutConfirmPage;

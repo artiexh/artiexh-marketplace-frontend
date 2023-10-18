@@ -13,11 +13,9 @@ let isRefreshing = false;
 const refresh = () => {
   if (isRefreshing) return Promise.reject();
   isRefreshing = true;
-  return axiosClient
-    .post("https://api.artiexh.com/api/v1/auth/refresh")
-    .then(() => {
-      isRefreshing = false;
-    });
+  return axiosClient.post("/auth/refresh").then(() => {
+    isRefreshing = false;
+  });
 };
 
 axiosClient.interceptors.response.use(undefined, (error) => {
@@ -27,8 +25,7 @@ axiosClient.interceptors.response.use(undefined, (error) => {
   // For invalid password or expired/invalid refresh_token
   if (
     status === 401 &&
-    (originalRequest.url === "/auth/login" ||
-      originalRequest.url === "/auth/refresh")
+    ["/auth/login", "/auth/refresh"].includes(originalRequest.url)
   ) {
     return Promise.reject(error);
   }

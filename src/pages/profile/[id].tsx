@@ -11,10 +11,12 @@ import { useStore } from "@nanostores/react";
 import { $user } from "@/store/user";
 import MyProfilePage from "@/containers/MyProfilePage";
 import UserProfilePage from "@/containers/UserProfilePage";
+import { useRouter } from "next/router";
+import AuthWrapper from "@/services/guards/AuthWrapper";
 
-const ProfilePage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = ({
-  user,
-}) => {
+const ProfilePage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> & {
+  getLayout: Function;
+} = ({ user }) => {
   const $storedUser = useStore($user);
 
   if (user == null && $storedUser != null) {
@@ -22,6 +24,11 @@ const ProfilePage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = ({
   }
 
   return <UserProfilePage />;
+};
+
+ProfilePage.getLayout = function getLayout(page: React.ReactNode) {
+  const router = useRouter();
+  return <AuthWrapper router={router}>{page}</AuthWrapper>;
 };
 
 export default ProfilePage;
