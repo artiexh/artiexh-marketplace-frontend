@@ -1,6 +1,5 @@
 import { User } from "@/types/User";
 import { Button } from "@mantine/core";
-import { useState } from "react";
 import PostContainer from "../PostContainer/PostContainer";
 
 /* eslint-disable @next/next/no-img-element */

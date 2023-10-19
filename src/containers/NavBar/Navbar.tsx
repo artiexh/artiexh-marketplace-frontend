@@ -1,13 +1,11 @@
-import Image from "next/image";
-import { Autocomplete, HoverCard } from "@mantine/core";
-import { IconShoppingCart, IconUser } from "@tabler/icons-react";
-import { useRouter } from "next/router";
 import { ROUTE } from "@/constants/route";
 import { logout } from "@/services/backend/services/user";
-import { useStore } from "@nanostores/react";
 import { $user } from "@/store/user";
-import ImageWithFallback from "@/components/ImageWithFallback/ImageWithFallback";
-import InfiniteScrollSelect from "../InfiniteScrollSelect/InfiniteScrollSelect";
+import { HoverCard } from "@mantine/core";
+import { useStore } from "@nanostores/react";
+import { IconShoppingCart, IconUser } from "@tabler/icons-react";
+import Image from "next/image";
+import { useRouter } from "next/router";
 import FetchAutoComplete from "../FetchAutocomplete/FetchAutocomplete";
 
 type NavBarProps = {};
