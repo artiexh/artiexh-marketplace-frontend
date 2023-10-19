@@ -1,6 +1,7 @@
 "use client";
 
 import AuthGuard from "@/services/guards/AuthGuard";
+import AuthWrapper from "@/services/guards/AuthWrapper";
 import "@/styles/globals.css";
 import { MantineProvider } from "@mantine/core";
 import { ModalsProvider } from "@mantine/modals";
@@ -8,6 +9,7 @@ import { Notifications } from "@mantine/notifications";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Nunito } from "next/font/google";
 import Head from "next/head";
+import { useRouter } from "next/navigation";
 
 const queryClient = new QueryClient();
 
@@ -20,6 +22,7 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+  const router = useRouter();
   return (
     <html lang="en">
       <QueryClientProvider client={queryClient}>
@@ -75,6 +78,7 @@ export default function RootLayout({
                 to: "customSecondary",
               },
               defaultRadius: "8px",
+              components: {},
             }}
           >
             <style jsx global>
@@ -92,7 +96,9 @@ export default function RootLayout({
                   content="minimum-scale=1, initial-scale=1, width=device-width"
                 />
               </Head>
-              {children}
+              <AuthWrapper roles={["ARTIST"]} router={router}>
+                {children}
+              </AuthWrapper>
             </ModalsProvider>
           </MantineProvider>
         </body>

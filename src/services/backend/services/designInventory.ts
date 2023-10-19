@@ -38,7 +38,8 @@ export const updateImageCombinationApi = (
 
 export const updateImageSetApi = (
   designItem: DesignItemDetail,
-  imageSets: DesignImageSet[]
+  imageSets: DesignImageSet[],
+  thumbnailId?: string
 ) => {
   //TODO: call api later
   return axiosClient.post<CommonResponseBase<DesignItemDetail>>(
@@ -55,6 +56,7 @@ export const updateImageSetApi = (
       description: designItem.description,
       tags: designItem.tags,
       variantId: designItem.variant.id,
+      thumbnailId: thumbnailId,
     }
   );
 };

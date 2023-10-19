@@ -26,6 +26,7 @@ import { getNotificationIcon } from "@/utils/mapper";
 import { notifications } from "@mantine/notifications";
 import { getShippingFee } from "@/services/backend/services/order";
 import { isNumber } from "lodash";
+import AuthWrapper from "@/services/guards/AuthWrapper";
 
 const PAYMENT_ITEM = [
   {
@@ -35,7 +36,7 @@ const PAYMENT_ITEM = [
   },
 ];
 
-export default function CheckoutPage() {
+function CheckoutPage() {
   const selectedItems = useSelector(
     (state: RootState) => state.cart.selectedItems
   );
@@ -318,3 +319,14 @@ export default function CheckoutPage() {
     </CheckoutContext.Provider>
   );
 }
+
+CheckoutPage.getLayout = function getLayout(page: any) {
+  return <Wrapper>{page}</Wrapper>;
+};
+
+function Wrapper({ children }: { children: any }) {
+  const router = useRouter();
+  return <AuthWrapper router={router}>{children}</AuthWrapper>;
+}
+
+export default CheckoutPage;

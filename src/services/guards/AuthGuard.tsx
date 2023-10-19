@@ -3,7 +3,7 @@ import axiosClient from "../backend/axiosClient";
 import { useRouter } from "next/navigation";
 import { AUTH_ROUTE, NOT_REQUIRE_AUTH_ROUTE, ROUTE } from "@/constants/route";
 import { usePathname } from "next/navigation";
-import { setShop, setUser } from "@/store/user";
+import { setShop, setStatus, setUser } from "@/store/user";
 import { User } from "@/types/User";
 import { CommonResponseBase } from "@/types/ResponseBase";
 import { Shop } from "@/types/Shop";
@@ -15,6 +15,7 @@ const AuthGuard = () => {
 
   useEffect(() => {
     let mounted = true;
+    setStatus("FETCHING");
     const validate = async () => {
       try {
         const { data } = await axiosClient.get<CommonResponseBase<User>>(
@@ -33,10 +34,12 @@ const AuthGuard = () => {
 
         setShop(shopData.data);
 
+        setStatus("FETCHED");
         if (mounted && isAuthPage) {
           router.push(ROUTE.HOME_PAGE);
         }
       } catch (error) {
+        setStatus("FETCHED");
         if (
           mounted &&
           !Object.values(NOT_REQUIRE_AUTH_ROUTE).some((path) =>
@@ -50,6 +53,7 @@ const AuthGuard = () => {
     validate();
 
     return () => {
+      setStatus("INIT");
       mounted = false;
     };
   }, [pathname]);

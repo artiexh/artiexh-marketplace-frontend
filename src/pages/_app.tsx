@@ -27,8 +27,9 @@ const nunito = Nunito({
 
 export default function App({ Component, pageProps }: AppProps) {
   const pathname = usePathname();
-  console.log("🚀 ~ file: _app.tsx:23 ~ App ~ pathname:", pathname);
-  const isAuthPage = pathname && Object.values(AUTH_ROUTE).includes(pathname);
+
+  //@ts-ignore
+  const getLayout = Component.getLayout || ((page) => page);
   return (
     <QueryClientProvider client={queryClient}>
       <MantineProvider
@@ -106,7 +107,7 @@ export default function App({ Component, pageProps }: AppProps) {
                 {/* @ts-ignore */}
                 <Layout>
                   {/* @ts-ignore */}
-                  <Component {...pageProps} />
+                  {getLayout(<Component {...pageProps} />)}
                 </Layout>
               </PersistGate>
             </Provider>

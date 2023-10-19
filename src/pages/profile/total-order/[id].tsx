@@ -9,8 +9,9 @@ import { Divider } from "@mantine/core";
 import { IconChevronLeft } from "@tabler/icons-react";
 import Image from "next/image";
 import { getReadableWardAddress } from "@/utils/formatter";
+import AuthWrapper from "@/services/guards/AuthWrapper";
 
-export default function OrderDetailPage() {
+function OrderDetailPage() {
   const params = useSearchParams();
   const router = useRouter();
 
@@ -169,3 +170,14 @@ export default function OrderDetailPage() {
     </div>
   );
 }
+
+OrderDetailPage.getLayout = function getLayout(page: any) {
+  return <Wrapper>{page}</Wrapper>;
+};
+
+function Wrapper({ children }: { children: any }) {
+  const router = useRouter();
+  return <AuthWrapper router={router}>{children}</AuthWrapper>;
+}
+
+export default OrderDetailPage;

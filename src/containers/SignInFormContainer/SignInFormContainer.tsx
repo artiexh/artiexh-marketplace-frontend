@@ -1,8 +1,13 @@
+import { NOTIFICATION_TYPE } from "@/constants/common";
 import { ROUTE } from "@/constants/route";
 import axiosClient from "@/services/backend/axiosClient";
+import { logout } from "@/services/backend/services/user";
+import { CommonResponseBase } from "@/types/ResponseBase";
 import { User } from "@/types/User";
-import { Button, PasswordInput, TextInput } from "@mantine/core";
+import { getNotificationIcon } from "@/utils/mapper";
+import { Button, Divider, TextInput, PasswordInput } from "@mantine/core";
 import { useForm } from "@mantine/form";
+import { notifications } from "@mantine/notifications";
 import { useRouter } from "next/router";
 import { useState } from "react";
 
@@ -40,10 +45,28 @@ const SignInFormContainer = () => {
         password,
         username,
       });
-      console.log(data);
+      const { data: userRes } = await axiosClient.get<CommonResponseBase<User>>(
+        "/account/me"
+      );
+      if (userRes.data.role === "ADMIN") {
+        await logout();
+        notifications.show({
+          message: "Tài khoản không hợp lệ",
+          ...getNotificationIcon(NOTIFICATION_TYPE.FAILED),
+        });
+        return;
+      }
       // TODO:
       // Save this
-      router.push(ROUTE.HOME_PAGE);
+      notifications.show({
+        message: "Đăng nhập thành công",
+        ...getNotificationIcon(NOTIFICATION_TYPE.SUCCESS),
+      });
+      if (typeof router.query["redirect_uri"] === "string") {
+        router.push(router.query["redirect_uri"]);
+      } else {
+        router.push(ROUTE.HOME_PAGE);
+      }
     } catch (error) {
       // TODO:
       // Handle 401 invalid credentials

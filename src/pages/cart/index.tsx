@@ -10,8 +10,9 @@ import { RootState } from "@/store";
 import { useDispatch, useSelector } from "react-redux";
 import { useMemo } from "react";
 import { IconSearchOff } from "@tabler/icons-react";
+import AuthWrapper from "@/services/guards/AuthWrapper";
 
-const CartPage: NextPage = () => {
+const CartPage = () => {
   const router = useRouter();
 
   // the selectedData saved in store
@@ -133,5 +134,14 @@ const CartPage: NextPage = () => {
     </div>
   );
 };
+
+CartPage.getLayout = function getLayout(page: any) {
+  return <Wrapper>{page}</Wrapper>;
+};
+
+function Wrapper({ children }: { children: any }) {
+  const router = useRouter();
+  return <AuthWrapper router={router}>{children}</AuthWrapper>;
+}
 
 export default CartPage;
