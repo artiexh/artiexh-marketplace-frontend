@@ -5,7 +5,7 @@ import { logout } from "@/services/backend/services/user";
 import { CommonResponseBase } from "@/types/ResponseBase";
 import { User } from "@/types/User";
 import { getNotificationIcon } from "@/utils/mapper";
-import { Button, Divider, TextInput, PasswordInput } from "@mantine/core";
+import { Button, PasswordInput, TextInput } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { notifications } from "@mantine/notifications";
 import { useRouter } from "next/router";

@@ -1,7 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 import { PostInformation } from "@/types/Post";
 import { User } from "@/types/User";
-import { Attaches } from "@/types/common";
 import { Divider } from "@mantine/core";
 import { IconHeart, IconMessageCircle } from "@tabler/icons-react";
 
