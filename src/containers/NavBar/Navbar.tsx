@@ -63,7 +63,7 @@ export default function NavBar(props: NavBarProps) {
               </HoverCard.Target>
               <HoverCard.Dropdown>
                 <div
-                  onClick={() => router.push(`${ROUTE.PROFILE}/me`)}
+                  onClick={() => router.push(`${ROUTE.MY_PROFILE}`)}
                   className="cursor-pointer mb-4"
                 >
                   Account

@@ -13,7 +13,7 @@ export default function ShopPreviewCard({ shop }: { shop: Shop }) {
         styles["product-preview-card"],
         "bg-white rounded-2xl aspect-3/5 w-full cursor-pointer"
       )}
-      onClick={() => router.push(`/product/${shop.id}`)}
+      onClick={() => router.push(`/shop/${shop.id}`)}
     >
       <div className="relative w-full aspect-square">
         <ImageWithFallback
