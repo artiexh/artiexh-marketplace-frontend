@@ -1,14 +1,11 @@
+import ImageWithFallback from "@/components/ImageWithFallback/ImageWithFallback";
 import { User } from "@/types/User";
-import Image from "next/image";
+import { Button, Modal, Tabs } from "@mantine/core";
+import { useDisclosure } from "@mantine/hooks";
 import defaultImage from "../../../public/assets/default-thumbnail.jpg";
-import { Button, Modal, Tabs, TextInput } from "@mantine/core";
+import ArtistRegisterModal from "../ArtistRegisterModal";
 import AccountTab from "../Tabs/AccountTab";
 import OrderTab from "../Tabs/OrderTab";
-import { useDisclosure } from "@mantine/hooks";
-import { useState } from "react";
-import { artistRegister } from "@/services/backend/services/user";
-import ArtistRegisterModal from "../ArtistRegisterModal";
-import ImageWithFallback from "@/components/ImageWithFallback/ImageWithFallback";
 
 type MyProfileProps = {
   user: User;
