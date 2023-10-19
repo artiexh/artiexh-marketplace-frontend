@@ -11,7 +11,7 @@ type PostCardProps = {
 
 export default function PostCard({ artist, postInformation }: PostCardProps) {
   return (
-    <div className="post-card bg-white py-8 rounded-xl shadow">
+    <div className="post-card bg-white py-8 rounded-xl shadow w-full">
       <div className="px-6">
         <div className="flex gap-4">
           <div>
