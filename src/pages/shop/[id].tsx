@@ -1,6 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 import axiosClient from "@/services/backend/axiosClient";
-import { Product } from "@/types/Product";
+import { Category, Product, Tag } from "@/types/Product";
 import {
   CommonResponseBase,
   PaginationResponseBase,
@@ -13,8 +13,12 @@ import { useState } from "react";
 import useSWR from "swr";
 import productStyles from "@/styles/Products/ProductList.module.scss";
 import ProductPreviewCard from "@/components/Cards/ProductCard/ProductPreviewCard";
+import ProductListContainer from "@/containers/ProductListContainer/ProductListContainer";
+import { NextPage, InferGetStaticPropsType, GetStaticPaths } from "next";
 
-export default function ShopDetailPage() {
+const ShopDetailPage: NextPage<
+  InferGetStaticPropsType<typeof getStaticProps>
+> = ({ categories, tags }) => {
   const router = useRouter();
   const { id, ...params } = router.query;
 
@@ -42,7 +46,7 @@ export default function ShopDetailPage() {
     (key) =>
       axiosClient
         .get<CommonResponseBase<PaginationResponseBase<Product>>>(
-          `/product?${getQueryString(
+          `/shop/${id}/product?${getQueryString(
             {
               ...pagination,
               ...params,
@@ -58,10 +62,10 @@ export default function ShopDetailPage() {
   return (
     <>
       <div className="shop-detail-page md:flex justify-between gap-10">
-        <div className="bg-white p-10 md:w-[240px] rounded-lg relative h-fit">
+        <div className="bg-white p-10 w-full rounded-lg relative h-fit">
           <div>
             <img
-              className="!w-full h-[100px] absolute !left-0 !top-0 rounded-tl-lg rounded-tr-lg"
+              className="!w-full h-[150px] absolute !left-0 !top-0 rounded-tl-lg rounded-tr-lg object-cover"
               src={
                 "https://i.pinimg.com/originals/17/fe/5a/17fe5ae5192da8d46fcffaed374e168a.png"
               }
@@ -70,13 +74,12 @@ export default function ShopDetailPage() {
           </div>
           <div>
             <img
-              className="rounded-full !w-[100px] !h-[100px] z-10 relative"
+              className="rounded-full !w-[100px] !h-[100px] z-10 relative top-10"
               src={data.shopImageUrl}
               alt="img"
             />
           </div>
-
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between mt-10">
             <div>
               <div className="font-bold mt-4">{data.shopName}</div>
               <Rating defaultValue={4} readOnly />
@@ -99,44 +102,35 @@ export default function ShopDetailPage() {
             </Button>
           </div>
         </div>
-        <div className="flex-1 mt-10 md:mt-0">
-          <div
-            className={clsx(productStyles["product-list-grid"], "col-span-4")}
-          >
-            {products?.items?.length ? (
-              products.items?.map((product, index) => (
-                <ProductPreviewCard data={product} key={index} />
-              ))
-            ) : (
-              <div className="col-span-4">
-                <h2 className="text-lg font-semibold text-centers">
-                  Cannot find any items matching the criteria
-                </h2>
-              </div>
-            )}
-          </div>
-          <div className="flex justify-center mt-6 mb-20">
-            <Pagination
-              value={pagination.pageNumber}
-              onChange={(e) => {
-                const url = getQueryString(
-                  {
-                    ...pagination,
-                    ...params,
-                    pageNumber: e,
-                  },
-                  []
-                );
-                router.replace(`/shop/${id}?${url}`, undefined, {
-                  shallow: true,
-                });
-                setPagination((prev) => ({ ...prev, pageNumber: e }));
-              }}
-              total={products?.totalPage ?? 0}
-            />
-          </div>
-        </div>
       </div>
+      <ProductListContainer
+        endpoint={`shop/${id}/product`}
+        categories={categories}
+        tags={tags}
+        pathName={`/shop/${id}`}
+      />
     </>
   );
+};
+
+export default ShopDetailPage;
+
+export async function getStaticProps() {
+  const [{ data: categories }, { data: tags }] = await Promise.all([
+    axiosClient.get<CommonResponseBase<PaginationResponseBase<Category>>>(
+      "/category"
+    ),
+    axiosClient.get<CommonResponseBase<PaginationResponseBase<Tag>>>("/tag"),
+  ]);
+
+  return {
+    props: { categories: categories.data.items, tags: tags.data.items },
+  };
 }
+
+export const getStaticPaths: GetStaticPaths<{ slug: string }> = async () => {
+  return {
+    paths: [], //indicates that no page needs be created at build time
+    fallback: "blocking", //indicates the type of fallback
+  };
+};

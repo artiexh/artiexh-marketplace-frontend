@@ -11,7 +11,14 @@ const ProductListPage: NextPage<
   InferGetStaticPropsType<typeof getStaticProps>
 > = ({ categories, tags }) => {
   console.log(categories);
-  return <ProductListContainer categories={categories} tags={tags} />;
+  return (
+    <ProductListContainer
+      endpoint="product"
+      categories={categories}
+      tags={tags}
+      pathName="/product"
+    />
+  );
 };
 
 export default ProductListPage;
