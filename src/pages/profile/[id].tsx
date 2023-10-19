@@ -19,11 +19,13 @@ const ProfilePage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> & {
 } = ({ user }) => {
   const $storedUser = useStore($user);
 
-  if (user == null && $storedUser != null) {
+  if (user != null) return <UserProfilePage user={user} />;
+
+  if ($storedUser != null) {
     return <MyProfilePage user={$storedUser} />;
   }
 
-  return <UserProfilePage />;
+  return <>Not found</>;
 };
 
 ProfilePage.getLayout = function getLayout(page: any) {
@@ -39,11 +41,12 @@ export default ProfilePage;
 
 export const getStaticProps = async (context: GetStaticPropsContext) => {
   const { params } = context;
-  if (params?.id || params?.id === "me") return { props: { user: null } };
+  if (params?.id == null || params?.id === "me")
+    return { props: { user: null } };
 
   try {
     const { data } = await axiosClient.get<CommonResponseBase<User>>(
-      `/account/public/${params?.id}/profile`
+      `/account/${params?.id}/profile`
     );
 
     return {

@@ -33,16 +33,6 @@ const shopCampaignColumns: TableColumns<ArtistCampaignColumnType> = [
     dataIndex: "name",
   },
   {
-    title: "Total",
-    key: "total",
-    render: (record) => <div>{priceToString(record.total)}</div>,
-  },
-  {
-    title: "Payment",
-    key: "payment",
-    dataIndex: "payment",
-  },
-  {
     title: "Status",
     key: "status",
     className: "!text-center w-[10rem]",

@@ -1,7 +1,7 @@
 "use client";
 
 import DesignItemCard from "@/components/Cards/DesignItemCard/DesignItemCard";
-import ImageWithFallback from "@/components/ImageWithFallback/ImageWithFallback";
+import { NOTIFICATION_TYPE } from "@/constants/common";
 import { fetcher } from "@/services/backend/axiosClient";
 import {
   calculateDesignItemConfig,
@@ -12,10 +12,9 @@ import {
   CommonResponseBase,
   PaginationResponseBase,
 } from "@/types/ResponseBase";
-import { storeDesignItemsForCampaign } from "@/utils/localStorage/campaign";
+import { getNotificationIcon } from "@/utils/mapper";
 import {
   Accordion,
-  AccordionControlProps,
   ActionIcon,
   Button,
   Center,
@@ -28,6 +27,7 @@ import {
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { modals } from "@mantine/modals";
+import { notifications } from "@mantine/notifications";
 import {
   IconArchive,
   IconCircle,
@@ -37,7 +37,7 @@ import {
 } from "@tabler/icons-react";
 import clsx from "clsx";
 import { useRouter } from "next/navigation";
-import { useCallback, useState } from "react";
+import { useState } from "react";
 import useSWR from "swr";
 
 export default function CreateCampaignPage() {
@@ -174,15 +174,28 @@ const CreateModalBody = ({
     description?: string;
   }>();
   const submitHandler = async () => {
-    const res = await createCampaignApi({
-      ...form.values,
-      customProducts: data.map((el) => ({
-        inventoryItemId: el.id.toString(),
-      })),
-      providerId: providerId,
-    });
-    modals.close("create-campaign-info");
-    router.push(`/my-shop/campaigns/${res.data.data.id}`);
+    try {
+      const res = await createCampaignApi({
+        ...form.values,
+        customProducts: data.map((el) => ({
+          inventoryItemId: el.id.toString(),
+        })),
+        providerId: providerId,
+      });
+
+      notifications.show({
+        message: "Tạo campaign thành công!",
+        ...getNotificationIcon(NOTIFICATION_TYPE.SUCCESS),
+      });
+      router.push(`/my-shop/campaigns/${res.data.data.id}`);
+
+      modals.close("create-campaign-info");
+    } catch (err) {
+      notifications.show({
+        message: "Tạo campaign thất bại! Vui lòng thử lại",
+        ...getNotificationIcon(NOTIFICATION_TYPE.FAILED),
+      });
+    }
   };
   return (
     <form

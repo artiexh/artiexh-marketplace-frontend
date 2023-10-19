@@ -7,6 +7,8 @@ import { logout } from "@/services/backend/services/user";
 import { useStore } from "@nanostores/react";
 import { $user } from "@/store/user";
 import ImageWithFallback from "@/components/ImageWithFallback/ImageWithFallback";
+import InfiniteScrollSelect from "../InfiniteScrollSelect/InfiniteScrollSelect";
+import FetchAutoComplete from "../FetchAutocomplete/FetchAutocomplete";
 
 type NavBarProps = {};
 
@@ -33,7 +35,7 @@ export default function NavBar(props: NavBarProps) {
           <div className="text-3xl ml-3 font-bold text-[#50207D]">Artiexh</div>
         </div>
         <div className="w-[60%]">
-          <Autocomplete data={[]} />
+          <FetchAutoComplete />
         </div>
         <div className="right-header flex">
           <div className="mr-6">
