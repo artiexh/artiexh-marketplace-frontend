@@ -1,6 +1,6 @@
 import { ADDRESS_TYPE } from "@/constants/common";
 export type User = {
-  id: number;
+  id: string;
   username: string;
   status: string;
   displayName: string;

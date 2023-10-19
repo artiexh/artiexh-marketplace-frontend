@@ -6,6 +6,7 @@ import defaultImage from "../../../public/assets/default-thumbnail.jpg";
 import ArtistRegisterModal from "../ArtistRegisterModal";
 import AccountTab from "../Tabs/AccountTab";
 import OrderTab from "../Tabs/OrderTab";
+import PostTab from "../Tabs/PostTab";
 
 type MyProfileProps = {
   user: User;
@@ -21,6 +22,11 @@ const tabs = [
     key: "order",
     element: <OrderTab />,
     title: "My Orders",
+  },
+  {
+    key: "posts",
+    element: <PostTab />,
+    title: "My Posts",
   },
 ];
 
@@ -59,7 +65,7 @@ export default function MyProfilePage({ user }: MyProfileProps) {
           </div>
         </div>
       </div>
-      <Tabs defaultValue="account">
+      <Tabs defaultValue="posts">
         <div className="bg-white mt-2 py-4 px-6 mb-6">
           <Tabs.List>
             {tabs.map((tab) => (

@@ -1,10 +1,15 @@
+import { OwnerInfo } from "./Product";
+import { Attaches } from "./common";
+
 export type PostInformation = {
   id: string;
-  createdAt: string;
-  content: string;
-  attachment: string;
-  totalLike: number;
-  comments: Comment[];
+  createdDate: string;
+  modifiedDate: string;
+  attaches: Attaches[];
+  likes: number;
+  numOfComments: number;
+  owner: OwnerInfo;
+  description: string;
 };
 
 export type Comment = {
@@ -15,4 +20,9 @@ export type Comment = {
     name: string;
   };
   content: string;
+};
+
+export type PostBody = {
+  attaches: Attaches[];
+  description: string;
 };

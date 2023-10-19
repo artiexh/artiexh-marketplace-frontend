@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import { ROUTE } from "@/constants/route";
 import { logout } from "@/services/backend/services/user";
 import { $user } from "@/store/user";
@@ -35,7 +36,7 @@ export default function NavBar(props: NavBarProps) {
         <div className="w-[60%]">
           <FetchAutoComplete />
         </div>
-        <div className="right-header flex">
+        <div className="right-header flex items-center">
           <div className="mr-6">
             <div
               className="w-6 relative cursor-pointer"
@@ -54,11 +55,15 @@ export default function NavBar(props: NavBarProps) {
           {user != null ? (
             <HoverCard width={200}>
               <HoverCard.Target>
-                <IconUser className="cursor-pointer" />
+                <img
+                  src={user.avatarUrl}
+                  alt="avatar"
+                  className="w-[20px] h-[20px] rounded-full cursor-pointer"
+                />
               </HoverCard.Target>
               <HoverCard.Dropdown>
                 <div
-                  onClick={() => router.push(`${ROUTE.PROFILE}/me`)}
+                  onClick={() => router.push(`${ROUTE.MY_PROFILE}`)}
                   className="cursor-pointer mb-4"
                 >
                   Account
