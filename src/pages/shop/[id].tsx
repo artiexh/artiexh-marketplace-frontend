@@ -91,7 +91,10 @@ export default function ShopDetailPage() {
           <Divider className="mt-4" />
           <div className="mt-4 text-sm">Contact number: {data.shopPhone}</div>
           <div className="flex justify-center mt-6 !text-sm">
-            <Button className="bg-primary text-center !text-white">
+            <Button
+              className="bg-primary text-center !text-white"
+              onClick={() => router.push(`/profile/${data.owner.id}`)}
+            >
               View profile
             </Button>
           </div>
