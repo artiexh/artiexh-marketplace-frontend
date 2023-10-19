@@ -29,28 +29,30 @@ export default function PostCard({ artist, postInformation }: PostCardProps) {
             <div className="text-sm text-gray-500">1 day ago</div>
           </div>
         </div>
-        <div className="mt-6">{postInformation.content}</div>
+        <div className="mt-6">{postInformation.description}</div>
       </div>
       <Divider className="mt-6" />
-      <div>
-        <img
-          src={postInformation.attachment}
-          alt="img"
-          className="w-full !h-[400px] object-cover"
-        />
-      </div>
+      {postInformation.attaches?.[0]?.url && (
+        <div>
+          <img
+            src={postInformation.attaches?.[0]?.url}
+            alt="img"
+            className="w-full !h-[400px] object-cover"
+          />
+        </div>
+      )}
       <div className="mx-6 flex gap-4 mt-6">
         <div className="flex gap-2 items-center">
           <div>
             <IconMessageCircle />
           </div>
-          <div>{postInformation.totalLike}</div>
+          <div>{postInformation.likes}</div>
         </div>
         <div className="flex gap-2 items-center">
           <div>
             <IconHeart />
           </div>
-          <div>{postInformation.comments.length}</div>
+          <div>{postInformation.numOfComments}</div>
         </div>
       </div>
     </div>
