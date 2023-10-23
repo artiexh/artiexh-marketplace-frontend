@@ -21,11 +21,11 @@ export default ProfilePage;
 
 export const getStaticProps = async (context: GetStaticPropsContext) => {
   const { params } = context;
-  if (params?.id == null) return { props: { user: null } };
+  if (params?.name == null) return { props: { user: null } };
 
   try {
     const { data } = await axiosClient.get<CommonResponseBase<User>>(
-      `/account/${params?.id}/profile`
+      `/artist/${params?.name}`
     );
 
     return {

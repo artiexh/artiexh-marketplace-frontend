@@ -1,4 +1,5 @@
 /* eslint-disable @next/next/no-img-element */
+import ProductListContainer from "@/containers/ProductListContainer/ProductListContainer";
 import axiosClient from "@/services/backend/axiosClient";
 import { Category, Product, Tag } from "@/types/Product";
 import {
@@ -7,20 +8,17 @@ import {
 } from "@/types/ResponseBase";
 import { Shop } from "@/types/Shop";
 import { getQueryString } from "@/utils/formatter";
-import { Rating, Divider, Button, clsx, Pagination } from "@mantine/core";
+import { Button, Divider, Rating } from "@mantine/core";
+import { GetStaticPaths, InferGetStaticPropsType, NextPage } from "next";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import useSWR from "swr";
-import productStyles from "@/styles/Products/ProductList.module.scss";
-import ProductPreviewCard from "@/components/Cards/ProductCard/ProductPreviewCard";
-import ProductListContainer from "@/containers/ProductListContainer/ProductListContainer";
-import { NextPage, InferGetStaticPropsType, GetStaticPaths } from "next";
 
 const ShopDetailPage: NextPage<
   InferGetStaticPropsType<typeof getStaticProps>
 > = ({ categories, tags }) => {
   const router = useRouter();
-  const { id, ...params } = router.query;
+  const { name, ...params } = router.query;
 
   const [pagination, setPagination] = useState({
     pageSize: 8,
@@ -29,10 +27,10 @@ const ShopDetailPage: NextPage<
     sortDirection: "DESC",
   });
 
-  const { data } = useSWR([id], async () => {
+  const { data } = useSWR([name], async () => {
     try {
       const res = await axiosClient.get<CommonResponseBase<Shop>>(
-        `/shop/${id}`
+        `/shop/${name}`
       );
 
       return res.data.data;
@@ -46,7 +44,7 @@ const ShopDetailPage: NextPage<
     (key) =>
       axiosClient
         .get<CommonResponseBase<PaginationResponseBase<Product>>>(
-          `/shop/${id}/product?${getQueryString(
+          `/shop/${name}/product?${getQueryString(
             {
               ...pagination,
               ...params,
@@ -96,7 +94,7 @@ const ShopDetailPage: NextPage<
           <div className="flex justify-center mt-6 !text-sm">
             <Button
               className="bg-primary text-center !text-white"
-              onClick={() => router.push(`/profile/${data.owner.id}`)}
+              onClick={() => router.push(`/profile/${data.owner.username}`)}
             >
               View profile
             </Button>
@@ -104,10 +102,10 @@ const ShopDetailPage: NextPage<
         </div>
       </div>
       <ProductListContainer
-        endpoint={`shop/${id}/product`}
+        endpoint={`shop/${name}/product`}
         categories={categories}
         tags={tags}
-        pathName={`/shop/${id}`}
+        pathName={`/shop/${name}`}
       />
     </>
   );

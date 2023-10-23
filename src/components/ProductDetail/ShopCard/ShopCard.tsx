@@ -37,7 +37,7 @@ const ShopCard: FC<ArtistInfoProps> = ({ artist, className, ...rest }) => {
       </div>
       <div
         className="cursor-pointer text-primary"
-        onClick={() => router.push(`/shop/${artist.id}`)}
+        onClick={() => router.push(`/shop/${artist.owner.username}`)}
       >
         View shop
       </div>
