@@ -1,12 +1,13 @@
-import Image from "next/image";
-import { Autocomplete, HoverCard } from "@mantine/core";
-import { IconShoppingCart, IconUser } from "@tabler/icons-react";
-import { useRouter } from "next/router";
+/* eslint-disable @next/next/no-img-element */
 import { ROUTE } from "@/constants/route";
 import { logout } from "@/services/backend/services/user";
-import { useStore } from "@nanostores/react";
 import { $user } from "@/store/user";
-import ImageWithFallback from "@/components/ImageWithFallback/ImageWithFallback";
+import { HoverCard } from "@mantine/core";
+import { useStore } from "@nanostores/react";
+import { IconShoppingCart, IconUser } from "@tabler/icons-react";
+import Image from "next/image";
+import { useRouter } from "next/router";
+import FetchAutoComplete from "../FetchAutocomplete/FetchAutocomplete";
 
 type NavBarProps = {};
 
@@ -33,9 +34,9 @@ export default function NavBar(props: NavBarProps) {
           <div className="text-3xl ml-3 font-bold text-[#50207D]">Artiexh</div>
         </div>
         <div className="w-[60%]">
-          <Autocomplete data={[]} />
+          <FetchAutoComplete />
         </div>
-        <div className="right-header flex">
+        <div className="right-header flex items-center">
           <div className="mr-6">
             <div
               className="w-6 relative cursor-pointer"
@@ -54,11 +55,15 @@ export default function NavBar(props: NavBarProps) {
           {user != null ? (
             <HoverCard width={200}>
               <HoverCard.Target>
-                <IconUser className="cursor-pointer" />
+                <img
+                  src={user.avatarUrl}
+                  alt="avatar"
+                  className="w-[20px] h-[20px] rounded-full cursor-pointer"
+                />
               </HoverCard.Target>
               <HoverCard.Dropdown>
                 <div
-                  onClick={() => router.push(`${ROUTE.PROFILE}/me`)}
+                  onClick={() => router.push(`${ROUTE.MY_PROFILE}`)}
                   className="cursor-pointer mb-4"
                 >
                   Account

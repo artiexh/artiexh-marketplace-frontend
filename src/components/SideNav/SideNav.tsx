@@ -21,7 +21,7 @@ const SideNav = ({
   return (
     <div
       className={clsx(
-        "max-w-[15.625rem] z-[990] fixed my-4 ml-4 w-full -translate-x-full overflow-y-auto rounded-2xl bg-white transition-transform duration-200 xl:left-0 xl:translate-x-0 xl:bg-transparent",
+        "max-w-[15.625rem] fixed my-4 ml-4 w-full -translate-x-full overflow-y-auto rounded-2xl bg-white transition-transform duration-200 xl:left-0 xl:translate-x-0 xl:bg-transparent",
         displaySideNav && "translate-x-0 shadow-soft-xl"
       )}
     >

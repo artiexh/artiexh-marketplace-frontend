@@ -1,4 +1,13 @@
-@media screen and (max-width: 360px) {
-  .product-preview-card {
+.product-preview-card {
+  :global {
+    .product-name {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      -webkit-line-clamp: 2;
+      display: -webkit-box;
+      -webkit-box-orient: vertical;
+      min-height: 2lh;
+      margin-bottom: 6px;
+    }
   }
 }

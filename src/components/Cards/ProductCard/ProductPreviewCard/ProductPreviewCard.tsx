@@ -1,11 +1,10 @@
-import Image from "next/image";
-import styles from "./ProductPreviewCard.module.scss";
+import ImageWithFallback from "@/components/ImageWithFallback/ImageWithFallback";
 import { Product } from "@/types/Product";
 import { currencyFormatter } from "@/utils/formatter";
 import clsx from "clsx";
 import { useRouter } from "next/router";
 import defaultImg from "../../../../../public/assets/default-thumbnail.jpg";
-import ImageWithFallback from "@/components/ImageWithFallback/ImageWithFallback";
+import styles from "./ProductPreviewCard.module.scss";
 
 interface IProductPreviewCardProps {
   data: Product;
@@ -41,7 +40,7 @@ const ProductPreviewCard = ({ data, className }: IProductPreviewCardProps) => {
         />
       </div>
       <div className="p-2.5 sm:p-6 sm:text-xl md:p-4 md:text-xl">
-        <div className="font-semibold">{data?.name}</div>
+        <div className="font-semibold product-name">{data?.name}</div>
         <div className="text-slate-400 text-base">
           {data?.owner?.displayName}
         </div>

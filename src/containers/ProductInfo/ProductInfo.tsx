@@ -42,11 +42,11 @@ const ProductInfo: FC<ProductInfoProps> = ({ product, special }) => {
   return (
     <div className="rounded-lg p-5 md:p-8 bg-white flex flex-col col-span-12 md:col-span-5">
       <h1 className="text-3xl">{name}</h1>
-      <div className="tag-wrapper flex gap-3 mt-1">
+      {/* <div className="tag-wrapper flex gap-3 mt-1">
         {tags.map((tag) => (
           <Badge key={tag}>{tag}</Badge>
         ))}
-      </div>
+      </div> */}
       <div className="mt-2">Type: {category.name}</div>
       <div className="flex items-end gap-3 mt-3">
         <span className="font-bold text-2xl text-primary leading-none">

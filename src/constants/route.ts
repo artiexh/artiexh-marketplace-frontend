@@ -15,6 +15,6 @@ export const ROUTE = {
   ...NOT_REQUIRE_AUTH_ROUTE,
   SHOP: "/my-shop",
   PROFILE: "/profile",
+  MY_PROFILE: "/my-profile",
   ORDER_CONFIRM: "/checkout/confirm",
-  
 };

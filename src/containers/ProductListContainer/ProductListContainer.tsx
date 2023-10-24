@@ -1,61 +1,65 @@
+import ProductPreviewCard from "@/components/Cards/ProductCard/ProductPreviewCard";
+import { MobileFilter, Sidebar } from "@/components/ProductList";
+import MobileSort from "@/components/ProductList/MobileSort";
+import { DEFAULT_FILTERS, SORT_OPTIONS } from "@/constants/ProductList";
+import axiosClient from "@/services/backend/axiosClient";
+import { FilterProps } from "@/services/backend/types/Filter";
+import productStyles from "@/styles/Products/ProductList.module.scss";
 import { Category, Product, Tag } from "@/types/Product";
-import clsx from "clsx";
 import {
   CommonResponseBase,
   PaginationResponseBase,
 } from "@/types/ResponseBase";
-import useSWR from "swr";
-import axiosClient from "@/services/backend/axiosClient";
-import productStyles from "@/styles/Products/ProductList.module.scss";
-import ProductPreviewCard from "@/components/Cards/ProductCard/ProductPreviewCard";
-import { Badge, Button, Input, Select, Pagination } from "@mantine/core";
-import { MobileFilter, Sidebar } from "@/components/ProductList";
-import { FC, useEffect, useState } from "react";
 import { getQueryString } from "@/utils/formatter";
-import { useRouter } from "next/router";
-import MobileSort from "@/components/ProductList/MobileSort";
+import { Button, Pagination } from "@mantine/core";
 import { useForm } from "@mantine/form";
-import { FilterProps } from "@/services/backend/types/Filter";
-import { DEFAULT_FILTERS, SORT_OPTIONS } from "@/constants/ProductList";
 import { IconFilter, IconSortAscendingLetters } from "@tabler/icons-react";
+import clsx from "clsx";
+import { useRouter } from "next/router";
+import { FC, useEffect, useState } from "react";
+import useSWR from "swr";
 
 type ProductListContainerProps = {
   categories: Category[];
   tags: Tag[];
+  endpoint: string;
+  pathName: string;
 };
 
 const ProductListContainer: FC<ProductListContainerProps> = ({
   categories,
   tags,
+  endpoint,
+  pathName,
 }) => {
   const router = useRouter();
   const params = router.query;
 
-  console.log(params);
-
   const [pagination, setPagination] = useState({
     pageSize: 8,
     pageNumber: 1,
-    // sortBy: 'cost',
-    sortDirection: "ASC",
+    sortBy: "id",
+    sortDirection: "DESC",
   });
 
   const [showPopup, setShowPopup] = useState("");
 
   const { data: products, isLoading } = useSWR(
     [JSON.stringify(pagination) + JSON.stringify(params)],
-    (key) =>
-      axiosClient
+    (key) => {
+      const { id, ...rest } = params;
+      return axiosClient
         .get<CommonResponseBase<PaginationResponseBase<Product>>>(
-          `/product?${getQueryString(
+          `/${endpoint}?${getQueryString(
             {
               ...pagination,
-              ...params,
+              ...rest,
             },
             []
           )}`
         )
-        .then((res) => res.data.data)
+        .then((res) => res.data.data);
+    }
   );
 
   console.log(products);
@@ -71,7 +75,7 @@ const ProductListContainer: FC<ProductListContainerProps> = ({
     setPagination((prev) => ({
       ...prev,
       pageNumber: Number(params.pageNumber as string) || 1,
-      sortDirection: (params.sortDirection as string) || prev.sortDirection,
+      // sortDirection: (params.sortDirection as string) || prev.sortDirection,
       // sortBy: (params.sortBy as string) || prev.sortBy,
     }));
   }, [params]);
@@ -102,16 +106,18 @@ const ProductListContainer: FC<ProductListContainerProps> = ({
       },
       []
     );
-    router.replace(`/product?${url}`, undefined, { shallow: true });
+    router.replace(`${pathName}?${url}`, undefined, { shallow: true });
   };
 
   const submitHandler = (filters = {}) => {
-    const url = getQueryString({ ...filters, ...pagination }, []);
-    router.replace(`/product?${url}`, undefined, { shallow: true });
+    const url = getQueryString({ ...filters }, []);
+    router.replace(`${pathName}${url ? `?${url}` : ""}`, undefined, {
+      shallow: true,
+    });
   };
 
   const resetHandler = () => {
-    router.replace(`/product`, undefined, { shallow: true });
+    router.replace(pathName, undefined, { shallow: true });
     setValues(DEFAULT_FILTERS);
   };
 
@@ -123,7 +129,7 @@ const ProductListContainer: FC<ProductListContainerProps> = ({
   return (
     <>
       {/* Mobile */}
-      <div className="bg-white block lg:hidden px-5 py-10">
+      <div className="bg-white block lg:hidden py-10 mt-10 rounded-lg px-6">
         <div className="bg-white flex items-center gap-x-4 lg:hidden mt-5">
           <Button
             className="flex-1"
@@ -166,10 +172,8 @@ const ProductListContainer: FC<ProductListContainerProps> = ({
         </div>
       )}
       {/* Desktop */}
-      <h2 className="lg:text-3xl mt-10 lg:mt-10 font-bold lg:px-10">
-        Tất cả sản phẩm
-      </h2>
-      <div className="grid grid-cols-1 lg:grid-cols-12 lg:gap-x-12 mt-4 lg:px-10">
+      <h2 className="lg:text-3xl mt-10 lg:mt-10 font-bold ">Tất cả sản phẩm</h2>
+      <div className="grid grid-cols-1 lg:grid-cols-12 lg:gap-x-12 mt-4 ">
         <Sidebar
           submitHandler={submitHandler}
           categories={categories}
@@ -178,11 +182,11 @@ const ProductListContainer: FC<ProductListContainerProps> = ({
         />
         <div className="col-span-9">
           <div className="justify-between items-center hidden lg:flex">
-            <div className="flex gap-3">
+            {/* <div className="flex gap-3">
               {tags.map((tag) => (
                 <Badge key={tag.id}>{tag.name}</Badge>
               ))}
-            </div>
+            </div> */}
             {/* <Select
 								data={SORT_OPTIONS}
 								onChange={onSort}
@@ -219,7 +223,9 @@ const ProductListContainer: FC<ProductListContainerProps> = ({
                   },
                   []
                 );
-                router.replace(`/product?${url}`, undefined, { shallow: true });
+                router.replace(`${pathName}?${url}`, undefined, {
+                  shallow: true,
+                });
                 setPagination((prev) => ({ ...prev, pageNumber: e }));
               }}
               total={products?.totalPage ?? 0}

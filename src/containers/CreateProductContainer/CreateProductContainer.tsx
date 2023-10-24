@@ -93,32 +93,43 @@ const CreateProductContainer = () => {
       return;
     }
 
-    Promise.all([
-      publicUploadFile(values.attaches ?? []),
-      publicUploadFile([values.thumbnail]),
-    ])
+    const promiseArr = [publicUploadFile([values.thumbnail])];
+
+    if (values.attaches.filter((item) => item != null).length > 0) {
+      promiseArr.push(publicUploadFile(values.attaches ?? []));
+    }
+
+    Promise.all(promiseArr)
       .then(async (res) => {
-        const attachments = res[0]?.data.data.fileResponses;
-        const thumbnail = res[1]?.data.data.fileResponses[0];
+        const thumbnail = res[0]?.data.data.fileResponses[0];
+        const attachments = res[1]?.data.data.fileResponses;
 
-        if (!attachments || !thumbnail) return;
+        if (!thumbnail) return;
 
-        const result = await createProduct({
-          ...values,
-          attaches: [
+        let attaches = [
+          {
+            url: thumbnail.presignedUrl,
+            type: ATTACHMENT_TYPE.THUMBNAIL,
+            title: thumbnail.fileName,
+            description: thumbnail.fileName,
+          },
+        ] as any[];
+
+        if (attachments != null) {
+          attaches = [
+            ...attaches,
             ...attachments?.map((attachment) => ({
               url: attachment.presignedUrl,
               type: ATTACHMENT_TYPE.OTHER,
               title: attachment.fileName,
               description: attachment.fileName,
             })),
-            {
-              url: thumbnail.presignedUrl,
-              type: ATTACHMENT_TYPE.THUMBNAIL,
-              title: thumbnail.fileName,
-              description: thumbnail.fileName,
-            },
-          ],
+          ];
+        }
+
+        const result = await createProduct({
+          ...values,
+          attaches,
         });
 
         if (result?.data.data == null) {

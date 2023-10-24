@@ -1,14 +1,12 @@
+import ImageWithFallback from "@/components/ImageWithFallback/ImageWithFallback";
 import { User } from "@/types/User";
-import Image from "next/image";
+import { Button, Modal, Tabs } from "@mantine/core";
+import { useDisclosure } from "@mantine/hooks";
 import defaultImage from "../../../public/assets/default-thumbnail.jpg";
-import { Button, Modal, Tabs, TextInput } from "@mantine/core";
+import ArtistRegisterModal from "../ArtistRegisterModal";
 import AccountTab from "../Tabs/AccountTab";
 import OrderTab from "../Tabs/OrderTab";
-import { useDisclosure } from "@mantine/hooks";
-import { useState } from "react";
-import { artistRegister } from "@/services/backend/services/user";
-import ArtistRegisterModal from "../ArtistRegisterModal";
-import ImageWithFallback from "@/components/ImageWithFallback/ImageWithFallback";
+import PostTab from "../Tabs/PostTab";
 
 type MyProfileProps = {
   user: User;
@@ -24,6 +22,11 @@ const tabs = [
     key: "order",
     element: <OrderTab />,
     title: "My Orders",
+  },
+  {
+    key: "posts",
+    element: <PostTab />,
+    title: "My Posts",
   },
 ];
 
@@ -62,7 +65,7 @@ export default function MyProfilePage({ user }: MyProfileProps) {
           </div>
         </div>
       </div>
-      <Tabs defaultValue="order">
+      <Tabs defaultValue="posts">
         <div className="bg-white mt-2 py-4 px-6 mb-6">
           <Tabs.List>
             {tabs.map((tab) => (
