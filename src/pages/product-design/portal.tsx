@@ -38,12 +38,13 @@ import { IconAdjustmentsAlt } from "@tabler/icons-react";
 
 export function ToteBagContainer({ children }: { children?: React.ReactNode }) {
   const { value } = useContext(MetaContext);
-  const glbBody = useLoader(GLTFLoader, "/3d/tote-bag/tote_body.glb");
-  const glbStrap = useLoader(GLTFLoader, "/3d/tote-bag/tote_strap.glb");
+  const glbtTote = useLoader(GLTFLoader, "/3d/tote-bag/tote.glb");
 
-  const { nodes: bodyNodes, materials: bodyMaterials } = glbBody;
-
-  const { nodes: strapNodes, materials: strapMaterials } = glbStrap;
+  const { nodes: bodyNodes, materials: bodyMaterials } = glbtTote;
+  console.log(
+    "🚀 ~ file: portal.tsx:44 ~ ToteBagContainer ~ bodyNodes:",
+    bodyNodes["tote_strap"]
+  );
 
   return (
     <>
@@ -53,9 +54,9 @@ export function ToteBagContainer({ children }: { children?: React.ReactNode }) {
           key="tote_strap"
           castShadow
           receiveShadow
-          geometry={strapNodes["tote_strap"].geometry}
-          material={strapMaterials["tote_strap"]}
-          position={[0, -25, 0]}
+          geometry={bodyNodes["tote_strap"].geometry}
+          material={bodyMaterials["tote_strap"]}
+          position={[0, 0, 0]}
         >
           <meshStandardMaterial color={value.palette.strap} />
         </mesh>
@@ -65,7 +66,7 @@ export function ToteBagContainer({ children }: { children?: React.ReactNode }) {
           receiveShadow
           geometry={bodyNodes["embroidery_line"].geometry}
           material={bodyMaterials["embroidery_line"]}
-          position={[0, -25, 0]}
+          position={[0, 0, 0]}
         >
           <meshStandardMaterial color={value.palette.embroideryLine} />
         </mesh>
@@ -75,7 +76,7 @@ export function ToteBagContainer({ children }: { children?: React.ReactNode }) {
           receiveShadow
           geometry={bodyNodes["tote_bag"].geometry}
           material={bodyMaterials["tote_bag"]}
-          position={[0, -25, 0]}
+          position={[0, 0, 0]}
         >
           <meshStandardMaterial color={value.palette.body} />
           {children}

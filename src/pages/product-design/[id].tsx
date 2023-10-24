@@ -191,7 +191,7 @@ function DesignPortalContainer({ modelCode }: { modelCode: string }) {
       className="w-full h-full"
       gl={{ preserveDrawingBuffer: true }}
       id="portal-canvas"
-      camera={{ fov: 15, near: 0.1, far: 1000, position: [0, 0, 5] }}
+      camera={{ fov: 1, near: 0.1, far: 1000, position: [0, 0, 5] }}
     >
       <ambientLight />
       <pointLight position={[10, 10, 10]} />
