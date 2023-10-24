@@ -3,6 +3,7 @@ import { FC, HTMLAttributes } from "react";
 import clsx from "clsx";
 import Image from "next/image";
 import { useRouter } from "next/router";
+import { ARTY_SHOP_USERNAME } from "@/constants/common";
 
 type ArtistInfoProps = HTMLAttributes<HTMLDivElement> & {
   artist: ShopInfo;
@@ -37,7 +38,15 @@ const ShopCard: FC<ArtistInfoProps> = ({ artist, className, ...rest }) => {
       </div>
       <div
         className="cursor-pointer text-primary"
-        onClick={() => router.push(`/shop/${artist.owner.username}`)}
+        onClick={() =>
+          router.push(
+            `/shop/${
+              artist.owner.username === ARTY_SHOP_USERNAME
+                ? "arty-shop"
+                : artist.owner.username
+            }`
+          )
+        }
       >
         View shop
       </div>

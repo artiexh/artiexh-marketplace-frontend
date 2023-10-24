@@ -1,18 +1,19 @@
 /* eslint-disable @next/next/no-img-element */
 import ProductListContainer from "@/containers/ProductListContainer/ProductListContainer";
 import axiosClient from "@/services/backend/axiosClient";
-import { Category, Product, Tag } from "@/types/Product";
+import { Category, Tag } from "@/types/Product";
 import {
   CommonResponseBase,
   PaginationResponseBase,
 } from "@/types/ResponseBase";
 import { Shop } from "@/types/Shop";
-import { getQueryString } from "@/utils/formatter";
 import { Button, Divider, Rating } from "@mantine/core";
 import { GetStaticPaths, InferGetStaticPropsType, NextPage } from "next";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import useSWR from "swr";
+
+const ARTY_SHOP_NAME = "arty-shop";
 
 const ShopDetailPage: NextPage<
   InferGetStaticPropsType<typeof getStaticProps>
@@ -38,22 +39,6 @@ const ShopDetailPage: NextPage<
       console.log(err);
     }
   });
-
-  const { data: products, isLoading } = useSWR(
-    [JSON.stringify(pagination) + JSON.stringify(params)],
-    (key) =>
-      axiosClient
-        .get<CommonResponseBase<PaginationResponseBase<Product>>>(
-          `/shop/${name}/product?${getQueryString(
-            {
-              ...pagination,
-              ...params,
-            },
-            []
-          )}`
-        )
-        .then((res) => res.data.data)
-  );
 
   if (data == null) return <></>;
 

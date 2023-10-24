@@ -4,6 +4,7 @@ import clsx from "clsx";
 import { useRouter } from "next/router";
 import defaultImg from "../../../public/assets/default-thumbnail.jpg";
 import styles from "../Cards/ProductCard/ProductPreviewCard/ProductPreviewCard.module.scss";
+import { ARTY_SHOP_USERNAME } from "@/constants/common";
 
 export default function ShopPreviewCard({ shop }: { shop: Shop }) {
   const router = useRouter();
@@ -13,7 +14,15 @@ export default function ShopPreviewCard({ shop }: { shop: Shop }) {
         styles["product-preview-card"],
         "bg-white rounded-2xl aspect-3/5 w-full cursor-pointer"
       )}
-      onClick={() => router.push(`/shop/${shop.id}`)}
+      onClick={() =>
+        router.push(
+          `/shop/${
+            shop.owner.username === ARTY_SHOP_USERNAME
+              ? "arty-shop"
+              : shop.owner.username
+          }`
+        )
+      }
     >
       <div className="relative w-full aspect-square">
         <ImageWithFallback

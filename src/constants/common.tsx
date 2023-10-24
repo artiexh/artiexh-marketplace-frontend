@@ -6,6 +6,8 @@ import {
   IconTruckDelivery,
 } from "@tabler/icons-react";
 
+export const ARTY_SHOP_USERNAME = "artiexh_admin";
+
 export const PRODUCT_STATUS = {
   DELETED: "DELETED",
   NOT_AVAILABLE: "NOT_AVAILABLE",
