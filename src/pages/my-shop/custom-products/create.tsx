@@ -369,7 +369,7 @@ function VariantAndProviderPicker({
         name: "Untitled",
       });
       if (res.status === 200) {
-        router.push(`/product-design/${res.data.id}`);
+        router.push(`/my-shop/custom-products/${res.data.id}/design`);
       }
     } catch (e) {
       console.log("🚀 ~ file: index.tsx:247 ~ createDesignItem ~ e:", e);

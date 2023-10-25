@@ -3,6 +3,7 @@ import {
   updateGeneralInformationApi,
   updateImageCombinationApi,
   updateImageSetApi,
+  updateThumbnailApi,
 } from "@/services/backend/services/designInventory";
 import {
   getPrivateFile,

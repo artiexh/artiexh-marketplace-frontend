@@ -36,6 +36,30 @@ export const updateImageCombinationApi = (
   );
 };
 
+export const updateThumbnailApi = (
+  designItem: DesignItemDetail,
+  thumbnailId: string
+) => {
+  //TODO: call api later
+  return axiosClient.post<CommonResponseBase<DesignItemDetail>>(
+    "/inventory-item",
+    {
+      id: designItem.id,
+      combinationCode: designItem.combinationCode,
+      imageSet: designItem.imageSet.map((el) => ({
+        positionCode: el.positionCode,
+        mockupImageId: el.mockupImage?.id,
+        manufacturingImageId: el.manufacturingImage?.id,
+      })),
+      name: designItem.name,
+      description: designItem.description,
+      tags: designItem.tags ?? [],
+      variantId: designItem.variant.id,
+      thumbnailId: thumbnailId,
+    }
+  );
+};
+
 export const updateImageSetApi = (
   designItem: DesignItemDetail,
   imageSets: DesignImageSet[],
