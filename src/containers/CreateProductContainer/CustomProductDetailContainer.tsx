@@ -5,6 +5,7 @@ import useCategories from "@/hooks/useCategories";
 import useTags from "@/hooks/useTags";
 import { publicUploadFile } from "@/services/backend/services/media";
 import { createProduct } from "@/services/backend/services/product";
+import { DesignItemDetail } from "@/types/DesignItem";
 import { CreateProductValues, Tag } from "@/types/Product";
 import {
   CURRENCIES,
@@ -27,7 +28,11 @@ import { IconArrowLeft } from "@tabler/icons-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
-const CreateProductContainer = () => {
+type Props = {
+  data: DesignItemDetail;
+};
+
+const CustomProductDetailContainer = ({ data }: Props) => {
   const { data: categories } = useCategories();
   const { data: tagList } = useTags();
 
@@ -42,7 +47,13 @@ const CreateProductContainer = () => {
     removeListItem,
     isDirty,
   } = useForm({
-    initialValues: DEFAULT_FORM_VALUES,
+    initialValues: {
+      ...DEFAULT_FORM_VALUES,
+      name: data.name,
+      description: data.description,
+      categoryId: data.variant.productBase.category.id.toString(),
+      tags: data.tags,
+    },
     validate: createProductValidation,
     validateInputOnBlur: true,
     validateInputOnChange: true,
@@ -197,14 +208,7 @@ const CreateProductContainer = () => {
               {...getInputProps("tags")}
               disabled={isSubmitting}
             />
-            <NumberInput
-              label="Quantity"
-              className="col-span-6 md:col-span-4"
-              withAsterisk
-              min={1}
-              {...getInputProps("remainingQuantity")}
-              disabled={isSubmitting}
-            />
+
             <div className="flex col-span-12 md:col-span-8 order-1 md:order-none">
               <NumberInput
                 label="Price"
@@ -230,14 +234,7 @@ const CreateProductContainer = () => {
                 disabled={isSubmitting}
               />
             </div>
-            <NumberInput
-              label="Limit per order"
-              className="col-span-6 md:col-span-4"
-              withAsterisk
-              min={1}
-              {...getInputProps("maxItemsPerOrder")}
-              disabled={isSubmitting}
-            />
+
             <Select
               data={categoryOptions || []}
               className="col-span-12 md:col-span-8 order-1 md:order-none"
@@ -247,15 +244,7 @@ const CreateProductContainer = () => {
               withAsterisk
               allowDeselect
               {...getInputProps("categoryId")}
-              disabled={isSubmitting}
-            />
-            <NumberInput
-              label="Weight"
-              className="col-span-12"
-              withAsterisk
-              min={1}
-              {...getInputProps("weight")}
-              disabled={isSubmitting}
+              disabled={true}
             />
             <Textarea
               label="Description"
@@ -336,4 +325,4 @@ const CreateProductContainer = () => {
   );
 };
 
-export default CreateProductContainer;
+export default CustomProductDetailContainer;
