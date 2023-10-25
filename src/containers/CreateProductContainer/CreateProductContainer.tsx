@@ -7,25 +7,23 @@ import { publicUploadFile } from "@/services/backend/services/media";
 import { createProduct } from "@/services/backend/services/product";
 import { CreateProductValues, Tag } from "@/types/Product";
 import {
+  CURRENCIES,
   DEFAULT_FORM_VALUES,
   createProductValidation,
-  CURRENCIES,
 } from "@/utils/createProductValidations";
 import { getNotificationIcon } from "@/utils/mapper";
 import {
   Button,
-  Checkbox,
   Input,
   MultiSelect,
   NumberInput,
   Select,
-  Switch,
   TextInput,
   Textarea,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { notifications } from "@mantine/notifications";
-import clsx from "clsx";
+import { IconArrowLeft } from "@tabler/icons-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
@@ -42,6 +40,7 @@ const CreateProductContainer = () => {
     clearFieldError,
     errors,
     removeListItem,
+    isDirty,
   } = useForm({
     initialValues: DEFAULT_FORM_VALUES,
     validate: createProductValidation,
@@ -155,9 +154,18 @@ const CreateProductContainer = () => {
 
   return (
     <form
-      className="create-product-container flex flex-col gap-10 w-full pb-5"
+      className="create-product-container flex flex-col gap-5 w-full pb-5"
       onSubmit={onSubmit(submitHandler)}
     >
+      <div className="card general-wrapper">
+        <div className="flex gap-x-2 items-center">
+          <IconArrowLeft
+            className="cursor-pointer"
+            onClick={() => router.push("/my-shop/custom-products")}
+          />
+          <h2 className="font-bold text-xl">Custom product information</h2>
+        </div>
+      </div>
       <div className="card general-wrapper">
         <h2 className="text-xl font-bold">General information</h2>
         <div className="flex flex-col-reverse md:flex-row mt-5 gap-10">
@@ -313,91 +321,15 @@ const CreateProductContainer = () => {
           </div>
         </div>
       </div>
-      <div className="card shipping-payment-wrapper">
-        <h2 className="text-xl font-bold">Shipping & payment methods</h2>
-        <Switch
-          className="mt-5"
-          label="Allow shipping"
-          size="md"
-          offLabel={<span className="text-sm">|</span>}
-          onLabel={<span className="text-base">O</span>}
-          {...getInputProps("allowShipping", { type: "checkbox" })}
-          onChange={(e) => {
-            getInputProps("allowShipping").onChange(e);
-            if (e.target.checked) {
-              // For submission
-              clearFieldError("pickupLocation");
-            } else {
-              validateField("pickupLocation");
-            }
-          }}
-          disabled={isSubmitting}
-        />
-        <div
-          className={clsx(
-            "shipping-wrapper grid grid-cols-12 gap-5 md:gap-x-10 transition-all"
-            // !allowShipping
-            //   ? "opacity-100 mt-5"
-            //   : "h-0 pointer-events-none opacity-0"
-          )}
-        >
-          {/* <TextInput
-            label="Pick up at"
-            className="col-span-12 md:col-span-10"
-            // {...getInputProps("pickupLocation")}
-            // disabled={sameAsStoreAddress || isSubmitting}
-          />
-          <Input.Wrapper
-            label="Same as my shop"
-            className="col-span-12 md:col-span-2"
-          >
-            <Switch
-              size="md"
-              offLabel={<span className="text-sm">|</span>}
-              onLabel={<span className="text-base">O</span>}
-              // {...getInputProps("sameAsStoreAddress", {
-              //   type: "checkbox",
-              // })}
-              // onChange={(e) => {
-              //   getInputProps("sameAsStoreAddress").onChange(e);
-              //   if (e.target.checked) {
-              //     setFieldValue(
-              //       "pickupLocation",
-              //       "INSERT THE ADDRESS FROM ARTIST HERE"
-              //     );
-              //   } else {
-              //     setFieldValue("pickupLocation", "");
-              //   }
-              // }}
-              disabled={isSubmitting}
-            />
-          </Input.Wrapper> */}
-        </div>
-        <h2 className="text-xl font-bold mt-5">Payment information</h2>
-        <Checkbox.Group
-          className="flex flex-col gap-3 mt-5"
-          {...getInputProps("paymentMethods", {
-            type: "checkbox",
-          })}
-        >
-          <Checkbox
-            value="CASH"
-            label="Cash on delivery"
-            disabled={isSubmitting}
-          />
-          <Checkbox
-            value="VN_PAY"
-            label="Bank transfer"
-            disabled={isSubmitting}
-          />
-        </Checkbox.Group>
-      </div>
+
       <div className="btn-wrapper flex flex-col-reverse md:flex-row gap-5 w-full md:w-max ml-auto bg-white p-5 rounded-lg md:bg-transparent sm:p-0">
-        <Button variant="outline" type="button" disabled={isSubmitting}>
-          Cancel
-        </Button>
-        <Button className="bg-primary" type="submit" loading={isSubmitting}>
-          Publish
+        <Button
+          className="bg-primary"
+          type="submit"
+          loading={isSubmitting}
+          disabled={!isDirty()}
+        >
+          Save
         </Button>
       </div>
     </form>

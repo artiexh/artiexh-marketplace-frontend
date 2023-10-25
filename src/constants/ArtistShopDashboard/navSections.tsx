@@ -6,7 +6,7 @@ export const navSections = [
         id: "PRODUCTS",
         label: "Products",
         iconPath: "dashboard_icon.svg",
-        href: "/my-shop/products",
+        href: "/my-shop/custom-products",
       },
       {
         id: "ORDERS",

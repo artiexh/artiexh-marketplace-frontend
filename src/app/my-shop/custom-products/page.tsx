@@ -1,7 +1,16 @@
 "use client";
 
-import TableContainer from "@/containers/TableContainer";
-import { Button, Input, Pagination } from "@mantine/core";
+import PrivateImageLoader from "@/components/PrivateImageLoader/PrivateImageLoader";
+import TableComponent from "@/components/TableComponent";
+import axiosClient from "@/services/backend/axiosClient";
+import { SimpleDesignItem } from "@/types/DesignItem";
+import {
+  CommonResponseBase,
+  PaginationResponseBase,
+} from "@/types/ResponseBase";
+import { TableColumns } from "@/types/Table";
+import { getQueryString } from "@/utils/formatter";
+import { Button, Input, Pagination, Tooltip } from "@mantine/core";
 import {
   IconBallpen,
   IconPalette,
@@ -9,21 +18,8 @@ import {
   IconSearch,
 } from "@tabler/icons-react";
 import { usePathname, useRouter } from "next/navigation";
-import shopProductColumns from "@/constants/Columns/shopProductColumns";
 import { useState } from "react";
-import { getQueryString } from "@/utils/formatter";
-import axiosClient from "@/services/backend/axiosClient";
-import { ROUTE } from "@/constants/route";
 import useSWR from "swr";
-import TableComponent from "@/components/TableComponent";
-import {
-  CommonResponseBase,
-  PaginationResponseBase,
-} from "@/types/ResponseBase";
-import { SimpleDesignItem } from "@/types/DesignItem";
-import { TableColumns } from "@/types/Table";
-import ImageWithFallback from "@/components/ImageWithFallback/ImageWithFallback";
-import PrivateImageLoader from "@/components/PrivateImageLoader/PrivateImageLoader";
 
 const ShopProductsPage = () => {
   const router = useRouter();
@@ -64,8 +60,6 @@ const ShopProductsPage = () => {
 
   const data = response?.data.data;
 
-  if (isLoading) return null;
-
   return (
     <div>
       <div className="flex justify-between mb-4">
@@ -84,7 +78,7 @@ const ShopProductsPage = () => {
         <Button
           leftIcon={<IconPlus />}
           type="button"
-          onClick={() => router.push(`${ROUTE.SHOP}/products/create`)}
+          onClick={() => router.push(`/product-design`)}
           variant="outline"
         >
           Create product
@@ -92,23 +86,27 @@ const ShopProductsPage = () => {
       </div>
       <div className="py-5 px-7 bg-white rounded-lg">
         <>
-          <div className="text-3xl font-bold">Products</div>
+          <div className="text-3xl font-bold">Custom products</div>
           <div className="text-[#AFAFAF] mt-1">
             {/* TODO: Replace with API call later or filter based on response */}
-            {data?.items.length} products need to be updated their status
+            {data?.totalSize} custom products
           </div>
         </>
         <div className="flex flex-col items-center gap-4 w-full">
-          <TableComponent
-            columns={customProductColumns}
-            data={data?.items.map((item) => {
-              return {
-                ...item,
-                onDesign: () => router.push(`/product-design/${item.id}`),
-                onEdit: () => router.push(`/my-shop/products/${item.id}`),
-              };
-            })}
-          />
+          {!isLoading && (
+            <TableComponent
+              columns={customProductColumns}
+              data={data?.items.map((item) => {
+                return {
+                  ...item,
+                  onDesign: () =>
+                    router.push(`/my-shop/custom-products/${item.id}/design`),
+                  onEdit: () =>
+                    router.push(`/my-shop/custom-products/${item.id}/details`),
+                };
+              })}
+            />
+          )}
           <Pagination
             value={params.pageNumber}
             onChange={(value) => setField("pageNumber", value)}
@@ -135,6 +133,7 @@ const customProductColumns: TableColumns<
       <div className="flex items-center gap-5">
         <div className="relative w-16 aspect-square">
           <PrivateImageLoader
+            className="rounded-md"
             id={record.thumbnail?.id.toString()}
             alt="test"
             fill
@@ -181,14 +180,18 @@ const customProductColumns: TableColumns<
     className: "!text-center",
     render: (record) => (
       <div className="flex justify-center gap-x-2">
-        <IconBallpen
-          className="cursor-pointer"
-          onClick={() => record.onEdit && record.onEdit()}
-        />
-        <IconPalette
-          className="cursor-pointer"
-          onClick={() => record.onDesign && record.onDesign()}
-        />
+        <Tooltip label="Edit">
+          <IconBallpen
+            className="cursor-pointer"
+            onClick={() => record.onEdit && record.onEdit()}
+          />
+        </Tooltip>
+        <Tooltip label="Desgin">
+          <IconPalette
+            className="cursor-pointer"
+            onClick={() => record.onDesign && record.onDesign()}
+          />
+        </Tooltip>
       </div>
     ),
   },

@@ -6,7 +6,7 @@ const ShopProductsPage = () => {
   const router = useRouter();
   const pathname = usePathname();
 
-  router.push("/my-shop/products");
+  router.push("/my-shop/custom-products");
 
   return null;
 };
