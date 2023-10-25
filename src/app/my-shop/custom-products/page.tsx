@@ -78,7 +78,7 @@ const ShopProductsPage = () => {
         <Button
           leftIcon={<IconPlus />}
           type="button"
-          onClick={() => router.push(`/product-design`)}
+          onClick={() => router.push(`/my-shop/custom-products/create`)}
           variant="outline"
         >
           Create product

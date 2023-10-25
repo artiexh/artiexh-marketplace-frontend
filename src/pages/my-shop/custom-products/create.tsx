@@ -11,13 +11,13 @@ import { Carousel } from "@mantine/carousel";
 import { Button, Divider, Modal, Pagination } from "@mantine/core";
 import { UseFormReturnType, useForm } from "@mantine/form";
 import { useDisclosure } from "@mantine/hooks";
-import { IconArrowDown, IconFilter } from "@tabler/icons-react";
+import { IconArrowDown, IconArrowLeft, IconFilter } from "@tabler/icons-react";
 import clsx from "clsx";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
 import useSWR from "swr";
-import defaultImg from "../../../public/assets/default-thumbnail.jpg";
+import defaultImg from "../../../../public/assets/default-thumbnail.jpg";
 import { createDesignItemApi } from "@/services/backend/services/designInventory";
 import { CategoryItem } from "@/components/ProductList";
 import { MAX_CATEGORIES } from "@/constants/ProductList";
@@ -119,6 +119,7 @@ function SideBar({ resetHandler, submitHandler }: SidebarProps) {
 
 export default function ProductDesignPage() {
   const form = useForm();
+  const router = useRouter();
   const [apiParams, setApiParams] = useState({
     pageSize: 8,
     pageNumber: 1,
@@ -162,7 +163,15 @@ export default function ProductDesignPage() {
 
   return (
     <div className="h-[calc(100vh-2rem)] w-full px-10">
-      <h1>Pick product base to design</h1>
+      <div className="card general-wrapper">
+        <div className="flex gap-x-2 items-center">
+          <IconArrowLeft
+            className="cursor-pointer"
+            onClick={() => router.push("/my-shop/custom-products")}
+          />
+          <h2 className="font-bold text-xl">Create custom product</h2>
+        </div>
+      </div>
       <Modal opened={opened} onClose={close} centered fullScreen>
         {productBaseId.current && (
           <ProductBaseDetailModalContent

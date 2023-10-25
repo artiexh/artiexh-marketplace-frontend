@@ -1,29 +1,35 @@
 import axiosClient from "@/services/backend/axiosClient";
 import {
+  updateGeneralInformationApi,
+  updateImageCombinationApi,
+  updateImageSetApi,
+} from "@/services/backend/services/designInventory";
+import {
   getPrivateFile,
   privateUploadFiles,
 } from "@/services/backend/services/media";
 import { DesignItemDetail } from "@/types/DesignItem";
+import { ImageConfig } from "@/types/ProductBase";
 import { CommonResponseBase } from "@/types/ResponseBase";
+import { createImageUrl } from "@/utils/three";
 import {
   Accordion,
   Button,
   FileButton,
   Group,
-  Input,
   MultiSelect,
   Paper,
   TextInput,
   Textarea,
   Transition,
 } from "@mantine/core";
-import { Canvas, useThree } from "@react-three/fiber";
+import { useForm } from "@mantine/form";
+import { Decal, OrbitControls, useTexture } from "@react-three/drei";
+import { Canvas } from "@react-three/fiber";
 import {
   IconAdjustmentsAlt,
   IconArrowLeft,
   IconArrowRight,
-  IconFileCheck,
-  IconMenu2,
   IconPhotoEdit,
 } from "@tabler/icons-react";
 import {
@@ -33,6 +39,8 @@ import {
   useQuery,
   useQueryClient,
 } from "@tanstack/react-query";
+import clsx from "clsx";
+import Image from "next/image";
 import { useRouter } from "next/router";
 import {
   ImgHTMLAttributes,
@@ -42,23 +50,8 @@ import {
   useRef,
   useState,
 } from "react";
-import {
-  TShirtContainer,
-  ToteBagContainer,
-} from "../../../product-design/portal";
-import { Decal, useTexture } from "@react-three/drei";
 import useSWR from "swr";
-import { createImageUrl } from "@/utils/three";
 import { Mesh } from "three";
-import { ImageConfig } from "@/types/ProductBase";
-import {
-  updateGeneralInformationApi,
-  updateImageCombinationApi,
-  updateImageSetApi,
-} from "@/services/backend/services/designInventory";
-import clsx from "clsx";
-import Image from "next/image";
-import { useForm } from "@mantine/form";
 
 function ImageLoaderForFile({
   src,
@@ -196,6 +189,7 @@ function DesignPortalContainer({ modelCode }: { modelCode: string }) {
       id="portal-canvas"
       camera={{ fov: 1, near: 0.1, far: 1000, position: [0, 0, 5] }}
     >
+      <OrbitControls enableDamping enablePan enableRotate enableZoom />
       <ambientLight />
       <pointLight position={[10, 10, 10]} />
       <WrapperContainer>
@@ -625,7 +619,6 @@ function ImageSetPicker({ currentCombination }: ImageSetPickerProps) {
           canvasElemnt.toBlob((blob) => resolve(blob));
         }))();
 
-      console.log("🚀 ~ file: [id].tsx:625 ~ mutationFn: ~ blob:", blob);
       let thumbnail: string | undefined = designItemRes.data.thumbnail?.id;
       if (blob) {
         const { data: fileRes } = await privateUploadFiles([
@@ -862,10 +855,12 @@ type CombinationCodePickerProps = {
   }[];
 };
 
-import logoImage from "../../../../../public/assets/logo.svg";
-import { Tag } from "@/types/Product";
-import useTags from "@/hooks/useTags";
 import FileUpload from "@/components/FileUpload/FileUpload";
+import TShirtContainer from "@/containers/3dModelContainers/TShirtContainer";
+import ToteBagContainer from "@/containers/3dModelContainers/ToteBagContainer";
+import useTags from "@/hooks/useTags";
+import { Tag } from "@/types/Product";
+import logoImage from "../../../../../public/assets/logo.svg";
 
 function CombinationCodePicker({ combinations }: CombinationCodePickerProps) {
   const queryClient = useQueryClient();
