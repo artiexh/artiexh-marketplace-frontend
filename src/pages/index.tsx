@@ -1,24 +1,25 @@
+import CampaignPreviewCard from "@/components/CampaignPreviewCard/CampaignPreviewCard";
 import ProductPreviewCard from "@/components/Cards/ProductCard/ProductPreviewCard";
+import ImageWithFallback from "@/components/ImageWithFallback/ImageWithFallback";
+import PreviewList from "@/components/PreviewList";
+import ShopPreviewCard from "@/components/ShopPreviewCard/ShopPreviewCard";
+import { campaignData } from "@/constants/campaign";
+import { ROUTE } from "@/constants/route";
 import axiosClient from "@/services/backend/axiosClient";
-import { Category, Product, Tag } from "@/types/Product";
-import { GetStaticPropsContext, InferGetStaticPropsType, NextPage } from "next";
 import productStyles from "@/styles/Products/ProductList.module.scss";
-import clsx from "clsx";
+import { HomeBranding } from "@/types/HomeBranding";
+import { Category, Product, Tag } from "@/types/Product";
 import {
   CommonResponseBase,
   PaginationResponseBase,
 } from "@/types/ResponseBase";
-import useSWR from "swr";
-import HeroSection from "@/components/Home/HeroSection";
-import { HomeBranding } from "@/types/HomeBranding";
-import PreviewList from "@/components/PreviewList";
-import ssrAxiosClient from "@/services/backend/axiosMockups/ssrAxiosMockupClient";
-import { useRouter } from "next/router";
-import { ROUTE } from "@/constants/route";
-import Image from "next/image";
-import ImageWithFallback from "@/components/ImageWithFallback/ImageWithFallback";
 import { Shop } from "@/types/Shop";
-import ShopPreviewCard from "@/components/ShopPreviewCard/ShopPreviewCard";
+import { Carousel } from "@mantine/carousel";
+import clsx from "clsx";
+import { GetStaticPropsContext, InferGetStaticPropsType, NextPage } from "next";
+import Image from "next/image";
+import { useRouter } from "next/router";
+import useSWR from "swr";
 
 const TAG_COLORS = [
   "#FF9898",
@@ -48,11 +49,38 @@ const HomePage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = ({
 
   return (
     <div className="home-page flex flex-col gap-8 lg:gap-16">
-      {/* <HeroSection
-        promotionElements={homeBranding?.promotions ?? []}
-        carouselElements={homeBranding?.campaigns ?? []}
-        className="flex h-[12rem] lg:h-[27rem] gap-4 w-[100vw] lg:w-full -ml-6 md:mx-auto"
-      /> */}
+      <Carousel
+        h={400}
+        withControls={false}
+        withIndicators
+        classNames={{
+          root: "w-full lg:rounded-md",
+          viewport: "h-full lg:rounded-md",
+          container: "h-full lg:rounded-md",
+          slide: "h-full",
+          indicator: "bg-white",
+        }}
+      >
+        {campaignData.map((element) => (
+          <Carousel.Slide key={element.id}>
+            <div className="relative h-full">
+              <Image
+                src={element.thumbnailUrl}
+                fill
+                className="object-cover brightness-50"
+                alt={element.id}
+              />
+              <div className="absolute bottom-0 text-white opacity-80 w-full pl-10 py-10">
+                <div className="text-[24px] font-bold">{element.name}</div>
+                <div className="text-sm mb-4">{element.description}</div>
+                <div className="font-bold text-sm cursor-pointer">
+                  VIEW CAMPAIGN
+                </div>
+              </div>
+            </div>
+          </Carousel.Slide>
+        ))}
+      </Carousel>
       <div>
         <div>Trending tags:</div>
         <PreviewList
@@ -96,6 +124,19 @@ const HomePage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = ({
               </div>
             )),
           ]}
+        </div>
+      </div>
+      <div>
+        <div className="font-bold text-xl">Những campaign đang hot</div>
+        <div
+          className={clsx(
+            productStyles["product-list-grid"],
+            "mt-3 !grid-cols-2 gap-8"
+          )}
+        >
+          {campaignData?.map((campaign, index) => (
+            <CampaignPreviewCard campaign={campaign} key={index} />
+          ))}
         </div>
       </div>
       <div>

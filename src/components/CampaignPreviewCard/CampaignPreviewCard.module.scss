@@ -1,0 +1,12 @@
+.campaign-preview-card {
+  :global {
+    .two-line {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      -webkit-line-clamp: 1;
+      display: -webkit-box;
+      -webkit-box-orient: vertical;
+      min-height: 1lh;
+    }
+  }
+}

@@ -3,7 +3,7 @@ import { Shop } from "@/types/Shop";
 import clsx from "clsx";
 import { useRouter } from "next/router";
 import defaultImg from "../../../public/assets/default-thumbnail.jpg";
-import styles from "../Cards/ProductCard/ProductPreviewCard/ProductPreviewCard.module.scss";
+import styles from "./ShopPreviewCard.module.scss";
 import { ARTY_SHOP_USERNAME } from "@/constants/common";
 
 export default function ShopPreviewCard({ shop }: { shop: Shop }) {
@@ -11,7 +11,7 @@ export default function ShopPreviewCard({ shop }: { shop: Shop }) {
   return (
     <div
       className={clsx(
-        styles["product-preview-card"],
+        styles["shop-preview-card"],
         "bg-white rounded-2xl aspect-3/5 w-full cursor-pointer"
       )}
       onClick={() =>
@@ -42,7 +42,7 @@ export default function ShopPreviewCard({ shop }: { shop: Shop }) {
         />
       </div>
       <div className="p-2.5 sm:p-6 sm:text-xl md:p-4 md:text-xl">
-        <div className="font-semibold product-name">{shop?.shopName}</div>
+        <div className="font-semibold shop-name">{shop?.shopName}</div>
         <div className="text-slate-400 text-base">
           {shop?.owner?.displayName}
         </div>

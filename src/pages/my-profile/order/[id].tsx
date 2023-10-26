@@ -1,23 +1,23 @@
-import { ROUTE } from "@/constants/route";
-import axiosClient from "@/services/backend/axiosClient";
-import { Order } from "@/types/Order";
-import { CommonResponseBase } from "@/types/ResponseBase";
-import { useSearchParams } from "next/navigation";
-import { useRouter } from "next/router";
-import useSWR from "swr";
-import { Timeline, Text, Divider } from "@mantine/core";
-import { IconChevronLeft } from "@tabler/icons-react";
-import Image from "next/image";
 import {
   NOTIFICATION_TYPE,
   ORDER_HISTORY_CONTENT_MAP,
   ORDER_STATUS,
 } from "@/constants/common";
-import { getReadableWardAddress } from "@/utils/formatter";
+import { ROUTE } from "@/constants/route";
+import axiosClient from "@/services/backend/axiosClient";
 import { getPaymentLink } from "@/services/backend/services/cart";
-import { getNotificationIcon } from "@/utils/mapper";
-import { notifications } from "@mantine/notifications";
 import AuthWrapper from "@/services/guards/AuthWrapper";
+import { Order } from "@/types/Order";
+import { CommonResponseBase } from "@/types/ResponseBase";
+import { getReadableWardAddress } from "@/utils/formatter";
+import { getNotificationIcon } from "@/utils/mapper";
+import { Divider, Text, Timeline } from "@mantine/core";
+import { notifications } from "@mantine/notifications";
+import { IconChevronLeft } from "@tabler/icons-react";
+import Image from "next/image";
+import { useSearchParams } from "next/navigation";
+import { useRouter } from "next/router";
+import useSWR from "swr";
 
 function OrderDetailPage() {
   const params = useSearchParams();
