@@ -73,7 +73,10 @@ const HomePage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = ({
               <div className="absolute bottom-0 text-white opacity-80 w-full pl-10 py-10">
                 <div className="text-[24px] font-bold">{element.name}</div>
                 <div className="text-sm mb-4">{element.description}</div>
-                <div className="font-bold text-sm cursor-pointer">
+                <div
+                  className="font-bold text-sm cursor-pointer"
+                  onClick={() => router.push(`/campaigns/${element.id}`)}
+                >
                   VIEW CAMPAIGN
                 </div>
               </div>
@@ -128,6 +131,7 @@ const HomePage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = ({
       </div>
       <div>
         <div className="font-bold text-xl">Những campaign đang hot</div>
+        <div></div>
         <div
           className={clsx(
             productStyles["product-list-grid"],
