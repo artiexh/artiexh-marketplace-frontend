@@ -10,6 +10,8 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Nunito } from "next/font/google";
 import Head from "next/head";
 import { useRouter } from "next/navigation";
+import "@mantine/core/styles.css";
+import "@mantine/tiptap/styles.css";
 
 const queryClient = new QueryClient();
 

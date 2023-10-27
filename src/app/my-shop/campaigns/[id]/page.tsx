@@ -1,41 +1,74 @@
 "use client";
 
+import DesignItemCard from "@/components/Cards/DesignItemCard/DesignItemCard";
+import Thumbnail from "@/components/CreateProduct/Thumbnail";
 import FileUpload from "@/components/FileUpload/FileUpload";
 import ImageWithFallback from "@/components/ImageWithFallback/ImageWithFallback";
+import PrivateImageLoader from "@/components/PrivateImageLoader/PrivateImageLoader";
+import TableComponent from "@/components/TableComponent";
 import { NOTIFICATION_TYPE } from "@/constants/common";
+import CustomWebTab from "@/containers/CampaignContainers/CustomWebTab";
 import useCategories from "@/hooks/useCategories";
 import useTags from "@/hooks/useTags";
-import axiosClient from "@/services/backend/axiosClient";
+import axiosClient, { fetcher } from "@/services/backend/axiosClient";
 import {
   CamapignDetail,
   CustomProduct,
+  calculateDesignItemConfig,
   updateCampaignCustomProductsApi,
   updateCampaignGeneralInfoApi,
+  updateCampaignProviderApi,
   updateCampaignStatusApi,
 } from "@/services/backend/services/campaign";
+import { SimpleDesignItem } from "@/types/DesignItem";
 import { Tag } from "@/types/Product";
-import { CommonResponseBase } from "@/types/ResponseBase";
+import {
+  CommonResponseBase,
+  PaginationResponseBase,
+} from "@/types/ResponseBase";
+import { TableColumns } from "@/types/Table";
+import { currencyFormatter } from "@/utils/formatter";
 import { getNotificationIcon } from "@/utils/mapper";
 import {
+  Accordion,
+  ActionIcon,
   Badge,
   Button,
+  Center,
   Indicator,
+  Input,
   MultiSelect,
   NumberInput,
+  Pagination,
   Popover,
+  SegmentedControl,
   Select,
   Stepper,
+  Table,
   Tabs,
+  Text,
   TextInput,
   Textarea,
+  Timeline,
+  Tooltip,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
+import { modals } from "@mantine/modals";
 import { notifications } from "@mantine/notifications";
-import { IconHelpCircle } from "@tabler/icons-react";
+import {
+  IconArchive,
+  IconBallpen,
+  IconCircle,
+  IconCircleMinus,
+  IconCirclePlus,
+  IconEye,
+  IconHelpCircle,
+} from "@tabler/icons-react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import clsx from "clsx";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import useSWR from "swr";
 
 export default function CampaignDetailPage() {
   const router = useRouter();
@@ -55,6 +88,50 @@ export default function CampaignDetailPage() {
       );
 
       return res.data;
+
+      return {
+        timestamp: 1,
+        path: "/",
+        message: "",
+        status: 200,
+        data: {
+          name: "Campaign mùa đông",
+          type: "SHARE",
+          status: "REQUEST_CHANGE",
+          campaignHistories: [
+            {
+              action: "CREATE",
+              eventTime: "10-12-2023",
+              message: "Create campaign",
+              updatedBy: "Artist01",
+            },
+            {
+              action: "SUBMIT",
+              eventTime: "11-12-2023",
+              message: "Submit campaign",
+              updatedBy: "Artist01",
+            },
+            {
+              action: "REQUEST_CHANGE",
+              eventTime: "12-12-2023",
+              message: "Change product price",
+              updatedBy: "Admin",
+            },
+            {
+              action: "SUBMIT",
+              eventTime: "13-12-2023",
+              message: "Submit campaign",
+              updatedBy: "Artist01",
+            },
+            {
+              action: "REQUEST_CHANGE",
+              eventTime: "12-12-2023",
+              message: "Change product quantity",
+              updatedBy: "Admin",
+            },
+          ],
+        },
+      } as CommonResponseBase<CamapignDetail>;
     },
   });
 
@@ -135,8 +212,9 @@ export default function CampaignDetailPage() {
       </div>
       <Tabs defaultValue="general-info" className="mt-5">
         <Tabs.List>
-          <Tabs.Tab value="general-info">General info</Tabs.Tab>
-          <Tabs.Tab value="custom-products">Custom products</Tabs.Tab>
+          <Tabs.Tab value="general-info">Info</Tabs.Tab>
+          <Tabs.Tab value="promote-details">Web</Tabs.Tab>
+          <Tabs.Tab value="history">History</Tabs.Tab>
         </Tabs.List>
         <Tabs.Panel value="general-info">
           <CampaignGeneralInfoForm
@@ -144,27 +222,117 @@ export default function CampaignDetailPage() {
             data={{
               name: res.data.name,
               description: res.data.description,
-              campaignHistories: res.data.campaignHistories,
+              campaignHistories: res.data.campaignHistories ?? [],
+              type: res.data.type,
             }}
           />
+          <div className="mt-4">
+            <CustomProductTable data={res.data.customProducts} />
+          </div>
         </Tabs.Panel>
 
-        <Tabs.Panel value="custom-products">
-          <CustomProductForm
-            disabled={!["DRAFT", "REQUEST_CHANGE"].includes(res.data.status)}
-            data={customProducts}
-          />
+        <Tabs.Panel value="promote-details">
+          <CustomWebTab />
+        </Tabs.Panel>
+        <Tabs.Panel value="history">
+          <h1>History</h1>
         </Tabs.Panel>
       </Tabs>
     </>
   );
 }
 
+const customProductColumns: TableColumns<
+  CamapignDetail["customProducts"][0] & { onEdit?: Function }
+> = [
+  {
+    title: "Name",
+    key: "name",
+    render: (record) => (
+      <div className="flex items-center gap-5">
+        <div className="relative w-16 aspect-square">
+          <PrivateImageLoader
+            className="rounded-md"
+            id={record.inventoryItem.thumbnail?.id.toString()}
+            alt="test"
+            fill
+          />
+        </div>
+        <div>
+          <div>{record.name}</div>
+          <div className="text-sm text-gray-500">
+            Template: {record.inventoryItem.productBase.name}
+          </div>
+        </div>
+      </div>
+    ),
+  },
+  {
+    title: "Giá sản xuất",
+    key: "manufacturingPrice",
+    render: (record) =>
+      record?.providerConfig.basePriceAmount ? (
+        <span>
+          {currencyFormatter("vn", {
+            amount: record?.providerConfig.basePriceAmount,
+            unit: "VND",
+          })}
+        </span>
+      ) : (
+        <span>Không khả dụng</span>
+      ),
+  },
+  {
+    title: "Giá bán",
+    key: "salePrice",
+    render: (record) =>
+      record?.price ? (
+        <span>
+          {currencyFormatter("vn", {
+            ...record.price,
+            amount: Number(record.price.amount),
+          })}
+        </span>
+      ) : (
+        <span>Không khả dụng</span>
+      ),
+  },
+  {
+    title: "Số lượng",
+    key: "quantity",
+    render: (record) =>
+      record?.quantity ? (
+        <span>{record.quantity}</span>
+      ) : (
+        <span>Không khả dụng</span>
+      ),
+  },
+
+  {
+    title: "Action",
+    key: "action",
+    className: "!text-center",
+    render: (record) => (
+      <div className="flex justify-center gap-x-2">
+        <Tooltip label="Edit">
+          <IconBallpen
+            className="cursor-pointer"
+            onClick={() => record.onEdit && record.onEdit()}
+          />
+        </Tooltip>
+      </div>
+    ),
+  },
+];
+
 function CampaignGeneralInfoForm({
   data,
   disabled = false,
 }: {
-  data: Pick<CamapignDetail, "name" | "description" | "campaignHistories">;
+  data: Pick<
+    CamapignDetail,
+    "name" | "description" | "campaignHistories" | "type"
+  >;
   disabled?: boolean;
 }) {
   const queryClient = useQueryClient();
@@ -174,6 +342,7 @@ function CampaignGeneralInfoForm({
   const form = useForm<{
     name: string;
     description?: string;
+    type: "SHARE" | "PRIVATE";
   }>({
     initialValues: { ...data },
   });
@@ -185,8 +354,6 @@ function CampaignGeneralInfoForm({
     const res = await updateCampaignGeneralInfoApi(campaignRes.data, {
       ...form.values,
     });
-
-    console.log(res);
 
     if (res != null) {
       notifications.show({
@@ -208,506 +375,417 @@ function CampaignGeneralInfoForm({
   }, [data]);
 
   return (
-    <div className="card general-wrapper mt-5">
-      <h2 className="text-3xl font-bold">Campaign information</h2>
-      <div className="flex gap-x-8">
-        <form
-          onSubmit={form.onSubmit(submitHandler)}
-          className="flex flex-col gap-4 flex-[3]"
-        >
-          <TextInput
-            disabled={disabled}
-            label="Campaign name"
-            {...form.getInputProps("name")}
-          />
-          <Textarea
-            disabled={disabled}
-            label="Description"
-            {...form.getInputProps("description")}
-          />
-          <div className="flex justify-end ">
-            <Button type="submit" disabled={disabled}>
-              Submit
-            </Button>
-          </div>
-        </form>
-        <div className="flex-[2]">
-          <Stepper active={0} orientation="vertical" size="xs">
-            {data.campaignHistories.map((step) => (
-              <Stepper.Step
-                size="xs"
-                key={step.eventTime}
-                label={step.action}
-                description={step.message ?? step.eventTime}
-              />
-            ))}
-            <Stepper.Step size="xs" label="Start" />
-          </Stepper>
+    <div className="card general-wrapper mt-2">
+      <form onSubmit={form.onSubmit(submitHandler)}>
+        <div className="flex w-full justify-between items-center">
+          <h2 className="text-3xl font-bold">Campaign information</h2>
+          <Button type="submit" disabled={disabled || !form.isDirty()}>
+            Submit
+          </Button>
         </div>
-      </div>
+        <div className="flex gap-x-4">
+          <div className="flex flex-col space-y-4 mt-6 flex-[3]">
+            <div className="flex items-end gap-x-2">
+              <TextInput
+                disabled={disabled}
+                label="Campaign name"
+                {...form.getInputProps("name")}
+                className="flex-[3]"
+              />
+              <SegmentedControl
+                {...form.getInputProps("type")}
+                className="h-fit flex-[2]"
+                data={[
+                  { label: "Private", value: "PRIVATE" },
+                  { label: "Shared", value: "SHARE" },
+                ]}
+              />
+            </div>
+            <Textarea
+              disabled={disabled}
+              label="Description"
+              {...form.getInputProps("description")}
+            />
+          </div>
+          <div className="flex-[2]">
+            <Timeline active={0} bulletSize={18} lineWidth={2}>
+              {data.campaignHistories?.slice(-3).map((step) => (
+                <Timeline.Item
+                  key={step.eventTime}
+                  title={`${step.action} - ${step.updatedBy}`}
+                >
+                  <Text c="dimmed" size="sm">
+                    {step.message}
+                  </Text>
+                  <Text size="xs" mt={4}>
+                    {step.eventTime}
+                  </Text>
+                </Timeline.Item>
+              ))}
+            </Timeline>
+          </div>
+        </div>
+      </form>
     </div>
   );
 }
 
-function CustomProductForm({
-  data: rawData,
-  disabled = false,
+function PickCustomProduct({
+  defaultValues,
 }: {
-  data: CamapignDetail["customProducts"];
-  disabled?: boolean;
+  defaultValues: CustomProduct[];
 }) {
-  const data = rawData.sort((a, b) => Number(a.id) - Number(b.id));
-  const [customProduct, setCustomProduct] = useState<CustomProduct>(data[0]);
-  const [dirtyList, setDirtyList] = useState<string[]>([]);
+  const routerParams = useParams();
   const queryClient = useQueryClient();
-  const params = useParams();
 
-  const id = params!.id as string;
-  const { values, getInputProps, onSubmit, validate, isDirty, errors } =
-    useForm({
-      validate: {
-        customProducts: {
-          price: (value, values, path) => {
-            const index = Number(path.split(".")[1]);
-            const config = data.find(
-              (x) =>
-                x.inventoryItem.id ===
-                values.customProducts?.[index]?.inventoryItemId
-            );
-            if (config && config.providerConfig.basePriceAmount >= value) {
-              return `Price of this product should be greater than ${config.providerConfig.basePriceAmount}`;
-            }
-            return null;
-          },
-          quantity: (value, values, path) => {
-            const index = Number(path.split(".")[1]);
-            const config = data.find(
-              (x) =>
-                x.inventoryItem.id ===
-                values.customProducts?.[index]?.inventoryItemId
-            );
-            if (config && config.providerConfig.minQuantity > value) {
-              return `Quantiy of this product should be equal or greater than ${config.providerConfig.minQuantity}`;
-            }
-            return null;
-          },
-        },
-      },
-      initialValues: {
-        customProducts: data.map((el) => ({
-          inventoryItemId: el.inventoryItem.id,
-          name: el.name,
-          tags: el.tags,
-          categoryId: el.category.id.toString(),
-          description: el.description,
-          quantity: el.providerConfig.minQuantity,
-          price: el.providerConfig.basePriceAmount + 1,
-          attaches: [],
-          limitPerOrder: el.limitPerOrder,
-        })),
-      },
-      validateInputOnBlur: true,
-      validateInputOnChange: true,
-    });
+  const id = routerParams!.id as string;
+  const [selectedDesign, setSelectedDesign] = useState<
+    SimpleDesignItem | undefined
+  >(defaultValues.map((e) => e.inventoryItem as SimpleDesignItem));
 
-  useEffect(() => {
-    if (!customProduct) return;
-    if (isDirty() && !dirtyList.includes(customProduct.id))
-      setDirtyList((prev: any) => [...prev, customProduct.id]);
-    else if (!isDirty() && dirtyList.includes(customProduct.id))
-      setDirtyList((prev: any) =>
-        prev.filter((i: any) => i !== customProduct.id)
+  const [collection, setCollection] = useState<SimpleDesignItem[]>([]);
+
+  const [params, setParams] = useState({
+    pageSize: 5,
+    pageNumber: 1,
+    category: null,
+    sortDirection: "ASC",
+  });
+  const {
+    data: response,
+    isLoading,
+    mutate,
+  } = useSWR<CommonResponseBase<PaginationResponseBase<SimpleDesignItem>>>(
+    ["/inventory-items", params.pageNumber],
+    () => {
+      console.log(params);
+      return fetcher(
+        `/inventory-item?${new URLSearchParams({
+          pageSize: params.pageSize.toString(),
+          pageNumber: params.pageNumber.toString(),
+        }).toString()}`
       );
-  }, [values]);
+    }
+  );
 
-  const { data: tagList } = useTags();
-  const { data: categories } = useCategories();
+  if (isLoading) return null;
 
-  const categoryOptions = categories?.data?.items?.map?.((category) => ({
-    value: category.id,
-    label: category.name,
-  }));
-  const mapTagDataToTagOption = (data: Tag[]) =>
-    data?.map((tag) => ({
-      value: tag.name,
-      label: tag.name,
-    })) ?? [];
+  if (response?.data.totalSize === 0) {
+    return (
+      <div className="h-screen w-full flex flex-col justify-center items-center">
+        <h1>
+          You have no design item to create campaign. Create your first design
+          now!
+        </h1>
+        <Button className="mt-5" variant="default">
+          Create new design
+        </Button>
+      </div>
+    );
+  }
 
-  // FETCH TAGS FROM SERVER
-  const [tags, setTags] = useState<
-    {
-      value: string;
-      label: string;
-    }[]
-  >(mapTagDataToTagOption(tagList?.data.items ?? []) ?? []);
-
-  useEffect(() => {
-    setTags(mapTagDataToTagOption(tagList?.data.items ?? []) ?? []);
-  }, [tagList]);
-
-  const submitHandler = async (data: any) => {
-    const campaignRes = queryClient.getQueryData<
-      CommonResponseBase<CamapignDetail>
-    >(["campaign", { id: params!.id as string }]);
-    if (!campaignRes?.data) return;
+  const pickCustomProducts = async () => {
+    console.log("helllu");
     try {
+      const campaignRes = queryClient.getQueryData<
+        CommonResponseBase<CamapignDetail>
+      >(["campaign", { id: id }]);
+      if (!campaignRes?.data) throw new Error("What the heck");
       const res = await updateCampaignCustomProductsApi(
-        {
-          ...campaignRes.data,
-        },
-        (values?.customProducts?.map((prod) => ({
-          attaches: prod.attaches,
-          description: prod.description,
-          inventoryItemId: prod.inventoryItemId,
-          limitPerOrder: prod.limitPerOrder,
-          name: prod.name,
-          price: {
-            amount: prod.price,
-            unit: "VND",
-          },
-          quantity: prod.quantity,
-          tags: prod.tags,
-        })) as any) ?? []
+        campaignRes.data,
+        collection.map((v) => {
+          return {
+            name: v.name,
+            description: v.description,
+            tags: v.tags,
+            inventoryItemId: v.id,
+          } as Pick<
+            CustomProduct,
+            | "name"
+            | "description"
+            | "tags"
+            | "attaches"
+            | "limitPerOrder"
+            | "price"
+            | "quantity"
+          > & { inventoryItemId: string };
+        })
       );
-
-      console.log(1);
-
-      notifications.show({
-        message: "Chỉnh sửa thành công!",
-        ...getNotificationIcon(NOTIFICATION_TYPE.SUCCESS),
-      });
-
-      setDirtyList([]);
-      queryClient.refetchQueries(["campaign", { id: params!.id as string }]);
+      queryClient.setQueryData(["campaign", { id: id }], res.data);
+      modals.close("custom-product-create-campaign");
     } catch (e) {
-      notifications.show({
-        message: "Chỉnh sửa thất bại! Vui lòng thử lại",
-        ...getNotificationIcon(NOTIFICATION_TYPE.FAILED),
-      });
+      console.log(e);
     }
   };
 
-  const index = data.map((el) => el.id).indexOf(customProduct?.id ?? "");
-
-  const { attaches = [] } = values.customProducts[index] ?? {};
-
-  console.log(values);
-
   return (
     <>
-      <div className="flex gap-6 mt-5">
-        <div className="custom-product-list flex flex-col gap-y-6">
-          {data.map((i) => (
-            <Indicator
-              color="red"
-              size={14}
-              key={i.id}
-              disabled={!dirtyList.includes(i.id.toString())}
-            >
-              <div
-                onClick={() => setCustomProduct(i)}
-                className={clsx(
-                  "w-20 h-20 rounded-md relative",
-                  i.id === customProduct?.id ? "border border-primary " : ""
-                )}
-              >
-                <ImageWithFallback
-                  className={clsx(
-                    i.id === customProduct?.id ? "border border-primary " : ""
-                  )}
-                  fill
-                  alt="test"
-                  src={""}
-                />
-              </div>
-            </Indicator>
-          ))}
-        </div>
-        <div className="form-wrapper flex-1">
-          {customProduct && (
-            <form onSubmit={onSubmit(submitHandler)}>
-              <div className=" overflow-y-scroll max-h-[70vh]">
-                <div className="card general-wrapper">
-                  <h2 className="text-3xl font-bold">General information</h2>
-                  <div className="flex flex-col-reverse md:flex-row mt-5 gap-10">
-                    <div
-                      className="grid grid-cols-12 w-6/12 gap-5 md:gap-x-10"
-                      key={customProduct.id}
-                    >
-                      <TextInput
-                        disabled={disabled}
-                        label="Product name"
-                        className="col-span-12"
-                        withAsterisk
-                        {...getInputProps(`customProducts.${index}.name`)}
-                      />
-                      <MultiSelect
-                        disabled={disabled}
-                        data={tags}
-                        label="Tags"
-                        className="col-span-12"
-                        searchable
-                        clearable
-                        nothingFound="Nothing found"
-                        classNames={{
-                          values: "!mr-0",
-                        }}
-                        creatable
-                        getCreateLabel={(query) => `+ Create ${query}`}
-                        onCreate={(query) => {
-                          const item = { value: query, label: query };
-                          setTags((prev) => [...prev, item]);
-                          return item;
-                        }}
-                        {...getInputProps(`customProducts.${index}.tags`)}
-                      />
-                      <Select
-                        disabled
-                        data={categoryOptions || []}
-                        className="col-span-12 order-1 md:order-none"
-                        label="Category"
-                        nothingFound="Nothing found"
-                        searchable
-                        withAsterisk
-                        allowDeselect
-                        {...getInputProps(`customProducts.${index}.categoryId`)}
-                      />
-
-                      <Textarea
-                        disabled={disabled}
-                        label="Description"
-                        className="col-span-12 row-span-6 order-1 md:order-none"
-                        classNames={{
-                          root: "flex flex-col",
-                          wrapper: "flex-1",
-                          input: "h-full",
-                        }}
-                        {...getInputProps(
-                          `customProducts.${index}.description`
-                        )}
-                      />
-                    </div>
-                    <div className="image-wrapper flex flex-col md:w-6/12 gap-5">
-                      <div className="flex col-span-12 md:col-span-8 order-1 md:order-none">
-                        <NumberInput
-                          disabled={disabled}
-                          classNames={{
-                            label: "w-full flex items-center",
-                          }}
-                          label={
-                            <div className="flex justify-between items-center w-full">
-                              <span className="flex items-center gap-x-1">
-                                <span>
-                                  {`Price (Min: ${customProduct.providerConfig.basePriceAmount})`}{" "}
-                                </span>
-                                <Popover position="top" withArrow shadow="md">
-                                  <Popover.Target>
-                                    <IconHelpCircle
-                                      size={16}
-                                      className="text-primary"
-                                    />
-                                  </Popover.Target>
-                                  <Popover.Dropdown
-                                    style={{ pointerEvents: "none" }}
-                                  >
-                                    <span>
-                                      Your profit = product price - min sale
-                                      price
-                                    </span>
-                                  </Popover.Dropdown>
-                                </Popover>
-                              </span>
-                              <span className="text-gray-500">{`Your profit: ${
-                                Number(values.customProducts[index].price) -
-                                customProduct.providerConfig.basePriceAmount
-                              }`}</span>
-                            </div>
-                          }
-                          className="flex-[3]"
-                          hideControls
-                          min={1}
-                          {...getInputProps(`customProducts.${index}.price`)}
-                        />
-                      </div>
-                      <NumberInput
-                        disabled={disabled}
-                        classNames={{
-                          label: "w-fit flex items-center",
-                        }}
-                        label={
-                          <div className="flex">
-                            <span className="flex gap-x-1 items-center">
-                              <span>
-                                {`Quantity (Min: ${customProduct.providerConfig.minQuantity})`}{" "}
-                              </span>
-                              <Popover position="top" withArrow shadow="md">
-                                <Popover.Target>
-                                  <IconHelpCircle
-                                    size={16}
-                                    className="text-primary"
-                                  />
-                                </Popover.Target>
-                                <Popover.Dropdown
-                                  style={{ pointerEvents: "none" }}
-                                >
-                                  <span>
-                                    The manufacturing provider only accept the
-                                    quantity that is greater than the minimum
-                                    quantity
-                                  </span>
-                                </Popover.Dropdown>
-                              </Popover>
-                            </span>
-                          </div>
-                        }
-                        className="col-span-12 md:col-span-4"
-                        min={1}
-                        {...getInputProps(`customProducts.${index}.quantity`)}
-                      />
-                      <NumberInput
-                        disabled={disabled}
-                        label="Limit per order"
-                        className="col-span-6 md:col-span-4"
-                        min={1}
-                        {...getInputProps(
-                          `customProducts.${index}.limitPerOrder`
-                        )}
-                      />
-
-                      {/* <Input.Wrapper label="Attachments" className="mt-3">
-                        <div className="grid grid-cols-3 gap-3">
-                          {attaches?.length < 6 && (
-                            <Thumbnail
-                              setFile={(file) => {
-                                console.log(attaches);
-
-                                setFieldValue(
-                                  `customProducts.${index}.attaches`,
-                                  [...attaches, file]
-                                );
-                              }}
-                              addNode
-                            />
-                          )}
-                        </div>
-                      </Input.Wrapper> */}
-                    </div>
-                  </div>
-                </div>
-                <div className="card general-wrapper mt-4">
-                  <h2 className="text-3xl font-bold">
-                    Manufacturing information
-                  </h2>
-                  <div className="flex gap-x-12 mt-5">
-                    <DescriptionItem
-                      title="Product base"
-                      content={customProduct.inventoryItem.productBase.name}
-                      className="text-xl"
+      <div className="flex w-full gap-x-4 justify-end items-center mt-3">
+        <Indicator
+          classNames={{
+            root: "h-fit",
+            indicator: "py-2",
+          }}
+          label={collection.length}
+        >
+          <IconArchive className="w-6" />
+        </Indicator>
+        <Button onClick={pickCustomProducts}>Update</Button>
+      </div>
+      <div className="inventory-list flex-1 flex flex-col gap-y-4">
+        {response?.data.items?.map((designItem) => (
+          <DesignItemCard
+            key={designItem.id}
+            data={designItem}
+            actions={
+              <div className="flex gap-x-2">
+                <Tooltip label="View design detail">
+                  <IconEye
+                    className="w-6 aspect-square"
+                    onClick={() => setSelectedDesign(designItem)}
+                  />
+                </Tooltip>
+                {collection
+                  .map((el) => el.id.toString())
+                  .indexOf(designItem.id.toString()) === -1 ? (
+                  <Tooltip label="Add design to campaign">
+                    <IconCirclePlus
+                      className="w-6 aspect-square"
+                      onClick={() =>
+                        setCollection((prev) => [...prev, designItem])
+                      }
                     />
-                  </div>
-                  <div className="mt-5">
-                    <div className="text-xl font-bold">Variants</div>
-                    <div className="flex flex-wrap gap-x-9 mt-3">
-                      {customProduct.inventoryItem.variant.variantCombination.map(
-                        (combination) => {
-                          return (
-                            <DescriptionItem
-                              key={combination.value}
-                              title={combination.optionName}
-                              content={combination.valueName}
-                            />
-                          );
-                        }
-                      )}
-                    </div>
-                  </div>
-                  <div className="mt-5">
-                    <div className="text-xl font-bold">Images</div>
-                    <div className="flex gap-x-5">
-                      {customProduct.inventoryItem.productBase.imageCombinations
-                        .find(
-                          (el) =>
-                            el.code ===
-                            customProduct.inventoryItem.combinationCode
+                  </Tooltip>
+                ) : (
+                  <Tooltip label="Remove design from campaign">
+                    <IconCircleMinus
+                      className="w-6 aspect-square"
+                      onClick={() =>
+                        setCollection((prev) =>
+                          prev.filter(
+                            (str) =>
+                              str.id.toString() !== designItem.id.toString()
+                          )
                         )
-                        ?.images.map((set) => {
-                          const tmp = customProduct.inventoryItem.imageSet.find(
-                            (i) => i.positionCode === set.code
-                          );
-                          return (
-                            <div
-                              className="flex flex-col gap-y-3"
-                              key={set.code}
-                            >
-                              <span className="font-semibold text-lg">
-                                {set.name}
-                              </span>
-                              <div className="w-96">
-                                <div>Mockup</div>
-                                <FileUpload
-                                  disabled
-                                  value={
-                                    tmp?.mockupImage
-                                      ? {
-                                          fileName: tmp?.mockupImage?.fileName,
-                                          file: tmp?.mockupImage?.id,
-                                        }
-                                      : undefined
-                                  }
-                                />
-                              </div>
-                              <div className="w-96">
-                                <div>Manufacturing</div>
-                                <FileUpload
-                                  disabled
-                                  value={
-                                    tmp?.manufacturingImage
-                                      ? {
-                                          fileName:
-                                            tmp?.manufacturingImage?.fileName,
-                                          file: tmp?.manufacturingImage?.id,
-                                        }
-                                      : undefined
-                                  }
-                                />
-                              </div>
-                            </div>
-                          );
-                        })}
-                    </div>
-                  </div>
-                </div>
+                      }
+                    />
+                  </Tooltip>
+                )}
               </div>
-              <div className="flex w-full justify-end mt-4">
-                <Button
-                  type="submit"
-                  disabled={disabled || !dirtyList.length}
-                  variant="outline"
-                >
-                  Update custom products
-                </Button>
-              </div>
-            </form>
-          )}
+            }
+          />
+        ))}
+        <div className="flex justify-center mt-6 mb-20">
+          <Pagination
+            value={params.pageNumber}
+            onChange={(e) => {
+              setParams((prev) => ({
+                ...prev,
+                pageNumber: e,
+              }));
+            }}
+            total={response?.data?.totalPage ?? 0}
+          />
         </div>
       </div>
     </>
   );
 }
 
-function DescriptionItem({
-  className,
-  title,
-  content,
-}: {
-  className?: string;
-  title: string;
-  content: string;
-}) {
+function PickProvider({ data }: { data: CustomProduct[] }) {
+  const [provider, setProvider] = useState<string>();
+  const routerParams = useParams();
+  const queryClient = useQueryClient();
+
+  const id = routerParams!.id as string;
+  const { data: response, isLoading } = useSWR(
+    ["provider-configs", ...data.map((el) => el.id)],
+    () =>
+      calculateDesignItemConfig(data.map((e) => e.inventoryItem.id.toString()))
+  );
+
+  const pickProviderHandler = async () => {
+    try {
+      const campaignRes = queryClient.getQueryData<
+        CommonResponseBase<CamapignDetail>
+      >(["campaign", { id: id }]);
+      if (!campaignRes?.data) throw new Error("What the heck");
+      const res = await updateCampaignProviderApi(
+        campaignRes.data,
+        provider as string
+      );
+      queryClient.setQueryData(["campaign", { id: id }], res.data);
+      modals.close("provider-create-campaign");
+    } catch (e) {
+      console.log("🚀 ~ file: page.tsx:578 ~ pickProviderHandler ~ e:", e);
+    }
+  };
+
   return (
-    <span className={clsx(className)}>
-      <strong>{title}: </strong>
-      {content}
-    </span>
+    <>
+      <div className="flex w-full gap-x-4 justify-end items-center">
+        <Button disabled={!provider} onClick={pickProviderHandler}>
+          Update
+        </Button>
+      </div>
+
+      {!isLoading && (
+        <div className="overflow-y-scroll">
+          <Accordion multiple={true} chevronPosition="left">
+            {response?.data.data.map((item) => (
+              <Accordion.Item value={item.businessName} key={item.businessCode}>
+                <Center>
+                  <Accordion.Control>
+                    {item.designItems.length === data.length ? (
+                      <div>
+                        {item.businessName} - Tổng giá:
+                        {item.designItems.reduce(
+                          (prev, cur) =>
+                            cur.config?.basePriceAmount ?? 0 + prev,
+                          0
+                        )}
+                      </div>
+                    ) : (
+                      <div className="!text-gray-500">
+                        {item.businessName} - Có sản phẩm không hỗ trợ
+                      </div>
+                    )}
+                  </Accordion.Control>
+                  <ActionIcon variant="subtle" color="gray" className="ml-4">
+                    {provider === item.businessCode ? (
+                      <img
+                        src="/assets/logo.svg"
+                        onClick={() => setProvider(undefined)}
+                      />
+                    ) : (
+                      <IconCircle
+                        className={clsx(
+                          "w-10",
+                          item.designItems.length !== data.length &&
+                            "text-gray-500 cursor-default"
+                        )}
+                        size={24}
+                        width={24}
+                        height={24}
+                        onClick={
+                          item.designItems.length === data.length
+                            ? () => setProvider(item.businessCode)
+                            : undefined
+                        }
+                      />
+                    )}
+                  </ActionIcon>
+                </Center>
+                <Accordion.Panel>
+                  {
+                    <Table>
+                      <Table.Thead>
+                        <Table.Tr>
+                          <Table.Th>Design</Table.Th>
+                          <Table.Th>Price</Table.Th>
+                          <Table.Th>Time</Table.Th>
+                        </Table.Tr>
+                      </Table.Thead>
+                      <Table.Tbody>
+                        {data?.map((customProduct) => {
+                          const configItem = item.designItems.find(
+                            (el) => el.id === customProduct.inventoryItem.id
+                          );
+
+                          if (!configItem) {
+                            return (
+                              <Table.Tr
+                                className="text-red-600"
+                                key={customProduct.name}
+                              >
+                                <Table.Td>{customProduct.name}</Table.Td>
+                                <Table.Td>Không hỗ trợ</Table.Td>
+                                <Table.Td>Không hỗ trợ</Table.Td>
+                              </Table.Tr>
+                            );
+                          }
+                          return (
+                            <Table.Tr key={customProduct.name}>
+                              <Table.Td>{customProduct.name}</Table.Td>
+                              <Table.Td>
+                                {configItem.config.basePriceAmount}
+                              </Table.Td>
+                              <Table.Td>
+                                {configItem.config.manufacturingTime}
+                              </Table.Td>
+                            </Table.Tr>
+                          );
+                        })}
+                      </Table.Tbody>
+                    </Table>
+                  }
+                </Accordion.Panel>
+              </Accordion.Item>
+            )) ?? null}
+          </Accordion>
+        </div>
+      )}
+    </>
+  );
+}
+
+function CustomProductTable({
+  data: rawData,
+  disabled = false,
+}: {
+  data: CamapignDetail["customProducts"];
+  disabled?: boolean;
+}) {
+  const routerParams = useParams();
+  const queryClient = useQueryClient();
+
+  const id = routerParams!.id as string;
+  const campaignRes = queryClient.getQueryData<
+    CommonResponseBase<CamapignDetail>
+  >(["campaign", { id: id }]);
+  const openCustomProductModal = () => {
+    modals.open({
+      modalId: "custom-product-create-campaign",
+      title: "Pick custom products",
+      centered: true,
+      classNames: {
+        content: "!max-h-none",
+      },
+      fullScreen: true,
+      children: <PickCustomProduct defaultValues={rawData} />,
+    });
+  };
+
+  const openProviderModal = () => {
+    modals.open({
+      modalId: "provider-create-campaign",
+      title: "Pick provider",
+      centered: true,
+      classNames: {
+        content: "!max-h-none",
+      },
+      fullScreen: true,
+      children: <PickProvider data={rawData} />,
+    });
+  };
+
+  return (
+    <>
+      <div className="table-header flex w-full justify-between">
+        <div>
+          <Button onClick={openCustomProductModal}>Add item</Button>
+        </div>
+        <div className="flex justify-end gap-x-2 items-center">
+          <Text>
+            Provider:{" "}
+            {campaignRes?.data?.provider?.businessName ?? "Không khả dụng"}
+          </Text>
+          <Button onClick={openProviderModal}>Pick provider</Button>
+        </div>
+      </div>
+      <div className="flex flex-col items-center gap-4 w-full mt-3">
+        <TableComponent columns={customProductColumns} data={rawData} />
+      </div>
+    </>
   );
 }
