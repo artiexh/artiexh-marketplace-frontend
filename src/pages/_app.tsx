@@ -18,6 +18,8 @@ import {
   QueryClientProvider,
   useQuery,
 } from "@tanstack/react-query";
+import "@mantine/core/styles.css";
+import "@mantine/tiptap/styles.css";
 
 const queryClient = new QueryClient();
 

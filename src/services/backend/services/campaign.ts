@@ -53,13 +53,12 @@ export type CustomProduct = {
 export type CamapignDetail = {
   name: string;
   description?: string;
-  campaignHistories: [
-    {
-      action: string;
-      eventTime: string;
-      message: string;
-    }
-  ];
+  campaignHistories: {
+    action: string;
+    eventTime: string;
+    message: string;
+    updatedBy: string;
+  }[];
   providerId: string;
   customProducts: CustomProduct[];
   id: string;
@@ -102,13 +101,14 @@ export type CamapignDetail = {
     phone: string;
   };
   status: string;
+  thumbnailUrl?: string;
+  type: "SHARE" | "PRIVATE";
+  content?: string;
 };
 
 export const createCampaignApi = (body: {
   name: string;
-  description?: string;
-  customProducts: CustomProductBody[];
-  providerId: string;
+  type: "PRIVATE" | "SHARE";
 }) =>
   axiosClient.post<CommonResponseBase<CamapignDetail>>("/campaign", {
     ...body,
@@ -177,24 +177,27 @@ export const updateCampaignGeneralInfoApi = (
   generalInfo: {
     name: string;
     description?: string;
+    type: "SHARE" | "PRIVATE";
   }
 ) =>
   axiosClient.put(`/campaign/${campaign.id}`, {
     name: generalInfo.name,
     description: generalInfo.description,
-    providerId: campaign.provider.businessCode,
-    customProducts: campaign.customProducts.map((prod) => {
-      return {
-        attaches: prod.attaches,
-        description: prod.description,
-        inventoryItemId: prod.inventoryItem.id,
-        limitPerOrder: prod.limitPerOrder,
-        name: prod.name,
-        price: prod.price,
-        quantity: prod.quantity,
-        tags: prod.tags,
-      };
-    }),
+    type: generalInfo.type,
+    providerId: campaign?.provider?.businessCode,
+    customProducts:
+      campaign?.customProducts?.map((prod) => {
+        return {
+          attaches: prod.attaches,
+          description: prod.description,
+          inventoryItemId: prod.inventoryItem.id,
+          limitPerOrder: prod.limitPerOrder,
+          name: prod.name,
+          price: prod.price,
+          quantity: prod.quantity,
+          tags: prod.tags,
+        };
+      }) ?? [],
   });
 
 export const updateCampaignCustomProductsApi = (
@@ -214,7 +217,32 @@ export const updateCampaignCustomProductsApi = (
 ) =>
   axiosClient.put(`/campaign/${campaign.id}`, {
     name: campaign.name,
+    type: campaign.type,
     description: campaign.description,
-    providerId: campaign.provider.businessCode,
+    providerId: campaign?.provider?.businessCode,
     customProducts: customProducts,
+  });
+
+export const updateCampaignProviderApi = (
+  campaign: CamapignDetail,
+  providerId: string
+) =>
+  axiosClient.put(`/campaign/${campaign.id}`, {
+    name: campaign.name,
+    type: campaign.type,
+    description: campaign.description,
+    providerId: providerId,
+    customProducts:
+      campaign?.customProducts?.map((prod) => {
+        return {
+          attaches: prod.attaches,
+          description: prod.description,
+          inventoryItemId: prod.inventoryItem.id,
+          limitPerOrder: prod.limitPerOrder,
+          name: prod.name,
+          price: prod.price,
+          quantity: prod.quantity,
+          tags: prod.tags,
+        };
+      }) ?? [],
   });

@@ -49,7 +49,8 @@ const Thumbnail: FC<ThumbnailProps> = ({
     <div
       className={clsx(
         "border-[1px] border-gray-primary w-full md:w-full aspect-square rounded-lg flex-1 mx-auto flex items-center justify-center relative overflow-hidden",
-        error && "border-red-500"
+        error && "border-red-500",
+        className
       )}
       {...rest}
     >
