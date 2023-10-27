@@ -24,7 +24,7 @@ export default function CampaignPreviewCard({
         <img
           src={campaign.thumbnailUrl}
           alt="dogtor"
-          className="w-full object-cover h-[300px] brightness-75"
+          className="w-full object-cover h-[250px] md:h-[300px] brightness-75"
         />
         <div
           className={clsx("absolute w-full px-2 py-2 bottom-0", contentStyle)}

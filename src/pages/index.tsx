@@ -130,17 +130,30 @@ const HomePage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = ({
         </div>
       </div>
       <div>
-        <div className="font-bold text-xl">Những campaign đang hot</div>
-        <div></div>
-        <div
-          className={clsx(
-            productStyles["product-list-grid"],
-            "mt-3 !grid-cols-2 gap-8"
-          )}
-        >
+        <div className="flex items-center justify-between">
+          <div className="font-bold text-xl">Campaign đang hot</div>
+          <div
+            className="text-sm cursor-pointer"
+            onClick={() => {
+              router.push("/campaigns");
+            }}
+          >
+            Xem tất cả
+          </div>
+        </div>
+        <div className={clsx("mt-3 hidden md:grid md:grid-cols-2 gap-8 ")}>
           {campaignData?.map((campaign, index) => (
             <CampaignPreviewCard campaign={campaign} key={index} />
           ))}
+        </div>
+        <div
+          className={clsx("mt-3 grid md:hidden !grid-cols-1 gap-8 !md:hidden")}
+        >
+          {campaignData
+            ?.filter((item, idx) => idx <= 1)
+            .map((campaign, index) => (
+              <CampaignPreviewCard campaign={campaign} key={index} />
+            ))}
         </div>
       </div>
       <div>
