@@ -14,7 +14,7 @@ export default function PreviewList({
   return (
     <div className="preview-list-wrapper w-full">
       <Carousel
-        className="w-[1280px] lg:w-full"
+        className="w-[1280px] lg:w-full flex"
         align="start"
         slideSize="fit-content"
         classNames={classNames}

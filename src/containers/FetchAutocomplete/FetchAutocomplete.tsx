@@ -32,15 +32,14 @@ export default function FetchAutoComplete() {
         value={searchKey}
         onChange={(value) => setSearchKey(value)}
         placeholder="Find your favorite product..."
-        filter={() => true}
         data={
           data?.map((item) => ({
             value: item.id,
             label: item.name,
           })) ?? []
         }
-        onItemSubmit={(value) => {
-          router.push(`/product/${value.value}`);
+        onOptionSubmit={(value) => {
+          router.push(`/product/${value}`);
           setSearchKey("");
         }}
       />

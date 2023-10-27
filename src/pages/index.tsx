@@ -60,6 +60,7 @@ const HomePage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = ({
           classNames={{
             root: "mt-3",
             slide: "flex-none",
+            container: "flex",
             controls: "hidden lg:flex",
           }}
           render={(tag) => (
