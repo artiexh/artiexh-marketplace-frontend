@@ -13,3 +13,19 @@ export type ArtistCampaignColumnType = Pick<
   Campaign,
   "id" | "name" | "payment" | "status" | "thumb" | "total"
 >;
+
+export type CampaignData = {
+  id: string;
+  status: string;
+  thumbnailUrl: string;
+  owner: {
+    id: string;
+    username: string;
+    displayName: string;
+    avatarUrl: string;
+  };
+  name: string;
+  description: string;
+  type: string;
+  isPublished: boolean;
+};

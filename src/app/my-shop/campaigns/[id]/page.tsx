@@ -740,9 +740,9 @@ function CustomProductTable({
       title: "Pick custom products",
       centered: true,
       classNames: {
-        content: "!max-h-none",
+        // content: "!max-h-none",
       },
-      fullScreen: true,
+      // fullScreen: true,
       children: <PickCustomProduct defaultValues={rawData} />,
     });
   };

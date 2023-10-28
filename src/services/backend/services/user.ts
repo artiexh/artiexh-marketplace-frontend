@@ -9,7 +9,7 @@ export const logout = async () => {
     setShop(undefined);
     setStatus("INIT");
 
-    console.log(data);
+    return data;
   } catch (err) {
     console.log(err);
   }

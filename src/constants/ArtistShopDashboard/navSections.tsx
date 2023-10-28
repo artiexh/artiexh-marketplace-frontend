@@ -22,28 +22,4 @@ export const navSections = [
       },
     ],
   },
-  {
-    id: "ACCOUNT",
-    title: "ACCOUNT PAGES",
-    navList: [
-      {
-        id: "PROFILE",
-        label: "My shop",
-        iconPath: "profile_icon.svg",
-        href: "/profile",
-      },
-      {
-        id: "SIGN_IN",
-        label: "Sign In",
-        iconPath: "sign_in_icon.svg",
-        href: "/signin",
-      },
-      {
-        id: "SIGN_UP",
-        label: "Sign Up",
-        iconPath: "sign_up_icon.svg",
-        href: "/signup",
-      },
-    ],
-  },
 ];

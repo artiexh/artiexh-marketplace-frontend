@@ -1,7 +1,12 @@
+import { logout } from "@/services/backend/services/user";
 import { NavInfo, NavSection } from "@/types/SideNav";
-import SideNavTab from "./SideNavTab";
+import { getNotificationIcon } from "@/utils/mapper";
+import { Divider } from "@mantine/core";
+import { notifications } from "@mantine/notifications";
+import { IconLogout } from "@tabler/icons-react";
 import clsx from "clsx";
-import { usePathname, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
+import SideNavTab from "./SideNavTab";
 
 interface ISideNavProps {
   navSections: NavSection[];
@@ -16,7 +21,20 @@ const SideNav = ({
   onClickNav,
   isChosen,
 }: ISideNavProps) => {
-  const pathname = usePathname();
+  const router = useRouter();
+
+  const logoutFunc = async () => {
+    const result = await logout();
+
+    if (result) {
+      router.push("/auth/signin");
+    } else {
+      notifications.show({
+        message: "Logout failed",
+        ...getNotificationIcon("FAILED"),
+      });
+    }
+  };
 
   return (
     <div
@@ -40,6 +58,13 @@ const SideNav = ({
           ))}
         </div>
       ))}
+      <Divider />
+      <div
+        className="mt-0.5 cursor-pointer flex text-sm mx-4 items-center px-4 py-2.5"
+        onClick={logoutFunc}
+      >
+        <IconLogout className="mr-2" /> Logout
+      </div>
     </div>
   );
 };
