@@ -271,10 +271,10 @@ const customProductColumns: TableColumns<
     title: "Giá sản xuất",
     key: "manufacturingPrice",
     render: (record) =>
-      record?.providerConfig.basePriceAmount ? (
+      record?.providerConfig?.basePriceAmount ? (
         <span>
           {currencyFormatter("vn", {
-            amount: record?.providerConfig.basePriceAmount,
+            amount: record?.providerConfig?.basePriceAmount,
             unit: "VND",
           })}
         </span>
@@ -745,9 +745,9 @@ function CustomProductTable({
       title: "Pick custom products",
       centered: true,
       classNames: {
-        content: "!max-h-none",
+        // content: "!max-h-none",
       },
-      fullScreen: true,
+      // fullScreen: true,
       children: <PickCustomProduct defaultValues={rawData} />,
     });
   };
