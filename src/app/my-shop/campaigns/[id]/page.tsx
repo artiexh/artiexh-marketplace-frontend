@@ -679,14 +679,14 @@ function PickProvider({ data }: { data: CustomProduct[] }) {
                 <Accordion.Panel>
                   {
                     <Table>
-                      <Table.Thead>
-                        <Table.Tr>
-                          <Table.Th>Design</Table.Th>
-                          <Table.Th>Price</Table.Th>
-                          <Table.Th>Time</Table.Th>
-                        </Table.Tr>
-                      </Table.Thead>
-                      <Table.Tbody>
+                      <thead>
+                        <tr>
+                          <th>Design</th>
+                          <th>Price</th>
+                          <th>Time</th>
+                        </tr>
+                      </thead>
+                      <tbody>
                         {data?.map((customProduct) => {
                           const configItem = item.designItems.find(
                             (el) => el.id === customProduct.inventoryItem.id
@@ -694,29 +694,25 @@ function PickProvider({ data }: { data: CustomProduct[] }) {
 
                           if (!configItem) {
                             return (
-                              <Table.Tr
+                              <tr
                                 className="text-red-600"
                                 key={customProduct.name}
                               >
-                                <Table.Td>{customProduct.name}</Table.Td>
-                                <Table.Td>Không hỗ trợ</Table.Td>
-                                <Table.Td>Không hỗ trợ</Table.Td>
-                              </Table.Tr>
+                                <td>{customProduct.name}</td>
+                                <td>Không hỗ trợ</td>
+                                <td>Không hỗ trợ</td>
+                              </tr>
                             );
                           }
                           return (
-                            <Table.Tr key={customProduct.name}>
-                              <Table.Td>{customProduct.name}</Table.Td>
-                              <Table.Td>
-                                {configItem.config.basePriceAmount}
-                              </Table.Td>
-                              <Table.Td>
-                                {configItem.config.manufacturingTime}
-                              </Table.Td>
-                            </Table.Tr>
+                            <tr key={customProduct.name}>
+                              <td>{customProduct.name}</td>
+                              <td>{configItem.config.basePriceAmount}</td>
+                              <td>{configItem.config.manufacturingTime}</td>
+                            </tr>
                           );
                         })}
-                      </Table.Tbody>
+                      </tbody>
                     </Table>
                   }
                 </Accordion.Panel>

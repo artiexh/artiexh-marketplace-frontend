@@ -64,7 +64,7 @@ const ShopProductsPage = () => {
     <div>
       <div className="flex justify-between mb-4">
         <Input
-          leftSection={<IconSearch />}
+          icon={<IconSearch />}
           onChange={(e) => {
             setField("keyword", e.target.value);
             router.push(
@@ -76,7 +76,7 @@ const ShopProductsPage = () => {
           }}
         />
         <Button
-          leftSection={<IconPlus />}
+          icon={<IconPlus />}
           type="button"
           onClick={() => router.push(`/my-shop/custom-products/create`)}
           variant="outline"

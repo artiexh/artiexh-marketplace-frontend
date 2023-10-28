@@ -31,26 +31,26 @@ const TableComponent = <T,>({
   return (
     <div className="table-component w-full">
       <Table {...tableProps}>
-        <Table.Thead>
-          <Table.Tr className="!text-[#AFAFAF]">
+        <thead>
+          <tr className="!text-[#AFAFAF]">
             {columns.map(({ key, title, className }) => (
-              <Table.Th key={key} className={className}>
+              <th key={key} className={className}>
                 {title}
-              </Table.Th>
+              </th>
             ))}
-          </Table.Tr>
-        </Table.Thead>
-        <Table.Tbody>
+          </tr>
+        </thead>
+        <tbody>
           {data?.map((item, index) => (
-            <Table.Tr key={item?.id || index}>
+            <tr key={item?.id || index}>
               {columns.map((column) => (
-                <Table.Td key={column.key} className={column.className}>
+                <td key={column.key} className={column.className}>
                   {tableDataMapper(column, item, actionMapper(column?.action))}
-                </Table.Td>
+                </td>
               ))}
-            </Table.Tr>
+            </tr>
           ))}
-        </Table.Tbody>
+        </tbody>
       </Table>
     </div>
   );
