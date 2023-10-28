@@ -271,10 +271,10 @@ const customProductColumns: TableColumns<
     title: "Giá sản xuất",
     key: "manufacturingPrice",
     render: (record) =>
-      record?.providerConfig.basePriceAmount ? (
+      record?.providerConfig?.basePriceAmount ? (
         <span>
           {currencyFormatter("vn", {
-            amount: record?.providerConfig.basePriceAmount,
+            amount: record?.providerConfig?.basePriceAmount,
             unit: "VND",
           })}
         </span>
@@ -441,9 +441,11 @@ function PickCustomProduct({
   const id = routerParams!.id as string;
   const [selectedDesign, setSelectedDesign] = useState<
     SimpleDesignItem | undefined
-  >(defaultValues.map((e) => e.inventoryItem as SimpleDesignItem));
+  >();
 
-  const [collection, setCollection] = useState<SimpleDesignItem[]>([]);
+  const [collection, setCollection] = useState<SimpleDesignItem[]>(
+    defaultValues.map((e) => e.inventoryItem as unknown as SimpleDesignItem)
+  );
 
   const [params, setParams] = useState({
     pageSize: 5,
@@ -484,8 +486,92 @@ function PickCustomProduct({
     );
   }
 
-  const pickCustomProducts = async () => {
-    console.log("helllu");
+  return (
+    <>
+      <div className="flex gap-x-4">
+        <div className="inventory-list flex-1 flex flex-col gap-y-4">
+          {response?.data.items?.map((designItem) => (
+            <DesignItemCard
+              key={designItem.id}
+              data={designItem}
+              actions={
+                <div className="flex gap-x-2">
+                  <Tooltip label="View design detail">
+                    <IconEye
+                      className="w-6 aspect-square"
+                      onClick={() => setSelectedDesign(designItem)}
+                    />
+                  </Tooltip>
+                  {collection
+                    .map((el) => el.id.toString())
+                    .indexOf(designItem.id.toString()) === -1 ? (
+                    <Tooltip label="Add design to campaign">
+                      <IconCirclePlus
+                        className="w-6 aspect-square"
+                        onClick={() =>
+                          setCollection((prev) => [...prev, designItem])
+                        }
+                      />
+                    </Tooltip>
+                  ) : (
+                    <Tooltip label="Remove design from campaign">
+                      <IconCircleMinus
+                        className="w-6 aspect-square"
+                        onClick={() =>
+                          setCollection((prev) =>
+                            prev.filter(
+                              (str) =>
+                                str.id.toString() !== designItem.id.toString()
+                            )
+                          )
+                        }
+                      />
+                    </Tooltip>
+                  )}
+                </div>
+              }
+            />
+          ))}
+          <div className="flex justify-center mt-6 mb-20">
+            <Pagination
+              value={params.pageNumber}
+              onChange={(e) => {
+                setParams((prev) => ({
+                  ...prev,
+                  pageNumber: e,
+                }));
+              }}
+              total={response?.data?.totalPage ?? 0}
+            />
+          </div>
+        </div>
+        <div className="flex-1">
+          <PickProvider data={collection} />
+        </div>
+      </div>
+    </>
+  );
+}
+
+function PickProvider({ data }: { data: SimpleDesignItem[] }) {
+  const routerParams = useParams();
+  const queryClient = useQueryClient();
+
+  const id = routerParams!.id as string;
+  const [provider, setProvider] = useState<string | undefined>(() => {
+    const campaignRes = queryClient.getQueryData<
+      CommonResponseBase<CamapignDetail>
+    >(["campaign", { id: id }]);
+
+    return campaignRes?.data?.provider?.businessCode;
+  });
+  console.log("🚀 ~ file: page.tsx:607 ~ PickProvider ~ provider:", provider);
+  const { data: response, isLoading } = useSWR(
+    ["provider-configs", ...data.map((el) => el.id)],
+    () => calculateDesignItemConfig(data.map((e) => e.id.toString()))
+  );
+
+  const pickProviderHandler = async () => {
     try {
       const campaignRes = queryClient.getQueryData<
         CommonResponseBase<CamapignDetail>
@@ -493,7 +579,7 @@ function PickCustomProduct({
       if (!campaignRes?.data) throw new Error("What the heck");
       const res = await updateCampaignCustomProductsApi(
         campaignRes.data,
-        collection.map((v) => {
+        data.map((v) => {
           return {
             name: v.name,
             description: v.description,
@@ -512,9 +598,14 @@ function PickCustomProduct({
         })
       );
       queryClient.setQueryData(["campaign", { id: id }], res.data);
+      const resProvider = await updateCampaignProviderApi(
+        res.data.data,
+        provider as string
+      );
+      queryClient.setQueryData(["campaign", { id: id }], resProvider.data);
       modals.close("custom-product-create-campaign");
     } catch (e) {
-      console.log(e);
+      console.log("🚀 ~ file: page.tsx:578 ~ pickProviderHandler ~ e:", e);
     }
   };
 
@@ -526,107 +617,11 @@ function PickCustomProduct({
             root: "h-fit",
             indicator: "py-2",
           }}
-          label={collection.length}
+          label={data.length}
         >
           <IconArchive className="w-6" />
         </Indicator>
-        <Button onClick={pickCustomProducts}>Update</Button>
-      </div>
-      <div className="inventory-list flex-1 flex flex-col gap-y-4">
-        {response?.data.items?.map((designItem) => (
-          <DesignItemCard
-            key={designItem.id}
-            data={designItem}
-            actions={
-              <div className="flex gap-x-2">
-                <Tooltip label="View design detail">
-                  <IconEye
-                    className="w-6 aspect-square"
-                    onClick={() => setSelectedDesign(designItem)}
-                  />
-                </Tooltip>
-                {collection
-                  .map((el) => el.id.toString())
-                  .indexOf(designItem.id.toString()) === -1 ? (
-                  <Tooltip label="Add design to campaign">
-                    <IconCirclePlus
-                      className="w-6 aspect-square"
-                      onClick={() =>
-                        setCollection((prev) => [...prev, designItem])
-                      }
-                    />
-                  </Tooltip>
-                ) : (
-                  <Tooltip label="Remove design from campaign">
-                    <IconCircleMinus
-                      className="w-6 aspect-square"
-                      onClick={() =>
-                        setCollection((prev) =>
-                          prev.filter(
-                            (str) =>
-                              str.id.toString() !== designItem.id.toString()
-                          )
-                        )
-                      }
-                    />
-                  </Tooltip>
-                )}
-              </div>
-            }
-          />
-        ))}
-        <div className="flex justify-center mt-6 mb-20">
-          <Pagination
-            value={params.pageNumber}
-            onChange={(e) => {
-              setParams((prev) => ({
-                ...prev,
-                pageNumber: e,
-              }));
-            }}
-            total={response?.data?.totalPage ?? 0}
-          />
-        </div>
-      </div>
-    </>
-  );
-}
-
-function PickProvider({ data }: { data: CustomProduct[] }) {
-  const [provider, setProvider] = useState<string>();
-  const routerParams = useParams();
-  const queryClient = useQueryClient();
-
-  const id = routerParams!.id as string;
-  const { data: response, isLoading } = useSWR(
-    ["provider-configs", ...data.map((el) => el.id)],
-    () =>
-      calculateDesignItemConfig(data.map((e) => e.inventoryItem.id.toString()))
-  );
-
-  const pickProviderHandler = async () => {
-    try {
-      const campaignRes = queryClient.getQueryData<
-        CommonResponseBase<CamapignDetail>
-      >(["campaign", { id: id }]);
-      if (!campaignRes?.data) throw new Error("What the heck");
-      const res = await updateCampaignProviderApi(
-        campaignRes.data,
-        provider as string
-      );
-      queryClient.setQueryData(["campaign", { id: id }], res.data);
-      modals.close("provider-create-campaign");
-    } catch (e) {
-      console.log("🚀 ~ file: page.tsx:578 ~ pickProviderHandler ~ e:", e);
-    }
-  };
-
-  return (
-    <>
-      <div className="flex w-full gap-x-4 justify-end items-center">
-        <Button disabled={!provider} onClick={pickProviderHandler}>
-          Update
-        </Button>
+        <Button onClick={pickProviderHandler}>Update</Button>
       </div>
 
       {!isLoading && (
@@ -687,26 +682,26 @@ function PickProvider({ data }: { data: CustomProduct[] }) {
                         </tr>
                       </thead>
                       <tbody>
-                        {data?.map((customProduct) => {
+                        {data?.map((designItem) => {
                           const configItem = item.designItems.find(
-                            (el) => el.id === customProduct.inventoryItem.id
+                            (el) => el.id === designItem.id
                           );
 
                           if (!configItem) {
                             return (
                               <tr
                                 className="text-red-600"
-                                key={customProduct.name}
+                                key={designItem.name}
                               >
-                                <td>{customProduct.name}</td>
+                                <td>{designItem.name}</td>
                                 <td>Không hỗ trợ</td>
                                 <td>Không hỗ trợ</td>
                               </tr>
                             );
                           }
                           return (
-                            <tr key={customProduct.name}>
-                              <td>{customProduct.name}</td>
+                            <tr key={designItem.name}>
+                              <td>{designItem.name}</td>
                               <td>{configItem.config.basePriceAmount}</td>
                               <td>{configItem.config.manufacturingTime}</td>
                             </tr>
@@ -768,20 +763,188 @@ function CustomProductTable({
   return (
     <>
       <div className="table-header flex w-full justify-between">
-        <div>
-          <Button onClick={openCustomProductModal}>Add item</Button>
-        </div>
         <div className="flex justify-end gap-x-2 items-center">
           <Text>
             Provider:{" "}
             {campaignRes?.data?.provider?.businessName ?? "Không khả dụng"}
           </Text>
-          <Button onClick={openProviderModal}>Pick provider</Button>
+          {/* <Button onClick={openProviderModal} disabled={rawData.length <= 0}>
+            Pick provider
+          </Button> */}
+        </div>
+        <div>
+          <Button onClick={openCustomProductModal}>Add item</Button>
         </div>
       </div>
       <div className="flex flex-col items-center gap-4 w-full mt-3">
-        <TableComponent columns={customProductColumns} data={rawData} />
+        <TableComponent
+          columns={customProductColumns}
+          data={rawData
+            .sort((a, b) => Number(a.id) - Number(b.id))
+            .map((data) => {
+              return {
+                ...data,
+                onEdit: () =>
+                  modals.open({
+                    modalId: `${data.inventoryItem.id}-custom-product-edit`,
+                    title: "Edit",
+                    centered: true,
+                    classNames: {
+                      content: "!w-[30rem] !h-fit left-[38%] top-1/3",
+                    },
+
+                    children: <EditCustomProductModal data={data} />,
+                  }),
+              };
+            })}
+        />
       </div>
     </>
+  );
+}
+
+function EditCustomProductModal({
+  data: customProduct,
+}: {
+  data: CustomProduct;
+}) {
+  const routerParams = useParams();
+  const queryClient = useQueryClient();
+
+  const id = routerParams!.id as string;
+  const form = useForm<{
+    quantity: number;
+    price: number;
+  }>({
+    validate: {
+      price: (value, values, path) => {
+        const index = Number(path.split(".")[1]);
+        const config = customProduct;
+        if (config && config.providerConfig.basePriceAmount >= value) {
+          return `Price of this product should be greater than ${config.providerConfig.basePriceAmount}`;
+        }
+        return null;
+      },
+      quantity: (value, values, path) => {
+        const index = Number(path.split(".")[1]);
+        const config = customProduct;
+        if (config && config.providerConfig.minQuantity > value) {
+          return `Quantiy of this product should be equal or greater than ${config.providerConfig.minQuantity}`;
+        }
+        return null;
+      },
+    },
+    validateInputOnBlur: true,
+    validateInputOnChange: true,
+  });
+
+  const updateHandler = async (data: { quantity: number; price: number }) => {
+    const campaignRes = queryClient.getQueryData<
+      CommonResponseBase<CamapignDetail>
+    >(["campaign", { id: id }]);
+    if (!campaignRes?.data) throw new Error("What the heck");
+    const tmp = campaignRes.data.customProducts.filter(
+      (d) => d.id !== customProduct.id
+    );
+    const res = await updateCampaignCustomProductsApi(campaignRes.data, [
+      ...tmp.map((v) => {
+        return {
+          name: v.name,
+          description: v.description,
+          tags: v.tags,
+          inventoryItemId: v.inventoryItem.id,
+          quantity: v.quantity,
+          price: v.price,
+        } as Pick<
+          CustomProduct,
+          | "name"
+          | "description"
+          | "tags"
+          | "attaches"
+          | "limitPerOrder"
+          | "price"
+          | "quantity"
+        > & { inventoryItemId: string };
+      }),
+      {
+        name: customProduct.name,
+        description: customProduct.description,
+        tags: customProduct.tags,
+        inventoryItemId: customProduct.inventoryItem.id,
+        quantity: data.quantity,
+        price: {
+          amount: data.price,
+          unit: "VND",
+        },
+      },
+    ]);
+    queryClient.setQueryData(["campaign", { id: id }], res.data);
+    modals.close(`${customProduct.inventoryItem.id}-custom-product-edit`);
+  };
+
+  return (
+    <form onSubmit={form.onSubmit(updateHandler)}>
+      <NumberInput
+        classNames={{
+          label: "w-full flex items-center",
+        }}
+        label={
+          <div className="flex justify-between items-center w-full">
+            <span className="flex items-center gap-x-1">
+              <span>
+                {`Price (Min: ${customProduct.providerConfig.basePriceAmount})`}{" "}
+              </span>
+              <Popover position="top" withArrow shadow="md">
+                <Popover.Target>
+                  <IconHelpCircle size={16} className="text-primary" />
+                </Popover.Target>
+                <Popover.Dropdown style={{ pointerEvents: "none" }}>
+                  <span>Your profit = product price - min sale price</span>
+                </Popover.Dropdown>
+              </Popover>
+            </span>
+            <span className="text-gray-500">{`Your profit: ${
+              Number(form.values.price ?? 0) -
+              customProduct.providerConfig.basePriceAmount
+            }`}</span>
+          </div>
+        }
+        className="flex-[3]"
+        hideControls
+        min={1}
+        {...form.getInputProps(`price`)}
+      />
+      <NumberInput
+        classNames={{
+          label: "w-fit flex items-center",
+        }}
+        label={
+          <div className="flex">
+            <span className="flex gap-x-1 items-center">
+              <span>
+                {`Quantity (Min: ${customProduct.providerConfig.minQuantity})`}{" "}
+              </span>
+              <Popover position="top" withArrow shadow="md">
+                <Popover.Target>
+                  <IconHelpCircle size={16} className="text-primary" />
+                </Popover.Target>
+                <Popover.Dropdown style={{ pointerEvents: "none" }}>
+                  <span>
+                    The manufacturing provider only accept the quantity that is
+                    greater than the minimum quantity
+                  </span>
+                </Popover.Dropdown>
+              </Popover>
+            </span>
+          </div>
+        }
+        className="col-span-12 md:col-span-4"
+        min={1}
+        {...form.getInputProps(`quantity`)}
+      />
+      <div className="w-full flex justify-end mt-4">
+        <Button type="submit">Update</Button>
+      </div>
+    </form>
   );
 }

@@ -46,6 +46,8 @@ function CustomWebTab() {
         className="mt-5"
         {...getInputProps("content")}
       >
+        <RichTextEditor.Content />
+
         <RichTextEditor.Toolbar sticky stickyOffset={60}>
           <RichTextEditor.ControlsGroup>
             <RichTextEditor.Bold />
@@ -84,12 +86,10 @@ function CustomWebTab() {
             <RichTextEditor.AlignJustify />
             <RichTextEditor.AlignRight />
           </RichTextEditor.ControlsGroup>
+          <div className="flex-1 flex justify-end bg-white pr-2 pb-2">
+            <Button type="submit">Update</Button>
+          </div>
         </RichTextEditor.Toolbar>
-
-        <RichTextEditor.Content />
-        <div className="w-full flex justify-end bg-white pr-2 pb-2">
-          <Button type="submit">Update</Button>
-        </div>
       </RichTextEditor>
     </form>
   );
