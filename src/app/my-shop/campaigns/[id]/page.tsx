@@ -1,27 +1,20 @@
 "use client";
 
 import DesignItemCard from "@/components/Cards/DesignItemCard/DesignItemCard";
-import Thumbnail from "@/components/CreateProduct/Thumbnail";
-import FileUpload from "@/components/FileUpload/FileUpload";
-import ImageWithFallback from "@/components/ImageWithFallback/ImageWithFallback";
 import PrivateImageLoader from "@/components/PrivateImageLoader/PrivateImageLoader";
 import TableComponent from "@/components/TableComponent";
 import { NOTIFICATION_TYPE } from "@/constants/common";
 import CustomWebTab from "@/containers/CampaignContainers/CustomWebTab";
-import useCategories from "@/hooks/useCategories";
-import useTags from "@/hooks/useTags";
 import axiosClient, { fetcher } from "@/services/backend/axiosClient";
 import {
-  CamapignDetail,
-  CustomProduct,
   calculateDesignItemConfig,
   updateCampaignCustomProductsApi,
   updateCampaignGeneralInfoApi,
   updateCampaignProviderApi,
   updateCampaignStatusApi,
 } from "@/services/backend/services/campaign";
+import { CampaignDetail, CustomProduct } from "@/types/Campaign";
 import { SimpleDesignItem } from "@/types/DesignItem";
-import { Tag } from "@/types/Product";
 import {
   CommonResponseBase,
   PaginationResponseBase,
@@ -36,14 +29,10 @@ import {
   Button,
   Center,
   Indicator,
-  Input,
-  MultiSelect,
   NumberInput,
   Pagination,
   Popover,
   SegmentedControl,
-  Select,
-  Stepper,
   Table,
   Tabs,
   Text,
@@ -83,7 +72,7 @@ export default function CampaignDetailPage() {
   } = useQuery({
     queryKey: ["campaign", { id: id }],
     queryFn: async () => {
-      const res = await axiosClient.get<CommonResponseBase<CamapignDetail>>(
+      const res = await axiosClient.get<CommonResponseBase<CampaignDetail>>(
         `/campaign/${id}`
       );
 
@@ -131,7 +120,7 @@ export default function CampaignDetailPage() {
             },
           ],
         },
-      } as CommonResponseBase<CamapignDetail>;
+      } as CommonResponseBase<CampaignDetail>;
     },
   });
 
@@ -243,7 +232,7 @@ export default function CampaignDetailPage() {
 }
 
 const customProductColumns: TableColumns<
-  CamapignDetail["customProducts"][0] & { onEdit?: Function }
+  CampaignDetail["customProducts"][0] & { onEdit?: Function }
 > = [
   {
     title: "Name",
@@ -330,7 +319,7 @@ function CampaignGeneralInfoForm({
   disabled = false,
 }: {
   data: Pick<
-    CamapignDetail,
+    CampaignDetail,
     "name" | "description" | "campaignHistories" | "type"
   >;
   disabled?: boolean;
@@ -348,7 +337,7 @@ function CampaignGeneralInfoForm({
   });
   const submitHandler = async () => {
     const campaignRes = queryClient.getQueryData<
-      CommonResponseBase<CamapignDetail>
+      CommonResponseBase<CampaignDetail>
     >(["campaign", { id: params!.id as string }]);
     if (!campaignRes?.data) return;
     const res = await updateCampaignGeneralInfoApi(campaignRes.data, {
@@ -560,7 +549,7 @@ function PickProvider({ data }: { data: SimpleDesignItem[] }) {
   const id = routerParams!.id as string;
   const [provider, setProvider] = useState<string | undefined>(() => {
     const campaignRes = queryClient.getQueryData<
-      CommonResponseBase<CamapignDetail>
+      CommonResponseBase<CampaignDetail>
     >(["campaign", { id: id }]);
 
     return campaignRes?.data?.provider?.businessCode;
@@ -574,7 +563,7 @@ function PickProvider({ data }: { data: SimpleDesignItem[] }) {
   const pickProviderHandler = async () => {
     try {
       const campaignRes = queryClient.getQueryData<
-        CommonResponseBase<CamapignDetail>
+        CommonResponseBase<CampaignDetail>
       >(["campaign", { id: id }]);
       if (!campaignRes?.data) throw new Error("What the heck");
       const res = await updateCampaignCustomProductsApi(
@@ -724,7 +713,7 @@ function CustomProductTable({
   data: rawData,
   disabled = false,
 }: {
-  data: CamapignDetail["customProducts"];
+  data: CampaignDetail["customProducts"];
   disabled?: boolean;
 }) {
   const routerParams = useParams();
@@ -732,7 +721,7 @@ function CustomProductTable({
 
   const id = routerParams!.id as string;
   const campaignRes = queryClient.getQueryData<
-    CommonResponseBase<CamapignDetail>
+    CommonResponseBase<CampaignDetail>
   >(["campaign", { id: id }]);
   const openCustomProductModal = () => {
     modals.open({
@@ -742,7 +731,7 @@ function CustomProductTable({
       classNames: {
         // content: "!max-h-none",
       },
-      // fullScreen: true,
+      fullScreen: true,
       children: <PickCustomProduct defaultValues={rawData} />,
     });
   };
@@ -820,16 +809,16 @@ function EditCustomProductModal({
       price: (value, values, path) => {
         const index = Number(path.split(".")[1]);
         const config = customProduct;
-        if (config && config.providerConfig.basePriceAmount >= value) {
-          return `Price of this product should be greater than ${config.providerConfig.basePriceAmount}`;
+        if (config && config?.providerConfig?.basePriceAmount >= value) {
+          return `Price of this product should be greater than ${config.providerConfig?.basePriceAmount}`;
         }
         return null;
       },
       quantity: (value, values, path) => {
         const index = Number(path.split(".")[1]);
         const config = customProduct;
-        if (config && config.providerConfig.minQuantity > value) {
-          return `Quantiy of this product should be equal or greater than ${config.providerConfig.minQuantity}`;
+        if (config && config.providerConfig?.minQuantity > value) {
+          return `Quantiy of this product should be equal or greater than ${config.providerConfig?.minQuantity}`;
         }
         return null;
       },
@@ -840,7 +829,7 @@ function EditCustomProductModal({
 
   const updateHandler = async (data: { quantity: number; price: number }) => {
     const campaignRes = queryClient.getQueryData<
-      CommonResponseBase<CamapignDetail>
+      CommonResponseBase<CampaignDetail>
     >(["campaign", { id: id }]);
     if (!campaignRes?.data) throw new Error("What the heck");
     const tmp = campaignRes.data.customProducts.filter(
@@ -892,7 +881,7 @@ function EditCustomProductModal({
           <div className="flex justify-between items-center w-full">
             <span className="flex items-center gap-x-1">
               <span>
-                {`Price (Min: ${customProduct.providerConfig.basePriceAmount})`}{" "}
+                {`Price (Min: ${customProduct.providerConfig?.basePriceAmount})`}{" "}
               </span>
               <Popover position="top" withArrow shadow="md">
                 <Popover.Target>
@@ -905,7 +894,7 @@ function EditCustomProductModal({
             </span>
             <span className="text-gray-500">{`Your profit: ${
               Number(form.values.price ?? 0) -
-              customProduct.providerConfig.basePriceAmount
+              customProduct?.providerConfig?.basePriceAmount
             }`}</span>
           </div>
         }
@@ -922,7 +911,7 @@ function EditCustomProductModal({
           <div className="flex">
             <span className="flex gap-x-1 items-center">
               <span>
-                {`Quantity (Min: ${customProduct.providerConfig.minQuantity})`}{" "}
+                {`Quantity (Min: ${customProduct.providerConfig?.minQuantity})`}{" "}
               </span>
               <Popover position="top" withArrow shadow="md">
                 <Popover.Target>

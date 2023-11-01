@@ -1,4 +1,5 @@
 import { ADDRESS_TYPE } from "@/constants/common";
+import { Category } from "./Product";
 export type User = {
   id: string;
   username: string;
@@ -85,4 +86,15 @@ export type ArtistRegisterData = {
   shopName: string;
   shopPhone: string;
   shopWardId: string;
+};
+
+export type Provider = {
+  businessCode: string;
+  businessName: string;
+  address: string;
+  contactName: string;
+  email: string;
+  phone: string;
+  imageUrl: string;
+  categories: Category[];
 };
