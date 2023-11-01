@@ -31,7 +31,7 @@ export const getStaticProps = async (context: GetStaticPropsContext) => {
     return {
       props: {
         user: data.data,
-      },
+    },
     };
   } catch (err) {
     return { props: { user: null } };

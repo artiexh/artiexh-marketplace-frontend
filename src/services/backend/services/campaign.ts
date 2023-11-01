@@ -1,116 +1,25 @@
-import { CommonResponseBase } from "@/types/ResponseBase";
+import {
+  CommonResponseBase,
+  PaginationResponseBase,
+} from "@/types/ResponseBase";
 import axiosClient from "../axiosClient";
-import { DesignItemDetail, SimpleDesignItem } from "@/types/DesignItem";
-import { ProductBaseDetail } from "@/types/ProductBase";
+import {
+  CampaignData,
+  CampaignDetail,
+  CampaignDetailResponse,
+  CustomProduct,
+} from "@/types/Campaign";
+import { Product } from "@/types/Product";
 
 type CustomProductBody = {
   inventoryItemId: string;
-};
-
-export type CustomProduct = {
-  attaches: {
-    description: string;
-    id: string;
-    title: string;
-    type: string;
-    url: string;
-  }[];
-  category: {
-    id: string;
-    imageUrl: string;
-    name: string;
-  };
-  createdDate: string;
-  description: string;
-  id: string;
-  limitPerOrder: string;
-  modifiedDate: string;
-  name: string;
-  price: {
-    amount: string;
-    unit: string;
-  };
-  quantity: string;
-  tags: string[];
-  providerConfig: {
-    basePriceAmount: number;
-    manufacturingTime: string;
-    minQuantity: number;
-  };
-  inventoryItem: Omit<SimpleDesignItem, "variant"> & {
-    productBase: Pick<ProductBaseDetail, "id" | "name" | "imageCombinations">;
-    variant: {
-      id: string;
-      variantCombination: {
-        optionName: string;
-        valueName: string;
-        value: string;
-      }[];
-    };
-  };
-};
-
-export type CamapignDetail = {
-  name: string;
-  description?: string;
-  campaignHistories: {
-    action: string;
-    eventTime: string;
-    message: string;
-    updatedBy: string;
-  }[];
-  providerId: string;
-  customProducts: CustomProduct[];
-  id: string;
-  owner: {
-    avatarUrl: string;
-    displayName: string;
-    id: string;
-    province: {
-      country: {
-        id: string;
-        name: string;
-        provinces: string[];
-      };
-      districts: {
-        fullName: string;
-        id: string;
-        name: string;
-        province: string;
-        wards: {
-          district: string;
-          fullName: string;
-          id: string;
-          name: string;
-        }[];
-      }[];
-      fullName: string;
-      id: string;
-      name: string;
-    };
-    username: string;
-  };
-  provider: {
-    address: string;
-    businessCode: string;
-    businessName: string;
-    categories: string[];
-    contactName: string;
-    email: string;
-    imageUrl: string;
-    phone: string;
-  };
-  status: string;
-  thumbnailUrl?: string;
-  type: "SHARE" | "PRIVATE";
-  content?: string;
 };
 
 export const createCampaignApi = (body: {
   name: string;
   type: "PRIVATE" | "SHARE";
 }) =>
-  axiosClient.post<CommonResponseBase<CamapignDetail>>("/campaign", {
+  axiosClient.post<CommonResponseBase<CampaignDetail>>("/campaign", {
     ...body,
   });
 
@@ -173,7 +82,7 @@ export const updateCampaignStatusApi = (
   });
 
 export const updateCampaignGeneralInfoApi = (
-  campaign: CamapignDetail,
+  campaign: CampaignDetail,
   generalInfo: {
     name: string;
     description?: string;
@@ -201,7 +110,7 @@ export const updateCampaignGeneralInfoApi = (
   });
 
 export const updateCampaignCustomProductsApi = (
-  campaign: CamapignDetail,
+  campaign: CampaignDetail,
   customProducts: Pick<
     CustomProduct,
     | "attaches"
@@ -224,7 +133,7 @@ export const updateCampaignCustomProductsApi = (
   });
 
 export const updateCampaignProviderApi = (
-  campaign: CamapignDetail,
+  campaign: CampaignDetail,
   providerId: string
 ) =>
   axiosClient.put(`/campaign/${campaign.id}`, {
@@ -246,3 +155,27 @@ export const updateCampaignProviderApi = (
         };
       }) ?? [],
   });
+
+export const getMarketplaceCampaignById = async (id: string) => {
+  try {
+    const result = await axiosClient.get<
+      CommonResponseBase<CampaignDetailResponse>
+    >(`/marketplace/campaign/${id}`);
+
+    return result.data.data;
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+export const getMarketplaceCampaignProductsById = async (id: string) => {
+  try {
+    const result = await axiosClient.get<CommonResponseBase<Product>>(
+      `/marketplace/campaign/${id}/product`
+    );
+
+    return result.data.data;
+  } catch (err) {
+    console.log(err);
+  }
+};

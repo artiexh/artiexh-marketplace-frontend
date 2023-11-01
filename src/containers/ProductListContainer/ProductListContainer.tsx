@@ -62,8 +62,6 @@ const ProductListContainer: FC<ProductListContainerProps> = ({
     }
   );
 
-  console.log(products);
-
   const form = useForm<Partial<FilterProps>>({
     initialValues: DEFAULT_FILTERS,
   });
@@ -106,7 +104,9 @@ const ProductListContainer: FC<ProductListContainerProps> = ({
       },
       []
     );
-    router.replace(`${pathName}?${url}`, undefined, { shallow: true });
+    router.replace(`${pathName}?${url}`, undefined, {
+      shallow: true,
+    });
   };
 
   const submitHandler = (filters = {}) => {

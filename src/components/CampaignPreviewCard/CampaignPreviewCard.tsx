@@ -22,7 +22,8 @@ export default function CampaignPreviewCard({
     >
       <div className="relative">
         <img
-          src={campaign.thumbnailUrl}
+          // src={campaign.thumbnailUrl}
+          src="https://images.augustman.com/wp-content/uploads/sites/2/2023/04/26131013/dragon-bll.jpeg"
           alt="dogtor"
           className="w-full object-cover h-[250px] md:h-[300px] brightness-75"
         />
@@ -32,12 +33,15 @@ export default function CampaignPreviewCard({
           <div className="flex items-center ">
             <div className="flex-1 pt-3 text-white pl-3">
               <div className="font-bold two-line">{campaign.name}</div>
-              <div className="text-xs two-line">Từ: 20/10 đến 23/10</div>
+              <div className="text-xs two-line">
+                Từ: {new Date(campaign.from).toLocaleDateString()} đến{" "}
+                {new Date(campaign.to).toLocaleDateString()}
+              </div>
               <div className="text-xs mt-2">Đã bán: 10000+</div>
             </div>
             <div className="pt-3 py-4 px-3">
               <div className="text-white text-center">Chỉ còn:</div>
-              <Timer initValue={timeDiffFromNow("2023-10-30T16:24:07Z")} />
+              <Timer initValue={timeDiffFromNow(campaign.to)} />
             </div>
           </div>
         </div>

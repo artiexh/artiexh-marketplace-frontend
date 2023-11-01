@@ -2,18 +2,16 @@ import CampaignPreviewCard from "@/components/CampaignPreviewCard/CampaignPrevie
 import ProductPreviewCard from "@/components/Cards/ProductCard/ProductPreviewCard";
 import ImageWithFallback from "@/components/ImageWithFallback/ImageWithFallback";
 import PreviewList from "@/components/PreviewList";
-import ShopPreviewCard from "@/components/ShopPreviewCard/ShopPreviewCard";
-import { campaignData } from "@/constants/campaign";
 import { ROUTE } from "@/constants/route";
 import axiosClient from "@/services/backend/axiosClient";
 import productStyles from "@/styles/Products/ProductList.module.scss";
+import { CampaignData } from "@/types/Campaign";
 import { HomeBranding } from "@/types/HomeBranding";
 import { Category, Product, Tag } from "@/types/Product";
 import {
   CommonResponseBase,
   PaginationResponseBase,
 } from "@/types/ResponseBase";
-import { Shop } from "@/types/Shop";
 import { Carousel } from "@mantine/carousel";
 import clsx from "clsx";
 import { GetStaticPropsContext, InferGetStaticPropsType, NextPage } from "next";
@@ -36,7 +34,7 @@ const HomePage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = ({
   hotTags,
   homeBranding,
   categories,
-  shops,
+  campaigns,
 }) => {
   const { data: products, isLoading } = useSWR(["/product?pageSize=6"], (key) =>
     axiosClient
@@ -45,7 +43,6 @@ const HomePage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = ({
   );
 
   const router = useRouter();
-  console.log(shops);
 
   return (
     <div className="home-page flex flex-col gap-8 lg:gap-16">
@@ -61,11 +58,12 @@ const HomePage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = ({
           indicator: "bg-white",
         }}
       >
-        {campaignData.map((element) => (
+        {campaigns.map((element) => (
           <Carousel.Slide key={element.id}>
             <div className="relative h-full">
               <Image
-                src={element.thumbnailUrl}
+                // src={element.thumbnailUrl}
+                src="https://images.augustman.com/wp-content/uploads/sites/2/2023/04/26131013/dragon-bll.jpeg"
                 fill
                 className="object-cover brightness-50"
                 alt={element.id}
@@ -142,14 +140,14 @@ const HomePage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = ({
           </div>
         </div>
         <div className={clsx("mt-3 hidden md:grid md:grid-cols-2 gap-8 ")}>
-          {campaignData?.map((campaign, index) => (
+          {campaigns?.map((campaign, index) => (
             <CampaignPreviewCard campaign={campaign} key={index} />
           ))}
         </div>
         <div
           className={clsx("mt-3 grid md:hidden !grid-cols-1 gap-8 !md:hidden")}
         >
-          {campaignData
+          {campaigns
             ?.filter((item, idx) => idx <= 1)
             .map((campaign, index) => (
               <CampaignPreviewCard campaign={campaign} key={index} />
@@ -199,38 +197,27 @@ const HomePage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = ({
             <ProductPreviewCard data={product} key={product.name} />
           )}
         /> */}
-        <div className="flex justify-between mt-20 items-center">
-          <div className="font-bold text-xl">Shop nhà Arty</div>
-          <div>Xem tất cả</div>
-        </div>
-        <div
-          className={clsx(
-            productStyles["product-list-grid"],
-            "mt-3 lg:!grid-cols-6"
-          )}
-        >
-          {shops?.map((shop, index) => (
-            <ShopPreviewCard shop={shop} key={index} />
-          ))}
-        </div>
       </div>
     </div>
   );
 };
 
 export const getStaticProps = async (context: GetStaticPropsContext) => {
+  let campaigns: CampaignData[] = [];
   let hotProducts: Product[] = [];
   let hotTags: Tag[] = [];
   let homeBranding: HomeBranding | null = null;
   let categories: Category[] = [];
-  let shops: Shop[] = [];
   try {
     const [
+      { data: campaignRes },
       { data: productRes },
       { data: hotTagsRes },
       { data: categoryRes },
-      { data: shopRes },
     ] = await Promise.all([
+      axiosClient.get<CommonResponseBase<PaginationResponseBase<CampaignData>>>(
+        "/marketplace/campaign?pageSize=4"
+      ),
       axiosClient.get<CommonResponseBase<PaginationResponseBase<Product>>>(
         "/product?pageSize=4"
       ),
@@ -240,14 +227,11 @@ export const getStaticProps = async (context: GetStaticPropsContext) => {
       axiosClient.get<CommonResponseBase<PaginationResponseBase<Category>>>(
         "/category?pageSize=8"
       ),
-      axiosClient.get<CommonResponseBase<PaginationResponseBase<Shop>>>(
-        "/shop?pageSize=6"
-      ),
     ]);
+    campaigns = campaignRes.data.items;
     hotProducts = productRes.data.items;
     hotTags = hotTagsRes.data.items;
     categories = categoryRes.data.items;
-    shops = shopRes.data.items;
   } catch (e) {
     console.error(e);
   }
@@ -263,7 +247,7 @@ export const getStaticProps = async (context: GetStaticPropsContext) => {
       }),
       homeBranding,
       categories,
-      shops,
+      campaigns,
     },
     revalidate: 10,
   };
