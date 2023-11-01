@@ -10,6 +10,7 @@ import {
   CommonResponseBase,
   PaginationResponseBase,
 } from "@/types/ResponseBase";
+import { Button } from "@mantine/core";
 import clsx from "clsx";
 import * as DOMPurify from "dompurify";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -69,6 +70,16 @@ export default function CampaignDetailPage() {
             </div>
             <div className="text-white text-lg mt-2 text-center">
               By: {campaignData.owner.displayName}
+            </div>
+            <div className="flex justify-center mt-4">
+              <Button
+                className="!bg-white !text-black"
+                onClick={() =>
+                  router.push(`/shop/${campaignData.owner.username}`)
+                }
+              >
+                View shop
+              </Button>
             </div>
           </div>
         </div>

@@ -1,22 +1,20 @@
 import CampaignPreviewCard from "@/components/CampaignPreviewCard/CampaignPreviewCard";
-import CategoryButton from "@/components/CategoryButton/CategoryButton";
-import SortButton from "@/components/SortButton/SortButton";
 import { paginationFetcher } from "@/services/backend/axiosClient";
 import { CampaignData } from "@/types/Campaign";
-import { Select } from "@mantine/core";
-import { useWindowScroll } from "@mantine/hooks";
+import { Button, Drawer, Select } from "@mantine/core";
+import { useDisclosure, useWindowScroll } from "@mantine/hooks";
 import clsx from "clsx";
 import { useEffect } from "react";
 import useSWRInfinite from "swr/infinite";
 
-function getKey(pageNumber: number, previousPageData: CampaignData[]) {
-  if (pageNumber && !previousPageData.length) return null; // reached the end
-  return `/marketplace/campaign?pageNumber=${
-    pageNumber + 1
-  }&pageSize=8&sortBy=id&sortDirection=DESC`; // SWR key
-}
-
 export default function CampaignListPage() {
+  function getKey(pageNumber: number, previousPageData: CampaignData[]) {
+    if (pageNumber && !previousPageData.length) return null; // reached the end
+    return `/marketplace/campaign?pageNumber=${
+      pageNumber + 1
+    }&pageSize=8&sortBy=id&sortDirection=DESC`; // SWR key
+  }
+
   const { data, size, setSize } = useSWRInfinite(
     getKey,
     paginationFetcher<CampaignData>
@@ -70,3 +68,49 @@ export default function CampaignListPage() {
     </div>
   );
 }
+
+const SortButton = () => {
+  const [opened, { open, close }] = useDisclosure(false);
+  const items = ["Tất cả", "Mới nhất", "Cũ nhất"];
+  return (
+    <>
+      <Drawer opened={opened} onClose={close} position="bottom">
+        <div className="mb-2">
+          {items.map((item) => (
+            <div key={item} className="ml-2 py-1">
+              {item}
+            </div>
+          ))}
+        </div>
+      </Drawer>
+      <Button
+        onClick={open}
+        className="bg-white border-1 border-black !text-black rounded-sm"
+      >
+        Sort
+      </Button>
+    </>
+  );
+};
+
+const CategoryButton = () => {
+  const [opened, { open, close }] = useDisclosure(false);
+  const items = ["Tất cả", "T-Shirt", "Tote bag"];
+  return (
+    <>
+      <Drawer opened={opened} onClose={close} position="bottom">
+        {items.map((item) => (
+          <div key={item} className="ml-4 py-1">
+            {item}
+          </div>
+        ))}
+      </Drawer>
+      <Button
+        onClick={open}
+        className="bg-white border-1 border-black !text-black rounded-sm flex-1"
+      >
+        Danh mục
+      </Button>
+    </>
+  );
+};

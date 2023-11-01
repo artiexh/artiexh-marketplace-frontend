@@ -24,7 +24,6 @@ type ProductListContainerProps = {
   tags: Tag[];
   endpoint: string;
   pathName: string;
-  currentPath?: string;
 };
 
 const ProductListContainer: FC<ProductListContainerProps> = ({
@@ -32,7 +31,6 @@ const ProductListContainer: FC<ProductListContainerProps> = ({
   tags,
   endpoint,
   pathName,
-  currentPath,
 }) => {
   const router = useRouter();
   const params = router.query;
@@ -106,24 +104,20 @@ const ProductListContainer: FC<ProductListContainerProps> = ({
       },
       []
     );
-    router.replace(`${currentPath ?? pathName}?${url}`, undefined, {
+    router.replace(`${pathName}?${url}`, undefined, {
       shallow: true,
     });
   };
 
   const submitHandler = (filters = {}) => {
     const url = getQueryString({ ...filters }, []);
-    router.replace(
-      `${currentPath ?? pathName}${url ? `?${url}` : ""}`,
-      undefined,
-      {
-        shallow: true,
-      }
-    );
+    router.replace(`${pathName}${url ? `?${url}` : ""}`, undefined, {
+      shallow: true,
+    });
   };
 
   const resetHandler = () => {
-    router.replace(currentPath ?? pathName, undefined, { shallow: true });
+    router.replace(pathName, undefined, { shallow: true });
     setValues(DEFAULT_FILTERS);
   };
 
