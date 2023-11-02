@@ -11,6 +11,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { useMemo } from "react";
 import { IconSearchOff } from "@tabler/icons-react";
 import AuthWrapper from "@/services/guards/AuthWrapper";
+import { SelectedItems } from "@/types/Cart";
+import { CommonResponseBase } from "@/types/ResponseBase";
 
 const CartPage = () => {
   const router = useRouter();
@@ -22,14 +24,18 @@ const CartPage = () => {
 
   const dispatch = useDispatch();
 
-  const { data, mutate } = useSWR<CartData>("cart", async () => {
+  const { data, mutate } = useSWR("cart", async () => {
     try {
-      const { data } = (await axiosClient("/cart"))?.data;
-      return data;
+      const result = await axiosClient.get<
+        CommonResponseBase<{ campaigns: SelectedItems[] }>
+      >("/cart");
+      return result.data.data.campaigns ?? [];
     } catch (e) {
       return null;
     }
   });
+
+  console.log(data);
 
   const flattedItems = selectedItems.map((item) => item.items).flat();
 
@@ -41,7 +47,7 @@ const CartPage = () => {
   const selectedCartItems = useMemo(() => {
     const items: CartSection[] = [];
     flattedItems.forEach((item) => {
-      data?.shopItems.forEach((shopItem) => {
+      data?.forEach((shopItem) => {
         const selectedProducts: CartItem[] = [];
         shopItem.items.forEach((i) => {
           if (item.id === i.id) {
@@ -51,7 +57,7 @@ const CartPage = () => {
 
         if (selectedProducts.length > 0) {
           items.push({
-            shop: shopItem.shop,
+            campaign: shopItem.campaign,
             items: selectedProducts,
           });
         }
@@ -71,7 +77,9 @@ const CartPage = () => {
     0
   );
 
-  if (data?.shopItems.length === 0) {
+  console.log(data);
+
+  if (data?.length === 0) {
     return (
       <div className="text-center mt-[20%]">
         <div className="flex justify-center">
@@ -105,7 +113,7 @@ const CartPage = () => {
         </div>
       </div>
       <div>
-        {data?.shopItems?.map((cartSection, idx) => (
+        {data?.map((cartSection, idx) => (
           <div
             key={idx}
             className="bg-white mt-10 p-2 sm:p-6 rounded-sm relative"

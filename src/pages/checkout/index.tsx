@@ -27,6 +27,8 @@ import { notifications } from "@mantine/notifications";
 import { getShippingFee } from "@/services/backend/services/order";
 import { isNumber } from "lodash";
 import AuthWrapper from "@/services/guards/AuthWrapper";
+import { CommonResponseBase } from "@/types/ResponseBase";
+import { SelectedItems } from "@/types/Cart";
 
 const PAYMENT_ITEM = [
   {
@@ -51,10 +53,12 @@ function CheckoutPage() {
   >([]);
   const [shippingFee, setShippingFee] = useState<number>(0);
 
-  const { data, mutate } = useSWR<CartData>("cart", async () => {
+  const { data, mutate } = useSWR("cart", async () => {
     try {
-      const { data } = (await axiosClient("/cart"))?.data;
-      return data;
+      const result = await axiosClient.get<
+        CommonResponseBase<{ campaigns: SelectedItems[] }>
+      >("/cart");
+      return result.data.data.campaigns ?? [];
     } catch (e) {
       return null;
     }
@@ -73,7 +77,7 @@ function CheckoutPage() {
   const selectedCartItems = useMemo(() => {
     const items: CartSection[] = [];
     // list cart item
-    data?.shopItems.forEach((shopItem) => {
+    data?.forEach((shopItem) => {
       flattedItems.forEach((item) => {
         const selectedProducts: CartItem[] = [];
         shopItem.items.forEach((i) => {
@@ -84,14 +88,14 @@ function CheckoutPage() {
 
         if (selectedProducts.length > 0) {
           const findItem = items.find(
-            (item) => item.shop.id === shopItem.shop.id
+            (item) => item.campaign.id === shopItem.campaign.id
           );
 
           if (findItem != null) {
             findItem.items.push(...selectedProducts);
           } else {
             items.push({
-              shop: shopItem.shop,
+              campaign: shopItem.campaign,
               items: selectedProducts,
             });
           }
@@ -120,78 +124,75 @@ function CheckoutPage() {
       let total = 0;
       const promiseArr = [] as any;
 
-      selectedCartItems.forEach((item) => {
-        promiseArr.push(
-          getShippingFee({
-            addressId: selectedAddressId,
-            shopId: item.shop.id,
-            tags: [],
-            totalWeight: 10,
-          })
-        );
-      });
+      //   selectedCartItems.forEach((item) => {
+      //     promiseArr.push(
+      //       getShippingFee({
+      //         addressId: selectedAddressId,
+      //         shopId: item.shop.id,
+      //         tags: [],
+      //         totalWeight: 10,
+      //       })
+      //     );
+      //   });
 
-      Promise.all(promiseArr)
-        .then((res) => {
-          res.forEach((item) => {
-            total += item;
-          });
-        })
-        .then(() => setShippingFee(total));
+      //   Promise.all(promiseArr)
+      //     .then((res) => {
+      //       res.forEach((item) => {
+      //         total += item;
+      //       });
+      //     })
+      //     .then(() => setShippingFee(total));
+      // };
+      // getTotalShippingFee();
     };
-    getTotalShippingFee();
   }, [selectedAddressId, selectedCartItems]);
 
   const paymentSubmit = async () => {
-    setLoading(true);
-    console.log(shippingFee);
-    const data = await checkout({
-      addressId: selectedAddressId,
-      paymentMethod: paymentMethod as PAYMENT_METHOD_ENUM,
-      shops: selectedCartItems.map((cartItem) => ({
-        shopId: cartItem.shop.id,
-        note:
-          noteValues.find((item) => item.shopId === cartItem.shop.id)?.note ??
-          "",
-        itemIds: cartItem.items.map((item) => item.id),
-        shippingFee: 0,
-        // isNumber(shippingFee) ? shippingFee : 0
-      })),
-    });
-
-    const isSuccess = data != null;
-
-    if (isSuccess) {
-      if (data.paymentMethod === PAYMENT_METHOD.VN_PAY) {
-        const paymentLink = await getPaymentLink(data.id);
-
-        if (paymentLink) {
-          window.location.replace(paymentLink);
-        } else {
-          notifications.show({
-            message: "Không tìm thấy link thanh toán",
-            ...getNotificationIcon(NOTIFICATION_TYPE.FAILED),
-          });
-        }
-        return;
-      } else {
-        dispatch(clearItems());
-        router.push(`${ROUTE.ORDER_CONFIRM}/${data.id}`);
-      }
-    }
-
-    notifications.show({
-      message: isSuccess ? "Mua sản phẩm thành công!" : "Mua sản phẩm thất bại",
-      ...getNotificationIcon(
-        NOTIFICATION_TYPE[isSuccess ? "SUCCESS" : "FAILED"]
-      ),
-    });
-    setLoading(false);
+    // setLoading(true);
+    // console.log(shippingFee);
+    // const data = await checkout({
+    //   addressId: selectedAddressId,
+    //   paymentMethod: paymentMethod as PAYMENT_METHOD_ENUM,
+    //   shops: selectedCartItems.map((cartItem) => ({
+    //     shopId: cartItem.shop.id,
+    //     note:
+    //       noteValues.find((item) => item.shopId === cartItem.shop.id)?.note ??
+    //       "",
+    //     itemIds: cartItem.items.map((item) => item.id),
+    //     shippingFee: 0,
+    //     // isNumber(shippingFee) ? shippingFee : 0
+    //   })),
+    // });
+    // const isSuccess = data != null;
+    // if (isSuccess) {
+    //   if (data.paymentMethod === PAYMENT_METHOD.VN_PAY) {
+    //     const paymentLink = await getPaymentLink(data.id);
+    //     if (paymentLink) {
+    //       window.location.replace(paymentLink);
+    //     } else {
+    //       notifications.show({
+    //         message: "Không tìm thấy link thanh toán",
+    //         ...getNotificationIcon(NOTIFICATION_TYPE.FAILED),
+    //       });
+    //     }
+    //     return;
+    //   } else {
+    //     dispatch(clearItems());
+    //     router.push(`${ROUTE.ORDER_CONFIRM}/${data.id}`);
+    //   }
+    // }
+    // notifications.show({
+    //   message: isSuccess ? "Mua sản phẩm thành công!" : "Mua sản phẩm thất bại",
+    //   ...getNotificationIcon(
+    //     NOTIFICATION_TYPE[isSuccess ? "SUCCESS" : "FAILED"]
+    //   ),
+    // });
+    // setLoading(false);
   };
 
   if (
     selectedItems.length === 0 ||
-    data?.shopItems.length === 0 ||
+    data?.length === 0 ||
     flattedCheckoutItems.length === 0
   ) {
     return (
@@ -242,10 +243,10 @@ function CheckoutPage() {
                     placeholder="Nhập lời nhắn cho shop"
                     onChange={(event) => {
                       const arr = noteValues.filter(
-                        (value) => value.shopId !== cartSection.shop.id
+                        (value) => value.shopId !== cartSection.campaign.id
                       );
                       arr.push({
-                        shopId: cartSection.shop.id,
+                        shopId: cartSection.campaign.id,
                         note: event.target.value,
                       });
                       setNoteValues(arr);
