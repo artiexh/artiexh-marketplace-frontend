@@ -3,7 +3,7 @@
 import PrivateImageLoader from "@/components/PrivateImageLoader/PrivateImageLoader";
 import TableComponent from "@/components/TableComponent";
 import axiosClient from "@/services/backend/axiosClient";
-import { SimpleDesignItem } from "@/types/DesignItem";
+import { SimpleCustomProduct } from "@/types/CustomProduct";
 import {
   CommonResponseBase,
   PaginationResponseBase,
@@ -52,8 +52,8 @@ const ShopProductsPage = () => {
     ["custom-product", ...Object.values(params)],
     () =>
       axiosClient.get<
-        CommonResponseBase<PaginationResponseBase<SimpleDesignItem>>
-      >("/inventory-item", {
+        CommonResponseBase<PaginationResponseBase<SimpleCustomProduct>>
+      >("/custom-product", {
         params: params,
       })
   );
@@ -121,7 +121,7 @@ const ShopProductsPage = () => {
 };
 
 const customProductColumns: TableColumns<
-  SimpleDesignItem & {
+  SimpleCustomProduct & {
     onDesign: Function;
     onEdit: Function;
   }
@@ -134,7 +134,7 @@ const customProductColumns: TableColumns<
         <div className="relative w-16 aspect-square">
           <PrivateImageLoader
             className="rounded-md"
-            id={record.thumbnail?.id.toString()}
+            id={record.modelThumbnail?.id.toString()}
             alt="test"
             fill
           />
@@ -142,7 +142,7 @@ const customProductColumns: TableColumns<
         <div>
           <div>{record.name}</div>
           <div className="text-sm text-gray-500">
-            Template: {record.variant.productBase.name}
+            Template: {record.category.name}
           </div>
         </div>
       </div>
@@ -154,25 +154,28 @@ const customProductColumns: TableColumns<
     render: (record) => (
       <span>
         {record.variant.variantCombinations.reduce((prev, combination) => {
-          const option = record.variant.productBase.productOptions.find(
-            (o) => o.id === combination.optionId
-          );
-          const value = option?.optionValues?.find(
-            (v) => v.id === combination.optionValueId
-          );
-          if (!option) return prev;
+          if (!combination.optionValue)
+            return prev + `${combination.option.name}: N/A; `;
 
-          if (!value) return prev + `${option.name}: N/A; `;
-
-          return prev + `${option.name}: ${value.name}; `;
+          return (
+            prev +
+            `${combination.option.name}: ${combination.optionValue.name}; `
+          );
         }, "")}
       </span>
     ),
   },
   {
-    title: "Description",
-    key: "description",
-    render: (record) => <span>{record.description}</span>,
+    title: "Updated time",
+    key: "modifiedDate",
+    render: (record) => (
+      <span>
+        {new Intl.DateTimeFormat("vi", {
+          dateStyle: "long",
+          timeStyle: "medium",
+        }).format(new Date(record.modifiedDate))}
+      </span>
+    ),
   },
   {
     title: "Action",

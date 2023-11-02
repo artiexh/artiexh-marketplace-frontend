@@ -7,7 +7,7 @@ import {
   calculateDesignItemConfig,
   createCampaignApi,
 } from "@/services/backend/services/campaign";
-import { SimpleDesignItem } from "@/types/DesignItem";
+import { SimpleCustomProduct } from "@/types/CustomProduct";
 import {
   CommonResponseBase,
   PaginationResponseBase,
@@ -43,10 +43,10 @@ import useSWR from "swr";
 export default function CreateCampaignPage() {
   const router = useRouter();
   const [selectedDesign, setSelectedDesign] = useState<
-    SimpleDesignItem | undefined
+    SimpleCustomProduct | undefined
   >();
 
-  const [collection, setCollection] = useState<SimpleDesignItem[]>([]);
+  const [collection, setCollection] = useState<SimpleCustomProduct[]>([]);
 
   const [params, setParams] = useState({
     pageSize: 5,
@@ -58,7 +58,7 @@ export default function CreateCampaignPage() {
     data: response,
     isLoading,
     mutate,
-  } = useSWR<CommonResponseBase<PaginationResponseBase<SimpleDesignItem>>>(
+  } = useSWR<CommonResponseBase<PaginationResponseBase<SimpleCustomProduct>>>(
     ["/inventory-items", params.pageNumber],
     () => {
       console.log(params);
@@ -165,7 +165,7 @@ const CreateModalBody = ({
   data,
   providerId,
 }: {
-  data: SimpleDesignItem[];
+  data: SimpleCustomProduct[];
   providerId: string;
 }) => {
   const router = useRouter();
@@ -211,7 +211,7 @@ const CreateModalBody = ({
   );
 };
 
-function PickProviderStep({ data }: { data: SimpleDesignItem[] }) {
+function PickProviderStep({ data }: { data: SimpleCustomProduct[] }) {
   const [provider, setProvider] = useState<string>();
   const { data: response, isLoading } = useSWR(
     ["provider-configs", ...data.map((el) => el.id)],

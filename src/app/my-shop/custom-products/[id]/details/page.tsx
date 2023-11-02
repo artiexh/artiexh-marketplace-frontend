@@ -2,21 +2,20 @@
 
 import CustomProductDetailContainer from "@/containers/CreateProductContainer/CustomProductDetailContainer";
 import { fetcher } from "@/services/backend/axiosClient";
-import { DesignItemDetail } from "@/types/DesignItem";
+import { CustomProductGeneralInfo } from "@/types/CustomProduct";
 import { CommonResponseBase } from "@/types/ResponseBase";
+import { useQuery } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
-import useSWR from "swr";
+import { useState } from "react";
 
 const CreatePage = () => {
   const params = useParams();
 
-  const { data: response, isLoading } = useSWR<
-    CommonResponseBase<DesignItemDetail>
-  >(["/inventory-items/[id]", params?.id as string], () => {
-    return fetcher(`/inventory-item/${params?.id as string}`);
+  const { data: response, isLoading } = useQuery<
+    CommonResponseBase<CustomProductGeneralInfo>
+  >(["/custom-product/[id]/general", { id: params?.id as string }], () => {
+    return fetcher(`/custom-product/${params?.id as string}/general`);
   });
-
-  console.log("🚀 ~ file: page.tsx:14 ~ CreatePage ~ response:", response);
 
   if (isLoading || !response?.data) return null;
 
@@ -28,5 +27,3 @@ const CreatePage = () => {
 };
 
 export default CreatePage;
-
-// TODO: Check artist role

@@ -18,7 +18,7 @@ import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
 import useSWR from "swr";
 import defaultImg from "../../../../public/assets/default-thumbnail.jpg";
-import { createDesignItemApi } from "@/services/backend/services/designInventory";
+import { createCustomProductApi } from "@/services/backend/services/customProduct";
 import { CategoryItem } from "@/components/ProductList";
 import { MAX_CATEGORIES } from "@/constants/ProductList";
 import { Category } from "@/types/Product";
@@ -131,7 +131,7 @@ export default function ProductDesignPage() {
     isLoading,
     mutate,
   } = useSWR<CommonResponseBase<PaginationResponseBase<SimpleProductBase>>>(
-    ["/product-base", form.values, apiParams],
+    ["/product-templates", form.values, apiParams],
     () => {
       const params = new URLSearchParams();
       params.set("pageSize", apiParams.pageSize.toString());
@@ -141,7 +141,7 @@ export default function ProductDesignPage() {
           params.set(key, form.values[key] as string);
         }
       });
-      return fetcher("/product-base?" + params.toString());
+      return fetcher("/product-template?" + params.toString());
     }
   );
 
@@ -227,8 +227,8 @@ function ProductBaseDetailModalContent({
 }: ProductBaseDetailModalContentProps) {
   const { data: response, isLoading } = useSWR<
     CommonResponseBase<ProductBaseDetail>
-  >(["/product-base", productBaseId], () =>
-    fetcher(`/product-base/${productBaseId}`)
+  >(["/product-template", productBaseId], () =>
+    fetcher(`/product-template/${productBaseId}`)
   );
 
   if (isLoading) return null;
@@ -351,7 +351,7 @@ function VariantAndProviderPicker({
     CommonResponseBase<Record<string, string[]>>
   >(["option-suggestion", productBase.id, queryObject], () => {
     const params = new URLSearchParams();
-    params.set("productBaseId", productBase.id.toString());
+    params.set("productTemplateId", productBase.id.toString());
 
     Object.entries(queryObject)
       .filter(([key, value]) => value !== undefined)
@@ -364,7 +364,7 @@ function VariantAndProviderPicker({
 
   const createDesignItem = async (variantId: string) => {
     try {
-      const { data: res } = await createDesignItemApi({
+      const { data: res } = await createCustomProductApi({
         variantId: variantId,
         name: "Untitled",
       });

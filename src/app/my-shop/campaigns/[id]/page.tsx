@@ -14,7 +14,7 @@ import {
   updateCampaignStatusApi,
 } from "@/services/backend/services/campaign";
 import { CampaignDetail, CustomProduct } from "@/types/Campaign";
-import { SimpleDesignItem } from "@/types/DesignItem";
+import { SimpleCustomProduct } from "@/types/CustomProduct";
 import {
   CommonResponseBase,
   PaginationResponseBase,
@@ -168,7 +168,7 @@ export default function CampaignDetailPage() {
 
   if (isLoading || !res?.data) return null;
 
-  const customProducts = res!.data.customProducts;
+  const customProducts = res!.data.products;
 
   return (
     <>
@@ -216,7 +216,7 @@ export default function CampaignDetailPage() {
             }}
           />
           <div className="mt-4">
-            <CustomProductTable data={res.data.customProducts} />
+            <CustomProductTable data={res.data.products} />
           </div>
         </Tabs.Panel>
 
@@ -232,7 +232,7 @@ export default function CampaignDetailPage() {
 }
 
 const customProductColumns: TableColumns<
-  CampaignDetail["customProducts"][0] & { onEdit?: Function }
+  CampaignDetail["products"][0] & { onEdit?: Function }
 > = [
   {
     title: "Name",
@@ -242,15 +242,15 @@ const customProductColumns: TableColumns<
         <div className="relative w-16 aspect-square">
           <PrivateImageLoader
             className="rounded-md"
-            id={record.inventoryItem.thumbnail?.id.toString()}
+            id={record.customProduct.modelThumbnail?.id.toString()}
             alt="test"
             fill
           />
         </div>
         <div>
-          <div>{record.name}</div>
+          <div>{record.customProduct.name}</div>
           <div className="text-sm text-gray-500">
-            Template: {record.inventoryItem.productBase.name}
+            Template: {record.customProduct.variant.productTemplate.name}
           </div>
         </div>
       </div>
@@ -429,11 +429,11 @@ function PickCustomProduct({
 
   const id = routerParams!.id as string;
   const [selectedDesign, setSelectedDesign] = useState<
-    SimpleDesignItem | undefined
+    SimpleCustomProduct | undefined
   >();
 
-  const [collection, setCollection] = useState<SimpleDesignItem[]>(
-    defaultValues.map((e) => e.inventoryItem as unknown as SimpleDesignItem)
+  const [collection, setCollection] = useState<SimpleCustomProduct[]>(
+    defaultValues.map((e) => e.customProduct as unknown as SimpleCustomProduct)
   );
 
   const [params, setParams] = useState({
@@ -446,12 +446,12 @@ function PickCustomProduct({
     data: response,
     isLoading,
     mutate,
-  } = useSWR<CommonResponseBase<PaginationResponseBase<SimpleDesignItem>>>(
-    ["/inventory-items", params.pageNumber],
+  } = useSWR<CommonResponseBase<PaginationResponseBase<SimpleCustomProduct>>>(
+    ["/custom-products", params.pageNumber],
     () => {
       console.log(params);
       return fetcher(
-        `/inventory-item?${new URLSearchParams({
+        `/custom-product?${new URLSearchParams({
           pageSize: params.pageSize.toString(),
           pageNumber: params.pageNumber.toString(),
         }).toString()}`
@@ -542,7 +542,7 @@ function PickCustomProduct({
   );
 }
 
-function PickProvider({ data }: { data: SimpleDesignItem[] }) {
+function PickProvider({ data }: { data: SimpleCustomProduct[] }) {
   const routerParams = useParams();
   const queryClient = useQueryClient();
 
@@ -570,20 +570,10 @@ function PickProvider({ data }: { data: SimpleDesignItem[] }) {
         campaignRes.data,
         data.map((v) => {
           return {
-            name: v.name,
-            description: v.description,
-            tags: v.tags,
-            inventoryItemId: v.id,
-          } as Pick<
-            CustomProduct,
-            | "name"
-            | "description"
-            | "tags"
-            | "attaches"
-            | "limitPerOrder"
-            | "price"
-            | "quantity"
-          > & { inventoryItemId: string };
+            customProductId: v.id,
+          } as Pick<CustomProduct, "price" | "quantity"> & {
+            customProductId: string;
+          };
         })
       );
       queryClient.setQueryData(["campaign", { id: id }], res.data);
@@ -620,10 +610,10 @@ function PickProvider({ data }: { data: SimpleDesignItem[] }) {
               <Accordion.Item value={item.businessName} key={item.businessCode}>
                 <Center>
                   <Accordion.Control>
-                    {item.designItems.length === data.length ? (
+                    {item.customProducts.length === data.length ? (
                       <div>
                         {item.businessName} - Tổng giá:
-                        {item.designItems.reduce(
+                        {item.customProducts.reduce(
                           (prev, cur) =>
                             cur.config?.basePriceAmount ?? 0 + prev,
                           0
@@ -645,14 +635,14 @@ function PickProvider({ data }: { data: SimpleDesignItem[] }) {
                       <IconCircle
                         className={clsx(
                           "w-10",
-                          item.designItems.length !== data.length &&
+                          item.customProducts.length !== data.length &&
                             "text-gray-500 cursor-default"
                         )}
                         size={24}
                         width={24}
                         height={24}
                         onClick={
-                          item.designItems.length === data.length
+                          item.customProducts.length === data.length
                             ? () => setProvider(item.businessCode)
                             : undefined
                         }
@@ -672,7 +662,7 @@ function PickProvider({ data }: { data: SimpleDesignItem[] }) {
                       </thead>
                       <tbody>
                         {data?.map((designItem) => {
-                          const configItem = item.designItems.find(
+                          const configItem = item.customProducts.find(
                             (el) => el.id === designItem.id
                           );
 
@@ -713,9 +703,10 @@ function CustomProductTable({
   data: rawData,
   disabled = false,
 }: {
-  data: CampaignDetail["customProducts"];
+  data: CampaignDetail["products"];
   disabled?: boolean;
 }) {
+  console.log("🚀 ~ file: page.tsx:709 ~ rawData:", rawData);
   const routerParams = useParams();
   const queryClient = useQueryClient();
 
@@ -733,19 +724,6 @@ function CustomProductTable({
       },
       fullScreen: true,
       children: <PickCustomProduct defaultValues={rawData} />,
-    });
-  };
-
-  const openProviderModal = () => {
-    modals.open({
-      modalId: "provider-create-campaign",
-      title: "Pick provider",
-      centered: true,
-      classNames: {
-        content: "!max-h-none",
-      },
-      fullScreen: true,
-      children: <PickProvider data={rawData} />,
     });
   };
 
@@ -775,7 +753,7 @@ function CustomProductTable({
                 ...data,
                 onEdit: () =>
                   modals.open({
-                    modalId: `${data.inventoryItem.id}-custom-product-edit`,
+                    modalId: `${data.customProduct.id}-custom-product-edit`,
                     title: "Edit",
                     centered: true,
                     classNames: {

@@ -29,7 +29,7 @@ export type ProviderConfigByDesignItem = {
   businessName: string;
   contactName: string;
   description: string;
-  designItems: [
+  customProducts: [
     {
       config: {
         basePriceAmount: number;
@@ -64,7 +64,7 @@ export type ProviderConfigByDesignItem = {
 
 export const calculateDesignItemConfig = (ids: string[]) => {
   const params = new URLSearchParams();
-  ids.forEach((id) => params.append("inventoryItemIds", id));
+  ids.forEach((id) => params.append("customProductIds", id));
   return axiosClient.get<CommonResponseBase<ProviderConfigByDesignItem[]>>(
     `/campaign/provider?${params.toString()}`
   );
@@ -111,17 +111,8 @@ export const updateCampaignGeneralInfoApi = (
 
 export const updateCampaignCustomProductsApi = (
   campaign: CampaignDetail,
-  customProducts: Pick<
-    CustomProduct,
-    | "attaches"
-    | "description"
-    | "limitPerOrder"
-    | "name"
-    | "price"
-    | "quantity"
-    | "tags"
-  > & {
-    inventoryItemId: string;
+  customProducts: Pick<CustomProduct, "price" | "quantity"> & {
+    customProductId: string;
   }
 ) =>
   axiosClient.put(`/campaign/${campaign.id}`, {
@@ -129,7 +120,7 @@ export const updateCampaignCustomProductsApi = (
     type: campaign.type,
     description: campaign.description,
     providerId: campaign?.provider?.businessCode,
-    customProducts: customProducts,
+    products: customProducts,
   });
 
 export const updateCampaignProviderApi = (
@@ -141,17 +132,12 @@ export const updateCampaignProviderApi = (
     type: campaign.type,
     description: campaign.description,
     providerId: providerId,
-    customProducts:
-      campaign?.customProducts?.map((prod) => {
+    products:
+      campaign?.products?.map((prod) => {
         return {
-          attaches: prod.attaches,
-          description: prod.description,
-          inventoryItemId: prod.inventoryItem.id,
-          limitPerOrder: prod.limitPerOrder,
-          name: prod.name,
           price: prod.price,
           quantity: prod.quantity,
-          tags: prod.tags,
+          customProductId: prod.id,
         };
       }) ?? [],
   });

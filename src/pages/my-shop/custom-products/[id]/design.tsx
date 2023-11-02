@@ -1,16 +1,14 @@
 import axiosClient from "@/services/backend/axiosClient";
 import {
-  updateGeneralInformationApi,
   updateImageCombinationApi,
   updateImageSetApi,
-  updateThumbnailApi,
-} from "@/services/backend/services/designInventory";
+} from "@/services/backend/services/customProduct";
 import {
   getPrivateFile,
   privateUploadFiles,
 } from "@/services/backend/services/media";
-import { DesignItemDetail } from "@/types/DesignItem";
-import { ImageConfig } from "@/types/ProductBase";
+import { CustomProductDesignInfo } from "@/types/CustomProduct";
+import { ImageConfig, ProductBaseDetail } from "@/types/ProductBase";
 import { CommonResponseBase } from "@/types/ResponseBase";
 import { createImageUrl } from "@/utils/three";
 import {
@@ -18,13 +16,9 @@ import {
   Button,
   FileButton,
   Group,
-  MultiSelect,
   Paper,
-  TextInput,
-  Textarea,
   Transition,
 } from "@mantine/core";
-import { useForm } from "@mantine/form";
 import { Decal, OrbitControls, useTexture } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
 import {
@@ -88,22 +82,40 @@ export default function DesignPortalPage() {
   const designItemId = id as string;
 
   const { data: res, isLoading } = useQuery({
-    queryKey: ["design-item", { id: id }],
+    queryKey: ["custom-product", { id: id }],
     queryFn: async () => {
       if (!router.isReady) return null;
-      const res = await axiosClient.get<CommonResponseBase<DesignItemDetail>>(
-        `/inventory-item/${id}`
-      );
+      const res = await axiosClient.get<
+        CommonResponseBase<CustomProductDesignInfo>
+      >(`/custom-product/${id}/design`);
 
       return res.data;
     },
   });
 
-  const combinations = res?.data.variant.productBase.imageCombinations ?? [];
+  const { data: productTemplateRes, isLoading: isProductTemplateLoading } =
+    useQuery({
+      queryKey: [
+        "product-template",
+        { id: res?.data.variant.productTemplate.id },
+      ],
+      queryFn: async () => {
+        if (!router.isReady || !res?.data.variant.productTemplate.id)
+          return null;
+        const response = await axiosClient.get<
+          CommonResponseBase<ProductBaseDetail>
+        >(`/product-template/${res?.data.variant.productTemplate.id}`);
 
-  if (isLoading) return <h1>Loading</h1>;
+        return response.data;
+      },
+    });
 
-  if (!res?.data) return <h1>Something went wrong</h1>;
+  const combinations = productTemplateRes?.data.imageCombinations ?? [];
+
+  if (isLoading || isProductTemplateLoading) return <h1>Loading</h1>;
+
+  if (!res?.data || !productTemplateRes?.data)
+    return <h1>Something went wrong</h1>;
 
   const currentCombination = combinations.find(
     (combination) => combination.code === res.data.combinationCode
@@ -129,7 +141,7 @@ export default function DesignPortalPage() {
       <div className="!w-screen !h-screen">
         <ConfigMenu />
         <DesignPortalContainer
-          modelCode={res.data.variant.productBase.model3DCode}
+          modelCode={productTemplateRes?.data.model3DCode}
         />
       </div>
     </MockupImagesProvider>
@@ -224,12 +236,15 @@ function ConfigMenu() {
 
   const { id } = router.query;
 
-  const res = queryClient.getQueryData<CommonResponseBase<DesignItemDetail>>([
-    "design-item",
-    { id: id },
-  ]);
+  const res = queryClient.getQueryData<
+    CommonResponseBase<CustomProductDesignInfo>
+  >(["custom-product", { id: id }]);
 
-  const combinations = res?.data?.variant?.productBase?.imageCombinations ?? [];
+  const productTemplateRes = queryClient.getQueryData<
+    CommonResponseBase<ProductBaseDetail>
+  >(["product-template", { id: res?.data.variant.productTemplate.id }]);
+
+  const combinations = productTemplateRes?.data.imageCombinations ?? [];
 
   const currentCombination = combinations.find(
     (combination) => combination.code === res?.data?.combinationCode
@@ -321,140 +336,33 @@ type MetaFieldsForm = {
 };
 
 type MetaConfigurationProps = {
-  designItem: DesignItemDetail;
+  designItem: CustomProductDesignInfo;
 };
 
 function MetaConfiguration({ designItem }: MetaConfigurationProps) {
-  const queryClient = useQueryClient();
-  const { data: tagList } = useTags();
-  const { onSubmit, getInputProps, isDirty, reset, setValues, resetDirty } =
-    useForm<MetaFieldsForm>({
-      initialValues: {
-        name: designItem.name,
-        description: designItem.description,
-        tags: designItem.tags ?? [],
-      },
-    });
-
-  useEffect(() => {
-    setValues({
-      name: designItem.name,
-      description: designItem.description,
-      tags: designItem.tags ?? [],
-    });
-    resetDirty();
-  }, [designItem]);
-
-  // FETCH TAGS FROM SERVER
-  const mapTagDataToTagOption = (data: Tag[]) =>
-    data?.map((tag) => ({
-      value: tag.name,
-      label: tag.name,
-    })) ?? [];
-  const [tags, setTags] = useState<
-    {
-      value: string;
-      label: string;
-    }[]
-  >(mapTagDataToTagOption(tagList?.data.items ?? []) ?? []);
-
-  useEffect(() => {
-    setTags(mapTagDataToTagOption(tagList?.data.items ?? []) ?? []);
-  }, [tagList]);
-
-  const updateGeneralInformationMutation = useMutation({
-    mutationFn: async (data: MetaFieldsForm) => {
-      const res = await updateGeneralInformationApi(designItem, data);
-
-      return res.data;
-    },
-    onSuccess: (data) => {
-      queryClient.setQueryData(
-        [
-          "design-item",
-          {
-            id: designItem.id,
-          },
-        ],
-        data
-      );
-    },
-  });
-
-  const submitHandler = (data: MetaFieldsForm) => {
-    updateGeneralInformationMutation.mutateAsync(data);
-  };
-
   return (
     <>
       <h3>Product design</h3>
-      <form
-        onSubmit={onSubmit(submitHandler)}
-        className="flex flex-col gap-y-2"
-      >
-        <TextInput label="Name" {...getInputProps("name")} />
-        <MultiSelect
-          data={tags}
-          label="Tags"
-          className="col-span-12"
-          searchable
-          clearable
-          nothingFound="Nothing found"
-          classNames={{
-            values: "!mr-0",
-          }}
-          creatable
-          getCreateLabel={(query) => `+ Create ${query}`}
-          onCreate={(query) => {
-            const item = { value: query, label: query };
-            setTags((prev) => [...prev, item]);
-            return item;
-          }}
-          {...getInputProps("tags")}
-        />
-        <Textarea label="Description" {...getInputProps("description")} />
-        <div className="flex w-full justify-end">
-          <Button
-            type="submit"
-            disabled={!isDirty()}
-            loading={updateGeneralInformationMutation.isLoading}
-          >
-            Apply
-          </Button>
+      <div>
+        <h3 className="mb-1.5 font-semibold">General information</h3>
+        <div className="flex flex-col gap-y-1.5">
+          <span className="text-sm">
+            <strong>Category: </strong>
+            {designItem.category.name}
+          </span>
         </div>
-      </form>
-      <Accordion className="mt-5">
-        <Accordion.Item value="detail">
-          <Accordion.Control>Product details</Accordion.Control>
-          <Accordion.Panel>
-            <h3 className="mb-1.5 font-semibold">General information</h3>
-            <div className="flex flex-col gap-y-1.5">
-              <span className="text-sm">
-                <strong>Category: </strong>
-                {designItem.variant.productBase.category.name}
+        <h3 className="mb-1.5 font-semibold mt-3">Variant</h3>
+        <div className="flex flex-col gap-y-1.5">
+          {designItem.variant.variantCombinations.map((combination) => {
+            return (
+              <span className="text-sm" key={combination.option.id}>
+                <strong>{combination.option?.name}: </strong>
+                {combination?.optionValue?.name ?? "N/A"}
               </span>
-            </div>
-            <h3 className="mb-1.5 font-semibold mt-3">Variant</h3>
-            <div className="flex flex-col gap-y-1.5">
-              {designItem.variant.variantCombinations.map((combination) => {
-                const option =
-                  designItem.variant.productBase.productOptions.find(
-                    (o) => o.id === combination.optionId
-                  );
-                if (option === null) return null;
-                return (
-                  <span className="text-sm" key={combination.optionId}>
-                    <strong>{option?.name}: </strong>
-                    {option?.optionValues.find(
-                      (v) => v.id === combination.optionValueId
-                    )?.name ?? "N/A"}
-                  </span>
-                );
-              })}
-            </div>
-          </Accordion.Panel>
-        </Accordion.Item>
-      </Accordion>
+            );
+          })}
+        </div>
+      </div>
     </>
   );
 }
@@ -598,18 +506,16 @@ function ImageSetPicker({ currentCombination }: ImageSetPickerProps) {
   const { id } = router.query;
 
   const designItemRes = queryClient.getQueryData<
-    CommonResponseBase<DesignItemDetail>
-  >(["design-item", { id: id }]);
+    CommonResponseBase<CustomProductDesignInfo>
+  >(["custom-product", { id: id }]);
 
   const updateMockupImageSetMutation = useMutation({
     mutationFn: async (body: { positionCode: string; file: File }) => {
+      console.log("testing");
       const { positionCode, file } = body;
 
       if (!designItemRes?.data) throw new Error("There is something wrong");
-      const { data: fileRes } = await privateUploadFiles([file]);
 
-      const firstImage = fileRes.data.fileResponses[0];
-      if (!firstImage) throw new Error("There is something wrong");
       const canvasElemnt = document.querySelector(
         "#portal-canvas canvas"
       ) as HTMLCanvasElement | null;
@@ -620,13 +526,14 @@ function ImageSetPicker({ currentCombination }: ImageSetPickerProps) {
           canvasElemnt.toBlob((blob) => resolve(blob));
         }))();
 
-      let thumbnail: string | undefined = designItemRes.data.thumbnail?.id;
-      if (blob) {
-        const { data: fileRes } = await privateUploadFiles([
-          new File([blob], "thumbnail.jpg"),
-        ]);
-        thumbnail = fileRes.data.fileResponses[0].id;
-      }
+      let thumbnail: string | undefined = designItemRes.data.modelThumbnail?.id;
+
+      const { data: fileRes } = await privateUploadFiles(
+        blob ? [file, new File([blob], "thumbnail.jpg")] : [file]
+      );
+      thumbnail = fileRes.data.fileResponses[1].id;
+      const firstImage = fileRes.data.fileResponses[0];
+      if (!firstImage) throw new Error("There is something wrong");
 
       const res = await updateImageSetApi(
         designItemRes.data,
@@ -670,13 +577,12 @@ function ImageSetPicker({ currentCombination }: ImageSetPickerProps) {
           )?.mockupImage?.id,
         },
       ]);
-      queryClient.setQueryData(["design-item", { id: id }], data);
+      queryClient.setQueryData(["custom-product", { id: id }], data);
     },
   });
 
   const updateManufacturingImageSetMutation = useMutation({
     mutationFn: async (body: { positionCode: string; file: File }) => {
-      console.log("test");
       const { positionCode, file } = body;
       if (!designItemRes?.data) throw new Error("There is something wrong");
       const { data: fileRes } = await privateUploadFiles([file]);
@@ -714,7 +620,7 @@ function ImageSetPicker({ currentCombination }: ImageSetPickerProps) {
       return res.data;
     },
     onSuccess: (data, variables) => {
-      queryClient.setQueryData(["design-item", { id: id }], data);
+      queryClient.setQueryData(["custom-product", { id: id }], data);
     },
   });
 
@@ -859,8 +765,6 @@ type CombinationCodePickerProps = {
 import FileUpload from "@/components/FileUpload/FileUpload";
 import TShirtContainer from "@/containers/3dModelContainers/TShirtContainer";
 import ToteBagContainer from "@/containers/3dModelContainers/ToteBagContainer";
-import useTags from "@/hooks/useTags";
-import { Tag } from "@/types/Product";
 import logoImage from "../../../../../public/assets/logo.svg";
 
 function CombinationCodePicker({ combinations }: CombinationCodePickerProps) {
@@ -870,8 +774,8 @@ function CombinationCodePicker({ combinations }: CombinationCodePickerProps) {
   const { id } = router.query;
 
   const designItemRes = queryClient.getQueryData<
-    CommonResponseBase<DesignItemDetail>
-  >(["design-item", { id: id }]);
+    CommonResponseBase<CustomProductDesignInfo>
+  >(["custom-product", { id: id }]);
 
   const updateCombinationCodeMutate = useMutation({
     mutationFn: async (combinationCode: string) => {
@@ -884,7 +788,7 @@ function CombinationCodePicker({ combinations }: CombinationCodePickerProps) {
       return res.data;
     },
     onSuccess: (data) => {
-      queryClient.setQueryData(["design-item", { id: id }], data);
+      queryClient.setQueryData(["custom-product", { id: id }], data);
     },
   });
 

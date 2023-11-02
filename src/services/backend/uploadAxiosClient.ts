@@ -13,11 +13,9 @@ let isRefreshing = false;
 const refresh = () => {
   if (isRefreshing) return Promise.reject();
   isRefreshing = true;
-  return axiosClient
-    .post("https://api.artiexh.com/api/v1/auth/refresh")
-    .then(() => {
-      isRefreshing = false;
-    });
+  return axiosClient.post("/auth/refresh").then(() => {
+    isRefreshing = false;
+  });
 };
 
 axiosClient.interceptors.response.use(undefined, (error) => {

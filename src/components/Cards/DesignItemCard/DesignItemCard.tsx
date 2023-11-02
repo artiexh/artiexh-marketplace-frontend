@@ -1,11 +1,11 @@
 import ImageWithFallback from "@/components/ImageWithFallback/ImageWithFallback";
 import PrivateImageLoader from "@/components/PrivateImageLoader/PrivateImageLoader";
-import { SimpleDesignItem } from "@/types/DesignItem";
+import { SimpleCustomProduct } from "@/types/CustomProduct";
 import clsx from "clsx";
 import { DOMAttributes } from "react";
 
 type DesignItemCardProps = {
-  data: SimpleDesignItem;
+  data: SimpleCustomProduct;
   onClick?: DOMAttributes<HTMLDivElement>["onClick"];
   classNames?: {
     root?: string;
@@ -30,7 +30,7 @@ export default function DesignItemCard({
       <div className="size-description flex gap-x-3">
         <div className="w-20 aspect-square relative rounded-md">
           <PrivateImageLoader
-            id={data.thumbnail?.id.toString()}
+            id={data.modelThumbnail?.id.toString()}
             alt="test"
             fill
           />
@@ -39,7 +39,7 @@ export default function DesignItemCard({
           <div className="flex flex-col gap-y-1">
             <div className="text-2xl font-semibold">{data.name}</div>
             <div>
-              <span>Product base: {data.variant.productBase.name}</span>
+              <span>Product base: {data.variant.productTemplate.name}</span>
             </div>
           </div>
           <div className="actions flex justify-end">{actions}</div>

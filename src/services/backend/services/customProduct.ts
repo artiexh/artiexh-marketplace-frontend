@@ -4,45 +4,49 @@ import {
 } from "@/types/ResponseBase";
 import axiosClient from "../axiosClient";
 import {
-  DesignImageSet,
-  DesignItemDetail,
-  SimpleDesignItem,
-} from "@/types/DesignItem";
+  CustomDesignImageSet,
+  CustomProductDesignInfo,
+  CustomProductGeneralInfo,
+  SimpleCustomProduct,
+} from "@/types/CustomProduct";
 import { SimpleProductVariant } from "@/types/ProductVariant";
+import { Attaches } from "@/types/common";
 
-export const createDesignItemApi = (body: {
+export const createCustomProductApi = (body: {
   variantId: string;
   name: string;
 }) =>
-  axiosClient.post<CommonResponseBase<SimpleDesignItem>>("/inventory-item", {
-    ...body,
-  });
+  axiosClient.post<CommonResponseBase<SimpleCustomProduct>>(
+    "/custom-product/general",
+    {
+      ...body,
+    }
+  );
 
 export const updateImageCombinationApi = (
-  designItem: DesignItemDetail,
-  combination: SimpleDesignItem["combinationCode"]
+  designItem: CustomProductDesignInfo,
+  combination: CustomProductDesignInfo["combinationCode"]
 ) => {
-  return axiosClient.post<CommonResponseBase<DesignItemDetail>>(
-    "/inventory-item",
+  return axiosClient.put<CommonResponseBase<CustomProductDesignInfo>>(
+    `/custom-product/${designItem.id}/design`,
     {
       id: designItem.id,
       combinationCode: combination,
       imageSet: [],
+      modelThumbnailId: designItem.modelThumbnail?.id,
       name: designItem.name,
-      description: designItem.description,
-      tags: designItem.tags,
       variantId: designItem.variant.id,
     }
   );
 };
 
 export const updateThumbnailApi = (
-  designItem: DesignItemDetail,
+  designItem: CustomProductDesignInfo,
   thumbnailId: string
 ) => {
   //TODO: call api later
-  return axiosClient.post<CommonResponseBase<DesignItemDetail>>(
-    "/inventory-item",
+  return axiosClient.put<CommonResponseBase<CustomProductDesignInfo>>(
+    `/custom-product/${designItem.id}/design`,
     {
       id: designItem.id,
       combinationCode: designItem.combinationCode,
@@ -51,23 +55,21 @@ export const updateThumbnailApi = (
         mockupImageId: el.mockupImage?.id,
         manufacturingImageId: el.manufacturingImage?.id,
       })),
-      name: designItem.name,
-      description: designItem.description,
-      tags: designItem.tags ?? [],
       variantId: designItem.variant.id,
-      thumbnailId: thumbnailId,
+      modelThumbnailId: thumbnailId,
+      name: designItem.name,
     }
   );
 };
 
 export const updateImageSetApi = (
-  designItem: DesignItemDetail,
-  imageSets: DesignImageSet[],
+  designItem: CustomProductDesignInfo,
+  imageSets: CustomDesignImageSet[],
   thumbnailId?: string
 ) => {
   //TODO: call api later
-  return axiosClient.post<CommonResponseBase<DesignItemDetail>>(
-    "/inventory-item",
+  return axiosClient.put<CommonResponseBase<CustomProductDesignInfo>>(
+    `/custom-product/${designItem.id}/design`,
     {
       id: designItem.id,
       combinationCode: designItem.combinationCode,
@@ -76,38 +78,32 @@ export const updateImageSetApi = (
         mockupImageId: el.mockupImage?.id,
         manufacturingImageId: el.manufacturingImage?.id,
       })),
-      name: designItem.name,
-      description: designItem.description,
-      tags: designItem.tags,
       variantId: designItem.variant.id,
-      thumbnailId: thumbnailId,
+      modelThumbnailId: thumbnailId,
+      name: designItem.name,
     }
   );
 };
 
 export const updateGeneralInformationApi = (
-  designItem: DesignItemDetail,
+  designItem: CustomProductGeneralInfo,
   generalInfo: {
     name: string;
     description?: string;
     tags?: string[];
+    attaches?: Attaches[];
   }
 ) => {
   //TODO: call api later
-  return axiosClient.post<CommonResponseBase<DesignItemDetail>>(
-    "/inventory-item",
+  return axiosClient.put<CommonResponseBase<CustomProductGeneralInfo>>(
+    `/custom-product/${designItem.id}/general`,
     {
       id: designItem.id,
-      combinationCode: designItem.combinationCode,
-      imageSet: designItem.imageSet.map((el) => ({
-        positionCode: el.positionCode,
-        mockupImageId: el.mockupImage?.id,
-        manufacturingImageId: el.manufacturingImage?.id,
-      })),
       name: generalInfo.name,
       description: generalInfo.description,
       tags: generalInfo.tags ?? [],
       variantId: designItem.variant.id,
+      attaches: generalInfo?.attaches ?? [],
     }
   );
 };
@@ -130,7 +126,7 @@ type ProviderConfigByDesignItem = {
 };
 
 export const calculateDesignItemProviderConfigApi = async (
-  designItems: SimpleDesignItem[]
+  designItems: SimpleCustomProduct[]
 ): Promise<
   CommonResponseBase<PaginationResponseBase<ProviderConfigByDesignItem>>
 > => {

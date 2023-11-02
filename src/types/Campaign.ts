@@ -1,7 +1,8 @@
-import { SimpleDesignItem } from "./DesignItem";
+import { SimpleCustomProduct } from "./CustomProduct";
 import { Price } from "./Product";
 import { ProductBaseDetail } from "./ProductBase";
 import { Provider } from "./User";
+import { Attaches } from "./common";
 
 export type Campaign = {
   id: string;
@@ -36,46 +37,58 @@ export type CampaignData = {
 };
 
 export type CustomProduct = {
-  attaches: {
+  createdDate: string;
+  customProduct: {
+    attaches: Attaches[];
+    campaignLock: string;
+    category: {
+      id: string;
+      imageUrl: string;
+      name: string;
+    };
+    createdDate: string;
     description: string;
     id: string;
-    title: string;
-    type: string;
-    url: string;
-  }[];
-  category: {
-    id: string;
-    imageUrl: string;
+    maxItemPerOrder: number;
+    modelThumbnail: {
+      fileName: string;
+      id: string;
+      name: string;
+    };
+    modifiedDate: string;
     name: string;
+    tags: string[];
+    variant: {
+      id: string;
+      productTemplate: {
+        id: string;
+        name: string;
+      };
+      variantCombinations: {
+        option: {
+          id: string;
+          name: string;
+        };
+        optionValue: {
+          id: string;
+          name: string;
+          value: string;
+        };
+      }[];
+    };
   };
-  createdDate: string;
-  description: string;
   id: string;
-  limitPerOrder: string;
   modifiedDate: string;
-  name: string;
   price: {
-    amount: string;
+    amount: number;
     unit: string;
   };
-  quantity: string;
-  tags: string[];
   providerConfig: {
     basePriceAmount: number;
     manufacturingTime: string;
     minQuantity: number;
   };
-  inventoryItem: Omit<SimpleDesignItem, "variant"> & {
-    productBase: Pick<ProductBaseDetail, "id" | "name" | "imageCombinations">;
-    variant: {
-      id: string;
-      variantCombination: {
-        optionName: string;
-        valueName: string;
-        value: string;
-      }[];
-    };
-  };
+  quantity: number;
 };
 
 // New campaign detail type
@@ -85,59 +98,45 @@ export type CampaignDetailResponse = CampaignData & {
   content: string;
 };
 
+export type CampaignHistory = {
+  action: string;
+  eventTime: string;
+  message: string;
+  updatedBy: string;
+};
+
 // Old type
 export type CampaignDetail = {
+  campaignHistories: CampaignHistory[];
+  content: string;
+  description: string;
+  from: string;
+  id: 0;
+  isPublished: true;
   name: string;
-  description?: string;
-  campaignHistories: {
-    action: string;
-    eventTime: string;
-    message: string;
-    updatedBy: string;
-  }[];
-  providerId: string;
-  customProducts: CustomProduct[];
-  id: string;
   owner: {
     avatarUrl: string;
     displayName: string;
     id: string;
-    province: {
-      country: {
-        id: string;
-        name: string;
-        provinces: string[];
-      };
-      districts: {
-        fullName: string;
-        id: string;
-        name: string;
-        province: string;
-        wards: {
-          district: string;
-          fullName: string;
-          id: string;
-          name: string;
-        }[];
-      }[];
-      fullName: string;
-      id: string;
-      name: string;
-    };
     username: string;
   };
+  products: CustomProduct[];
   provider: {
     address: string;
     businessCode: string;
     businessName: string;
-    categories: string[];
+    categories: {
+      id: string;
+      imageUrl: string;
+      name: string;
+    }[];
     contactName: string;
     email: string;
     imageUrl: string;
     phone: string;
   };
   status: string;
-  thumbnailUrl?: string;
+  thumbnailUrl: string;
+  to: string;
   type: "SHARE" | "PRIVATE";
-  content?: string;
 };

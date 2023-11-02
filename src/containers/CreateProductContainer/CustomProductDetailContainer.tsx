@@ -3,10 +3,16 @@ import { ATTACHMENT_TYPE, NOTIFICATION_TYPE } from "@/constants/common";
 import { ROUTE } from "@/constants/route";
 import useCategories from "@/hooks/useCategories";
 import useTags from "@/hooks/useTags";
-import { publicUploadFile } from "@/services/backend/services/media";
+import { updateGeneralInformationApi } from "@/services/backend/services/customProduct";
+import {
+  privateUploadFiles,
+  publicUploadFile,
+} from "@/services/backend/services/media";
 import { createProduct } from "@/services/backend/services/product";
-import { DesignItemDetail } from "@/types/DesignItem";
+import { CustomProductGeneralInfo } from "@/types/CustomProduct";
 import { CreateProductValues, Tag } from "@/types/Product";
+import { CommonResponseBase } from "@/types/ResponseBase";
+import { Attaches } from "@/types/common";
 import {
   CURRENCIES,
   DEFAULT_FORM_VALUES,
@@ -25,36 +31,48 @@ import {
 import { useForm } from "@mantine/form";
 import { notifications } from "@mantine/notifications";
 import { IconArrowLeft } from "@tabler/icons-react";
+import { useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 type Props = {
-  data: DesignItemDetail;
+  data: CustomProductGeneralInfo;
+};
+
+type UpdateGeneralInfoData = {
+  attaches: Attaches[];
+  description: string;
+  maxItemPerOrder: number;
+  name: string;
+  tags: string[];
+  variantId: string;
+  thumbnail?: Attaches;
 };
 
 const CustomProductDetailContainer = ({ data }: Props) => {
   const { data: categories } = useCategories();
   const { data: tagList } = useTags();
+  const queryClient = useQueryClient();
 
   const {
     values,
     getInputProps,
     onSubmit,
-    validateField,
-    setFieldValue,
-    clearFieldError,
-    errors,
-    removeListItem,
+    setValues,
     isDirty,
-  } = useForm({
+    resetDirty,
+    setFieldValue,
+    removeListItem,
+  } = useForm<UpdateGeneralInfoData>({
     initialValues: {
-      ...DEFAULT_FORM_VALUES,
-      name: data.name,
+      attaches: data.attaches?.filter((el) => el.type !== "THUMBNAIL") ?? [],
       description: data.description,
-      categoryId: data.variant.productBase.category.id.toString(),
+      maxItemPerOrder: data.maxItemPerOrder,
+      name: data.name,
       tags: data.tags,
+      variantId: data.variant.id,
+      thumbnail: data.attaches?.find((el) => el.type === "THUMBNAIL"),
     },
-    validate: createProductValidation,
     validateInputOnBlur: true,
     validateInputOnChange: true,
   });
@@ -87,80 +105,51 @@ const CustomProductDetailContainer = ({ data }: Props) => {
     label: category.name,
   }));
 
-  const submitHandler = async (values: CreateProductValues) => {
-    if (values.allowShipping) {
-      values.deliveryType = "SHIP";
-    } else {
-      values.deliveryType = "AT_EVENT";
-    }
-    delete values.allowShipping;
+  const submitHandler = async (values: UpdateGeneralInfoData) => {
+    console.log(
+      "🚀 ~ file: CustomProductDetailContainer.tsx:109 ~ submitHandler ~ values:",
+      values
+    );
+    //TODO: setup logic to upload file later
+    // const promiseArr = values.thumbnail
+    //   ? [publicUploadFile([values.thumbnail])]
+    //   : [];
 
-    if (!values.thumbnail) {
-      notifications.show({
-        message: "Xin hãy upload ảnh sản phẩm của bạn",
-        ...getNotificationIcon(NOTIFICATION_TYPE["FAILED"]),
-      });
-      return;
-    }
+    // if (values.attaches.filter((item) => item != null).length > 0) {
+    //   promiseArr.push(publicUploadFile(values.attaches ?? []));
+    // }
 
-    const promiseArr = [publicUploadFile([values.thumbnail])];
+    const results = await publicUploadFile(
+      values.thumbnail
+        ? [values.thumbnail, ...(values.attaches ?? [])]
+        : [...(values.attaches ?? [])]
+    );
 
-    if (values.attaches.filter((item) => item != null).length > 0) {
-      promiseArr.push(publicUploadFile(values.attaches ?? []));
-    }
-
-    Promise.all(promiseArr)
-      .then(async (res) => {
-        const thumbnail = res[0]?.data.data.fileResponses[0];
-        const attachments = res[1]?.data.data.fileResponses;
-
-        if (!thumbnail) return;
-
-        let attaches = [
-          {
-            url: thumbnail.presignedUrl,
-            type: ATTACHMENT_TYPE.THUMBNAIL,
-            title: thumbnail.fileName,
-            description: thumbnail.fileName,
-          },
-        ] as any[];
-
-        if (attachments != null) {
-          attaches = [
-            ...attaches,
-            ...attachments?.map((attachment) => ({
-              url: attachment.presignedUrl,
-              type: ATTACHMENT_TYPE.OTHER,
-              title: attachment.fileName,
-              description: attachment.fileName,
-            })),
-          ];
-        }
-
-        const result = await createProduct({
-          ...values,
-          attaches,
-        });
-
-        if (result?.data.data == null) {
-          notifications.show({
-            message: "Tao sản phẩm thất bại! Xin hãy thử lại!",
-            ...getNotificationIcon(NOTIFICATION_TYPE["FAILED"]),
-          });
-        } else {
-          notifications.show({
-            message: "Tao sản phẩm thành công!",
-            ...getNotificationIcon(NOTIFICATION_TYPE["SUCCESS"]),
-          });
-          router.push(`${ROUTE.SHOP}/products`);
-        }
-      })
-      .catch((err) => {
-        console.log(err);
-      })
-      .finally(() => {
-        setIsSubmitting(false);
-      });
+    const res = await updateGeneralInformationApi(data, {
+      ...values,
+      attaches: results?.data.data.fileResponses.map((res, index) => {
+        return {
+          title: res.fileName,
+          type: index === 0 ? "THUMBNAIL" : "OTHER",
+          url: res.presignedUrl,
+        };
+      }),
+    });
+    queryClient.setQueryData(
+      ["/custom-product/[id]/general", { id: data?.id }],
+      res.data
+    );
+    const tmp = res.data.data;
+    setValues({
+      attaches: tmp.attaches?.filter((el) => el.type !== "THUMBNAIL") ?? [],
+      description: tmp.description,
+      maxItemPerOrder: tmp.maxItemPerOrder,
+      name: tmp.name,
+      tags: tmp.tags,
+      variantId: tmp.variant.id,
+      thumbnail: tmp.attaches?.find((el) => el.type === "THUMBNAIL"),
+    });
+    resetDirty();
   };
 
   return (
@@ -209,32 +198,6 @@ const CustomProductDetailContainer = ({ data }: Props) => {
               disabled={isSubmitting}
             />
 
-            <div className="flex col-span-12 md:col-span-8 order-1 md:order-none">
-              <NumberInput
-                label="Price"
-                withAsterisk
-                className="flex-[3]"
-                hideControls
-                classNames={{
-                  input: "rounded-r-none",
-                }}
-                min={1}
-                {...getInputProps("price.amount")}
-                disabled={isSubmitting}
-              />
-              <Select
-                data={CURRENCIES}
-                label="Unit"
-                withAsterisk
-                className="flex-[2]"
-                classNames={{
-                  input: "rounded-l-none",
-                }}
-                {...getInputProps("price.unit")}
-                disabled={isSubmitting}
-              />
-            </div>
-
             <Select
               data={categoryOptions || []}
               className="col-span-12 md:col-span-8 order-1 md:order-none"
@@ -264,7 +227,6 @@ const CustomProductDetailContainer = ({ data }: Props) => {
                 setFile={(file) => {
                   setFieldValue("thumbnail", file);
                 }}
-                error={errors.thumbnail as string}
                 defaultPlaceholder={
                   <div className="flex flex-col items-center">
                     <p className="text-4xl font-thin">+</p>
@@ -279,10 +241,10 @@ const CustomProductDetailContainer = ({ data }: Props) => {
             </Input.Wrapper>
             <Input.Wrapper label="Attachments" className="mt-3">
               <div className="grid grid-cols-3 gap-3">
-                {attaches?.map((attach, index) => (
+                {values.attaches?.map((attach, index) => (
                   <Thumbnail
                     // Make this unique
-                    url={URL.createObjectURL(attach)}
+                    url={attach?.url ?? URL.createObjectURL(attach as Blob)}
                     key={`${index}-${attach.name}-${Math.random()}`}
                     setFile={(file) => {
                       const cloneAttaches = [...attaches];
@@ -296,7 +258,7 @@ const CustomProductDetailContainer = ({ data }: Props) => {
                     }}
                   />
                 ))}
-                {attaches?.length < 6 && (
+                {values.attaches?.length < 6 && (
                   <Thumbnail
                     setFile={(file) => {
                       console.log(attaches);

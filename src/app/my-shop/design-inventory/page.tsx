@@ -4,9 +4,9 @@ import DesignItemCard from "@/components/Cards/DesignItemCard/DesignItemCard";
 import ImageWithFallback from "@/components/ImageWithFallback/ImageWithFallback";
 import PrivateImageLoader from "@/components/PrivateImageLoader/PrivateImageLoader";
 import { fetcher } from "@/services/backend/axiosClient";
-import { deleteDesignItemApi } from "@/services/backend/services/designInventory";
+import { deleteDesignItemApi } from "@/services/backend/services/customProduct";
 import { getPrivateFile } from "@/services/backend/services/media";
-import { DesignItemDetail, SimpleDesignItem } from "@/types/DesignItem";
+import { DesignItemDetail, SimpleCustomProduct } from "@/types/CustomProduct";
 import {
   CommonResponseBase,
   PaginationResponseBase,
@@ -38,7 +38,7 @@ import useSWR from "swr";
 const DesignInventoryPage = () => {
   const router = useRouter();
   const [selectedDesign, setSelectedDesign] = useState<
-    SimpleDesignItem | undefined
+    SimpleCustomProduct | undefined
   >();
 
   const [params, setParams] = useState({
@@ -51,7 +51,7 @@ const DesignInventoryPage = () => {
     data: response,
     isLoading,
     mutate,
-  } = useSWR<CommonResponseBase<PaginationResponseBase<SimpleDesignItem>>>(
+  } = useSWR<CommonResponseBase<PaginationResponseBase<SimpleCustomProduct>>>(
     ["/inventory-items", params.pageNumber],
     () => {
       console.log(params);

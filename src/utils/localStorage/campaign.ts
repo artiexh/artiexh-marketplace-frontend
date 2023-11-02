@@ -1,7 +1,7 @@
-import { SimpleDesignItem } from "@/types/DesignItem";
+import { SimpleCustomProduct } from "@/types/CustomProduct";
 
 export const storeDesignItemsForCampaign = (
-  designItems: SimpleDesignItem[],
+  designItems: SimpleCustomProduct[],
   campaignId: string
 ) => {
   const designItemsString = JSON.stringify(designItems);
@@ -13,7 +13,7 @@ export const storeDesignItemsForCampaign = (
 
 export const getDesignItemsForCampaign = (
   campaignId: string
-): SimpleDesignItem[] => {
+): SimpleCustomProduct[] => {
   const designItemsString = localStorage.getItem(
     `designItemsForCampaign.${campaignId}`
   );
