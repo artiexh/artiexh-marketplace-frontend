@@ -571,17 +571,11 @@ function PickProvider({ data }: { data: SimpleCustomProduct[] }) {
         data.map((v) => {
           return {
             customProductId: v.id,
-          } as Pick<CustomProduct, "price" | "quantity"> & {
-            customProductId: string;
           };
-        })
+        }),
+        provider ?? campaignRes.data.provider.businessCode
       );
       queryClient.setQueryData(["campaign", { id: id }], res.data);
-      const resProvider = await updateCampaignProviderApi(
-        res.data.data,
-        provider as string
-      );
-      queryClient.setQueryData(["campaign", { id: id }], resProvider.data);
       modals.close("custom-product-create-campaign");
     } catch (e) {
       console.log("🚀 ~ file: page.tsx:578 ~ pickProviderHandler ~ e:", e);

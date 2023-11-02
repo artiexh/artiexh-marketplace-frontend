@@ -111,35 +111,18 @@ export const updateCampaignGeneralInfoApi = (
 
 export const updateCampaignCustomProductsApi = (
   campaign: CampaignDetail,
-  customProducts: Pick<CustomProduct, "price" | "quantity"> & {
-    customProductId: string;
-  }
-) =>
-  axiosClient.put(`/campaign/${campaign.id}`, {
-    name: campaign.name,
-    type: campaign.type,
-    description: campaign.description,
-    providerId: campaign?.provider?.businessCode,
-    products: customProducts,
-  });
-
-export const updateCampaignProviderApi = (
-  campaign: CampaignDetail,
+  customProducts: Partial<Pick<CustomProduct, "price" | "quantity">> &
+    {
+      customProductId: string;
+    }[],
   providerId: string
 ) =>
   axiosClient.put(`/campaign/${campaign.id}`, {
     name: campaign.name,
     type: campaign.type,
     description: campaign.description,
+    products: customProducts,
     providerId: providerId,
-    products:
-      campaign?.products?.map((prod) => {
-        return {
-          price: prod.price,
-          quantity: prod.quantity,
-          customProductId: prod.id,
-        };
-      }) ?? [],
   });
 
 export const getMarketplaceCampaignById = async (id: string) => {
