@@ -13,15 +13,16 @@ import { useQueryClient } from "@tanstack/react-query";
 
 function CustomWebTab({ data: campaignData }: { data: CampaignDetail }) {
   const queryClient = useQueryClient();
-  const { errors, onSubmit, setFieldValue, getInputProps, values } = useForm<{
-    content?: string;
-    thumbnail?: string | File;
-  }>({
-    initialValues: {
-      content: campaignData.content,
-      thumbnail: campaignData.thumbnailUrl,
-    },
-  });
+  const { errors, onSubmit, setFieldValue, getInputProps, values, isDirty } =
+    useForm<{
+      content?: string;
+      thumbnail?: string | File;
+    }>({
+      initialValues: {
+        content: campaignData.content,
+        thumbnail: campaignData.thumbnailUrl,
+      },
+    });
 
   const editor = useEditor({
     extensions: [StarterKit],
@@ -72,7 +73,10 @@ function CustomWebTab({ data: campaignData }: { data: CampaignDetail }) {
           </div>
         }
         className="!h-[20rem]"
-        clearable
+        clearable={
+          campaignData.status === "DRAFT" ||
+          campaignData.status === "REQUEST_CHANGE"
+        }
         onClear={() => {
           setFieldValue("thumbnail", undefined);
         }}
@@ -83,8 +87,6 @@ function CustomWebTab({ data: campaignData }: { data: CampaignDetail }) {
         className="mt-5"
         {...getInputProps("content")}
       >
-        <RichTextEditor.Content />
-
         <RichTextEditor.Toolbar sticky stickyOffset={60}>
           <RichTextEditor.ControlsGroup>
             <RichTextEditor.Bold />
@@ -123,18 +125,20 @@ function CustomWebTab({ data: campaignData }: { data: CampaignDetail }) {
             <RichTextEditor.AlignJustify />
             <RichTextEditor.AlignRight />
           </RichTextEditor.ControlsGroup>
-          <div className="flex-1 flex justify-end bg-white pr-2 pb-2">
+          <div className="flex-1 flex justify-end bg-white pr-2">
             <Button
               type="submit"
               disabled={
-                campaignData.status !== "DRAFT" &&
-                campaignData.status !== "REQUEST_CHANGE"
+                (campaignData.status !== "DRAFT" &&
+                  campaignData.status !== "REQUEST_CHANGE") ||
+                !isDirty()
               }
             >
               Update
             </Button>
           </div>
         </RichTextEditor.Toolbar>
+        <RichTextEditor.Content />
       </RichTextEditor>
     </form>
   );
