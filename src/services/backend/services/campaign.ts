@@ -87,6 +87,8 @@ export const updateCampaignGeneralInfoApi = (
     name: string;
     description?: string;
     type: "SHARE" | "PRIVATE";
+    from?: string;
+    to?: string;
   }
 ) =>
   axiosClient.put(`/campaign/${campaign.id}`, {
@@ -94,17 +96,14 @@ export const updateCampaignGeneralInfoApi = (
     description: generalInfo.description,
     type: generalInfo.type,
     providerId: campaign?.provider?.businessCode,
-    customProducts:
-      campaign?.customProducts?.map((prod) => {
+    from: generalInfo.from,
+    to: generalInfo.to,
+    products:
+      campaign?.products?.map((prod) => {
         return {
-          attaches: prod.attaches,
-          description: prod.description,
-          inventoryItemId: prod.inventoryItem.id,
-          limitPerOrder: prod.limitPerOrder,
-          name: prod.name,
+          customProductId: prod.customProduct.id,
           price: prod.price,
           quantity: prod.quantity,
-          tags: prod.tags,
         };
       }) ?? [],
   });

@@ -40,6 +40,7 @@ import {
   Timeline,
   Tooltip,
 } from "@mantine/core";
+import { DateTimePicker } from "@mantine/dates";
 import { useForm } from "@mantine/form";
 import { modals } from "@mantine/modals";
 import { notifications } from "@mantine/notifications";
@@ -208,6 +209,8 @@ export default function CampaignDetailPage() {
           <CampaignGeneralInfoForm
             disabled={!["DRAFT", "REQUEST_CHANGE"].includes(res.data.status)}
             data={{
+              from: res.data.from,
+              to: res.data.to,
               name: res.data.name,
               description: res.data.description,
               campaignHistories: res.data.campaignHistories ?? [],
@@ -319,7 +322,7 @@ function CampaignGeneralInfoForm({
 }: {
   data: Pick<
     CampaignDetail,
-    "name" | "description" | "campaignHistories" | "type"
+    "name" | "description" | "campaignHistories" | "type" | "from" | "to"
   >;
   disabled?: boolean;
 }) {
@@ -331,8 +334,14 @@ function CampaignGeneralInfoForm({
     name: string;
     description?: string;
     type: "SHARE" | "PRIVATE";
+    from?: Date;
+    to?: Date;
   }>({
-    initialValues: { ...data },
+    initialValues: {
+      ...data,
+      from: data.from ? new Date(data.from) : undefined,
+      to: data.to ? new Date(data.to) : undefined,
+    },
   });
   const submitHandler = async () => {
     const campaignRes = queryClient.getQueryData<
@@ -341,6 +350,8 @@ function CampaignGeneralInfoForm({
     if (!campaignRes?.data) return;
     const res = await updateCampaignGeneralInfoApi(campaignRes.data, {
       ...form.values,
+      from: form.values?.from?.toISOString(),
+      to: form.values?.to?.toISOString(),
     });
 
     if (res != null) {
@@ -359,7 +370,11 @@ function CampaignGeneralInfoForm({
   };
 
   useEffect(() => {
-    form.setValues({ ...data });
+    form.setValues({
+      ...data,
+      from: data.from ? new Date(data.from) : undefined,
+      to: data.to ? new Date(data.to) : undefined,
+    });
   }, [data]);
 
   return (
@@ -387,6 +402,24 @@ function CampaignGeneralInfoForm({
                   { label: "Private", value: "PRIVATE" },
                   { label: "Shared", value: "SHARE" },
                 ]}
+              />
+            </div>
+            <div className="flex items-end gap-x-2">
+              <DateTimePicker
+                label="From"
+                classNames={{
+                  input: "!py-0",
+                }}
+                {...form.getInputProps("from")}
+                className="h-fit flex-1"
+              />
+              <DateTimePicker
+                label="To"
+                classNames={{
+                  input: "!py-0",
+                }}
+                {...form.getInputProps("to")}
+                className="h-fit flex-1"
               />
             </div>
             <Textarea
