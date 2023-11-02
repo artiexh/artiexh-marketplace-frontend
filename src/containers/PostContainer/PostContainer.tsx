@@ -22,8 +22,6 @@ export default function PostContainer({ artist }: { artist: User }) {
   const [scroll] = useWindowScroll();
 
   useEffect(() => {
-    console.log(scroll, size, window.screen.height);
-
     if (scroll.y > window.screen.height * size) {
       setSize((prev) => prev + 1);
     }

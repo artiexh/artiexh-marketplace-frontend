@@ -1,4 +1,5 @@
 import { OwnerInfo } from "./Product";
+import { User } from "./User";
 import { Attaches } from "./common";
 
 export type PostInformation = {
@@ -13,12 +14,9 @@ export type PostInformation = {
 };
 
 export type Comment = {
+  id: string;
   createdAt: string;
-  author: {
-    id: string;
-    avatarUrl: string;
-    name: string;
-  };
+  owner: User;
   content: string;
 };
 

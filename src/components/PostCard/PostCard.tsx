@@ -1,8 +1,17 @@
 /* eslint-disable @next/next/no-img-element */
-import { PostInformation } from "@/types/Post";
+import PostCommentInput from "@/containers/PostCommentInput/PostCommentInput";
+import axiosClient from "@/services/backend/axiosClient";
+import { Comment, PostInformation } from "@/types/Post";
+import {
+  CommonResponseBase,
+  PaginationResponseBase,
+} from "@/types/ResponseBase";
 import { User } from "@/types/User";
-import { Divider } from "@mantine/core";
+import { Divider, Modal } from "@mantine/core";
+import { useDisclosure } from "@mantine/hooks";
 import { IconHeart, IconMessageCircle } from "@tabler/icons-react";
+import { useState } from "react";
+import useSWRInfinite from "swr/infinite";
 
 type PostCardProps = {
   artist: User;
@@ -10,8 +19,70 @@ type PostCardProps = {
 };
 
 export default function PostCard({ artist, postInformation }: PostCardProps) {
+  function getKey(pageNumber: number, previousPageData: PostInformation[]) {
+    if (pageNumber && !previousPageData.length) return null; // reached the end
+    return `/post/${postInformation.id}/comment?pageNumber=${
+      pageNumber + 1
+    }&pageSize=4&sortBy=id&sortDirection=DESC`; // SWR key
+  }
+
+  const [opened, { open, close }] = useDisclosure(false);
+  const [totalPage, setTotalPage] = useState<number>(
+    Math.ceil(postInformation.numOfComments / 4)
+  );
+  const {
+    data: comments,
+    size,
+    setSize,
+    mutate,
+  } = useSWRInfinite(getKey, (url: string) => {
+    return axiosClient
+      .get<CommonResponseBase<PaginationResponseBase<Comment>>>(url)
+      .then((res) => {
+        setTotalPage(res.data.data.totalPage);
+        return res.data.data.items;
+      });
+  });
+
+  console.log(comments);
+
   return (
-    <div className="post-card bg-white py-8 rounded-xl shadow w-full">
+    <>
+      <Modal size="70vw" opened={opened} onClose={close}>
+        <PostCardContent artist={artist} postInformation={postInformation} />
+        <Divider className="my-4" />
+        <div className="mx-4">
+          <PostCommentInput commentId={postInformation.id} refetch={mutate} />
+          <div className="mt-6">
+            {comments?.flat()?.map((item) => (
+              <div key={item?.id} className="my-4">
+                <CommentCard commentInfo={item} />
+              </div>
+            ))}
+            {totalPage > size && (
+              <div
+                className="cursor-pointer text-gray-600 text-semibold text-sm mt-6"
+                onClick={() => setSize((size) => size + 1)}
+              >
+                Xem Thêm{" "}
+              </div>
+            )}
+          </div>
+        </div>
+      </Modal>
+      <div
+        className="post-card bg-white py-8 rounded-xl shadow w-full cursor-pointer"
+        onClick={open}
+      >
+        <PostCardContent artist={artist} postInformation={postInformation} />
+      </div>
+    </>
+  );
+}
+
+const PostCardContent = ({ artist, postInformation }: PostCardProps) => {
+  return (
+    <>
       <div className="px-6">
         <div className="flex gap-4">
           <div>
@@ -44,17 +115,39 @@ export default function PostCard({ artist, postInformation }: PostCardProps) {
       <div className="mx-6 flex gap-4 mt-6">
         <div className="flex gap-2 items-center">
           <div>
-            <IconMessageCircle />
+            <IconHeart />
           </div>
           <div>{postInformation.likes}</div>
         </div>
-        <div className="flex gap-2 items-center">
-          <div>
-            <IconHeart />
+      </div>
+    </>
+  );
+};
+
+const CommentCard = ({ commentInfo }: { commentInfo: Comment }) => {
+  return (
+    <div>
+      <div className="flex gap-4">
+        <div>
+          <img
+            src={
+              commentInfo.owner.avatarUrl ??
+              "https://cdn.hero.page/pfp/5e92df9f-2fe9-4b7e-a87a-ba503fe458d2-charming-sakura-inspired-avatar-kawaii-anime-avatar-creations-1.png"
+            }
+            alt="img"
+            className="w-[40px] h-[40px] rounded-full"
+          />
+        </div>
+        <div className="flex-1">
+          <div className="bg-gray-100 p-2 rounded-lg">
+            <div className="text-sm font-bold">
+              {commentInfo.owner.displayName}
+            </div>
+            <div className="text-sm">{commentInfo.content}</div>
           </div>
-          <div>{postInformation.numOfComments}</div>
+          <div className="text-xs text-gray-500 mt-1">1 day ago</div>
         </div>
       </div>
     </div>
   );
-}
+};
