@@ -10,7 +10,6 @@ import {
   calculateDesignItemConfig,
   updateCampaignCustomProductsApi,
   updateCampaignGeneralInfoApi,
-  updateCampaignProviderApi,
   updateCampaignStatusApi,
 } from "@/services/backend/services/campaign";
 import { CampaignDetail, CustomProduct } from "@/types/Campaign";
@@ -700,7 +699,6 @@ function CustomProductTable({
   data: CampaignDetail["products"];
   disabled?: boolean;
 }) {
-  console.log("🚀 ~ file: page.tsx:709 ~ rawData:", rawData);
   const routerParams = useParams();
   const queryClient = useQueryClient();
 
@@ -747,7 +745,7 @@ function CustomProductTable({
                 ...data,
                 onEdit: () =>
                   modals.open({
-                    modalId: `${data.customProduct.id}-custom-product-edit`,
+                    modalId: `${data.id}-custom-product-edit`,
                     title: "Edit",
                     centered: true,
                     classNames: {
@@ -764,11 +762,7 @@ function CustomProductTable({
   );
 }
 
-function EditCustomProductModal({
-  data: customProduct,
-}: {
-  data: CustomProduct;
-}) {
+function EditCustomProductModal({ data: product }: { data: CustomProduct }) {
   const routerParams = useParams();
   const queryClient = useQueryClient();
 
@@ -777,10 +771,14 @@ function EditCustomProductModal({
     quantity: number;
     price: number;
   }>({
+    initialValues: {
+      quantity: product.quantity,
+      price: product.price.amount,
+    },
     validate: {
       price: (value, values, path) => {
         const index = Number(path.split(".")[1]);
-        const config = customProduct;
+        const config = product;
         if (config && config?.providerConfig?.basePriceAmount >= value) {
           return `Price of this product should be greater than ${config.providerConfig?.basePriceAmount}`;
         }
@@ -788,7 +786,7 @@ function EditCustomProductModal({
       },
       quantity: (value, values, path) => {
         const index = Number(path.split(".")[1]);
-        const config = customProduct;
+        const config = product;
         if (config && config.providerConfig?.minQuantity > value) {
           return `Quantiy of this product should be equal or greater than ${config.providerConfig?.minQuantity}`;
         }
@@ -804,43 +802,34 @@ function EditCustomProductModal({
       CommonResponseBase<CampaignDetail>
     >(["campaign", { id: id }]);
     if (!campaignRes?.data) throw new Error("What the heck");
-    const tmp = campaignRes.data.customProducts.filter(
-      (d) => d.id !== customProduct.id
+    const tmp = campaignRes.data.products.filter(
+      (d) => d.customProduct.id !== product.customProduct.id
     );
-    const res = await updateCampaignCustomProductsApi(campaignRes.data, [
-      ...tmp.map((v) => {
-        return {
-          name: v.name,
-          description: v.description,
-          tags: v.tags,
-          inventoryItemId: v.inventoryItem.id,
-          quantity: v.quantity,
-          price: v.price,
-        } as Pick<
-          CustomProduct,
-          | "name"
-          | "description"
-          | "tags"
-          | "attaches"
-          | "limitPerOrder"
-          | "price"
-          | "quantity"
-        > & { inventoryItemId: string };
-      }),
-      {
-        name: customProduct.name,
-        description: customProduct.description,
-        tags: customProduct.tags,
-        inventoryItemId: customProduct.inventoryItem.id,
-        quantity: data.quantity,
-        price: {
-          amount: data.price,
-          unit: "VND",
+    const res = await updateCampaignCustomProductsApi(
+      campaignRes.data,
+      [
+        ...tmp.map((v) => {
+          return {
+            customProductId: v.customProduct.id,
+            quantity: v.quantity,
+            price: v.price,
+          } as Pick<CustomProduct, "price" | "quantity"> & {
+            customProductId: string;
+          };
+        }),
+        {
+          customProductId: product.customProduct.id,
+          quantity: data.quantity,
+          price: {
+            amount: data.price,
+            unit: "VND",
+          },
         },
-      },
-    ]);
+      ],
+      campaignRes.data.provider.businessCode
+    );
     queryClient.setQueryData(["campaign", { id: id }], res.data);
-    modals.close(`${customProduct.inventoryItem.id}-custom-product-edit`);
+    modals.close(`${product.id}-custom-product-edit`);
   };
 
   return (
@@ -853,7 +842,7 @@ function EditCustomProductModal({
           <div className="flex justify-between items-center w-full">
             <span className="flex items-center gap-x-1">
               <span>
-                {`Price (Min: ${customProduct.providerConfig?.basePriceAmount})`}{" "}
+                {`Price (Min: ${product.providerConfig?.basePriceAmount})`}{" "}
               </span>
               <Popover position="top" withArrow shadow="md">
                 <Popover.Target>
@@ -866,7 +855,7 @@ function EditCustomProductModal({
             </span>
             <span className="text-gray-500">{`Your profit: ${
               Number(form.values.price ?? 0) -
-              customProduct?.providerConfig?.basePriceAmount
+              product?.providerConfig?.basePriceAmount
             }`}</span>
           </div>
         }
@@ -883,7 +872,7 @@ function EditCustomProductModal({
           <div className="flex">
             <span className="flex gap-x-1 items-center">
               <span>
-                {`Quantity (Min: ${customProduct.providerConfig?.minQuantity})`}{" "}
+                {`Quantity (Min: ${product.providerConfig?.minQuantity})`}{" "}
               </span>
               <Popover position="top" withArrow shadow="md">
                 <Popover.Target>
