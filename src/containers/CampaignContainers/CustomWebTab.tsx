@@ -6,24 +6,61 @@ import { useForm } from "@mantine/form";
 import { useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import { RichTextEditor, Link } from "@mantine/tiptap";
+import { CampaignDetail } from "@/types/Campaign";
+import { publicUploadFile } from "@/services/backend/services/media";
+import { updateCampaignWebInfoApi } from "@/services/backend/services/campaign";
+import { useQueryClient } from "@tanstack/react-query";
 
-function CustomWebTab() {
-  const { errors, onSubmit, setFieldValue, getInputProps, values } = useForm();
+function CustomWebTab({ data: campaignData }: { data: CampaignDetail }) {
+  const queryClient = useQueryClient();
+  const { errors, onSubmit, setFieldValue, getInputProps, values } = useForm<{
+    content?: string;
+    thumbnail?: string | File;
+  }>({
+    initialValues: {
+      content: campaignData.content,
+      thumbnail: campaignData.thumbnailUrl,
+    },
+  });
 
   const editor = useEditor({
     extensions: [StarterKit],
-
+    content: campaignData.content ?? "",
+    editable:
+      campaignData.status === "DRAFT" ||
+      campaignData.status == "REQUEST_CHANGE",
     onUpdate({ editor }) {
       setFieldValue("content", editor.getHTML());
     },
   });
 
-  const updateWebInfo = (data: any) => {
-    console.log(data);
+  const updateWebInfo = async (data: {
+    content?: string;
+    thumbnail?: string | File;
+  }) => {
+    let thumbnailUrl: string | undefined = campaignData.thumbnailUrl;
+    if (data.thumbnail instanceof File) {
+      const res = await publicUploadFile([data.thumbnail]);
+      thumbnailUrl = res?.data.data.fileResponses[0].presignedUrl;
+    } else if (!data.thumbnail) {
+      thumbnailUrl = undefined;
+    }
+
+    const res = await updateCampaignWebInfoApi(campaignData, {
+      content: data.content,
+      thumbnailUrl: thumbnailUrl,
+    });
+
+    queryClient.setQueryData(["campaign", { id: campaignData.id }], res.data);
   };
   return (
     <form onSubmit={onSubmit(updateWebInfo)} className="mt-5">
       <Thumbnail
+        url={
+          values.thumbnail instanceof File
+            ? URL.createObjectURL(values.thumbnail)
+            : values.thumbnail
+        }
         setFile={(file) => {
           setFieldValue("thumbnail", file);
         }}
@@ -87,7 +124,15 @@ function CustomWebTab() {
             <RichTextEditor.AlignRight />
           </RichTextEditor.ControlsGroup>
           <div className="flex-1 flex justify-end bg-white pr-2 pb-2">
-            <Button type="submit">Update</Button>
+            <Button
+              type="submit"
+              disabled={
+                campaignData.status !== "DRAFT" &&
+                campaignData.status !== "REQUEST_CHANGE"
+              }
+            >
+              Update
+            </Button>
           </div>
         </RichTextEditor.Toolbar>
       </RichTextEditor>

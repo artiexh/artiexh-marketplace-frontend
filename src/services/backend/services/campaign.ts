@@ -98,6 +98,34 @@ export const updateCampaignGeneralInfoApi = (
     providerId: campaign?.provider?.businessCode,
     from: generalInfo.from,
     to: generalInfo.to,
+    content: campaign.content,
+    thumbnailUrl: campaign.thumbnailUrl,
+    products:
+      campaign?.products?.map((prod) => {
+        return {
+          customProductId: prod.customProduct.id,
+          price: prod.price,
+          quantity: prod.quantity,
+        };
+      }) ?? [],
+  });
+
+export const updateCampaignWebInfoApi = (
+  campaign: CampaignDetail,
+  webData: {
+    content?: string;
+    thumbnailUrl?: string;
+  }
+) =>
+  axiosClient.put(`/campaign/${campaign.id}`, {
+    name: campaign.name,
+    description: campaign.description,
+    type: campaign.type,
+    providerId: campaign?.provider?.businessCode,
+    from: campaign.from,
+    to: campaign.to,
+    content: webData.content,
+    thumbnailUrl: webData.thumbnailUrl,
     products:
       campaign?.products?.map((prod) => {
         return {

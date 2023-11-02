@@ -223,7 +223,7 @@ export default function CampaignDetailPage() {
         </Tabs.Panel>
 
         <Tabs.Panel value="promote-details">
-          <CustomWebTab />
+          <CustomWebTab data={res.data} />
         </Tabs.Panel>
         <Tabs.Panel value="history">
           <h1>History</h1>
