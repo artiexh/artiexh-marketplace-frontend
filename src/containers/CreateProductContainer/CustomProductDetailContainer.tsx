@@ -1,35 +1,20 @@
 import Thumbnail from "@/components/CreateProduct/Thumbnail";
-import { ATTACHMENT_TYPE, NOTIFICATION_TYPE } from "@/constants/common";
-import { ROUTE } from "@/constants/route";
 import useCategories from "@/hooks/useCategories";
 import useTags from "@/hooks/useTags";
 import { updateGeneralInformationApi } from "@/services/backend/services/customProduct";
-import {
-  privateUploadFiles,
-  publicUploadFile,
-} from "@/services/backend/services/media";
-import { createProduct } from "@/services/backend/services/product";
+import { publicUploadFile } from "@/services/backend/services/media";
 import { CustomProductGeneralInfo } from "@/types/CustomProduct";
-import { CreateProductValues, Tag } from "@/types/Product";
-import { CommonResponseBase } from "@/types/ResponseBase";
+import { Tag } from "@/types/Product";
 import { Attaches } from "@/types/common";
-import {
-  CURRENCIES,
-  DEFAULT_FORM_VALUES,
-  createProductValidation,
-} from "@/utils/createProductValidations";
-import { getNotificationIcon } from "@/utils/mapper";
 import {
   Button,
   Input,
   MultiSelect,
-  NumberInput,
   Select,
   TextInput,
   Textarea,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
-import { notifications } from "@mantine/notifications";
 import { IconArrowLeft } from "@tabler/icons-react";
 import { useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
@@ -197,16 +182,13 @@ const CustomProductDetailContainer = ({ data }: Props) => {
               {...getInputProps("tags")}
               disabled={isSubmitting}
             />
-
             <Select
               data={categoryOptions || []}
               className="col-span-12 md:col-span-8 order-1 md:order-none"
               label="Category"
               nothingFound="Nothing found"
               searchable
-              withAsterisk
-              allowDeselect
-              {...getInputProps("categoryId")}
+              placeholder={data.category.name}
               disabled={true}
             />
             <Textarea
