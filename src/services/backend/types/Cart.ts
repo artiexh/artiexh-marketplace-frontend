@@ -1,3 +1,5 @@
+import { CampaignData } from "@/types/Campaign";
+
 export type CartItem = {
   id: string;
   status: string;
@@ -16,16 +18,7 @@ export type CartItem = {
 };
 
 export type CartSection = {
-  shop: {
-    id: string;
-    shopName: string;
-    imageUrl: string;
-    owner: {
-      id: string;
-      username: string;
-      displayName: string;
-    };
-  };
+  campaign: CampaignData;
   items: CartItem[];
 };
 

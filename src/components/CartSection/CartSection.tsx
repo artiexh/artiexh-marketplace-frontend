@@ -30,7 +30,7 @@ export default function CartSection({
     dispatch(
       toggleSelectItems({
         cartSection: {
-          shop: cartSection.shop,
+          campaign: cartSection.campaign,
           items: [item],
         },
         isAll: false,
@@ -50,7 +50,7 @@ export default function CartSection({
             dispatch(
               toggleSelectItems({
                 cartSection: {
-                  shop: cartSection.shop,
+                  campaign: cartSection.campaign,
                   items: cartSection.items,
                 },
                 isAll: true,
@@ -66,19 +66,24 @@ export default function CartSection({
             <ImageWithFallback
               fallback="/assets/default-thumbnail.jpg"
               className="object-fit rounded-full w-[40px] sm:w-[70px] aspect-square mr-3"
-              src={cartSection.shop.imageUrl}
+              src={cartSection.campaign.thumbnailUrl}
               alt="product-name"
               width={70}
               height={70}
             />
           </div>
           <div className="text-sm sm:text-base">
-            <div>{cartSection.shop.shopName}</div>
+            <div>{cartSection.campaign.name}</div>
           </div>
         </div>
         <div>
-          <Button className="text-primary font-bold" onClick={() => {}}>
-            View shop
+          <Button
+            className="text-primary font-bold"
+            onClick={() => {
+              router.push(`/campaigns/${cartSection.campaign.id}`);
+            }}
+          >
+            View campaign
           </Button>
         </div>
       </div>

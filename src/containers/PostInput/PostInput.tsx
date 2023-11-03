@@ -2,7 +2,6 @@
 import ImageWithFallback from "@/components/ImageWithFallback/ImageWithFallback";
 import { NOTIFICATION_TYPE } from "@/constants/common";
 import { publicUploadFile } from "@/services/backend/services/media";
-import createPost from "@/services/backend/services/post";
 import { $user } from "@/store/user";
 import { getNotificationIcon } from "@/utils/mapper";
 import { Button, Divider, TextInput } from "@mantine/core";
@@ -11,6 +10,7 @@ import { useStore } from "@nanostores/react";
 import { IconPhoto, IconX } from "@tabler/icons-react";
 import { ChangeEvent, MutableRefObject, useRef, useState } from "react";
 import defaultImage from "../../../public/assets/default-thumbnail.jpg";
+import { createPost } from "@/services/backend/services/post";
 
 export default function PostInput({ refreshFunc }: { refreshFunc?: any }) {
   const user = useStore($user);

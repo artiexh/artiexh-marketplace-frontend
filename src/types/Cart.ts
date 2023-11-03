@@ -1,8 +1,9 @@
 import { PAYMENT_METHOD_ENUM } from "@/constants/common";
 import { CartItem } from "@/services/backend/types/Cart";
+import { CampaignData } from "./Campaign";
 
 export type SelectedItems = {
-  artistId: string;
+  campaign: CampaignData;
   items: CartItem[];
 };
 
