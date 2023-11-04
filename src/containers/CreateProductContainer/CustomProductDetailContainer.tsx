@@ -25,13 +25,13 @@ type Props = {
 };
 
 type UpdateGeneralInfoData = {
-  attaches: Attaches[];
+  attaches: (Attaches | File)[];
   description: string;
   maxItemPerOrder: number;
   name: string;
   tags: string[];
   variantId: string;
-  thumbnail?: Attaches;
+  thumbnail?: Attaches | File;
 };
 
 const CustomProductDetailContainer = ({ data }: Props) => {
@@ -91,34 +91,36 @@ const CustomProductDetailContainer = ({ data }: Props) => {
   }));
 
   const submitHandler = async (values: UpdateGeneralInfoData) => {
-    console.log(
-      "🚀 ~ file: CustomProductDetailContainer.tsx:109 ~ submitHandler ~ values:",
-      values
-    );
-    //TODO: setup logic to upload file later
-    // const promiseArr = values.thumbnail
-    //   ? [publicUploadFile([values.thumbnail])]
-    //   : [];
+    const needToUploadArr = values.attaches?.filter(
+      (attach) => attach instanceof File
+    ) as File[] | undefined;
 
-    // if (values.attaches.filter((item) => item != null).length > 0) {
-    //   promiseArr.push(publicUploadFile(values.attaches ?? []));
-    // }
+    const uploadArr =
+      values.thumbnail instanceof File
+        ? [values.thumbnail, ...(needToUploadArr ?? [])]
+        : [...(needToUploadArr ?? [])];
 
-    const results = await publicUploadFile(
-      values.thumbnail
-        ? [values.thumbnail, ...(values.attaches ?? [])]
-        : [...(values.attaches ?? [])]
-    );
+    const results = uploadArr.length
+      ? await publicUploadFile(uploadArr)
+      : undefined;
 
-    const res = await updateGeneralInformationApi(data, {
-      ...values,
-      attaches: results?.data.data.fileResponses.map((res, index) => {
+    const attaches =
+      results?.data.data.fileResponses.map((res, index) => {
         return {
           title: res.fileName,
           type: index === 0 ? "THUMBNAIL" : "OTHER",
           url: res.presignedUrl,
         };
-      }),
+      }) ?? [];
+
+    const res = await updateGeneralInformationApi(data, {
+      ...values,
+      attaches: [
+        ...attaches,
+        ...((values.attaches?.filter(
+          (attach) => !(attach instanceof File)
+        ) as Attaches[]) ?? []),
+      ],
     });
     queryClient.setQueryData(
       ["/custom-product/[id]/general", { id: data?.id }],
@@ -206,6 +208,12 @@ const CustomProductDetailContainer = ({ data }: Props) => {
           <div className="image-wrapper flex flex-col md:w-6/12">
             <Input.Wrapper label="Thumbnail" withAsterisk>
               <Thumbnail
+                url={
+                  values.thumbnail?.url ??
+                  (values.thumbnail
+                    ? URL.createObjectURL(values.thumbnail as Blob)
+                    : undefined)
+                }
                 setFile={(file) => {
                   setFieldValue("thumbnail", file);
                 }}
@@ -226,7 +234,10 @@ const CustomProductDetailContainer = ({ data }: Props) => {
                 {values.attaches?.map((attach, index) => (
                   <Thumbnail
                     // Make this unique
-                    url={attach?.url ?? URL.createObjectURL(attach as Blob)}
+                    url={
+                      attach?.url ??
+                      (attach ? URL.createObjectURL(attach as Blob) : undefined)
+                    }
                     key={`${index}-${attach.name}-${Math.random()}`}
                     setFile={(file) => {
                       const cloneAttaches = [...attaches];
