@@ -13,7 +13,6 @@ const Timer: FC<ITimer> = ({
   onCompleted,
   className,
 }) => {
-  console.log(initValue);
   const [time, setTime] = useState<number>(initValue);
   const interValRef = useRef<NodeJS.Timer | null>(null);
 

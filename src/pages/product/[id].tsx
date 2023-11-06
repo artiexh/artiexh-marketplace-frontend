@@ -18,6 +18,11 @@ import {
 } from "next";
 import Image from "next/image";
 import { useRouter } from "next/router";
+import { CAMPAIGN_TYPE_DATA } from "@/constants/campaign";
+import { getCampaignTime } from "@/utils/date";
+import { getCampaignType } from "@/utils/mapper";
+import clsx from "clsx";
+import Timer from "@/components/Timer/Timer";
 
 const ProductDetailPage: NextPage<
   InferGetStaticPropsType<typeof getStaticProps>
@@ -27,14 +32,30 @@ const ProductDetailPage: NextPage<
   if (router.isFallback) return <div>Loading...</div>;
   if (!product) return <div>Product not found</div>;
 
-  const { description, id, attaches, shop } = product;
-
-  console.log(product);
+  const { description, id, attaches, shop, campaign } = product;
+  const campaignType = getCampaignType(campaign);
+  const campaignTime = getCampaignTime(
+    campaign.from,
+    campaign.to,
+    getCampaignType(campaign)
+  );
+  const campaignTypeData = CAMPAIGN_TYPE_DATA[campaignType];
 
   return (
     <>
       <div className="page-wrapper max-w-7xl px-5 md:px-10 mx-auto mt-10 pb-5">
-        <CustomBreadcrumbs />
+        <div
+          className={clsx(
+            "flex justify-between px-10 py-2 text-white font-semibold items-center",
+            campaignTypeData.bannerStyle
+          )}
+        >
+          <div className="text-xl">Campaign: {campaign.name}</div>
+          <div className="flex items-center">
+            <div>{campaignTypeData.title} </div>
+            {campaignTime && <Timer initValue={campaignTime} />}
+          </div>
+        </div>
         <div className="mt-10 grid grid-cols-12 md:gap-10 gap-y-5">
           <Carousel
             className="overflow-hidden rounded-lg rounded-tl-none col-span-12 md:col-span-7"

@@ -62,8 +62,8 @@ const HomePage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = ({
           <Carousel.Slide key={element.id}>
             <div className="relative h-full">
               <Image
-                // src={element.thumbnailUrl}
-                src="https://images.augustman.com/wp-content/uploads/sites/2/2023/04/26131013/dragon-bll.jpeg"
+                src={element.thumbnailUrl}
+                // src="https://images.augustman.com/wp-content/uploads/sites/2/2023/04/26131013/dragon-bll.jpeg"
                 fill
                 className="object-cover brightness-50"
                 alt={element.id}

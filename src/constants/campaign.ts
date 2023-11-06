@@ -1,3 +1,40 @@
+export const CAMPAIGN_TYPE_DATA = {
+  IN_GOING: {
+    bgImg: "",
+    title: "Đang diễn ra",
+    borderStyle: "border-[#C83C2B]",
+    textStyle: "bg-[#C83C2B] text-white",
+    bannerStyle:
+      "bg-[url('https://i.pinimg.com/564x/ca/65/57/ca6557651c47775b4d4d2da5a8641773.jpg')] !text-white",
+  },
+  IN_COMING: {
+    bgImg: "",
+    title: "Sắp mở",
+    borderStyle: "border-[#FFE9C3]",
+    textStyle: "bg-[#FFE9C3] text-[#804F34]",
+    bannerStyle:
+      "bg-[url('https://i.pinimg.com/564x/b7/49/df/b749dfe9cc0b20167d7e162e78f27f8b.jpg')] !text-black",
+  },
+  PRE_ORDER: {
+    bgImg: "",
+    title: "Mở bán trước",
+    borderStyle: "",
+    textStyle: "",
+    bannerStyle:
+      "bg-[url('https://png.pngtree.com/background/20210710/original/pngtree-simple-red-background-picture-image_977898.jpg')]",
+  },
+  CLOSED: {
+    bgImg: "",
+    title: "Đã đóng",
+    borderStyle: "",
+    textStyle: "",
+    bannerStyle:
+      "bg-[url('https://png.pngtree.com/background/20210710/original/pngtree-simple-red-background-picture-image_977898.jpg')]",
+  },
+} as const;
+
+export type CAMPAIGN_TYPE = keyof typeof CAMPAIGN_TYPE_DATA;
+
 export const campaignData = [
   {
     id: "501792469659339448",

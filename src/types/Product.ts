@@ -6,6 +6,7 @@ import {
 } from "@/constants/common";
 import { User } from "./User";
 import { Attaches } from "./common";
+import { CampaignData } from "./Campaign";
 
 export type Tag = {
   id: string;
@@ -53,6 +54,7 @@ export type Product = {
   category: Category;
   thumbnailUrl: string; // URL
   shop: ShopInfo;
+  campaign: CampaignData;
 };
 
 export type ArtistProductColumnType = Pick<

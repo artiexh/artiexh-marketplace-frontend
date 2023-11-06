@@ -1,3 +1,5 @@
+import { CAMPAIGN_TYPE } from "@/constants/campaign";
+
 export const timeValueSplit = (timeValue: number) => {
   let tempValue = timeValue;
   const day = Math.floor(tempValue / (24 * 60 * 60 * 1000));
@@ -11,14 +13,14 @@ export const timeValueSplit = (timeValue: number) => {
   return [day, hour, minute, second];
 };
 
-export const timeDiffFromNow = (
-  timeString?: string,
-  fromTimeString?: string
+export const getCampaignTime = (
+  fromTimeString: string,
+  toTimeString: string,
+  campaignType: CAMPAIGN_TYPE
 ) => {
-  if (!timeString) return undefined;
-  const currentTime = fromTimeString ? new Date(fromTimeString) : new Date();
-  const targetTime = new Date(timeString);
-
-  // Calculate the difference
-  return targetTime.getTime() - currentTime.getTime();
+  if (campaignType === "IN_COMING") {
+    return new Date(fromTimeString).getTime() - new Date().getTime();
+  } else if (campaignType === "IN_GOING") {
+    return new Date(toTimeString).getTime() - new Date().getTime();
+  }
 };

@@ -24,8 +24,6 @@ export default function FetchAutoComplete() {
     }
   });
 
-  console.log(data);
-
   return (
     <div className="fetch-autocomplete">
       <Autocomplete
