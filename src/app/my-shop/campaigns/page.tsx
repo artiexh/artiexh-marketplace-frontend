@@ -6,6 +6,7 @@ import { ROUTE } from "@/constants/route";
 import TableContainer from "@/containers/TableContainer";
 import axiosClient from "@/services/backend/axiosClient";
 import {
+  ARTIST_CAMPAIGN_ENDPOINT,
   createCampaignApi,
   updateCampaignStatusApi,
 } from "@/services/backend/services/campaign";
@@ -51,7 +52,7 @@ const ShopCampaignsPage = () => {
         fetcher={async (currentPage) => {
           const res = (
             await axiosClient.get(
-              `/campaign?pageNumber=${currentPage}&pageSize=${PAGE_SIZE}` +
+              `${ARTIST_CAMPAIGN_ENDPOINT}?pageNumber=${currentPage}&pageSize=${PAGE_SIZE}` +
                 new URLSearchParams(searchParams?.toString()).toString()
             )
           ).data;

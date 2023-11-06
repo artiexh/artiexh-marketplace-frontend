@@ -7,6 +7,7 @@ import { NOTIFICATION_TYPE } from "@/constants/common";
 import CustomWebTab from "@/containers/CampaignContainers/CustomWebTab";
 import axiosClient, { fetcher } from "@/services/backend/axiosClient";
 import {
+  ARTIST_CAMPAIGN_ENDPOINT,
   calculateDesignItemConfig,
   updateCampaignCustomProductsApi,
   updateCampaignGeneralInfoApi,
@@ -70,57 +71,13 @@ export default function CampaignDetailPage() {
     isLoading,
     refetch,
   } = useQuery({
-    queryKey: ["campaign", { id: id }],
+    queryKey: [ARTIST_CAMPAIGN_ENDPOINT, { id: id }],
     queryFn: async () => {
       const res = await axiosClient.get<CommonResponseBase<CampaignDetail>>(
-        `/campaign/${id}`
+        `${ARTIST_CAMPAIGN_ENDPOINT}/${id}`
       );
 
       return res.data;
-
-      return {
-        timestamp: 1,
-        path: "/",
-        message: "",
-        status: 200,
-        data: {
-          name: "Campaign mùa đông",
-          type: "SHARE",
-          status: "REQUEST_CHANGE",
-          campaignHistories: [
-            {
-              action: "CREATE",
-              eventTime: "10-12-2023",
-              message: "Create campaign",
-              updatedBy: "Artist01",
-            },
-            {
-              action: "SUBMIT",
-              eventTime: "11-12-2023",
-              message: "Submit campaign",
-              updatedBy: "Artist01",
-            },
-            {
-              action: "REQUEST_CHANGE",
-              eventTime: "12-12-2023",
-              message: "Change product price",
-              updatedBy: "Admin",
-            },
-            {
-              action: "SUBMIT",
-              eventTime: "13-12-2023",
-              message: "Submit campaign",
-              updatedBy: "Artist01",
-            },
-            {
-              action: "REQUEST_CHANGE",
-              eventTime: "12-12-2023",
-              message: "Change product quantity",
-              updatedBy: "Admin",
-            },
-          ],
-        },
-      } as CommonResponseBase<CampaignDetail>;
     },
   });
 

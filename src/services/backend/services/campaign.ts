@@ -15,13 +15,18 @@ type CustomProductBody = {
   inventoryItemId: string;
 };
 
+export const ARTIST_CAMPAIGN_ENDPOINT = "/artist-campaign";
+
 export const createCampaignApi = (body: {
   name: string;
   type: "PRIVATE" | "SHARE";
 }) =>
-  axiosClient.post<CommonResponseBase<CampaignDetail>>("/campaign", {
-    ...body,
-  });
+  axiosClient.post<CommonResponseBase<CampaignDetail>>(
+    ARTIST_CAMPAIGN_ENDPOINT,
+    {
+      ...body,
+    }
+  );
 
 export type ProviderConfigByDesignItem = {
   address: string;
@@ -66,7 +71,7 @@ export const calculateDesignItemConfig = (ids: string[]) => {
   const params = new URLSearchParams();
   ids.forEach((id) => params.append("customProductIds", id));
   return axiosClient.get<CommonResponseBase<ProviderConfigByDesignItem[]>>(
-    `/campaign/provider?${params.toString()}`
+    `${ARTIST_CAMPAIGN_ENDPOINT}/provider?${params.toString()}`
   );
 };
 
@@ -77,7 +82,7 @@ export const updateCampaignStatusApi = (
     status: string;
   }
 ) =>
-  axiosClient.patch(`/campaign/${id}/status`, {
+  axiosClient.patch(`${ARTIST_CAMPAIGN_ENDPOINT}/${id}/status`, {
     ...body,
   });
 
@@ -91,7 +96,7 @@ export const updateCampaignGeneralInfoApi = (
     to?: string;
   }
 ) =>
-  axiosClient.put(`/campaign/${campaign.id}`, {
+  axiosClient.put(`${ARTIST_CAMPAIGN_ENDPOINT}/${campaign.id}`, {
     name: generalInfo.name,
     description: generalInfo.description,
     type: generalInfo.type,
@@ -117,7 +122,7 @@ export const updateCampaignWebInfoApi = (
     thumbnailUrl?: string;
   }
 ) =>
-  axiosClient.put(`/campaign/${campaign.id}`, {
+  axiosClient.put(`${ARTIST_CAMPAIGN_ENDPOINT}/${campaign.id}`, {
     name: campaign.name,
     description: campaign.description,
     type: campaign.type,
@@ -144,7 +149,7 @@ export const updateCampaignCustomProductsApi = (
     }[],
   providerId: string
 ) =>
-  axiosClient.put(`/campaign/${campaign.id}`, {
+  axiosClient.put(`${ARTIST_CAMPAIGN_ENDPOINT}/${campaign.id}`, {
     name: campaign.name,
     type: campaign.type,
     description: campaign.description,
