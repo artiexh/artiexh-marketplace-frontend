@@ -23,15 +23,15 @@ export default function NavBar(props: NavBarProps) {
           onClick={() => router.push(ROUTE.HOME_PAGE)}
         >
           <div>
-            <Image
+            <img
               src="/assets/logo.svg"
               alt="logo"
-              width={60}
-              height={60}
-              className="aspect-square bg-white rounded-full"
+              className="aspect-square bg-white rounded-full w-8 h-8 sm:w-[60px] sm:h-[60px]"
             />
           </div>
-          <div className="text-3xl ml-3 font-bold text-[#50207D]">Artiexh</div>
+          <div className="hidden sm:block text-3xl ml-3 font-bold text-[#50207D]">
+            Artiexh
+          </div>
         </div>
         <div className="w-[60%]">
           <FetchAutoComplete />

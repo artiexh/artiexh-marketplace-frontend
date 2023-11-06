@@ -99,7 +99,7 @@ const CartPage = () => {
   }
 
   return (
-    <div className="cart-page">
+    <div className="cart-page relative">
       <div className="hidden card sm:flex justify-between items-center">
         <div className="font-bold text-[2rem] ">Tổng: {totalPrice} VND</div>
         <div>
@@ -127,7 +127,7 @@ const CartPage = () => {
           </div>
         ))}
       </div>
-      <div className="flex card sm:hidden justify-between items-center absolute bottom-0 w-[100vw] left-0">
+      <div className="flex card sm:hidden justify-between items-center fixed bottom-0 w-[100vw] left-0">
         <div className="font-bold ">Tổng: {totalPrice} VND</div>
         <div>
           <Button
