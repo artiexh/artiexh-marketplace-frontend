@@ -4,9 +4,10 @@ import clsx from "clsx";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { ARTY_SHOP_USERNAME } from "@/constants/common";
+import { User } from "@/types/User";
 
 type ArtistInfoProps = HTMLAttributes<HTMLDivElement> & {
-  artist: ShopInfo;
+  artist: User;
 };
 
 const ShopCard: FC<ArtistInfoProps> = ({ artist, className, ...rest }) => {
@@ -14,7 +15,7 @@ const ShopCard: FC<ArtistInfoProps> = ({ artist, className, ...rest }) => {
   return (
     <div
       className={clsx(
-        "rounded-lg md:rounded-full p-5 bg-white flex h-max items-center justify-between",
+        "rounded-lg md:rounded-full p-5 bg-white flex h-max items-center justify-between gap-2",
         className
       )}
       {...rest}
@@ -23,7 +24,10 @@ const ShopCard: FC<ArtistInfoProps> = ({ artist, className, ...rest }) => {
         <div>
           <Image
             className="aspect-square rounded-full"
-            src={artist.shopImageUrl}
+            src={
+              artist.avatarUrl ??
+              "https://cdn.hero.page/pfp/5e92df9f-2fe9-4b7e-a87a-ba503fe458d2-charming-sakura-inspired-avatar-kawaii-anime-avatar-creations-1.png"
+            }
             width={100}
             height={100}
             alt="shop-card"
@@ -31,9 +35,7 @@ const ShopCard: FC<ArtistInfoProps> = ({ artist, className, ...rest }) => {
         </div>
         <div className="flex flex-col ml-5">
           <h3 className="text-2xl font-bold">{artist.shopName}</h3>
-          <span className="text-gray-500 text-xl">
-            @{artist.owner.displayName}
-          </span>
+          <span className="text-gray-500 text-xl">@{artist.displayName}</span>
         </div>
       </div>
       <div
@@ -41,9 +43,9 @@ const ShopCard: FC<ArtistInfoProps> = ({ artist, className, ...rest }) => {
         onClick={() =>
           router.push(
             `/shop/${
-              artist.owner.username === ARTY_SHOP_USERNAME
+              artist.username === ARTY_SHOP_USERNAME
                 ? "arty-shop"
-                : artist.owner.username
+                : artist.username
             }`
           )
         }

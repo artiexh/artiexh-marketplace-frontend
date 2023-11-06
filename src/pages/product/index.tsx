@@ -13,10 +13,10 @@ const ProductListPage: NextPage<
   console.log(categories);
   return (
     <ProductListContainer
-      endpoint="product"
+      endpoint="marketplace/product"
       categories={categories}
       tags={tags}
-      pathName="/marketplace/product"
+      pathName="/product"
     />
   );
 };

@@ -35,7 +35,7 @@ const ProductDetailPage: NextPage<
   if (router.isFallback) return <div>Loading...</div>;
   if (!product) return <div>Product not found</div>;
 
-  const { description, id, attaches, shop, campaign } = product;
+  const { description, id, attaches, owner, campaign } = product;
   const campaignType = getCampaignType(campaign);
   const campaignTime = getCampaignTime(
     campaign.from,
@@ -110,7 +110,7 @@ const ProductDetailPage: NextPage<
           >
             {attaches.map((image) => (
               <Carousel.Slide key={image.id}>
-                <div className="flex h-[460px] bg-white">
+                <div className="flex h-[250px] sm:h-[460px] bg-white">
                   <Image
                     src={image.url}
                     className="object-contain"
@@ -131,7 +131,7 @@ const ProductDetailPage: NextPage<
             }
           />
           <Description description={description} />
-          <ShopCard className="col-span-12 md:col-span-5" artist={shop} />
+          <ShopCard className="col-span-12 md:col-span-5" artist={owner} />
         </div>
         <h2 className="font-bold text-lg mt-10">Related products:</h2>
         <div className="interest-wrapper grid grid-cols-4 md:grid-cols-10 gap-5 mt-5">
