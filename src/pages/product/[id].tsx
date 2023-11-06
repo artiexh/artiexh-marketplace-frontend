@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import { CustomBreadcrumbs } from "@/components/Breadcrumbs";
 import ProductPreviewCard from "@/components/Cards/ProductCard/ProductPreviewCard";
 import Description from "@/components/ProductDetail/Description/Description";
@@ -24,6 +25,7 @@ import { getCampaignType } from "@/utils/mapper";
 import clsx from "clsx";
 import Timer from "@/components/Timer/Timer";
 import { IconChevronLeft } from "@tabler/icons-react";
+import { Button } from "@mantine/core";
 
 const ProductDetailPage: NextPage<
   InferGetStaticPropsType<typeof getStaticProps>
@@ -47,11 +49,11 @@ const ProductDetailPage: NextPage<
       <div className="page-wrapper max-w-7xl px-5 md:px-10 mx-auto mt-10 pb-5">
         <div
           className={clsx(
-            "flex justify-between px-10 py-2 text-white font-semibold items-center",
+            "flex justify-center px-10 py-2 text-white font-semibold items-center",
             campaignTypeData.bannerStyle
           )}
         >
-          <div
+          {/* <div
             className="text-xl flex gap-1 items-center cursor-pointer"
             onClick={() => router.push(`/campaigns/${campaign.id}`)}
           >
@@ -60,6 +62,41 @@ const ProductDetailPage: NextPage<
           <div className="flex items-center">
             <div className="min-w-[100px]">{campaignTypeData.title} </div>
             {campaignTime && <Timer initValue={campaignTime} />}
+          </div> */}
+          <div className="flex items-center">
+            <div className="min-w-[100px]">
+              {CAMPAIGN_TYPE_DATA[getCampaignType(campaign)].title}{" "}
+            </div>
+            {getCampaignTime(
+              campaign.from,
+              campaign.to,
+              getCampaignType(campaign)
+            ) && (
+              <Timer
+                initValue={getCampaignTime(
+                  campaign.from,
+                  campaign.to,
+                  getCampaignType(campaign)
+                )}
+              />
+            )}
+          </div>
+        </div>
+        <div className="relative">
+          <img
+            src={campaign.thumbnailUrl}
+            alt="img"
+            className="h-[100px] w-full object-cover brightness-75"
+          />
+          <div
+            className="absolute w-full h-full top-0 flex justify-center items-center cursor-pointer"
+            onClick={() => router.push(`/campaigns/${campaign.id}`)}
+          >
+            <div>
+              <div className="text-white font-bold text-2xl sm:text-3xl">
+                {campaign.name}
+              </div>
+            </div>
           </div>
         </div>
         <div className="mt-10 grid grid-cols-12 md:gap-10 gap-y-5">

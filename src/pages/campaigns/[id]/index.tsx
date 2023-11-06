@@ -91,7 +91,7 @@ export default function CampaignDetailPage() {
         <img
           src={campaignData.thumbnailUrl}
           alt="campaign-thumbnail"
-          className="w-full h-[300px] object-cover brightness-50"
+          className="w-full h-[300px] object-cover brightness-75"
         />
         <div className="absolute w-full h-full top-0 flex justify-center items-center">
           <div>
