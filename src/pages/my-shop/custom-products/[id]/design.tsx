@@ -537,6 +537,7 @@ function ImageSetPicker({ currentCombination }: ImageSetPickerProps) {
 
       const res = await updateImageSetApi(
         designItemRes.data,
+        //@ts-ignore
         designItemRes.data.imageSet.some(
           (el) => el.positionCode === positionCode
         )
@@ -591,6 +592,7 @@ function ImageSetPicker({ currentCombination }: ImageSetPickerProps) {
       if (!firstImage) throw new Error("There is something wrong");
       const res = await updateImageSetApi(
         designItemRes.data,
+        //@ts-ignore
         designItemRes.data.imageSet.some(
           (el) => el.positionCode === positionCode
         )
