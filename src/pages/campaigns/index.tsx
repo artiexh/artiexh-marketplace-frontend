@@ -62,7 +62,7 @@ export default function CampaignListPage() {
             <CampaignPreviewCard
               campaign={campaign}
               key={index}
-              contentStyle="bg-black opacity-80"
+              contentStyle="bg-black opacity-80 min-h-[96px]"
             />
           ))}
         </div>

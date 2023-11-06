@@ -36,10 +36,12 @@ const HomePage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = ({
   categories,
   campaigns,
 }) => {
-  const { data: products, isLoading } = useSWR(["/product?pageSize=6"], (key) =>
-    axiosClient
-      .get<CommonResponseBase<{ items: Product[] }>>(key[0])
-      .then((res) => res.data.data)
+  const { data: products, isLoading } = useSWR(
+    ["/marketplace/product?pageSize=6"],
+    (key) =>
+      axiosClient
+        .get<CommonResponseBase<{ items: Product[] }>>(key[0])
+        .then((res) => res.data.data)
   );
 
   const router = useRouter();
@@ -219,7 +221,7 @@ export const getStaticProps = async (context: GetStaticPropsContext) => {
         "/marketplace/campaign?pageSize=4"
       ),
       axiosClient.get<CommonResponseBase<PaginationResponseBase<Product>>>(
-        "/product?pageSize=4"
+        "/marketplace/product?pageSize=4"
       ),
       axiosClient.get<CommonResponseBase<PaginationResponseBase<Tag>>>(
         "/tag?pageSize=12"

@@ -16,7 +16,7 @@ export default function CampaignBanner({
     <div
       className={clsx("campaign-banner flex", `bg-[${campaignTypeData.bgImg}]`)}
     >
-      <div>{campaign.name}</div>
+      <div className="min-w-[200px]">{campaign.name}</div>
       <div>
         <div>{campaignTypeData.title}</div>
       </div>

@@ -23,6 +23,7 @@ import { getCampaignTime } from "@/utils/date";
 import { getCampaignType } from "@/utils/mapper";
 import clsx from "clsx";
 import Timer from "@/components/Timer/Timer";
+import { IconChevronLeft } from "@tabler/icons-react";
 
 const ProductDetailPage: NextPage<
   InferGetStaticPropsType<typeof getStaticProps>
@@ -50,9 +51,14 @@ const ProductDetailPage: NextPage<
             campaignTypeData.bannerStyle
           )}
         >
-          <div className="text-xl">Campaign: {campaign.name}</div>
+          <div
+            className="text-xl flex gap-1 items-center cursor-pointer"
+            onClick={() => router.push(`/campaigns/${campaign.id}`)}
+          >
+            <IconChevronLeft /> <div>Campaign: {campaign.name}</div>
+          </div>
           <div className="flex items-center">
-            <div>{campaignTypeData.title} </div>
+            <div className="min-w-[100px]">{campaignTypeData.title} </div>
             {campaignTime && <Timer initValue={campaignTime} />}
           </div>
         </div>
@@ -109,12 +115,12 @@ export const getStaticProps = async (context: GetStaticPropsContext) => {
   const { params } = context;
   if (!params?.id) return { props: {} };
   const { data } = await axiosClient.get<CommonResponseBase<Product>>(
-    `/product/${params.id}`
+    `/marketplace/product/${params.id}`
   );
 
   const { data: productList } = await axiosClient.get<
     CommonResponseBase<PaginationResponseBase<Product>>
-  >(`/product?category=${data.data.category.id}`);
+  >(`/marketplace/product?category=${data.data.category.id}`);
 
   return {
     props: {

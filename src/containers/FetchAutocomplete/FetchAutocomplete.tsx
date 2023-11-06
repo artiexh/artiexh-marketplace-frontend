@@ -16,7 +16,7 @@ export default function FetchAutoComplete() {
     try {
       const result = await axiosClient.get<
         CommonResponseBase<PaginationResponseBase<Product>>
-      >(`/product?keyword=${searchKey}&pageSize=8`);
+      >(`/marketplace/product?keyword=${searchKey}&pageSize=8`);
 
       return result.data.data.items;
     } catch (e) {
