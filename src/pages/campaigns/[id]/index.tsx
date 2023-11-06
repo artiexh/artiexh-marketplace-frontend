@@ -15,6 +15,11 @@ import clsx from "clsx";
 import * as DOMPurify from "dompurify";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
+import Timer from "@/components/Timer/Timer";
+import { IconChevronLeft } from "@tabler/icons-react";
+import { CAMPAIGN_TYPE_DATA } from "@/constants/campaign";
+import { getCampaignTime } from "@/utils/date";
+import { getCampaignType } from "@/utils/mapper";
 
 export default function CampaignDetailPage() {
   const params = useSearchParams();
@@ -57,6 +62,31 @@ export default function CampaignDetailPage() {
 
   return (
     <div className="campaign-detail-page">
+      <div
+        className={clsx(
+          "flex justify-center px-10 py-2 text-white font-semibold items-center mb-4",
+          CAMPAIGN_TYPE_DATA[getCampaignType(campaignData)].bannerStyle
+        )}
+      >
+        <div className="flex items-center">
+          <div className="min-w-[100px]">
+            {CAMPAIGN_TYPE_DATA[getCampaignType(campaignData)].title}{" "}
+          </div>
+          {getCampaignTime(
+            campaignData.from,
+            campaignData.to,
+            getCampaignType(campaignData)
+          ) && (
+            <Timer
+              initValue={getCampaignTime(
+                campaignData.from,
+                campaignData.to,
+                getCampaignType(campaignData)
+              )}
+            />
+          )}
+        </div>
+      </div>
       <div className="relative">
         <img
           src={campaignData.thumbnailUrl}
@@ -84,6 +114,7 @@ export default function CampaignDetailPage() {
           </div>
         </div>
       </div>
+
       <div className="text-center mt-8 text-2xl font-semibold">
         Sản phẩm tiêu biểu
       </div>

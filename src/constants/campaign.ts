@@ -28,8 +28,7 @@ export const CAMPAIGN_TYPE_DATA = {
     title: "Đã đóng",
     borderStyle: "border-[#808080]",
     textStyle: "bg-[#808080] text-white",
-    bannerStyle:
-      "bg-[url('https://png.pngtree.com/background/20210710/original/pngtree-simple-red-background-picture-image_977898.jpg')]",
+    bannerStyle: "bg-[#808080]",
   },
 } as const;
 
