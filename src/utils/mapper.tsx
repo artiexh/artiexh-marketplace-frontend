@@ -20,7 +20,7 @@ export const getCampaignType = (campaign: CampaignData) => {
   const { from, to, isPublished } = campaign;
   const today = Date.now();
 
-  if (Date.parse(from) > today && isPublished) {
+  if (Date.parse(from) > today) {
     return "IN_COMING";
   } else if (Date.parse(from) < today && today < Date.parse(to)) {
     return "IN_GOING";
