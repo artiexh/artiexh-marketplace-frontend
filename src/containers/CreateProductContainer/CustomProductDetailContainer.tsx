@@ -116,7 +116,7 @@ const CustomProductDetailContainer = ({ data }: Props) => {
     const res = await updateGeneralInformationApi(data, {
       ...values,
       attaches: [
-        ...attaches,
+        ...(attaches as Attaches[]),
         ...((values.attaches?.filter(
           (attach) => !(attach instanceof File)
         ) as Attaches[]) ?? []),
@@ -209,6 +209,7 @@ const CustomProductDetailContainer = ({ data }: Props) => {
             <Input.Wrapper label="Thumbnail" withAsterisk>
               <Thumbnail
                 url={
+                  //@ts-ignore
                   values.thumbnail?.url ??
                   (values.thumbnail
                     ? URL.createObjectURL(values.thumbnail as Blob)
@@ -235,10 +236,12 @@ const CustomProductDetailContainer = ({ data }: Props) => {
                   <Thumbnail
                     // Make this unique
                     url={
+                      //@ts-ignore
                       attach?.url ??
                       (attach ? URL.createObjectURL(attach as Blob) : undefined)
                     }
-                    key={`${index}-${attach.name}-${Math.random()}`}
+                    //@ts-ignore
+                    key={`${index}-${attach?.name}-${Math.random()}`}
                     setFile={(file) => {
                       const cloneAttaches = [...attaches];
                       cloneAttaches[index] = file;

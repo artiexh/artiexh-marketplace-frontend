@@ -689,7 +689,8 @@ function PickProvider({ data }: { data: SimpleCustomProduct[] }) {
                       <tbody>
                         {data?.map((designItem) => {
                           const configItem = item.customProducts.find(
-                            (el) => el.id === designItem.id
+                            (el) =>
+                              el.id.toString() === designItem.id.toString()
                           );
 
                           if (!configItem) {

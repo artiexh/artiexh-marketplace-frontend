@@ -122,7 +122,7 @@ const CartPage = () => {
               cartSection={cartSection}
               dispatch={dispatch}
               isChecked={isChecked}
-              revalidateFunc={mutate}
+              revalidateFunc={mutate as any}
             />
           </div>
         ))}

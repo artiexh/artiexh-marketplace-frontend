@@ -234,7 +234,7 @@ function CheckoutPage() {
                     cartSection={cartSection}
                     dispatch={dispatch}
                     isChecked={isChecked}
-                    revalidateFunc={mutate}
+                    revalidateFunc={mutate as any}
                   />
                 </div>
                 <div className="bg-white p-2 sm:p-6 mt-2">
