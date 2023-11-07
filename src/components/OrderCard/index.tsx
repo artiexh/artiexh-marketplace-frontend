@@ -25,6 +25,7 @@ export default function OrderCard({ order }: OrderCard) {
           <span className="ml-4">
             (Created day:{" "}
             {new Date(
+              //@ts-ignore
               order?.orderHistories.find(
                 (el) => el.status === "CREATED"
               )?.datetime
@@ -33,7 +34,12 @@ export default function OrderCard({ order }: OrderCard) {
           </span>
         </div>
         <div>
-          <div>{ORDER_STATUS[order.status].name}</div>
+          <div>
+            {
+              //@ts-ignore
+              ORDER_STATUS[order.status].name
+            }
+          </div>
         </div>
       </div>
       <Divider />

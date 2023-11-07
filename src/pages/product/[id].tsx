@@ -131,7 +131,10 @@ const ProductDetailPage: NextPage<
             }
           />
           <Description description={description} />
-          <ShopCard className="col-span-12 md:col-span-5" artist={owner} />
+          <ShopCard
+            className="col-span-12 md:col-span-5"
+            artist={owner as any}
+          />
         </div>
         <h2 className="font-bold text-lg mt-10">Related products:</h2>
         <div className="interest-wrapper grid grid-cols-4 md:grid-cols-10 gap-5 mt-5">

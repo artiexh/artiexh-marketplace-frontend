@@ -58,7 +58,7 @@ const ProductInfo: FC<ProductInfoProps> = ({ product, special }) => {
       {special && <h4 className="text-red-500">{special}</h4>}
       <div className="mt-10 md:mt-auto flex gap-2 items-center">
         <span className="text-lg font-semibold">So luong</span>
-        {product.remainingQuantity > 0 && (
+        {product.quantity > 0 && (
           <NumberInput
             classNames={{
               input: "w-20",
@@ -67,20 +67,17 @@ const ProductInfo: FC<ProductInfoProps> = ({ product, special }) => {
             onChange={setQuantity as any}
             defaultValue={1}
             min={1}
-            max={product.remainingQuantity}
+            max={product.quantity}
           />
         )}
         <span className="text-subtext">San pham</span>
       </div>
       <div className="flex gap-5 mt-5">
-        <Button
-          disabled={product.remainingQuantity == 0}
-          className="flex-1 bg-primary"
-        >
+        <Button disabled={product.quantity == 0} className="flex-1 bg-primary">
           Buy now
         </Button>
         <Button
-          disabled={product.remainingQuantity == 0}
+          disabled={product.quantity == 0}
           className="flex-1"
           variant="outline"
           onClick={updateCartQuantity}
