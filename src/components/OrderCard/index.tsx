@@ -21,9 +21,15 @@ export default function OrderCard({ order }: OrderCard) {
     >
       <div className="order-card-header p-4 flex justify-between">
         <div>
-          <span className="font-bold">{order.shop.shopName}</span>
+          <span className="font-bold">{order.campaign.name}</span>
           <span className="ml-4">
-            (Created day: {new Date(order.createdDate).toDateString()})
+            (Created day:{" "}
+            {new Date(
+              order?.orderHistories.find(
+                (el) => el.status === "CREATED"
+              )?.datetime
+            ).toDateString()}
+            )
           </span>
         </div>
         <div>

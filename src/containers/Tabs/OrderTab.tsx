@@ -19,12 +19,12 @@ export default function OrderTab() {
     pageSize: 5,
     pageNumber: 1,
     sortDirection: "ASC",
-    status: ORDER_STATUS.PAYING.code,
+    status: null,
     from: null,
     to: null,
   });
 
-  const setField = (key: string, value: string) => {
+  const setField = (key: string, value: string | null) => {
     setParams({
       ...params,
       [key]: value,
@@ -36,7 +36,7 @@ export default function OrderTab() {
       const { data } = (
         await axiosClient.get<
           CommonResponseBase<PaginationResponseBase<Order>>
-        >("/user/order-shop?" + getQueryString(params, ["id"]))
+        >("/user/campaign-order?" + getQueryString(params, ["id"]))
       ).data;
       // console.log(data.items);
       return data.items ?? [];
@@ -48,6 +48,16 @@ export default function OrderTab() {
 
   return (
     <div className="user-profile-page">
+      <Badge
+        className={clsx(
+          "mr-3 cursor-pointer",
+          !params.status && "bg-primary text-white"
+        )}
+        key={"ALL"}
+        onClick={() => setField("status", null)}
+      >
+        Tất cả
+      </Badge>
       {Object.values(ORDER_STATUS).map((orderStatus) => (
         <Badge
           className={clsx(

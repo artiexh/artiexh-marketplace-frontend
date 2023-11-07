@@ -10,9 +10,10 @@ export type SelectedItems = {
 export type CheckoutBody = {
   addressId: string;
   paymentMethod: PAYMENT_METHOD_ENUM;
-  shops: {
-    shopId: string;
+  campaigns: {
+    campaignId: string;
     note: string;
     itemIds: string[];
+    shippingFee?: number;
   }[];
 };

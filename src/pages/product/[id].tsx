@@ -125,8 +125,8 @@ const ProductDetailPage: NextPage<
             key={product.id}
             product={product}
             special={
-              product.remainingQuantity > 0
-                ? `Số lượng còn lại: ${product.remainingQuantity}`
+              product.quantity > 0
+                ? `Số lượng còn lại: ${product.quantity}`
                 : "Đã hết hàng!"
             }
           />
@@ -154,6 +154,7 @@ export const getStaticProps = async (context: GetStaticPropsContext) => {
   const { data } = await axiosClient.get<CommonResponseBase<Product>>(
     `/marketplace/product/${params.id}`
   );
+  console.log("🚀 ~ file: [id].tsx:155 ~ getStaticProps ~ data:", data);
 
   const { data: productList } = await axiosClient.get<
     CommonResponseBase<PaginationResponseBase<Product>>

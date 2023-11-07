@@ -194,10 +194,7 @@ const ProductListContainer: FC<ProductListContainerProps> = ({
 							/> */}
           </div>
           <div
-            className={clsx(
-              productStyles["product-list-grid"],
-              "col-span-4 lg:mt-10"
-            )}
+            className={clsx(productStyles["product-list-grid"], "col-span-4")}
           >
             {products?.items?.length ? (
               products.items?.map((product, index) => (

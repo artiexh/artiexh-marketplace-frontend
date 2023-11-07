@@ -45,7 +45,7 @@ export type Product = {
   attaches: Attaches[];
   status: "DELETE" | "AVAILABLE" | "SOLD_OUT" | "HIDDEN";
   type: "NORMAL" | "PRE_ORDER";
-  remainingQuantity: number;
+  quantity: number;
   publishDatetime: string; // ISO String
   preOrderRange?: string[]; // ISO String[]
   maxItemsPerOrder: number;

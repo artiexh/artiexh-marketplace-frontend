@@ -17,7 +17,7 @@ const ProductPreviewCard = ({ data, className }: IProductPreviewCardProps) => {
     <div
       className={clsx(
         styles["product-preview-card"],
-        "bg-white rounded-2xl aspect-3/5 w-full cursor-pointer",
+        "bg-white rounded-2xl !aspect-[3/5] w-full cursor-pointer",
         className
       )}
       onClick={() => router.push(`/product/${data.id}`)}
@@ -39,7 +39,7 @@ const ProductPreviewCard = ({ data, className }: IProductPreviewCardProps) => {
               33vw"
         />
       </div>
-      <div className="p-2.5 sm:p-6 sm:text-xl md:p-4 md:text-xl">
+      <div className="p-2.5 sm:p-6 sm:text-xl md:p-4 md:text-lg md:leading-snug">
         <div className="font-semibold product-name">{data?.name}</div>
         <div className="text-slate-400 text-base">
           {data?.owner?.displayName}

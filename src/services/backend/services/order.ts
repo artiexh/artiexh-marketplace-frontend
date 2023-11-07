@@ -4,7 +4,6 @@ import { ArtistOrderDetail, UpdateShippingBody } from "@/types/Order";
 
 export type ShippingFeeBody = {
   addressId: string;
-  shopId: string;
   tags?: string[];
   totalWeight: number;
 };

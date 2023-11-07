@@ -51,7 +51,7 @@ const CheckoutConfirmPage = () => {
         className="text-white bg-primary border-primary w-[10rem]"
         onClick={() => {
           router.push(
-            data != null ? `${ROUTE.PROFILE}/total-order/${id}` : ROUTE.CART
+            data != null ? `${ROUTE.MY_PROFILE}/total-order/${id}` : ROUTE.CART
           );
         }}
       >

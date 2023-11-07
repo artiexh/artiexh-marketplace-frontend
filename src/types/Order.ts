@@ -38,33 +38,59 @@ type OrderItemDetail = {
 };
 
 export type Order = {
-  id: string;
-  shop: {
+  campaign: {
+    createdBy: {
+      avatarUrl: string;
+      displayName: string;
+      id: string;
+      username: string;
+    };
+    description: string;
+    from: string;
     id: string;
-    shopImageUrl: string;
-    shopName: string;
-    shopWard: Ward;
+    isPublished: true;
+    name: string;
+    owner: {
+      avatarUrl: string;
+      displayName: string;
+      id: string;
+      username: string;
+    };
+    status: string;
+    thumbnailUrl: string;
+    to: string;
+    type: "SHARE" | "PUBLIC" | "PRIVATE";
   };
-  note: string;
-  status: ORDER_STATUS_ENUM;
-  orderId: string;
-  modifiedDate: string;
   createdDate: string;
+  currentTransaction: OrderTransaction;
+  id: string;
+  modifiedDate: string;
+  note: string;
   orderDetails: OrderItemDetail[];
-  shippingFee: number;
   orderHistories: {
-    status: ORDER_HISTORY_STATUS_ENUM;
     datetime: string;
+    message: string;
+    status: string;
   }[];
-  shippingAddress: Address;
+  orderId: string;
+  shippingFee: number;
+  shippingLabel: string;
+  status: string;
 };
 
 export type TotalOrder = {
   id: string;
-  orders: Order[];
-  shippingAddress: Address;
+  campaignOrders: Order[];
   paymentMethod: PAYMENT_METHOD_ENUM;
   currentTransaction?: OrderTransaction;
+  deliveryAddress: string;
+  deliveryCountry: string;
+  deliveryDistrict: string;
+  deliveryEmail: string;
+  deliveryName: string;
+  deliveryProvince: string;
+  deliveryTel: string;
+  deliveryWard: string;
 };
 
 export type ArtistOrder = {

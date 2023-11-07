@@ -51,7 +51,7 @@ function CheckoutPage() {
       note: string;
     }[]
   >([]);
-  const [shippingFee, setShippingFee] = useState<number>(0);
+  const [shippingFee, setShippingFee] = useState<number | undefined>();
 
   const { data, mutate } = useSWR("cart", async () => {
     try {
@@ -120,74 +120,58 @@ function CheckoutPage() {
   );
 
   useEffect(() => {
-    const getTotalShippingFee = () => {
-      let total = 0;
-      const promiseArr = [] as any;
+    const getTotalShippingFee = async () => {
+      const res = await getShippingFee({
+        addressId: selectedAddressId,
+        tags: [],
+        totalWeight: 10,
+      });
 
-      //   selectedCartItems.forEach((item) => {
-      //     promiseArr.push(
-      //       getShippingFee({
-      //         addressId: selectedAddressId,
-      //         shopId: item.shop.id,
-      //         tags: [],
-      //         totalWeight: 10,
-      //       })
-      //     );
-      //   });
-
-      //   Promise.all(promiseArr)
-      //     .then((res) => {
-      //       res.forEach((item) => {
-      //         total += item;
-      //       });
-      //     })
-      //     .then(() => setShippingFee(total));
-      // };
-      // getTotalShippingFee();
+      setShippingFee(res);
     };
+    getTotalShippingFee();
   }, [selectedAddressId, selectedCartItems]);
 
   const paymentSubmit = async () => {
-    // setLoading(true);
-    // console.log(shippingFee);
-    // const data = await checkout({
-    //   addressId: selectedAddressId,
-    //   paymentMethod: paymentMethod as PAYMENT_METHOD_ENUM,
-    //   shops: selectedCartItems.map((cartItem) => ({
-    //     shopId: cartItem.shop.id,
-    //     note:
-    //       noteValues.find((item) => item.shopId === cartItem.shop.id)?.note ??
-    //       "",
-    //     itemIds: cartItem.items.map((item) => item.id),
-    //     shippingFee: 0,
-    //     // isNumber(shippingFee) ? shippingFee : 0
-    //   })),
-    // });
-    // const isSuccess = data != null;
-    // if (isSuccess) {
-    //   if (data.paymentMethod === PAYMENT_METHOD.VN_PAY) {
-    //     const paymentLink = await getPaymentLink(data.id);
-    //     if (paymentLink) {
-    //       window.location.replace(paymentLink);
-    //     } else {
-    //       notifications.show({
-    //         message: "Không tìm thấy link thanh toán",
-    //         ...getNotificationIcon(NOTIFICATION_TYPE.FAILED),
-    //       });
-    //     }
-    //     return;
-    //   } else {
-    //     dispatch(clearItems());
-    //     router.push(`${ROUTE.ORDER_CONFIRM}/${data.id}`);
-    //   }
-    // }
-    // notifications.show({
-    //   message: isSuccess ? "Mua sản phẩm thành công!" : "Mua sản phẩm thất bại",
-    //   ...getNotificationIcon(
-    //     NOTIFICATION_TYPE[isSuccess ? "SUCCESS" : "FAILED"]
-    //   ),
-    // });
-    // setLoading(false);
+    setLoading(true);
+    console.log(shippingFee);
+    const data = await checkout({
+      addressId: selectedAddressId,
+      paymentMethod: paymentMethod as PAYMENT_METHOD_ENUM,
+      campaigns: selectedCartItems.map((cartItem) => ({
+        campaignId: cartItem.campaign.id,
+        note:
+          noteValues.find((item) => item.shopId === cartItem.campaign.id)
+            ?.note ?? "",
+        itemIds: cartItem.items.map((item) => item.id),
+        shippingFee: isNumber(shippingFee) ? shippingFee : 0,
+      })),
+    });
+    const isSuccess = data != null;
+    if (isSuccess) {
+      if (data.paymentMethod === PAYMENT_METHOD.VN_PAY) {
+        const paymentLink = await getPaymentLink(data.id);
+        if (paymentLink) {
+          window.location.replace(paymentLink);
+        } else {
+          notifications.show({
+            message: "Không tìm thấy link thanh toán",
+            ...getNotificationIcon(NOTIFICATION_TYPE.FAILED),
+          });
+        }
+        return;
+      } else {
+        dispatch(clearItems());
+        router.push(`${ROUTE.ORDER_CONFIRM}/${data.id}`);
+      }
+    }
+    notifications.show({
+      message: isSuccess ? "Mua sản phẩm thành công!" : "Mua sản phẩm thất bại",
+      ...getNotificationIcon(
+        NOTIFICATION_TYPE[isSuccess ? "SUCCESS" : "FAILED"]
+      ),
+    });
+    setLoading(false);
   };
 
   if (
@@ -295,9 +279,7 @@ function CheckoutPage() {
           </div>
           <div className="flex justify-between">
             <div>Shipping fee: {`(${flattedCheckoutItems.length} items)`}</div>
-            {/* <div>{`${isNumber(shippingFee) ? shippingFee : 0}  ${
-              flattedCheckoutItems[0]?.price?.unit
-            }`}</div> */}
+            <div>{`${shippingFee}  ${flattedCheckoutItems[0]?.price?.unit}`}</div>
           </div>
           <Divider className="my-2" />
           <div className="flex justify-between">

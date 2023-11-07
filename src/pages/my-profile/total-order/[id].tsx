@@ -34,8 +34,6 @@ function OrderDetailPage() {
     <div>Không tìm thấy đơn hàng!</div>;
   }
 
-  const address = data?.shippingAddress;
-
   return (
     <div className="order-detail-page bg-white">
       <div className="p-10 flex justify-between">
@@ -58,17 +56,15 @@ function OrderDetailPage() {
           </div>
           <div>
             <span className="font-bold">Tên người nhận: </span>
-            {data?.shippingAddress.receiverName}
+            {data?.deliveryName}
           </div>
           <div>
             <span className="font-bold">Số điện thoại: </span>
-            {data?.shippingAddress.phone}
+            {data?.deliveryTel}
           </div>
           <div>
             <span className="font-bold">Địa chỉ: </span>
-            <span>{`${address?.address}, ${getReadableWardAddress(
-              address?.ward
-            )}`}</span>
+            <span>{`${data?.deliveryAddress}, ${data?.deliveryWard}`}</span>
           </div>
         </div>
       </div>
@@ -105,7 +101,7 @@ function OrderDetailPage() {
         <div className="font-bold text-[24px] mb-4 text-primary">
           Chi tiết đơn hàng
         </div>
-        {data?.orders.map((order) => (
+        {data?.campaignOrders.map((order) => (
           <div key={order.id}>
             <div>
               <div className="flex items-center justify-between bg-primary mb-4 p-4">
@@ -113,18 +109,18 @@ function OrderDetailPage() {
                   <div>
                     <Image
                       className="rounded-full mr-8 aspect-square"
-                      src={order.shop.shopImageUrl}
+                      src={order.campaign.thumbnailUrl}
                       width={60}
                       height={60}
                       alt="shop-img"
                     />
                   </div>
-                  <div className="text-white">{order.shop.shopName}</div>
+                  <div className="text-white">{order.campaign.name}</div>
                 </div>
                 <div
                   className="text-white cursor-pointer"
                   onClick={() =>
-                    router.push(`${ROUTE.PROFILE}/order/${order.id}`)
+                    router.push(`${ROUTE.MY_PROFILE}/order/${order.id}`)
                   }
                 >
                   Xem đơn hàng

@@ -26,7 +26,7 @@ function OrderDetailPage() {
   const { data, isLoading } = useSWR([params?.get("id")], async () => {
     try {
       const { data } = await axiosClient.get<CommonResponseBase<Order>>(
-        `/user/order-shop/${params?.get("id")}`
+        `/user/campaign-order/${params?.get("id")}`
       );
 
       return data?.data ?? null;
@@ -114,7 +114,7 @@ function OrderDetailPage() {
         </div>
       </div>
       <Divider />
-      <div className="flex justify-between p-10">
+      {/* <div className="flex justify-between p-10">
         <div className="user-info mr-4">
           <div className="font-bold text-[24px] mb-1 text-primary">
             Địa chỉ nhận hàng
@@ -122,7 +122,7 @@ function OrderDetailPage() {
 
           <div>
             <span className="font-bold">Tên người nhận: </span>
-            {data?.shippingAddress.receiverName}
+            {data?.}
           </div>
           <div>
             <span className="font-bold">Số điện thoại: </span>
@@ -137,7 +137,7 @@ function OrderDetailPage() {
             </span>
           </div>
         </div>
-      </div>
+      </div> */}
       <Divider />
       <div>
         <div className="p-10">
@@ -148,18 +148,18 @@ function OrderDetailPage() {
             <div>
               <Image
                 className="rounded-full mr-8 aspect-square"
-                src={data?.shop.shopImageUrl ?? ""}
+                src={data?.campaign.thumbnailUrl ?? ""}
                 width={60}
                 height={60}
                 alt="shop-img"
               />
             </div>
-            <div className="text-white">{data?.shop.shopName}</div>
+            <div className="text-white">{data?.campaign.name}</div>
           </div>
           <div>
-            <span className="font-bold">
-              Địa chỉ: {getReadableWardAddress(data?.shop.shopWard)}
-            </span>
+            {/* <span className="font-bold">
+              Địa chỉ: {data?.campaign.d}
+            </span> */}
           </div>
         </div>
         <Divider />

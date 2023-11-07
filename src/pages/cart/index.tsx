@@ -1,18 +1,17 @@
-import axiosClient from "@/services/backend/axiosClient";
-import { CartData, CartItem, CartSection } from "@/services/backend/types/Cart";
-import { Button } from "@mantine/core";
-import { NextPage } from "next";
-import useSWR from "swr";
 import CartSectionComponent from "@/components/CartSection/CartSection";
-import { useRouter } from "next/router";
 import { ROUTE } from "@/constants/route";
-import { RootState } from "@/store";
-import { useDispatch, useSelector } from "react-redux";
-import { useMemo } from "react";
-import { IconSearchOff } from "@tabler/icons-react";
+import axiosClient from "@/services/backend/axiosClient";
+import { CartItem, CartSection } from "@/services/backend/types/Cart";
 import AuthWrapper from "@/services/guards/AuthWrapper";
+import { RootState } from "@/store";
 import { SelectedItems } from "@/types/Cart";
 import { CommonResponseBase } from "@/types/ResponseBase";
+import { Button } from "@mantine/core";
+import { IconSearchOff } from "@tabler/icons-react";
+import { useRouter } from "next/router";
+import { useMemo } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import useSWR from "swr";
 
 const CartPage = () => {
   const router = useRouter();
@@ -34,8 +33,6 @@ const CartPage = () => {
       return null;
     }
   });
-
-  console.log(data);
 
   const flattedItems = selectedItems.map((item) => item.items).flat();
 
@@ -76,8 +73,6 @@ const CartPage = () => {
       ),
     0
   );
-
-  console.log(data);
 
   if (data?.length === 0) {
     return (
