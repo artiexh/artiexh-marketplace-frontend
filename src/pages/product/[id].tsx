@@ -1,16 +1,20 @@
 /* eslint-disable @next/next/no-img-element */
-import { CustomBreadcrumbs } from "@/components/Breadcrumbs";
 import ProductPreviewCard from "@/components/Cards/ProductCard/ProductPreviewCard";
 import Description from "@/components/ProductDetail/Description/Description";
-import ProductInfo from "@/containers/ProductInfo/ProductInfo";
 import ShopCard from "@/components/ProductDetail/ShopCard/ShopCard";
+import Timer from "@/components/Timer/Timer";
+import { CAMPAIGN_TYPE_DATA } from "@/constants/campaign";
+import ProductInfo from "@/containers/ProductInfo/ProductInfo";
 import axiosClient from "@/services/backend/axiosClient";
 import { Product } from "@/types/Product";
 import {
   CommonResponseBase,
   PaginationResponseBase,
 } from "@/types/ResponseBase";
+import { getCampaignTime } from "@/utils/date";
+import { getCampaignType } from "@/utils/mapper";
 import { Carousel } from "@mantine/carousel";
+import clsx from "clsx";
 import {
   GetStaticPaths,
   GetStaticPropsContext,
@@ -19,13 +23,6 @@ import {
 } from "next";
 import Image from "next/image";
 import { useRouter } from "next/router";
-import { CAMPAIGN_TYPE_DATA } from "@/constants/campaign";
-import { getCampaignTime } from "@/utils/date";
-import { getCampaignType } from "@/utils/mapper";
-import clsx from "clsx";
-import Timer from "@/components/Timer/Timer";
-import { IconChevronLeft } from "@tabler/icons-react";
-import { Button } from "@mantine/core";
 
 const ProductDetailPage: NextPage<
   InferGetStaticPropsType<typeof getStaticProps>
@@ -64,22 +61,8 @@ const ProductDetailPage: NextPage<
             {campaignTime && <Timer initValue={campaignTime} />}
           </div> */}
           <div className="flex items-center">
-            <div className="min-w-[100px]">
-              {CAMPAIGN_TYPE_DATA[getCampaignType(campaign)].title}{" "}
-            </div>
-            {getCampaignTime(
-              campaign.from,
-              campaign.to,
-              getCampaignType(campaign)
-            ) && (
-              <Timer
-                initValue={getCampaignTime(
-                  campaign.from,
-                  campaign.to,
-                  getCampaignType(campaign)
-                )}
-              />
-            )}
+            <div className="min-w-[100px]">{campaignTypeData.title} </div>
+            {campaignTime && <Timer initValue={campaignTime} />}
           </div>
         </div>
         <div className="relative">

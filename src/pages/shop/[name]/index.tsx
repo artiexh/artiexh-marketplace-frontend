@@ -46,7 +46,7 @@ const ShopDetailPage = () => {
             CommonResponseBase<PaginationResponseBase<CampaignData>>
           >(`/marketplace/campaign?pageSize=4&ownerId=${res.data.data.id}`),
           axiosClient.get<CommonResponseBase<PaginationResponseBase<Product>>>(
-            `/marketplace/product?pageSize=4`
+            `/marketplace/artist/${name}/product?pageSize=4`
           ),
         ]).then((res) => {
           if (res[0].data.data.items.length) {

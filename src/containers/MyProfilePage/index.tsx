@@ -68,7 +68,10 @@ export default function MyProfilePage({ user }: MyProfileProps) {
       <Tabs defaultValue={user.role === "ARTIST" ? "posts" : "order"}>
         <div className="bg-white mt-2 py-4 px-6 mb-6">
           <Tabs.List>
-            {tabs.map((tab) => (
+            {(user.role !== "ARTIST"
+              ? tabs.filter((tab) => tab.key !== "posts")
+              : tabs
+            ).map((tab) => (
               <Tabs.Tab key={tab.key} value={tab.key}>
                 {tab.title}
               </Tabs.Tab>

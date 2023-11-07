@@ -3,9 +3,10 @@ import { NOTIFICATION_TYPE } from "@/constants/common";
 import { updateCartItem } from "@/services/backend/services/cart";
 import { Product } from "@/types/Product";
 import { currencyFormatter } from "@/utils/formatter";
-import { getNotificationIcon } from "@/utils/mapper";
+import { getCampaignType, getNotificationIcon } from "@/utils/mapper";
 import { Rating, NumberInput, Button } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
+import clsx from "clsx";
 import { FC, useState } from "react";
 
 type ProductInfoProps = {
@@ -14,9 +15,11 @@ type ProductInfoProps = {
 };
 
 const ProductInfo: FC<ProductInfoProps> = ({ product, special }) => {
-  const { id, averageRate, name, price, category, tags } = product;
+  const { id, averageRate, name, price, category, campaign } = product;
   const [quantity, setQuantity] = useState<number>(1);
   const [loading, setLoading] = useState(false);
+
+  const campaignType = getCampaignType(campaign);
 
   const updateCartQuantity = async () => {
     if (!loading) {
@@ -73,12 +76,18 @@ const ProductInfo: FC<ProductInfoProps> = ({ product, special }) => {
         <span className="text-subtext">San pham</span>
       </div>
       <div className="flex gap-5 mt-5">
-        <Button disabled={product.quantity == 0} className="flex-1 bg-primary">
+        <Button
+          disabled={product.quantity == 0 || campaignType === "CLOSED"}
+          className="flex-1 bg-primary !text-white"
+        >
           Buy now
         </Button>
         <Button
-          disabled={product.quantity == 0}
-          className="flex-1"
+          disabled={product.quantity == 0 || campaignType === "CLOSED"}
+          className={clsx(
+            "flex-1",
+            campaignType === "CLOSED" ? "!text-white" : "!text-primary"
+          )}
           variant="outline"
           onClick={updateCartQuantity}
         >

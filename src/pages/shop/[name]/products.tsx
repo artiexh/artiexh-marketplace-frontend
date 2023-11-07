@@ -16,7 +16,7 @@ const ShopProductListPage: NextPage<
 
   return (
     <ProductListContainer
-      endpoint="marketplace/product"
+      endpoint={`marketplace/artist/${name}/product`}
       categories={categories}
       tags={tags}
       pathName={`/shop/${name}/product`}
