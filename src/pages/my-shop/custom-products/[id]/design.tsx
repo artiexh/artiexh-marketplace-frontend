@@ -179,7 +179,23 @@ function DecalWithImage(
   const decalRef = useRef<Mesh | null>(null);
   const texture = useTexture(file);
 
-  return <Decal {...rest} map={texture} ref={decalRef}></Decal>;
+  const { scale } = rest;
+
+  console.log(texture.image.width, texture.image.height);
+
+  return (
+    <Decal
+      {...rest}
+      ref={decalRef}
+      scale={[
+        ((texture.image.width * 1) / 1024) * scale[0],
+        ((texture.image.height * 1) / 1024) * scale[1],
+        scale[2],
+      ]}
+    >
+      <meshBasicMaterial map={texture} polygonOffset polygonOffsetFactor={-1} />
+    </Decal>
+  );
 }
 
 import { extend } from "@react-three/fiber";
