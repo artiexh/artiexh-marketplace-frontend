@@ -539,7 +539,7 @@ function PickProvider({ data }: { data: SimpleCustomProduct[] }) {
   const [provider, setProvider] = useState<string | undefined>(() => {
     const campaignRes = queryClient.getQueryData<
       CommonResponseBase<CampaignDetail>
-    >(["campaign", { id: id }]);
+    >([ARTIST_CAMPAIGN_ENDPOINT, { id: id }]);
 
     return campaignRes?.data?.provider?.businessCode;
   });
@@ -553,7 +553,8 @@ function PickProvider({ data }: { data: SimpleCustomProduct[] }) {
     try {
       const campaignRes = queryClient.getQueryData<
         CommonResponseBase<CampaignDetail>
-      >(["campaign", { id: id }]);
+      >([ARTIST_CAMPAIGN_ENDPOINT, { id: id }]);
+
       if (!campaignRes?.data) throw new Error("What the heck");
       const res = await updateCampaignCustomProductsApi(
         campaignRes.data,
@@ -564,7 +565,10 @@ function PickProvider({ data }: { data: SimpleCustomProduct[] }) {
         }),
         provider ?? campaignRes.data.provider.businessCode
       );
-      queryClient.setQueryData(["campaign", { id: id }], res.data);
+      queryClient.setQueryData(
+        [ARTIST_CAMPAIGN_ENDPOINT, { id: id }],
+        res.data
+      );
       modals.close("custom-product-create-campaign");
     } catch (e) {
       console.log("🚀 ~ file: page.tsx:578 ~ pickProviderHandler ~ e:", e);
@@ -696,7 +700,7 @@ function CustomProductTable({
   const id = routerParams!.id as string;
   const campaignRes = queryClient.getQueryData<
     CommonResponseBase<CampaignDetail>
-  >(["campaign", { id: id }]);
+  >([ARTIST_CAMPAIGN_ENDPOINT, { id: id }]);
   const openCustomProductModal = () => {
     modals.open({
       modalId: "custom-product-create-campaign",
@@ -791,7 +795,7 @@ function EditCustomProductModal({ data: product }: { data: CustomProduct }) {
   const updateHandler = async (data: { quantity: number; price: number }) => {
     const campaignRes = queryClient.getQueryData<
       CommonResponseBase<CampaignDetail>
-    >(["campaign", { id: id }]);
+    >([ARTIST_CAMPAIGN_ENDPOINT, { id: id }]);
     if (!campaignRes?.data) throw new Error("What the heck");
     const tmp = campaignRes.data.products.filter(
       (d) => d.customProduct.id !== product.customProduct.id
@@ -819,7 +823,7 @@ function EditCustomProductModal({ data: product }: { data: CustomProduct }) {
       ],
       campaignRes.data.provider.businessCode
     );
-    queryClient.setQueryData(["campaign", { id: id }], res.data);
+    queryClient.setQueryData([ARTIST_CAMPAIGN_ENDPOINT, { id: id }], res.data);
     modals.close(`${product.id}-custom-product-edit`);
   };
 
