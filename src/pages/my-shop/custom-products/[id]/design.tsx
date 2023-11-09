@@ -188,8 +188,11 @@ function DecalWithImage(
       {...rest}
       ref={decalRef}
       scale={[
+        //@ts-ignore
         ((texture.image.width * 1) / 1024) * scale[0],
+        //@ts-ignore
         ((texture.image.height * 1) / 1024) * scale[1],
+        //@ts-ignore
         scale[2],
       ]}
     >
