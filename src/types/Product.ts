@@ -55,6 +55,11 @@ export type Product = {
   thumbnailUrl: string; // URL
   shop: ShopInfo;
   campaign: CampaignData;
+  weight: number;
+};
+
+export type ProductInventory = Omit<Product, "id"> & {
+  productCode: string;
 };
 
 export type ArtistProductColumnType = Pick<

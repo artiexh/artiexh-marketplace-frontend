@@ -3,8 +3,14 @@ export const navSections = [
     id: "DASHBOARD",
     navList: [
       {
-        id: "PRODUCTS",
+        id: "INVENTORY",
         label: "Products",
+        iconPath: "dashboard_icon.svg",
+        href: "/my-shop/products",
+      },
+      {
+        id: "PRODUCTS",
+        label: "Custom Products",
         iconPath: "dashboard_icon.svg",
         href: "/my-shop/custom-products",
       },
