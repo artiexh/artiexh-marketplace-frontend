@@ -303,7 +303,7 @@ function CampaignGeneralInfoForm({
   const submitHandler = async () => {
     const campaignRes = queryClient.getQueryData<
       CommonResponseBase<CampaignDetail>
-    >(["campaign", { id: params!.id as string }]);
+    >([ARTIST_CAMPAIGN_ENDPOINT, { id: params!.id as string }]);
     if (!campaignRes?.data) return;
     const res = await updateCampaignGeneralInfoApi(campaignRes.data, {
       ...form.values,
@@ -323,7 +323,10 @@ function CampaignGeneralInfoForm({
       });
     }
 
-    queryClient.refetchQueries(["campaign", { id: params!.id as string }]);
+    queryClient.refetchQueries([
+      ARTIST_CAMPAIGN_ENDPOINT,
+      { id: params!.id as string },
+    ]);
   };
 
   useEffect(() => {
