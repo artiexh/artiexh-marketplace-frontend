@@ -155,6 +155,10 @@ export const updateCampaignCustomProductsApi = (
     description: campaign.description,
     products: customProducts,
     providerId: providerId,
+    from: campaign.from,
+    to: campaign.to,
+    content: campaign.content,
+    thumbnailUrl: campaign.thumbnailUrl,
   });
 
 export const getMarketplaceCampaignById = async (id: string) => {
