@@ -1,5 +1,6 @@
 import { CommonResponseBase } from "@/types/ResponseBase";
 import axiosClient from "../uploadAxiosClient";
+import { ResponseType } from "axios";
 
 export const publicUploadFile = async (files: File[]) => {
   try {
@@ -32,7 +33,7 @@ export const privateUploadFiles = (files: File[]) =>
     file: files,
   });
 
-export const getPrivateFile = (id: string) =>
+export const getPrivateFile = (id: string, responseType?: ResponseType) =>
   axiosClient.get(`/media/download/${id}`, {
-    responseType: "arraybuffer",
+    responseType: responseType ?? "arraybuffer",
   });
