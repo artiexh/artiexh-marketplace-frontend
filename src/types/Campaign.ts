@@ -140,3 +140,97 @@ export type CampaignDetail = {
   to: string;
   type: "SHARE" | "PRIVATE";
 };
+
+export type ProductInCampaignDetail = {
+  createdDate: string;
+  customProduct: {
+    attaches: Attaches[];
+    campaignLock: string;
+    category: {
+      id: string;
+      imageUrl: string;
+      name: string;
+    };
+    combinationCode: string;
+    createdDate: string;
+    description: string;
+    id: string;
+    imageSet: {
+      id: string;
+      manufacturingImage: {
+        fileName: string;
+        id: string;
+        name: string;
+      };
+      mockupImage: {
+        fileName: string;
+        id: string;
+        name: string;
+      };
+      positionCode: string;
+    }[];
+    maxItemPerOrder: string;
+    modelThumbnail: {
+      fileName: string;
+      id: string;
+      name: string;
+    };
+    modifiedDate: string;
+    name: string;
+    tags: string[];
+    variant: {
+      id: string;
+      productTemplate: {
+        code: string;
+        id: string;
+        imageCombinations: {
+          code: string;
+          images: {
+            code: string;
+            name: string;
+            position: [number, number, number];
+            rotate: [number, number, number];
+            scale: [number, number, number];
+            size: {
+              height: number;
+              width: number;
+            };
+          }[];
+          name: string;
+        }[];
+        model3DCode: string;
+        modelFileId: string;
+        name: string;
+        sizes: {
+          key: string;
+          label: string;
+          number: number;
+          unit: string;
+        }[];
+      };
+      variantCombinations: {
+        option: {
+          id: string;
+          name: string;
+        };
+        optionValue: {
+          id: string;
+          name: string;
+          value: string;
+        };
+      }[];
+    };
+  };
+  id: 0;
+  modifiedDate: string;
+  price: {
+    amount: 0;
+    unit: string;
+  };
+  providerConfig: {
+    basePriceAmount: 0;
+    manufacturingTime: string;
+    minQuantity: 0;
+  };
+  quantity: 0;
+};

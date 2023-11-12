@@ -4,6 +4,7 @@ import DesignItemCard from "@/components/Cards/DesignItemCard/DesignItemCard";
 import PrivateImageLoader from "@/components/PrivateImageLoader/PrivateImageLoader";
 import TableComponent from "@/components/TableComponent";
 import { NOTIFICATION_TYPE } from "@/constants/common";
+import CustomProductDetailCard from "@/containers/CampaignContainers/CustomProductDetailCard";
 import CustomWebTab from "@/containers/CampaignContainers/CustomWebTab";
 import axiosClient, { fetcher } from "@/services/backend/axiosClient";
 import {
@@ -191,7 +192,7 @@ export default function CampaignDetailPage() {
 }
 
 const customProductColumns: TableColumns<
-  CampaignDetail["products"][0] & { onEdit?: Function }
+  CampaignDetail["products"][0] & { onEdit?: Function; onView?: Function }
 > = [
   {
     title: "Name",
@@ -266,6 +267,12 @@ const customProductColumns: TableColumns<
           <IconBallpen
             className="cursor-pointer"
             onClick={() => record.onEdit && record.onEdit()}
+          />
+        </Tooltip>
+        <Tooltip label="View">
+          <IconEye
+            className="cursor-pointer"
+            onClick={() => record.onView && record.onView()}
           />
         </Tooltip>
       </div>
@@ -751,6 +758,21 @@ function CustomProductTable({
                     },
 
                     children: <EditCustomProductModal data={data} />,
+                  }),
+                onView: () =>
+                  modals.open({
+                    modalId: `${data.id}-custom-product-view`,
+                    title: "Edit",
+                    centered: true,
+                    classNames: {
+                      // content: "!max-h-none",
+                    },
+                    fullScreen: true,
+                    children: (
+                      <div className="max-h-[80vh]">
+                        <CustomProductDetailCard data={data} campaignId={id} />
+                      </div>
+                    ),
                   }),
               };
             })}

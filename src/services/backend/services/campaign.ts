@@ -16,6 +16,7 @@ type CustomProductBody = {
 };
 
 export const ARTIST_CAMPAIGN_ENDPOINT = "/artist-campaign";
+export const GENERAL_CAMPAIGN_ENDPOINT = "/campaign";
 
 export const createCampaignApi = (body: {
   name: string;
@@ -155,6 +156,10 @@ export const updateCampaignCustomProductsApi = (
     description: campaign.description,
     products: customProducts,
     providerId: providerId,
+    from: campaign.from,
+    to: campaign.to,
+    content: campaign.content,
+    thumbnailUrl: campaign.thumbnailUrl,
   });
 
 export const getMarketplaceCampaignById = async (id: string) => {
