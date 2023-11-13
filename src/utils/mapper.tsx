@@ -1,10 +1,16 @@
-import { NOTIFICATION_TYPE, NOTIFICATION_TYPE_ENUM } from "@/constants/common";
+import {
+  ATTACHMENT_TYPE,
+  NOTIFICATION_TYPE,
+  NOTIFICATION_TYPE_ENUM,
+} from "@/constants/common";
 import { CampaignData } from "@/types/Campaign";
+import { CommonResponseBase } from "@/types/ResponseBase";
 import { CreateUserAddress, Address } from "@/types/User";
 import {
   IconCircleCheckFilled,
   IconExclamationCircle,
 } from "@tabler/icons-react";
+import { AxiosResponse } from "axios";
 
 export const fromUserAddressToDefaultAddressFormValue: (
   address: Address
@@ -42,4 +48,26 @@ export const getNotificationIcon = (type: NOTIFICATION_TYPE_ENUM) => {
         icon: <IconExclamationCircle />,
       };
   }
+};
+
+export const mapImageUrlToImageBody = (
+  response: AxiosResponse<
+    CommonResponseBase<{
+      fileResponses: {
+        presignedUrl: string;
+        fileName: string;
+      }[];
+    }>,
+    any
+  >,
+  type: any
+) => {
+  const fileResponse = response.data.data.fileResponses;
+
+  return fileResponse.map((file, index) => ({
+    description: "",
+    title: "",
+    type: type,
+    url: file.presignedUrl,
+  }));
 };

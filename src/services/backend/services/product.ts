@@ -13,3 +13,16 @@ export const createProduct = async (data: CreateProductBodyValues) => {
     console.log(err);
   }
 };
+
+export const updateProductInventory = async (
+  data: any,
+  productCode: string
+) => {
+  try {
+    const result = await axiosClient.put(`/product-inventory/${productCode}`);
+
+    return result;
+  } catch (err) {
+    console.log(err);
+  }
+};
