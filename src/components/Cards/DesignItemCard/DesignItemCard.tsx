@@ -30,9 +30,9 @@ export default function DesignItemCard({
       <div className="size-description flex gap-x-3">
         <div className="w-20 aspect-square relative rounded-md">
           <PrivateImageLoader
+            className="rounded-md object-fill w-full h-full"
             id={data.modelThumbnail?.id.toString()}
             alt="test"
-            fill
           />
         </div>
         <div className="flex flex-col justify-between flex-1">

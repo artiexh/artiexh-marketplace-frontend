@@ -19,7 +19,7 @@ export default function PrivateImageLoader({
 }
 
 import Image from "next/image";
-import { SyntheticEvent, useEffect, useState } from "react";
+import { ImgHTMLAttributes, SyntheticEvent, useEffect, useState } from "react";
 
 const isValidUrl = (url: string) => {
   try {
@@ -32,11 +32,11 @@ const isValidUrl = (url: string) => {
 const fallbackImage = "/assets/default-thumbnail.jpg";
 
 type ImageWithFallbackProps = Omit<
-  React.ComponentProps<typeof Image>,
+  ImgHTMLAttributes<HTMLImageElement>,
   "src"
 > & {
-  fallback?: React.ComponentProps<typeof Image>["src"];
-  src?: React.ComponentProps<typeof Image>["src"];
+  fallback?: ImgHTMLAttributes<HTMLImageElement>["src"];
+  src?: ImgHTMLAttributes<HTMLImageElement>["src"];
 };
 
 const ImageWithFallback = ({
@@ -54,7 +54,7 @@ const ImageWithFallback = ({
   }, [src]);
 
   if (src === undefined || (typeof src === "string" && !isValidUrl(src))) {
-    return <Image alt={alt} src={fallback} {...props} />;
+    return <img alt={alt} src={fallback} {...props} />;
   }
 
   return (

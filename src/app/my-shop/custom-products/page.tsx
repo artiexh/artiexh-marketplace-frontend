@@ -133,10 +133,9 @@ const customProductColumns: TableColumns<
       <div className="flex items-center gap-5">
         <div className="relative w-16 aspect-square">
           <PrivateImageLoader
-            className="rounded-md"
+            className="rounded-md object-fill w-full h-full"
             id={record.modelThumbnail?.id.toString()}
             alt="test"
-            fill
           />
         </div>
         <div>
