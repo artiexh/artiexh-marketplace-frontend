@@ -1,6 +1,7 @@
 import { ArtistRegisterData, CreateUserAddress } from "@/types/User";
 import axiosClient from "../axiosClient";
 import { setShop, setStatus, setUser } from "@/store/user";
+import { CommonResponseBase } from "@/types/ResponseBase";
 
 export const logout = async () => {
   try {
@@ -47,3 +48,21 @@ export const updateUserAddress = async (
     return undefined;
   }
 };
+
+export const updateUserProfileApi = async (body: {
+  avatarUrl?: string;
+  displayName: string;
+  email?: string;
+}) =>
+  axiosClient.put<
+    CommonResponseBase<{
+      avatarUrl: string;
+      displayName: string;
+      email: string;
+      id: string;
+      numOfSubscriptions: number;
+      role: string;
+      status: string;
+      username: string;
+    }>
+  >(`/account/profile`, body);
