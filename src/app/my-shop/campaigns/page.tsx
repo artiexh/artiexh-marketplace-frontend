@@ -97,13 +97,20 @@ function CreateCampaignModal() {
   const router = useRouter();
 
   const form = useForm<{
-    name: string;
+    name?: string;
     type: "PRIVATE" | "SHARE";
-  }>();
+  }>({
+    initialValues: {
+      type: "PRIVATE",
+    },
+  });
   const submitHandler = async () => {
     try {
+      if (!form.values.name) return;
+
       const res = await createCampaignApi({
-        ...form.values,
+        name: form.values.name,
+        type: form.values.type,
       });
 
       notifications.show({

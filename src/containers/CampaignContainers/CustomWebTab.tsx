@@ -8,21 +8,39 @@ import StarterKit from "@tiptap/starter-kit";
 import { RichTextEditor, Link } from "@mantine/tiptap";
 import { CampaignDetail } from "@/types/Campaign";
 import { publicUploadFile } from "@/services/backend/services/media";
-import { updateCampaignWebInfoApi } from "@/services/backend/services/campaign";
+import {
+  ARTIST_CAMPAIGN_ENDPOINT,
+  updateCampaignWebInfoApi,
+} from "@/services/backend/services/campaign";
 import { useQueryClient } from "@tanstack/react-query";
+import { useEffect } from "react";
 
 function CustomWebTab({ data: campaignData }: { data: CampaignDetail }) {
   const queryClient = useQueryClient();
-  const { errors, onSubmit, setFieldValue, getInputProps, values, isDirty } =
-    useForm<{
-      content?: string;
-      thumbnail?: string | File;
-    }>({
-      initialValues: {
-        content: campaignData.content,
-        thumbnail: campaignData.thumbnailUrl,
-      },
+  const {
+    errors,
+    onSubmit,
+    setFieldValue,
+    getInputProps,
+    values,
+    isDirty,
+    setValues,
+  } = useForm<{
+    content?: string;
+    thumbnail?: string | File;
+  }>({
+    initialValues: {
+      content: campaignData.content,
+      thumbnail: campaignData.thumbnailUrl,
+    },
+  });
+
+  useEffect(() => {
+    setValues({
+      content: campaignData.content,
+      thumbnail: campaignData.thumbnailUrl,
     });
+  }, [campaignData]);
 
   const editor = useEditor({
     extensions: [StarterKit],
@@ -52,7 +70,10 @@ function CustomWebTab({ data: campaignData }: { data: CampaignDetail }) {
       thumbnailUrl: thumbnailUrl,
     });
 
-    queryClient.setQueryData(["campaign", { id: campaignData.id }], res.data);
+    queryClient.setQueryData(
+      [ARTIST_CAMPAIGN_ENDPOINT, { id: campaignData.id }],
+      res.data
+    );
   };
   return (
     <form onSubmit={onSubmit(updateWebInfo)} className="mt-5">
