@@ -83,7 +83,7 @@ header p.hidden {
 }
 
 section {
-  height: auto !important;
+  height: auto;
 }
 
 .section--container {

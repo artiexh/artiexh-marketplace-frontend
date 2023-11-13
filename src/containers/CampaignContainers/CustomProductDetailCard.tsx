@@ -81,15 +81,14 @@ function CustomProductDetailCard({
             )}
           >
             <div className="w-full h-full flex gap-x-8 gap-y-4">
-              <div className="flex gap-x-4 ">
-                <div className="relative w-[1000px] aspect-[15/10] rounded-md flex-[4]">
-                  <PrivateImageLoader
-                    id={data.customProduct.modelThumbnail?.id.toString()}
-                    alt="test"
-                    className="rounded-md w-full h-full object-cover"
-                  />
-                </div>
+              <div className="relative aspect-[15/10] rounded-md flex-1">
+                <PrivateImageLoader
+                  id={data.customProduct.modelThumbnail?.id.toString()}
+                  alt="test"
+                  className="rounded-md w-full h-full object-cover"
+                />
               </div>
+
               <div className="content flex flex-col justify-between flex-1">
                 <div className="flex flex-col gap-y-4">
                   <div className="variant-details">
@@ -275,56 +274,47 @@ function CustomProductGeneralInfo({
     <div className="create-product-container flex flex-col gap-10 w-full pb-5">
       <div className="card general-wrapper bg-white">
         <div className="flex flex-col-reverse md:flex-row mt-5 gap-20">
-          <div className="flex flex-col md:w-8/12">
+          <div className="flex flex-col w-8/12">
             <div>
               <h2 className="text-xl font-bold mb-4">General information</h2>
-              <div>Product name:</div>
-
-              <Input readOnly value={data.customProduct.name} />
             </div>
-            <Grid justify="space-between">
-              <Col span={11}>
-                <div>
-                  <div>Quantity:</div>
-
-                  <Input type="number" readOnly value={data.quantity} />
-                </div>
-              </Col>
-              <Col span={11}>
-                <div>
-                  <div>Price:</div>
-
-                  <Input readOnly value={data.price.amount} />
-                </div>
-              </Col>
-            </Grid>
-            <Grid justify="space-between">
-              <Col span={11}>
-                <div>
-                  <div className="mb-2">Limit per order: </div>
-                  <div>
+            <div className="flex flex-col gap-y-3">
+              <Input.Wrapper label="Name">
+                <Input readOnly value={data.customProduct.name} />
+              </Input.Wrapper>
+              <Grid justify="space-between">
+                <Col span={6}>
+                  <Input.Wrapper label="Quantity">
+                    <Input readOnly value={data.quantity} />
+                  </Input.Wrapper>
+                </Col>
+                <Col span={6}>
+                  <Input.Wrapper label="Price">
+                    <Input readOnly value={data.price.amount} />
+                  </Input.Wrapper>
+                </Col>
+              </Grid>
+              <Grid justify="space-between">
+                <Col span={12}>
+                  <Input.Wrapper label="Limit per order">
                     <Input
                       type="number"
                       readOnly
                       value={data.customProduct.maxItemPerOrder}
                     />
-                  </div>
-                </div>
-              </Col>
-            </Grid>
-            <div>
-              <div className="mb-2">Category: </div>
-              <div>
-                <Input readOnly value={data.customProduct.category.name} />
-              </div>
-            </div>
-            <div>
-              <div>Description:</div>
+                  </Input.Wrapper>
+                </Col>
+              </Grid>
 
-              <Textarea readOnly value={data.customProduct.description} />
+              <Input.Wrapper label="Category">
+                <Input readOnly value={data.customProduct.category.name} />
+              </Input.Wrapper>
+              <Input.Wrapper label="Description">
+                <Textarea readOnly value={data.customProduct.description} />
+              </Input.Wrapper>
             </div>
           </div>
-          <div className="image-wrapper flex flex-col md:w-4/12">
+          <div className="image-wrapper flex flex-col w-3/12">
             <div className="text-xl font-bold mb-4">Thumbnail:</div>
 
             <Thumbnail

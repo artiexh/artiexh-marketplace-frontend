@@ -761,14 +761,10 @@ function CustomProductTable({
                 onView: () =>
                   modals.open({
                     modalId: `${data.id}-custom-product-view`,
-                    title: "Edit",
-                    centered: true,
-                    classNames: {
-                      // content: "!max-h-none",
-                    },
+                    title: "Product detail",
                     fullScreen: true,
                     children: (
-                      <div className="max-h-[80vh]">
+                      <div className="">
                         <CustomProductDetailCard data={data} campaignId={id} />
                       </div>
                     ),
