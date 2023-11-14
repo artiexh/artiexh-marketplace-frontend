@@ -25,7 +25,9 @@ export const cartSlice = createSlice({
       const productId = action.payload.productId;
 
       newArr.forEach((section) => {
-        section.items = section.items.filter((i) => i.id !== productId);
+        section.items = section.items.filter(
+          (i) => i.productCode !== productId
+        );
 
         if (section.items.length === 0) {
           newArr = newArr.filter(
@@ -76,7 +78,7 @@ export const cartSlice = createSlice({
         if (selectItem) {
           // find the item match the toggle id
           const nestedItem = selectItem.items.find(
-            (item) => item.id === items[0].id
+            (item) => item.productCode === items[0].productCode
           );
 
           // loop through the new array
@@ -86,7 +88,7 @@ export const cartSlice = createSlice({
               // if the item is selected, remove it
               if (nestedItem) {
                 item.items = item.items.filter(
-                  (item) => item.id != items[0].id
+                  (item) => item.productCode != items[0].productCode
                 );
 
                 // otherwise, add it

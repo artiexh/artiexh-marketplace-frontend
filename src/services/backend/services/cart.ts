@@ -31,12 +31,14 @@ export const updateCartItem = async (
   return cartItems;
 };
 
-export const deleteCartItem = async (productId: string[]) => {
+export const deleteCartItem = async (
+  products: { productCode: string; saleCampaignId: string }[]
+) => {
   let cartItems;
   try {
     const { data: result } = await axiosClient.delete<CartData>("/cart/item", {
       data: {
-        productIds: productId,
+        items: products,
       },
     });
     cartItems = result;

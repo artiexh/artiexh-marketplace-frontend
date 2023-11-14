@@ -152,7 +152,7 @@ export default function ProductDetailContainer({
         type: data?.type,
         deliveryType: "SHIP",
         status: data?.status,
-        tags: values?.tags?.map((item) => item.value),
+        tags: values?.tags,
       }
     );
 

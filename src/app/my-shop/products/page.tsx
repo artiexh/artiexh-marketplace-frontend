@@ -1,6 +1,7 @@
 "use client";
 
 import TableComponent from "@/components/TableComponent";
+import shopProductColumns from "@/constants/Columns/shopProductColumns";
 import axiosClient from "@/services/backend/axiosClient";
 import { SimpleCustomProduct } from "@/types/CustomProduct";
 import { ProductInventory } from "@/types/Product";
@@ -90,7 +91,7 @@ export default function ProductTablePage() {
         <div className="flex flex-col items-center gap-4 w-full">
           {!isLoading && (
             <TableComponent
-              columns={productColumns}
+              columns={shopProductColumns}
               data={data?.items.map((item) => {
                 return {
                   ...item,
@@ -114,67 +115,3 @@ export default function ProductTablePage() {
     </div>
   );
 }
-
-export const productColumns: TableColumns<ProductInventory> = [
-  {
-    title: "Product code",
-    dataIndex: "productCode",
-    key: "productCode",
-  },
-  {
-    title: "Name",
-    key: "name",
-    render: (record) => (
-      <div className="flex items-center gap-5">
-        <div className="relative w-16 aspect-square">
-          <img src={record.thumbnailUrl} alt="product-thumb" />
-        </div>
-        <div>{record.name}</div>
-      </div>
-    ),
-  },
-  {
-    title: "Owner",
-    key: "owner",
-    render: (record) => <div>{record.owner.displayName}</div>,
-  },
-  {
-    title: "Price",
-    key: "price",
-    render: (record) => <div>{record.price.amount}</div>,
-  },
-  {
-    title: "Quantity",
-    dataIndex: "quantity",
-    key: "quantity",
-    className: "!text-center w-[10rem]",
-  },
-  {
-    title: "Sold",
-    dataIndex: "soldQuantity",
-    key: "soldQuantity",
-    className: "!text-center w-[10rem]",
-  },
-  {
-    title: "Status",
-    key: "status",
-    className: "!text-center w-[10rem]",
-    render: (record) => <Badge>{record.status}</Badge>,
-  },
-  {
-    title: "Action",
-    key: "action",
-    render: (record) => (
-      <div className="flex">
-        <div
-          className="cursor-pointer"
-          onClick={() => {
-            window.location.replace(`/my-shop/products/${record.productCode}`);
-          }}
-        >
-          View detail
-        </div>
-      </div>
-    ),
-  },
-];

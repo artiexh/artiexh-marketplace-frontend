@@ -57,7 +57,9 @@ export default function CartSection({
               })
             )
           }
-          isChecked={cartSection.items.every((item) => isChecked(item.id))}
+          isChecked={cartSection.items.every((item) =>
+            isChecked(item.productCode)
+          )}
         />
       )}
       <div className="flex justify-between items-center">
@@ -115,12 +117,13 @@ export default function CartSection({
       </div>
       <div className="cart-section">
         {cartSection.items.map((item, index, arr) => (
-          <div key={item.id}>
+          <div key={item.productCode}>
             <CartItemCard
+              saleCampaignId={cartSection.saleCampaign.id}
               cartItem={item}
               selectEvent={() => toggleCartItemHandler(item)}
-              deleteEvent={() => deleteItemFromCart(item.id)}
-              isChecked={isChecked(item.id)}
+              deleteEvent={() => deleteItemFromCart(item.productCode)}
+              isChecked={isChecked(item.productCode)}
               isCartPage={isCartPage}
               revalidateFunc={revalidateFunc}
             />

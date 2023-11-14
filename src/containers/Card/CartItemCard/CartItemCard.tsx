@@ -11,6 +11,7 @@ import LogoCheckbox from "@/components/LogoCheckbox/LogoCheckbox";
 import { KeyedMutator } from "swr";
 
 type CartItemCardProps = {
+  saleCampaignId: string;
   cartItem: CartItem;
   selectEvent?: () => void;
   isChecked?: boolean;
@@ -20,6 +21,7 @@ type CartItemCardProps = {
 };
 
 export default function CartItemCard({
+  saleCampaignId,
   cartItem,
   selectEvent,
   isChecked = false,
@@ -33,7 +35,11 @@ export default function CartItemCard({
   const updateCartQuantity = async (value: number) => {
     if (!loading) {
       setLoading(true);
-      const result = await updateCartItem(cartItem.id.toString(), value);
+      const result = await updateCartItem(
+        cartItem.productCode,
+        saleCampaignId,
+        value
+      );
 
       if (result != null) {
         setQuantity(value);
@@ -46,7 +52,12 @@ export default function CartItemCard({
   const deleteItemFromCart = async () => {
     if (!loading) {
       setLoading(true);
-      const result = await deleteCartItem([cartItem.id]);
+      const result = await deleteCartItem([
+        {
+          productCode: cartItem.productCode,
+          saleCampaignId: saleCampaignId,
+        },
+      ]);
       if (result != null) {
         deleteEvent?.();
         revalidateFunc?.();

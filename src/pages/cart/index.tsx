@@ -37,7 +37,7 @@ const CartPage = () => {
   const flattedItems = selectedItems.map((item) => item.items).flat();
 
   const isChecked = (id: string) => {
-    return flattedItems.some((cartItem) => cartItem.id == id);
+    return flattedItems.some((cartItem) => cartItem.productCode == id);
   };
 
   // the actual calculated selected data from api
@@ -47,7 +47,7 @@ const CartPage = () => {
       data?.forEach((shopItem) => {
         const selectedProducts: CartItem[] = [];
         shopItem.items.forEach((i) => {
-          if (item.id === i.id) {
+          if (item.productCode === i.productCode) {
             selectedProducts.push(i);
           }
         });
