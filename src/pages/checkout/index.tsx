@@ -29,6 +29,7 @@ import { isNumber } from "lodash";
 import AuthWrapper from "@/services/guards/AuthWrapper";
 import { CommonResponseBase } from "@/types/ResponseBase";
 import { SelectedItems } from "@/types/Cart";
+import { productInSaleIdFormatter } from "@/utils/formatter";
 
 const PAYMENT_ITEM = [
   {
@@ -93,10 +94,20 @@ function CheckoutPage() {
         };
       }) ?? [];
 
-  const flattedItems = selectedItems.map((item) => item.items).flat();
+  const flattedItems = selectedItems
+    .map((item) =>
+      item.items.map((el) => ({
+        ...el,
+        id: productInSaleIdFormatter(item.saleCampaign.id, el.productCode),
+      }))
+    )
+    .flat();
 
-  const isChecked = (id: string) => {
-    return flattedItems.some((cartItem) => cartItem.productCode == id);
+  const isChecked = (saleCampginId: string, productCode: string) => {
+    return flattedItems.some(
+      (cartItem) =>
+        cartItem.id === productInSaleIdFormatter(saleCampginId, productCode)
+    );
   };
 
   // the actual calculated selected data from api

@@ -24,3 +24,16 @@ export const getQueryString = (
 export const getReadableWardAddress = (address: Ward | undefined) => {
   return `${address?.fullName}, ${address?.district.fullName}, ${address?.district.province.fullName}`;
 };
+
+export const productInSaleIdFormatter = (
+  campaignId: string,
+  productCode: string
+) => `${campaignId}_${productCode}`;
+
+export const destructProductInSaleId = (id: string) => {
+  const [saleCampaignId, productCode] = id.split("_");
+  return {
+    saleCampaignId,
+    productCode,
+  };
+};

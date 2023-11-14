@@ -13,7 +13,7 @@ import ImageWithFallback from "../ImageWithFallback/ImageWithFallback";
 type CartSectionProps = {
   cartSection: CartSection;
   dispatch: Dispatch<AnyAction>;
-  isChecked: (id: string) => boolean;
+  isChecked: (cmpaignId: string, productCode: string) => boolean;
   isCartPage?: boolean;
   revalidateFunc?: KeyedMutator<CartData>;
 };
@@ -58,7 +58,7 @@ export default function CartSection({
             )
           }
           isChecked={cartSection.items.every((item) =>
-            isChecked(item.productCode)
+            isChecked(cartSection.saleCampaign.id, item.productCode)
           )}
         />
       )}
@@ -123,7 +123,10 @@ export default function CartSection({
               cartItem={item}
               selectEvent={() => toggleCartItemHandler(item)}
               deleteEvent={() => deleteItemFromCart(item.productCode)}
-              isChecked={isChecked(item.productCode)}
+              isChecked={isChecked(
+                cartSection.saleCampaign.id,
+                item.productCode
+              )}
               isCartPage={isCartPage}
               revalidateFunc={revalidateFunc}
             />

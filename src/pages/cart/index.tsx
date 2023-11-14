@@ -6,6 +6,7 @@ import AuthWrapper from "@/services/guards/AuthWrapper";
 import { RootState } from "@/store";
 import { SelectedItems } from "@/types/Cart";
 import { CommonResponseBase } from "@/types/ResponseBase";
+import { productInSaleIdFormatter } from "@/utils/formatter";
 import { Button } from "@mantine/core";
 import { IconSearchOff } from "@tabler/icons-react";
 import { useRouter } from "next/router";
@@ -34,10 +35,20 @@ const CartPage = () => {
     }
   });
 
-  const flattedItems = selectedItems.map((item) => item.items).flat();
+  const flattedItems = selectedItems
+    .map((item) =>
+      item.items.map((el) => ({
+        ...el,
+        id: productInSaleIdFormatter(item.saleCampaign.id, el.productCode),
+      }))
+    )
+    .flat();
 
-  const isChecked = (id: string) => {
-    return flattedItems.some((cartItem) => cartItem.productCode == id);
+  const isChecked = (saleCampginId: string, productCode: string) => {
+    return flattedItems.some(
+      (cartItem) =>
+        cartItem.id === productInSaleIdFormatter(saleCampginId, productCode)
+    );
   };
 
   // the actual calculated selected data from api
