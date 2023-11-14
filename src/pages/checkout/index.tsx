@@ -39,9 +39,9 @@ const PAYMENT_ITEM = [
 ];
 
 function CheckoutPage() {
-  const selectedItems = useSelector(
-    (state: RootState) => state.cart.selectedItems
-  );
+  const dispatch = useDispatch();
+  const router = useRouter();
+
   const [loading, setLoading] = useState<boolean>(false);
   const [selectedAddressId, setSelectedAddressId] = useState("");
   const [paymentMethod, setPaymentMethod] = useState("");
@@ -64,38 +64,65 @@ function CheckoutPage() {
     }
   });
 
-  const dispatch = useDispatch();
-  const router = useRouter();
+  const finalizeQuery = (
+    typeof router.query.itemId === "string"
+      ? [router.query.itemId]
+      : typeof router.query.itemId === "undefined"
+      ? []
+      : router.query.itemId
+  ).reduce((prev, cur) => {
+    const [campaignId, productCode] = cur.split("_");
+    if (prev[campaignId]) {
+      prev[campaignId].push(productCode);
+    } else {
+      prev[campaignId] = [productCode];
+    }
+
+    return prev;
+  }, {} as Record<string, string[]>);
+
+  const selectedItems: CartSection[] =
+    data
+      ?.filter((i) => finalizeQuery[i.saleCampaign.id])
+      .map((el) => {
+        return {
+          saleCampaign: el.saleCampaign,
+          items: el.items.filter((i) =>
+            finalizeQuery[el.saleCampaign.id]?.includes(i.productCode)
+          ),
+        };
+      }) ?? [];
 
   const flattedItems = selectedItems.map((item) => item.items).flat();
 
   const isChecked = (id: string) => {
-    return flattedItems.some((cartItem) => cartItem.id == id);
+    return flattedItems.some((cartItem) => cartItem.productCode == id);
   };
 
   // the actual calculated selected data from api
   const selectedCartItems = useMemo(() => {
     const items: CartSection[] = [];
     // list cart item
+    console.log(flattedItems);
     data?.forEach((shopItem) => {
       flattedItems.forEach((item) => {
         const selectedProducts: CartItem[] = [];
         shopItem.items.forEach((i) => {
-          if (item.id === i.id) {
+          if (item.productCode === i.productCode) {
             selectedProducts.push(i);
           }
         });
 
         if (selectedProducts.length > 0) {
           const findItem = items.find(
-            (item) => item.campaign.id === shopItem.campaign.id
+            (item) => item.saleCampaign.id === shopItem.saleCampaign.id
           );
 
           if (findItem != null) {
             findItem.items.push(...selectedProducts);
           } else {
             items.push({
-              campaign: shopItem.campaign,
+              saleCampaign: shopItem.saleCampaign,
               items: selectedProducts,
             });
           }
@@ -139,11 +166,11 @@ function CheckoutPage() {
       addressId: selectedAddressId,
       paymentMethod: paymentMethod as PAYMENT_METHOD_ENUM,
       campaigns: selectedCartItems.map((cartItem) => ({
-        campaignId: cartItem.campaign.id,
+        campaignId: cartItem.saleCampaign.id,
         note:
-          noteValues.find((item) => item.shopId === cartItem.campaign.id)
+          noteValues.find((item) => item.shopId === cartItem.saleCampaign.id)
             ?.note ?? "",
-        itemIds: cartItem.items.map((item) => item.id),
+        itemIds: cartItem.items.map((item) => item.productCode),
         shippingFee: isNumber(shippingFee) ? shippingFee : 0,
       })),
     });
@@ -227,10 +254,10 @@ function CheckoutPage() {
                     placeholder="Nhập lời nhắn cho shop"
                     onChange={(event) => {
                       const arr = noteValues.filter(
-                        (value) => value.shopId !== cartSection.campaign.id
+                        (value) => value.shopId !== cartSection.saleCampaign.id
                       );
                       arr.push({
-                        shopId: cartSection.campaign.id,
+                        shopId: cartSection.saleCampaign.id,
                         note: event.target.value,
                       });
                       setNoteValues(arr);

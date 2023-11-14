@@ -1,7 +1,6 @@
 import { CampaignData } from "@/types/Campaign";
 
 export type CartItem = {
-  id: string;
   status: string;
   name: string;
   price: {
@@ -15,10 +14,14 @@ export type CartItem = {
   deliveryType: string;
   quantity: number;
   thumbnailUrl: string;
+
+  maxItemsPerOrder: number;
+
+  productCode: string;
 };
 
 export type CartSection = {
-  campaign: CampaignData;
+  saleCampaign: CampaignData;
   items: CartItem[];
 };
 

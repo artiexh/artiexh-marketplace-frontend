@@ -4,6 +4,7 @@ import {
   NOTIFICATION_TYPE_ENUM,
 } from "@/constants/common";
 import { CampaignData } from "@/types/Campaign";
+import { Product } from "@/types/Product";
 import { CommonResponseBase } from "@/types/ResponseBase";
 import { CreateUserAddress, Address } from "@/types/User";
 import {
@@ -22,8 +23,9 @@ export const fromUserAddressToDefaultAddressFormValue: (
   };
 };
 
-export const getCampaignType = (campaign: CampaignData) => {
-  const { from, to, isPublished } = campaign;
+export const getCampaignType = (campaign: Product["saleCampaign"]) => {
+  const { from, to } = campaign;
+  console.log("🚀 ~ file: mapper.tsx:28 ~ getCampaignType ~ from:", from);
   const today = Date.now();
 
   if (Date.parse(from) > today) {

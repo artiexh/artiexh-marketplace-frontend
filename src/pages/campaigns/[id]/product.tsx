@@ -17,7 +17,7 @@ const CampaignProductList = () => {
 
   function getKey(pageNumber: number, previousPageData: Product[]) {
     if (pageNumber && !previousPageData.length) return null; // reached the end
-    return `/marketplace/campaign/${id}/product?pageNumber=${
+    return `/marketplace/sale-campaign/${id}/product-in-sale?pageNumber=${
       pageNumber + 1
     }&pageSize=8&sortBy=id&sortDirection=DESC`; // SWR key
   }

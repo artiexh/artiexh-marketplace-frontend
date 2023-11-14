@@ -54,7 +54,7 @@ const CartPage = () => {
 
         if (selectedProducts.length > 0) {
           items.push({
-            campaign: shopItem.campaign,
+            saleCampaign: shopItem.saleCampaign,
             items: selectedProducts,
           });
         }
@@ -100,7 +100,16 @@ const CartPage = () => {
         <div>
           <Button
             disabled={selectedItems.length === 0}
-            onClick={() => router.push(ROUTE.CHECKOUT)}
+            onClick={() => {
+              const tmp = selectedCartItems
+                .map((el) =>
+                  el.items.map((i) => `${el.saleCampaign.id}_${i.productCode}`)
+                )
+                .flat();
+              const params = new URLSearchParams();
+              tmp.forEach((i) => params.append("itemId", i));
+              router.push(`${ROUTE.CHECKOUT}?${params.toString()}`);
+            }}
             className="bg-[#50207D] w-[200px] h-[3rem]"
           >
             Checkout

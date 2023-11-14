@@ -17,20 +17,13 @@ export default function OrderCard({ order }: OrderCard) {
   return (
     <div
       className="order-card bg-white my-4 cursor-pointer"
-      onClick={() => router.push(`${ROUTE.PROFILE}/order/${order.id}`)}
+      onClick={() => router.push(`${ROUTE.MY_PROFILE}/order/${order.id}`)}
     >
       <div className="order-card-header p-4 flex justify-between">
         <div>
-          <span className="font-bold">{order.campaign.name}</span>
+          <span className="font-bold">{order.campaignSale.name}</span>
           <span className="ml-4">
-            (Created day:{" "}
-            {new Date(
-              //@ts-ignore
-              order?.orderHistories.find(
-                (el) => el.status === "CREATED"
-              )?.datetime
-            ).toDateString()}
-            )
+            (Created day: {new Date(order.createdDate).toDateString()})
           </span>
         </div>
         <div>

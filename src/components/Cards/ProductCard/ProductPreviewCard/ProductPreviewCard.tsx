@@ -12,6 +12,10 @@ interface IProductPreviewCardProps {
 }
 
 const ProductPreviewCard = ({ data, className }: IProductPreviewCardProps) => {
+  console.log(
+    "🚀 ~ file: ProductPreviewCard.tsx:15 ~ ProductPreviewCard ~ data:",
+    data
+  );
   const router = useRouter();
   return (
     <div
@@ -20,7 +24,9 @@ const ProductPreviewCard = ({ data, className }: IProductPreviewCardProps) => {
         "bg-white rounded-2xl !aspect-[3/5] w-full cursor-pointer",
         className
       )}
-      onClick={() => router.push(`/product/${data.id}`)}
+      onClick={() =>
+        router.push(`/product/${data.saleCampaign.id}_${data.productCode}`)
+      }
     >
       <div className="relative w-full aspect-square">
         <ImageWithFallback

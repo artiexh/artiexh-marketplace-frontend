@@ -40,7 +40,7 @@ export default function CampaignDetailPage() {
 
       const productRes = await axiosClient.get<
         CommonResponseBase<PaginationResponseBase<Product>>
-      >(`/marketplace/campaign/${id}/product?pageSize=4`);
+      >(`/marketplace/sale-campaign/${id}/product-in-sale?pageSize=4`);
 
       if (productRes.data.data.items.length) {
         setCampaignProducts(productRes.data.data.items);
@@ -156,20 +156,6 @@ export default function CampaignDetailPage() {
           <div className="p-4">
             <span className="font-semibold">Artist: </span>
             {campaignData.owner.displayName}
-          </div>
-        </div>
-        <div className="w-[300px] shadow-md rounded-lg">
-          <div>
-            <img
-              // src="https://quocluat.vn/photos/blog_post/Printing.jpg"
-              src={campaignData.provider.imageUrl}
-              alt="artist"
-              className="w-full h-[300px] rounded-tl-lg rounded-tr-lg"
-            />
-          </div>
-          <div className="p-4">
-            <span className="font-semibold">Provider: </span>{" "}
-            {campaignData.provider.businessName}
           </div>
         </div>
       </div>

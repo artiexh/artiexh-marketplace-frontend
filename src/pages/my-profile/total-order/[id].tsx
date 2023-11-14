@@ -109,13 +109,13 @@ function OrderDetailPage() {
                   <div>
                     <Image
                       className="rounded-full mr-8 aspect-square"
-                      src={order.campaign.thumbnailUrl}
+                      src={order.campaignSale.thumbnailUrl}
                       width={60}
                       height={60}
                       alt="shop-img"
                     />
                   </div>
-                  <div className="text-white">{order.campaign.name}</div>
+                  <div className="text-white">{order.campaignSale.name}</div>
                 </div>
                 <div
                   className="text-white cursor-pointer"

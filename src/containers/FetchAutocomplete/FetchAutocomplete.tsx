@@ -16,7 +16,7 @@ export default function FetchAutoComplete() {
     try {
       const result = await axiosClient.get<
         CommonResponseBase<PaginationResponseBase<Product>>
-      >(`/marketplace/product?keyword=${searchKey}&pageSize=8`);
+      >(`/marketplace/product-in-sale?keyword=${searchKey}&pageSize=8`);
 
       return result.data.data.items;
     } catch (e) {
@@ -33,7 +33,7 @@ export default function FetchAutoComplete() {
         filter={() => true}
         data={
           data?.map((item) => ({
-            value: item.id,
+            value: item.productCode,
             label: item.name,
           })) ?? []
         }

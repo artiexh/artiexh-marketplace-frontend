@@ -32,7 +32,8 @@ const ProductDetailPage: NextPage<
   if (router.isFallback) return <div>Loading...</div>;
   if (!product) return <div>Product not found</div>;
 
-  const { description, id, attaches, owner, campaign } = product;
+  const { description, attaches, owner, saleCampaign: campaign } = product;
+  console.log("🚀 ~ file: [id].tsx:36 ~ campaign:", campaign);
   const campaignType = getCampaignType(campaign);
   const campaignTime = getCampaignTime(
     campaign.from,
@@ -105,7 +106,7 @@ const ProductDetailPage: NextPage<
             ))}
           </Carousel>
           <ProductInfo
-            key={product.id}
+            key={product.productCode}
             product={product}
             special={
               product.quantity > 0
@@ -124,7 +125,7 @@ const ProductDetailPage: NextPage<
           {relatedProducts.map((product, index) => (
             <ProductPreviewCard
               className="col-span-2"
-              key={product.id + index}
+              key={product.productCode}
               data={product}
             />
           ))}
@@ -136,21 +137,23 @@ const ProductDetailPage: NextPage<
 
 export const getStaticProps = async (context: GetStaticPropsContext) => {
   const { params } = context;
-  if (!params?.id) return { props: {} };
+  if (!params?.id || typeof params.id !== "string") return { props: {} };
   const { data } = await axiosClient.get<CommonResponseBase<Product>>(
-    `/marketplace/product/${params.id}`
+    `/marketplace/sale-campaign/${params.id?.split("_")[0]}/product-in-sale/${
+      params.id?.split("_")[1]
+    }`
   );
   console.log("🚀 ~ file: [id].tsx:155 ~ getStaticProps ~ data:", data);
 
   const { data: productList } = await axiosClient.get<
     CommonResponseBase<PaginationResponseBase<Product>>
-  >(`/marketplace/product?category=${data.data.category.id}`);
+  >(`/marketplace/product-in-sale?category=${data.data.category.id}`);
 
   return {
     props: {
       product: data.data,
       relatedProducts: productList.data.items.filter(
-        (item) => item.id !== data.data.id
+        (item) => item.productCode !== data.data.productCode
       ),
     },
   };

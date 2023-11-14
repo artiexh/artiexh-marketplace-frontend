@@ -38,7 +38,7 @@ type OrderItemDetail = {
 };
 
 export type Order = {
-  campaign: {
+  campaignSale: {
     createdBy: {
       avatarUrl: string;
       displayName: string;

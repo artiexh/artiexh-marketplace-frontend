@@ -19,21 +19,31 @@ export type ArtistCampaignColumnType = Pick<
 >;
 
 export type CampaignData = {
-  id: string;
-  status: string;
-  thumbnailUrl: string;
-  owner: {
-    id: string;
-    username: string;
-    displayName: string;
-    avatarUrl: string;
-  };
-  name: string;
+  createdBy: string;
+  createdDate: string;
   description: string;
-  type: string;
-  isPublished: boolean;
   from: string;
+  id: string;
+  modifiedDate: string;
+  name: string;
+  owner: {
+    avatarUrl: string;
+    displayName: string;
+    id: string;
+    province: {
+      country: {
+        id: string;
+        name: string;
+      };
+      id: string;
+      name: string;
+    };
+    username: string;
+  };
+  publicDate: string;
+  thumbnailUrl: string;
   to: string;
+  type: "SHARE" | "PUBLIC" | "PRIVATE";
 };
 
 export type CustomProduct = {

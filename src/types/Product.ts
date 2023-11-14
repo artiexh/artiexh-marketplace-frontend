@@ -35,26 +35,68 @@ export type ShopInfo = {
 };
 
 export type Product = {
-  id: string;
-  name: string;
-  price: Price;
-  description: string;
-  tags: string[];
-  owner: OwnerInfo;
-  averageRate: number;
   attaches: Attaches[];
-  status: "DELETE" | "AVAILABLE" | "SOLD_OUT" | "HIDDEN";
-  type: "NORMAL" | "PRE_ORDER";
-  quantity: number;
-  publishDatetime: string; // ISO String
-  preOrderRange?: string[]; // ISO String[]
+  averageRate: number;
+  category: {
+    id: string;
+    name: string;
+  };
+  deliveryType: "SHIP";
+  description: string;
   maxItemsPerOrder: number;
-  allowDelivery: boolean;
-  paymentMethods: PaymentMethod[];
-  category: Category;
-  thumbnailUrl: string; // URL
-  shop: ShopInfo;
-  campaign: CampaignData;
+  name: string;
+  owner: {
+    avatarUrl: string;
+    displayName: string;
+    id: string;
+    province: {
+      country: {
+        id: 0;
+        name: string;
+      };
+      id: 0;
+      name: string;
+    };
+    username: string;
+  };
+  paymentMethods: ["VN_PAY"];
+  price: {
+    amount: number;
+    unit: string;
+  };
+  productCode: string;
+  quantity: number;
+  saleCampaign: {
+    createdBy: string;
+    createdDate: string;
+    description: string;
+    from: string;
+    id: string;
+    modifiedDate: string;
+    name: string;
+    owner: {
+      avatarUrl: string;
+      displayName: string;
+      id: string;
+      province: {
+        country: {
+          id: string;
+          name: string;
+        };
+        id: string;
+        name: string;
+      };
+      username: string;
+    };
+    publicDate: string;
+    thumbnailUrl: string;
+    to: string;
+    type: "SHARE" | "PUBLIC" | "PRIVATE";
+  };
+  status: string;
+  tags: string[];
+  thumbnailUrl: string;
+  type: "NORMAL";
   weight: number;
 };
 

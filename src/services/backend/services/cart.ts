@@ -5,13 +5,18 @@ import { CommonResponseBase } from "@/types/ResponseBase";
 import { Order, TotalOrder } from "@/types/Order";
 import { updateUserInformation } from "@/utils/user";
 
-export const updateCartItem = async (productId: string, quantity: number) => {
+export const updateCartItem = async (
+  productCode: string,
+  saleCampaignId: string,
+  quantity: number
+) => {
   let cartItems;
   try {
     const { data: result } = await axiosClient.put<CartData>("/cart/item", {
       items: [
         {
-          productId,
+          productCode,
+          saleCampaignId,
           quantity,
         },
       ],

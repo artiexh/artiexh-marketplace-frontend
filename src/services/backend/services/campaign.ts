@@ -166,7 +166,7 @@ export const getMarketplaceCampaignById = async (id: string) => {
   try {
     const result = await axiosClient.get<
       CommonResponseBase<CampaignDetailResponse>
-    >(`/marketplace/campaign/${id}`);
+    >(`/marketplace/sale-campaign/${id}`);
 
     return result.data.data;
   } catch (err) {
@@ -177,7 +177,7 @@ export const getMarketplaceCampaignById = async (id: string) => {
 export const getMarketplaceCampaignProductsById = async (id: string) => {
   try {
     const result = await axiosClient.get<CommonResponseBase<Product>>(
-      `/marketplace/campaign/${id}/product`
+      `/marketplace/sale-campaign/${id}/product-in-sale`
     );
 
     return result.data.data;

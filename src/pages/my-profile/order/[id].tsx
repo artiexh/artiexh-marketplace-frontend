@@ -142,19 +142,19 @@ function OrderDetailPage() {
       <div>
         <div className="p-10">
           <div className="font-bold text-[24px] mb-1 text-primary">
-            Thông tin shop:
+            Thông tin campaign:
           </div>
           <div className="flex items-center mb-4 bg-primary p-4">
             <div>
               <Image
                 className="rounded-full mr-8 aspect-square"
-                src={data?.campaign.thumbnailUrl ?? ""}
+                src={data?.campaignSale.thumbnailUrl ?? ""}
                 width={60}
                 height={60}
                 alt="shop-img"
               />
             </div>
-            <div className="text-white">{data?.campaign.name}</div>
+            <div className="text-white">{data?.campaignSale.name}</div>
           </div>
           <div>
             {/* <span className="font-bold">

@@ -29,7 +29,7 @@ export const cartSlice = createSlice({
 
         if (section.items.length === 0) {
           newArr = newArr.filter(
-            (item) => item.campaign.id !== section.campaign.id
+            (item) => item.saleCampaign.id !== section.saleCampaign.id
           );
         }
       });
@@ -49,11 +49,11 @@ export const cartSlice = createSlice({
       // find the cart section belong to shopId
       const selectedItems = state.selectedItems;
       const { cartSection, isAll } = action.payload;
-      const { campaign, items } = cartSection;
+      const { saleCampaign: campaign, items } = cartSection;
       const campaignId = campaign.id;
 
       const selectItem = selectedItems.find(
-        (item) => item.campaign.id == campaignId
+        (item) => item.saleCampaign.id == campaignId
       );
       let newArr = [...selectedItems];
 
@@ -62,12 +62,12 @@ export const cartSlice = createSlice({
         // if this shopId section already exist, remove it, otherwise, add it
 
         // remove this section belong to shopId
-        newArr = newArr.filter((item) => item.campaign.id != campaignId);
+        newArr = newArr.filter((item) => item.saleCampaign.id != campaignId);
 
         // if this shop section doesn exist yet, add it to the selected items
         if (Number(selectItem?.items?.length ?? 0) < items.length) {
           newArr.push({
-            campaign,
+            saleCampaign: campaign,
             items,
           });
         }
@@ -82,7 +82,7 @@ export const cartSlice = createSlice({
           // loop through the new array
           newArr.forEach((item) => {
             // selected the section belong to this shop
-            if (item.campaign.id == campaignId) {
+            if (item.saleCampaign.id == campaignId) {
               // if the item is selected, remove it
               if (nestedItem) {
                 item.items = item.items.filter(
@@ -98,7 +98,7 @@ export const cartSlice = createSlice({
           // otherwise, add new cart section
         } else {
           newArr.push({
-            campaign,
+            saleCampaign: campaign,
             items,
           });
         }
@@ -106,7 +106,9 @@ export const cartSlice = createSlice({
 
       newArr.forEach((section) => {
         if (section.items.length === 0) {
-          newArr.filter((item) => item.campaign.id !== section.campaign.id);
+          newArr.filter(
+            (item) => item.saleCampaign.id !== section.saleCampaign.id
+          );
         }
       });
       // set the new selected array

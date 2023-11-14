@@ -37,7 +37,7 @@ const HomePage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = ({
   campaigns,
 }) => {
   const { data: products, isLoading } = useSWR(
-    ["/marketplace/product?pageSize=6"],
+    ["/marketplace/product-in-sale?pageSize=6"],
     (key) =>
       axiosClient
         .get<CommonResponseBase<{ items: Product[] }>>(key[0])
@@ -218,10 +218,10 @@ export const getStaticProps = async (context: GetStaticPropsContext) => {
       { data: categoryRes },
     ] = await Promise.all([
       axiosClient.get<CommonResponseBase<PaginationResponseBase<CampaignData>>>(
-        "/marketplace/campaign?pageSize=4"
+        "/marketplace/sale-campaign?pageSize=4"
       ),
       axiosClient.get<CommonResponseBase<PaginationResponseBase<Product>>>(
-        "/marketplace/product?pageSize=4"
+        "/marketplace/product-in-sale?pageSize=4"
       ),
       axiosClient.get<CommonResponseBase<PaginationResponseBase<Tag>>>(
         "/tag?pageSize=12"

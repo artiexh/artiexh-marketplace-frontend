@@ -15,7 +15,14 @@ type ProductInfoProps = {
 };
 
 const ProductInfo: FC<ProductInfoProps> = ({ product, special }) => {
-  const { id, averageRate, name, price, category, campaign } = product;
+  const {
+    productCode,
+    averageRate,
+    name,
+    price,
+    category,
+    saleCampaign: campaign,
+  } = product;
   const [quantity, setQuantity] = useState<number>(1);
   const [loading, setLoading] = useState(false);
 
@@ -24,7 +31,7 @@ const ProductInfo: FC<ProductInfoProps> = ({ product, special }) => {
   const updateCartQuantity = async () => {
     if (!loading) {
       setLoading(true);
-      const result = await updateCartItem(id, quantity);
+      const result = await updateCartItem(productCode, campaign.id, quantity);
 
       if (result != null) {
         notifications.show({

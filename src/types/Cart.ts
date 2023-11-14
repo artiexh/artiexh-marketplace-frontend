@@ -3,7 +3,7 @@ import { CartItem } from "@/services/backend/types/Cart";
 import { CampaignData } from "./Campaign";
 
 export type SelectedItems = {
-  campaign: CampaignData;
+  saleCampaign: CampaignData;
   items: CartItem[];
 };
 

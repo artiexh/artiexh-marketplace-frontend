@@ -10,7 +10,7 @@ import useSWRInfinite from "swr/infinite";
 export default function CampaignListPage() {
   function getKey(pageNumber: number, previousPageData: CampaignData[]) {
     if (pageNumber && !previousPageData.length) return null; // reached the end
-    return `/marketplace/campaign?pageNumber=${
+    return `/marketplace/sale-campaign?pageNumber=${
       pageNumber + 1
     }&pageSize=8&sortBy=id&sortDirection=DESC`; // SWR key
   }

@@ -44,7 +44,9 @@ const ShopDetailPage = () => {
         Promise.all([
           axiosClient.get<
             CommonResponseBase<PaginationResponseBase<CampaignData>>
-          >(`/marketplace/campaign?pageSize=4&ownerId=${res.data.data.id}`),
+          >(
+            `/marketplace/sale-campaign?pageSize=4&ownerId=${res.data.data.id}`
+          ),
           axiosClient.get<CommonResponseBase<PaginationResponseBase<Product>>>(
             `/marketplace/artist/${name}/product?pageSize=4`
           ),
