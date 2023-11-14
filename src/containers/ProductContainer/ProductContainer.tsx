@@ -307,30 +307,33 @@ export default function ProductDetailContainer({
               </Input.Wrapper>
               <Input.Wrapper label="Attachments" className="mt-3">
                 <div className="grid grid-cols-3 gap-3">
-                  {values.attaches?.map((attach, index) => (
-                    <Thumbnail
-                      // Make this unique
-                      url={
+                  {
+                    //@ts-ignore
+                    values.attaches?.map((attach, index) => (
+                      <Thumbnail
+                        // Make this unique
+                        url={
+                          //@ts-ignore
+                          attach?.url ??
+                          (attach
+                            ? URL.createObjectURL(attach as Blob)
+                            : undefined)
+                        }
                         //@ts-ignore
-                        attach?.url ??
-                        (attach
-                          ? URL.createObjectURL(attach as Blob)
-                          : undefined)
-                      }
-                      //@ts-ignore
-                      key={`${index}-${attach?.name}-${Math.random()}`}
-                      setFile={(file) => {
-                        const cloneAttaches = [...attaches];
-                        cloneAttaches[index] = file;
-                        console.log(attaches, cloneAttaches);
-                        setFieldValue(`attaches`, cloneAttaches);
-                      }}
-                      clearable
-                      onClear={() => {
-                        removeListItem("attaches", index);
-                      }}
-                    />
-                  ))}
+                        key={`${index}-${attach?.name}-${Math.random()}`}
+                        setFile={(file) => {
+                          const cloneAttaches = [...attaches];
+                          cloneAttaches[index] = file;
+                          console.log(attaches, cloneAttaches);
+                          setFieldValue(`attaches`, cloneAttaches);
+                        }}
+                        clearable
+                        onClear={() => {
+                          removeListItem("attaches", index);
+                        }}
+                      />
+                    ))
+                  }
                   {values.attaches?.length < 6 && (
                     <Thumbnail
                       setFile={(file) => {
