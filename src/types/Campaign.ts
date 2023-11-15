@@ -109,10 +109,10 @@ export type CampaignDetailResponse = CampaignData & {
 };
 
 export type CampaignHistory = {
-  action: string;
-  eventTime: string;
-  message: string;
-  updatedBy: string;
+  action?: string;
+  eventTime?: string;
+  message?: string;
+  updatedBy?: string;
 };
 
 // Old type

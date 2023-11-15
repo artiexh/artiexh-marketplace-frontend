@@ -3,7 +3,7 @@ import {
   ARTIST_CAMPAIGN_ENDPOINT,
   updateCampaignGeneralInfoApi,
 } from "@/services/backend/services/campaign";
-import { CampaignDetail } from "@/types/Campaign";
+import { CampaignDetail, CampaignHistory } from "@/types/Campaign";
 import { CommonResponseBase } from "@/types/ResponseBase";
 import { getNotificationIcon } from "@/utils/mapper";
 import {
@@ -57,6 +57,18 @@ export default function CampaignGeneralInfoForm({
       ),
     });
   };
+
+  const finalHistory: CampaignHistory[] =
+    data.campaignHistories.length < 3
+      ? [
+          ...data.campaignHistories,
+          {
+            action: "START",
+            message: "Start create campaign",
+            updatedBy: "System",
+          },
+        ]
+      : data.campaignHistories.slice(-3);
 
   return (
     <div className="card general-wrapper mt-2 ">
@@ -112,9 +124,9 @@ export default function CampaignGeneralInfoForm({
           </div>
           <Textarea label="Description" readOnly value={data.description} />
         </div>
-        <div className="flex-[2]">
+        <div className="flex-[2] p-4">
           <Timeline active={0} bulletSize={18} lineWidth={2}>
-            {data.campaignHistories?.slice(-3).map((step) => (
+            {finalHistory.map((step) => (
               <Timeline.Item
                 key={step.eventTime}
                 title={`${step.action} - ${step.updatedBy}`}
