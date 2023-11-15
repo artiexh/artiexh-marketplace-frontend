@@ -103,10 +103,10 @@ function CheckoutPage() {
     )
     .flat();
 
-  const isChecked = (saleCampginId: string, productCode: string) => {
+  const isChecked = (saleCampaignId: string, productCode: string) => {
     return flattedItems.some(
       (cartItem) =>
-        cartItem.id === productInSaleIdFormatter(saleCampginId, productCode)
+        cartItem.id === productInSaleIdFormatter(saleCampaignId, productCode)
     );
   };
 
@@ -114,7 +114,6 @@ function CheckoutPage() {
   const selectedCartItems = useMemo(() => {
     const items: CartSection[] = [];
     // list cart item
-    console.log(flattedItems);
     data?.forEach((shopItem) => {
       flattedItems.forEach((item) => {
         const selectedProducts: CartItem[] = [];

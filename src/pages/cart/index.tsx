@@ -44,10 +44,10 @@ const CartPage = () => {
     )
     .flat();
 
-  const isChecked = (saleCampginId: string, productCode: string) => {
+  const isChecked = (saleCampaignId: string, productCode: string) => {
     return flattedItems.some(
       (cartItem) =>
-        cartItem.id === productInSaleIdFormatter(saleCampginId, productCode)
+        cartItem.id === productInSaleIdFormatter(saleCampaignId, productCode)
     );
   };
 

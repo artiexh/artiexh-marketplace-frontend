@@ -72,7 +72,7 @@ export type Order = {
     message: string;
     status: string;
   }[];
-  orderId: string;
+  order: TotalOrder;
   shippingFee: number;
   shippingLabel: string;
   status: string;
