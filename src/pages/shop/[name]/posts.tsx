@@ -22,6 +22,7 @@ const ProfilePage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = ({
         <img
           className="w-full h-[200px] object-cover"
           src={
+            user.shopThumbnailUrl ??
             "https://i.pinimg.com/originals/ee/26/8c/ee268cf73e3850486966244fe34605d6.png"
           }
           alt="img"
@@ -35,6 +36,7 @@ const ProfilePage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = ({
                 <img
                   className="w-full h-[200px] object-cover"
                   src={
+                    user.shopThumbnailUrl ??
                     "https://i.pinimg.com/originals/ee/26/8c/ee268cf73e3850486966244fe34605d6.png"
                   }
                   alt="img"

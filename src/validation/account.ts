@@ -5,7 +5,7 @@ type MyProfileBody = {
   bankAccount?: string;
   bankName?: string;
   phone?: string;
-  shopThumbnail?: string | File;
+  shopThumbnail: string | File | null;
   description?: string;
 };
 

@@ -13,34 +13,41 @@ import { useForm } from "@mantine/form";
 import { notifications } from "@mantine/notifications";
 import { useStore } from "@nanostores/react";
 import { useMutation, useQuery } from "@tanstack/react-query";
+import { useRef } from "react";
 
 export default function MyShopProfilePage() {
   const user = useStore($user);
+  const firstTime = useRef(true);
 
   const form = useForm<{
     bankAccount?: string;
     bankName?: string;
     phone?: string;
-    shopThumbnail?: string | File;
+    shopThumbnail: string | File | null;
     description?: string;
   }>({
     validateInputOnChange: true,
-    validateInputOnBlur: true,
     validate: editShopValidation,
   });
+
   const { data } = useQuery({
     queryKey: ["aritst", { id: user?.username }],
     queryFn: async () => {
       const res = await axiosClient.get(`/artist/${user?.username}`);
 
-      form.setValues({
-        bankAccount: res.data.data.bankAccount,
-        bankName: res.data.data.bankName,
-        phone: res.data.data.phone,
-        shopThumbnail: res.data.data.shopThumbnailUrl,
-        description: res.data.data.description,
-      });
-      form.resetDirty();
+      if (firstTime.current) {
+        form.setValues({
+          bankAccount: res.data.data.bankAccount,
+          bankName: res.data.data.bankName,
+          phone: res.data.data.phone,
+          shopThumbnail: res.data.data.shopThumbnailUrl,
+          description: res.data.data.description,
+        });
+        form.resetDirty();
+        form.resetTouched();
+        form.clearErrors();
+        firstTime.current = false;
+      }
 
       return res.data;
     },
@@ -51,7 +58,7 @@ export default function MyShopProfilePage() {
       bankAccount?: string;
       bankName?: string;
       phone?: string;
-      shopThumbnail?: string | File;
+      shopThumbnail: string | File | null;
       description?: string;
     }) => {
       let shopThumbnailUrl = data.data.shopThumbnailUrl;
@@ -70,13 +77,14 @@ export default function MyShopProfilePage() {
         shopThumbnailUrl: shopThumbnailUrl,
         description: values.description,
       });
+      form.resetDirty();
+      form.clearErrors();
     },
     onSuccess: () => {
       notifications.show({
         message: "Thay đổi thành công",
         ...getNotificationIcon(NOTIFICATION_TYPE.SUCCESS),
       });
-      form.resetDirty();
     },
     onError: () => {
       notifications.show({
@@ -86,6 +94,14 @@ export default function MyShopProfilePage() {
     },
   });
 
+  const handleSubmit = (values: {
+    bankAccount?: string;
+    bankName?: string;
+    phone?: string;
+    shopThumbnail: string | File | null;
+    description?: string;
+  }) => updateProfileMutation.mutateAsync(values);
+
   return (
     <div className="user-profile-page px-6">
       <div>Hồ sơ shop</div>
@@ -93,9 +109,7 @@ export default function MyShopProfilePage() {
       {/* <Divider className="mt-4" /> */}
       <form
         className="mt-8 flex flex-col gap-y-4"
-        onSubmit={form.onSubmit((values) =>
-          updateProfileMutation.mutateAsync(values)
-        )}
+        onSubmit={form.onSubmit(handleSubmit)}
       >
         <div className="flex flex-col gap-y-4">
           <h2 className="font-semibold text-lg">Trang trí</h2>
@@ -111,7 +125,7 @@ export default function MyShopProfilePage() {
                   : undefined
               }
               setFile={(file) => {
-                form.setFieldValue("avatar", file);
+                form.setFieldValue("shopThumbnail", file);
               }}
               defaultPlaceholder={
                 <div className="flex flex-col items-center">
@@ -121,12 +135,12 @@ export default function MyShopProfilePage() {
               }
               clearable
               onClear={() => {
-                form.setFieldValue("avatar", undefined);
+                form.setFieldValue("shopThumbnail", null);
               }}
             />
           </div>
 
-          <Input.Wrapper label="Description">
+          <Input.Wrapper label="Description" error={form.errors["description"]}>
             <Input {...form.getInputProps("description")} />
           </Input.Wrapper>
         </div>
@@ -134,18 +148,21 @@ export default function MyShopProfilePage() {
           <h2 className="font-semibold text-lg">Thông tin shop</h2>
           <Grid align="center">
             <Grid.Col span={6}>
-              <Input.Wrapper label="Bank account">
+              <Input.Wrapper
+                label="Bank account"
+                error={form.errors["bankAccount"]}
+              >
                 <Input {...form.getInputProps("bankAccount")} />
               </Input.Wrapper>
             </Grid.Col>
 
             <Grid.Col span={6}>
-              <Input.Wrapper label="Bank name">
+              <Input.Wrapper label="Bank name" error={form.errors["bankName"]}>
                 <Input {...form.getInputProps("bankName")} />
               </Input.Wrapper>
             </Grid.Col>
             <Grid.Col span={12}>
-              <Input.Wrapper label="Phone number">
+              <Input.Wrapper label="Phone number" error={form.errors["phone"]}>
                 <Input {...form.getInputProps("phone")} />
               </Input.Wrapper>
             </Grid.Col>
@@ -153,7 +170,7 @@ export default function MyShopProfilePage() {
             <Grid.Col span={12} className="text-end mt-2">
               <Button
                 type="submit"
-                disabled={!form.isDirty() || updateProfileMutation.isLoading}
+                disabled={updateProfileMutation.isLoading}
                 className="bg-primary !text-white"
               >
                 Update

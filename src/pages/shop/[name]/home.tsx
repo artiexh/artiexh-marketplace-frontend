@@ -22,7 +22,6 @@ const ARTY_SHOP_NAME = "arty-shop";
 const ShopDetailPage = () => {
   const router = useRouter();
   const { name, ...params } = router.query;
-  console.log(router.query);
 
   const [campaignList, setCampaignList] = useState<CampaignData[]>([]);
 
@@ -67,6 +66,7 @@ const ShopDetailPage = () => {
       console.log(err);
     }
   });
+  console.log(data);
 
   if (data == null) return <></>;
 
@@ -76,6 +76,7 @@ const ShopDetailPage = () => {
         <img
           className="w-full h-[200px] object-cover"
           src={
+            data.shopThumbnailUrl ??
             "https://i.pinimg.com/originals/ee/26/8c/ee268cf73e3850486966244fe34605d6.png"
           }
           alt="img"
