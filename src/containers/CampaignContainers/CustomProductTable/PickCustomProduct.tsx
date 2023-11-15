@@ -65,7 +65,6 @@ export default function PickCustomProduct({
   } = useSWR<CommonResponseBase<PaginationResponseBase<SimpleCustomProduct>>>(
     ["/custom-products", params.pageNumber],
     () => {
-      console.log(params);
       return fetcher(
         `/custom-product?${new URLSearchParams({
           pageSize: params.pageSize.toString(),
