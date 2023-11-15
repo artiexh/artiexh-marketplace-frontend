@@ -24,7 +24,7 @@ function OrderDetailPage() {
       return data?.data ?? null;
     } catch (err: any) {
       if (err.response.status === 404) {
-        router.push(`${ROUTE.PROFILE}/me`);
+        router.push(`${ROUTE.MY_PROFILE}`);
       }
       return;
     }
@@ -39,7 +39,7 @@ function OrderDetailPage() {
       <div className="p-10 flex justify-between">
         <div
           className="flex cursor-pointer"
-          onClick={() => router.push(`${ROUTE.PROFILE}/me`)}
+          onClick={() => router.push(`${ROUTE.MY_PROFILE}`)}
         >
           <div className="mr-1">
             <IconChevronLeft />
