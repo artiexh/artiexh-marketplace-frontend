@@ -14,13 +14,17 @@ import productInCampaignColumns from "@/constants/Columns/productInCampaignColum
 import CustomProductDetailCard from "../CustomProductDetailCard";
 import { useForm } from "@mantine/form";
 import { IconHelpCircle } from "@tabler/icons-react";
+import { Dispatch, SetStateAction, useEffect } from "react";
+import { defaultButtonStylingClass } from "@/constants/common";
 
 export default function CustomProductTable({
   data: rawData,
   disabled = false,
+  setDisabled,
 }: {
   data: CampaignDetail["products"];
   disabled?: boolean;
+  setDisabled: Dispatch<SetStateAction<boolean>>;
 }) {
   const routerParams = useParams();
   const queryClient = useQueryClient();
@@ -42,6 +46,17 @@ export default function CustomProductTable({
     });
   };
 
+  useEffect(() => {
+    if (
+      campaignRes &&
+      campaignRes.data.products.every((item) => item.price && item.quantity)
+    ) {
+      setDisabled(false);
+    } else {
+      setDisabled(true);
+    }
+  }, [campaignRes]);
+
   return (
     <>
       <div className="table-header flex w-full justify-between">
@@ -55,7 +70,12 @@ export default function CustomProductTable({
             </Button> */}
         </div>
         <div>
-          <Button onClick={openCustomProductModal}>Add item</Button>
+          <Button
+            className={defaultButtonStylingClass}
+            onClick={openCustomProductModal}
+          >
+            Add item
+          </Button>
         </div>
       </div>
       <div className="flex flex-col items-center gap-4 w-full mt-3">

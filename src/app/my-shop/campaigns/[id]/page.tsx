@@ -16,12 +16,14 @@ import { Badge, Button, Tabs } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 import { useQuery } from "@tanstack/react-query";
 import { useParams, useRouter } from "next/navigation";
+import { useState } from "react";
 
 export default function CampaignDetailPage() {
   const router = useRouter();
   const params = useParams();
 
   const id = params!.id as string;
+  const [disabled, setDisabled] = useState<boolean>(true);
 
   const {
     data: res,
@@ -99,14 +101,17 @@ export default function CampaignDetailPage() {
                 res.data.status
               )}
               onClick={deleteCampaignHandler}
-              className="mb-0"
+              className="mb-0 !text-red-600 border-red-600 hover:bg-red-600 hover:!text-white"
             >
               Delete
             </Button>
             <Button
-              disabled={!["DRAFT", "REQUEST_CHANGE"].includes(res.data.status)}
+              disabled={
+                !["DRAFT", "REQUEST_CHANGE"].includes(res.data.status) ||
+                disabled
+              }
               onClick={submitCampaignHandler}
-              className="mb-0"
+              className="mb-0 !text-primary border-primary hover:bg-primary hover:!text-white"
             >
               Submit
             </Button>
@@ -133,10 +138,12 @@ export default function CampaignDetailPage() {
             }}
           />
           <div className="mt-4">
-            <CustomProductTable data={res.data.products} />
+            <CustomProductTable
+              data={res.data.products}
+              setDisabled={setDisabled}
+            />
           </div>
         </Tabs.Panel>
-
         <Tabs.Panel value="promote-details">
           <CustomWebTab data={res.data} />
         </Tabs.Panel>

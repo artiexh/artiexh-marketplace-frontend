@@ -1,4 +1,7 @@
-import { NOTIFICATION_TYPE } from "@/constants/common";
+import {
+  NOTIFICATION_TYPE,
+  defaultButtonStylingClass,
+} from "@/constants/common";
 import {
   ARTIST_CAMPAIGN_ENDPOINT,
   updateCampaignGeneralInfoApi,
@@ -82,6 +85,7 @@ export default function CampaignGeneralInfoForm({
                 data.status !== "DRAFT" && data.status !== "REQUEST_CHANGE"
               }
               onClick={editHandler}
+              className={defaultButtonStylingClass}
             >
               Edit
             </Button>

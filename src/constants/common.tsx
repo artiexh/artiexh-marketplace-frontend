@@ -6,6 +6,9 @@ import {
   IconTruckDelivery,
 } from "@tabler/icons-react";
 
+export const defaultButtonStylingClass =
+  "!text-primary border-primary hover:bg-primary hover:!text-white";
+
 export const ARTY_SHOP_USERNAME = "artiexh_admin";
 
 export const PRODUCT_STATUS = {
