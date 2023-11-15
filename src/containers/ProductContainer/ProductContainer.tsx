@@ -8,6 +8,7 @@ import { ProductInventory, Tag } from "@/types/Product";
 import { CommonResponseBase } from "@/types/ResponseBase";
 import { Attaches } from "@/types/common";
 import { mapImageUrlToImageBody } from "@/utils/mapper";
+import { productValidation } from "@/validation/product";
 import {
   TextInput,
   MultiSelect,
@@ -69,6 +70,7 @@ export default function ProductDetailContainer({
     },
     validateInputOnBlur: true,
     validateInputOnChange: true,
+    validate: productValidation,
   });
 
   const mapTagDataToTagOption = (data: Tag[]) =>

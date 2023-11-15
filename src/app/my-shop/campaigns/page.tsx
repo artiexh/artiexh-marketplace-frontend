@@ -11,6 +11,7 @@ import {
   updateCampaignStatusApi,
 } from "@/services/backend/services/campaign";
 import { getNotificationIcon } from "@/utils/mapper";
+import { campaignValidation } from "@/validation/campaign";
 import { Button, SegmentedControl, TextInput } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { modals } from "@mantine/modals";
@@ -103,6 +104,9 @@ function CreateCampaignModal() {
     initialValues: {
       type: "PRIVATE",
     },
+    validate: campaignValidation,
+    validateInputOnChange: true,
+    validateInputOnBlur: true,
   });
   const submitHandler = async () => {
     try {

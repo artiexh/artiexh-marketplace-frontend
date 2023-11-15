@@ -6,7 +6,6 @@ import { CustomProductGeneralInfo } from "@/types/CustomProduct";
 import { CommonResponseBase } from "@/types/ResponseBase";
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
-import { useState } from "react";
 
 const CreatePage = () => {
   const params = useParams();

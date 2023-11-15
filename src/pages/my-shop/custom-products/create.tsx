@@ -335,7 +335,7 @@ function VariantAndProviderPicker({
     ["/product-variant", queryObject],
     () => {
       const params = new URLSearchParams();
-      params.set("productBaseId", productBase.id.toString());
+      params.set("productTemplateId", productBase.id.toString());
       params.set("pageSize", "100");
 
       Object.entries(queryObject)

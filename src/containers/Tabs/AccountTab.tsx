@@ -3,7 +3,8 @@ import { publicUploadFile } from "@/services/backend/services/media";
 import { updateUserProfileApi } from "@/services/backend/services/user";
 import { $user, setUser } from "@/store/user";
 import { User } from "@/types/User";
-import { Button, Divider, Grid, TextInput } from "@mantine/core";
+import { editProfileValidation } from "@/validation/account";
+import { Button, Grid, TextInput } from "@mantine/core";
 import { useForm } from "@mantine/form";
 
 export default function AccountTab() {
@@ -19,6 +20,7 @@ export default function AccountTab() {
     },
     validateInputOnChange: true,
     validateInputOnBlur: true,
+    validate: editProfileValidation,
   });
 
   const handleSubmit = async (values: {

@@ -1,7 +1,8 @@
 import { ArtistRegisterData, CreateUserAddress, Address } from "@/types/User";
 import { FormValidateInput } from "@mantine/form/lib/types";
 
-const phoneNumberRegex = /^(\+\d{1,3}\s?)?\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}$/;
+export const phoneNumberRegex =
+  /^(\+\d{1,3}\s?)?\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}$/;
 
 export const createUpdateAddressValidation: FormValidateInput<CreateUserAddress> =
   {

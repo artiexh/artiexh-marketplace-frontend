@@ -4,9 +4,9 @@ import Thumbnail from "@/components/CreateProduct/Thumbnail";
 import axiosClient from "@/services/backend/axiosClient";
 import { publicUploadFile } from "@/services/backend/services/media";
 import { updateShopProfileApi } from "@/services/backend/services/user";
-import { $user, setUser } from "@/store/user";
-import { CommonResponseBase } from "@/types/ResponseBase";
-import { Button, Grid, Input, TextInput } from "@mantine/core";
+import { $user } from "@/store/user";
+import { editShopValidation } from "@/validation/account";
+import { Button, Grid, Input } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { useStore } from "@nanostores/react";
 import { useQuery } from "@tanstack/react-query";
@@ -23,6 +23,7 @@ export default function MyShopProfilePage() {
   }>({
     validateInputOnChange: true,
     validateInputOnBlur: true,
+    validate: editShopValidation,
   });
   const { data } = useQuery({
     queryKey: ["aritst", { id: user?.username }],

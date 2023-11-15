@@ -6,6 +6,7 @@ import {
 import { CampaignDetail, CampaignHistory } from "@/types/Campaign";
 import { CommonResponseBase } from "@/types/ResponseBase";
 import { getNotificationIcon } from "@/utils/mapper";
+import { campaignInfoValidation } from "@/validation/campaign";
 import {
   Button,
   SegmentedControl,
@@ -169,6 +170,9 @@ function EditCampaignGeneralInfo({
       from: data.from ? new Date(data.from) : undefined,
       to: data.to ? new Date(data.to) : undefined,
     },
+    validateInputOnBlur: true,
+    validateInputOnChange: true,
+    validate: campaignInfoValidation,
   });
 
   const editInfoMutation = useMutation({
@@ -238,7 +242,7 @@ function EditCampaignGeneralInfo({
             ]}
           />
         </div>
-        <div className="flex items-end gap-x-2">
+        <div className="flex gap-x-2">
           <DateTimePicker
             label="From"
             classNames={{

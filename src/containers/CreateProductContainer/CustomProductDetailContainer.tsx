@@ -6,6 +6,7 @@ import { publicUploadFile } from "@/services/backend/services/media";
 import { CustomProductGeneralInfo } from "@/types/CustomProduct";
 import { Tag } from "@/types/Product";
 import { Attaches } from "@/types/common";
+import { customProductValidation } from "@/validation/customProducts";
 import {
   Button,
   Input,
@@ -24,7 +25,7 @@ type Props = {
   data: CustomProductGeneralInfo;
 };
 
-type UpdateGeneralInfoData = {
+export type UpdateGeneralInfoData = {
   attaches: (Attaches | File)[];
   description: string;
   maxItemPerOrder: number;
@@ -60,6 +61,7 @@ const CustomProductDetailContainer = ({ data }: Props) => {
     },
     validateInputOnBlur: true,
     validateInputOnChange: true,
+    validate: customProductValidation,
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
