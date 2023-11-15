@@ -1,15 +1,18 @@
 "use client";
 
 import Thumbnail from "@/components/CreateProduct/Thumbnail";
+import { NOTIFICATION_TYPE } from "@/constants/common";
 import axiosClient from "@/services/backend/axiosClient";
 import { publicUploadFile } from "@/services/backend/services/media";
 import { updateShopProfileApi } from "@/services/backend/services/user";
 import { $user } from "@/store/user";
+import { getNotificationIcon } from "@/utils/mapper";
 import { editShopValidation } from "@/validation/account";
 import { Button, Grid, Input } from "@mantine/core";
 import { useForm } from "@mantine/form";
+import { notifications } from "@mantine/notifications";
 import { useStore } from "@nanostores/react";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 
 export default function MyShopProfilePage() {
   const user = useStore($user);
@@ -43,32 +46,45 @@ export default function MyShopProfilePage() {
     },
   });
 
-  const handleSubmit = async (values: {
-    bankAccount?: string;
-    bankName?: string;
-    phone?: string;
-    shopThumbnail?: string | File;
-    description?: string;
-  }) => {
-    let shopThumbnailUrl = data.data.shopThumbnailUrl;
-    if (values.shopThumbnail instanceof File) {
-      const res = await publicUploadFile([values.shopThumbnail]);
+  const updateProfileMutation = useMutation({
+    mutationFn: async (values: {
+      bankAccount?: string;
+      bankName?: string;
+      phone?: string;
+      shopThumbnail?: string | File;
+      description?: string;
+    }) => {
+      let shopThumbnailUrl = data.data.shopThumbnailUrl;
+      if (values.shopThumbnail instanceof File) {
+        const res = await publicUploadFile([values.shopThumbnail]);
 
-      shopThumbnailUrl = res?.data.data.fileResponses[0].presignedUrl;
-    } else if (!values.shopThumbnail) {
-      shopThumbnailUrl = undefined;
-    }
+        shopThumbnailUrl = res?.data.data.fileResponses[0].presignedUrl;
+      } else if (!values.shopThumbnail) {
+        shopThumbnailUrl = undefined;
+      }
 
-    const res = await updateShopProfileApi({
-      bankAccount: values.bankAccount,
-      bankName: values.bankName,
-      phone: values.phone,
-      shopThumbnailUrl: shopThumbnailUrl,
-      description: values.description,
-    });
-
-    form.resetDirty();
-  };
+      const res = await updateShopProfileApi({
+        bankAccount: values.bankAccount,
+        bankName: values.bankName,
+        phone: values.phone,
+        shopThumbnailUrl: shopThumbnailUrl,
+        description: values.description,
+      });
+    },
+    onSuccess: () => {
+      notifications.show({
+        message: "Thay đổi thành công",
+        ...getNotificationIcon(NOTIFICATION_TYPE.SUCCESS),
+      });
+      form.resetDirty();
+    },
+    onError: () => {
+      notifications.show({
+        message: "Thay đổi thất bại",
+        ...getNotificationIcon(NOTIFICATION_TYPE.FAILED),
+      });
+    },
+  });
 
   return (
     <div className="user-profile-page px-6">
@@ -77,7 +93,9 @@ export default function MyShopProfilePage() {
       {/* <Divider className="mt-4" /> */}
       <form
         className="mt-8 flex flex-col gap-y-4"
-        onSubmit={form.onSubmit(handleSubmit)}
+        onSubmit={form.onSubmit((values) =>
+          updateProfileMutation.mutateAsync(values)
+        )}
       >
         <div className="flex flex-col gap-y-4">
           <h2 className="font-semibold text-lg">Trang trí</h2>
@@ -135,7 +153,7 @@ export default function MyShopProfilePage() {
             <Grid.Col span={12} className="text-end mt-2">
               <Button
                 type="submit"
-                disabled={!form.isDirty()}
+                disabled={!form.isDirty() || updateProfileMutation.isLoading}
                 className="bg-primary !text-white"
               >
                 Update
