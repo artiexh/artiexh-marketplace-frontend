@@ -1,6 +1,9 @@
 import Badge from "@/components/Badge/Badge";
 import { NOTIFICATION_TYPE } from "@/constants/common";
-import { updateCartItem } from "@/services/backend/services/cart";
+import {
+  increaseCartItem,
+  updateCartItem,
+} from "@/services/backend/services/cart";
 import { Product } from "@/types/Product";
 import { currencyFormatter } from "@/utils/formatter";
 import { getCampaignType, getNotificationIcon } from "@/utils/mapper";
@@ -31,7 +34,7 @@ const ProductInfo: FC<ProductInfoProps> = ({ product, special }) => {
   const updateCartQuantity = async () => {
     if (!loading) {
       setLoading(true);
-      const result = await updateCartItem(productCode, campaign.id, quantity);
+      const result = await increaseCartItem(productCode, campaign.id);
 
       if (result != null) {
         notifications.show({

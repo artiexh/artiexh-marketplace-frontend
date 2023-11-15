@@ -31,6 +31,29 @@ export const updateCartItem = async (
   return cartItems;
 };
 
+export const increaseCartItem = async (
+  productCode: string,
+  saleCampaignId: string
+) => {
+  let cartItems;
+  try {
+    const { data: result } = await axiosClient.patch<CartData>(
+      "/cart/item/add",
+      {
+        productCode,
+        saleCampaignId,
+      }
+    );
+
+    cartItems = result;
+    await updateUserInformation();
+  } catch (err) {
+    console.log(err);
+  }
+
+  return cartItems;
+};
+
 export const deleteCartItem = async (
   products: { productCode: string; saleCampaignId: string }[]
 ) => {
