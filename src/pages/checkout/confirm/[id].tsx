@@ -42,13 +42,13 @@ const CheckoutConfirmPage = () => {
   const ButtonGroup = () => (
     <div className="flex mt-4 justify-center">
       <Button
-        className="text-black border-black hover:bg-black hover:text-white w-[10rem] mr-4"
+        className="text-black border-black hover:bg-black hover:!text-white w-[10rem] mr-4"
         onClick={() => router.push(ROUTE.HOME_PAGE)}
       >
         Trở về trang chủ
       </Button>
       <Button
-        className="text-white bg-primary border-primary w-[10rem]"
+        className="!text-white bg-primary border-primary w-[10rem]"
         onClick={() => {
           router.push(
             data != null ? `${ROUTE.MY_PROFILE}/total-order/${id}` : ROUTE.CART
