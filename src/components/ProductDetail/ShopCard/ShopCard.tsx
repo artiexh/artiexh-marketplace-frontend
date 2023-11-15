@@ -46,7 +46,7 @@ const ShopCard: FC<ArtistInfoProps> = ({ artist, className, ...rest }) => {
               artist.username === ARTY_SHOP_USERNAME
                 ? "arty-shop"
                 : artist.username
-            }`
+            }/home`
           )
         }
       >

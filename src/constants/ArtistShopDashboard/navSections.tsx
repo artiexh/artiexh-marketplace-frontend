@@ -26,6 +26,12 @@ export const navSections = [
         iconPath: "billing_icon.svg",
         href: "/my-shop/campaigns",
       },
+      {
+        id: "SHOP_PROFILE",
+        label: "Shop profile",
+        iconPath: "billing_icon.svg",
+        href: "/my-shop/profile",
+      },
     ],
   },
 ];

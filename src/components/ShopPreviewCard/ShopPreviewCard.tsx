@@ -20,7 +20,7 @@ export default function ShopPreviewCard({ shop }: { shop: Shop }) {
             shop.owner.username === ARTY_SHOP_USERNAME
               ? "arty-shop"
               : shop.owner.username
-          }`
+          }/home`
         )
       }
     >

@@ -105,7 +105,7 @@ export default function CampaignDetailPage() {
               <Button
                 className="!bg-white !text-black"
                 onClick={() =>
-                  router.push(`/shop/${campaignData.owner.username}`)
+                  router.push(`/shop/${campaignData.owner.username}/home`)
                 }
               >
                 View shop

@@ -66,3 +66,20 @@ export const updateUserProfileApi = async (body: {
       username: string;
     }>
   >(`/account/profile`, body);
+
+export const updateShopProfileApi = async (body: {
+  bankAccount?: string;
+  bankName?: string;
+  phone?: string;
+  shopThumbnailUrl?: string;
+}) =>
+  axiosClient.put<
+    CommonResponseBase<{
+      address: string;
+      bankAccount: string;
+      bankName: string;
+      phone: string;
+      shopThumbnailUrl: string;
+      wardId: string;
+    }>
+  >(`/artist/profile`, body);
