@@ -6,14 +6,16 @@ import {
 import { ROUTE } from "@/constants/route";
 import axiosClient from "@/services/backend/axiosClient";
 import { getPaymentLink } from "@/services/backend/services/cart";
+import { cancelOrderApi } from "@/services/backend/services/order";
 import AuthWrapper from "@/services/guards/AuthWrapper";
 import { Order } from "@/types/Order";
 import { CommonResponseBase } from "@/types/ResponseBase";
 import { getReadableWardAddress } from "@/utils/formatter";
 import { getNotificationIcon } from "@/utils/mapper";
-import { Divider, Text, Timeline } from "@mantine/core";
+import { Button, Divider, Text, Timeline } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 import { IconChevronLeft } from "@tabler/icons-react";
+import { useMutation } from "@tanstack/react-query";
 import Image from "next/image";
 import { useSearchParams } from "next/navigation";
 import { useRouter } from "next/router";
@@ -23,7 +25,7 @@ function OrderDetailPage() {
   const params = useSearchParams();
   const router = useRouter();
 
-  const { data, isLoading } = useSWR([params?.get("id")], async () => {
+  const { data, isLoading, mutate } = useSWR([params?.get("id")], async () => {
     try {
       const { data } = await axiosClient.get<CommonResponseBase<Order>>(
         `/user/campaign-order/${params?.get("id")}`
@@ -66,6 +68,27 @@ function OrderDetailPage() {
       return new Date(date).toLocaleDateString();
     }
   };
+
+  const cancelOrderMutation = useMutation({
+    mutationFn: async (id: string) => {
+      await cancelOrderApi(id);
+    },
+    onSuccess: () => {
+      notifications.show({
+        message: "Huỷ đơn thành công",
+        ...getNotificationIcon(NOTIFICATION_TYPE.SUCCESS),
+      });
+    },
+    onError: (error) => {
+      notifications.show({
+        message: "Huỷ đơn thất bại",
+        ...getNotificationIcon(NOTIFICATION_TYPE.FAILED),
+      });
+    },
+    onSettled: () => {
+      mutate();
+    },
+  });
 
   return (
     <div className="order-detail-page bg-white">
@@ -197,6 +220,15 @@ function OrderDetailPage() {
             </div>
           </div>
         ))}
+      </div>
+      <div className="w-full flex justify-end p-10">
+        <Button
+          variant="outline"
+          disabled={data?.status !== "PAYING" || cancelOrderMutation.isLoading}
+          onClick={() => cancelOrderMutation.mutateAsync(data!.id)}
+        >
+          Huỷ đơn
+        </Button>
       </div>
     </div>
   );

@@ -30,7 +30,7 @@ export default function OrderCard({ order }: OrderCard) {
           <div>
             {
               //@ts-ignore
-              ORDER_STATUS[order.status].name
+              ORDER_STATUS[order.status]?.name
             }
           </div>
         </div>

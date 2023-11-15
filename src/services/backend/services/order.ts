@@ -32,3 +32,9 @@ export const updateShippingInformation = async (id: string) => {
     console.log(err);
   }
 };
+
+export const cancelOrderApi = async (id: string) =>
+  axiosClient.patch(`/order/${id}/status`, {
+    message: "User cancel order",
+    status: "CANCELED",
+  });

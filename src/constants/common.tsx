@@ -67,8 +67,8 @@ export const ORDER_STATUS = {
     code: "COMPLETED",
     name: "Hoàn thành",
   },
-  CANCELLED: {
-    code: "CANCELLED",
+  CANCELED: {
+    code: "CANCELED",
     name: "Đã hủy",
   },
 } as const;

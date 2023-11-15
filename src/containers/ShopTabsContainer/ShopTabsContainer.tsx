@@ -16,6 +16,7 @@ export default function ShopTabsContainer() {
         return (
           <Link
             href={`/shop/${router.query.name}/${data.path}`}
+            key={data.path}
             className={clsx(
               "rounded-full px-6 py-1 bg-white text-primary",
               router.pathname.includes(data.path) && "!bg-primary text-white"
