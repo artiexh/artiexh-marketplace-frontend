@@ -43,8 +43,8 @@ function OrderDetailPage() {
   }
 
   const payment = async () => {
-    if (data?.orderId) {
-      const paymentLink = await getPaymentLink(data.orderId);
+    if (data?.order?.id) {
+      const paymentLink = await getPaymentLink(data?.order?.id);
 
       if (paymentLink) {
         window.location.replace(paymentLink);
@@ -79,7 +79,7 @@ function OrderDetailPage() {
           </div>
           <div>Trở về</div>
         </div>
-        <div>Mã đơn: {data?.id}</div>
+        <div>Mã đơn: {data?.order?.id}</div>
       </div>
       <Divider />
       <div className="flex justify-between p-10">
