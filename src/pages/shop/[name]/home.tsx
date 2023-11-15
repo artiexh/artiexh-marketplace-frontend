@@ -110,10 +110,7 @@ const ShopDetailPage = () => {
                   <div className="mt-6 mb-4 text-center font-bold text-xl">
                     {data.displayName}
                   </div>
-                  <div className="text-gray-500">
-                    Im an artist that loves to draw and make lovely stuff! Hire
-                    me: cutebunny@gmail.com
-                  </div>
+                  <div className="text-gray-500">{data.description}</div>
                   <Button className="bg-primary !text-white w-full mt-10">
                     Following
                   </Button>

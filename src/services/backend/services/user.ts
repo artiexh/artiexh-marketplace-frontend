@@ -72,6 +72,7 @@ export const updateShopProfileApi = async (body: {
   bankName?: string;
   phone?: string;
   shopThumbnailUrl?: string;
+  description?: string;
 }) =>
   axiosClient.put<
     CommonResponseBase<{

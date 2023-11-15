@@ -19,6 +19,7 @@ export default function MyShopProfilePage() {
     bankName?: string;
     phone?: string;
     shopThumbnail?: string | File;
+    description?: string;
   }>({
     validateInputOnChange: true,
     validateInputOnBlur: true,
@@ -33,6 +34,7 @@ export default function MyShopProfilePage() {
         bankName: res.data.data.bankName,
         phone: res.data.data.phone,
         shopThumbnail: res.data.data.shopThumbnailUrl,
+        description: res.data.data.description,
       });
       form.resetDirty();
 
@@ -45,6 +47,7 @@ export default function MyShopProfilePage() {
     bankName?: string;
     phone?: string;
     shopThumbnail?: string | File;
+    description?: string;
   }) => {
     let shopThumbnailUrl = data.data.shopThumbnailUrl;
     if (values.shopThumbnail instanceof File) {
@@ -60,6 +63,7 @@ export default function MyShopProfilePage() {
       bankName: values.bankName,
       phone: values.phone,
       shopThumbnailUrl: shopThumbnailUrl,
+      description: values.description,
     });
 
     form.resetDirty();
@@ -74,32 +78,38 @@ export default function MyShopProfilePage() {
         className="mt-8 flex flex-col gap-y-4"
         onSubmit={form.onSubmit(handleSubmit)}
       >
-        <div>
-          <h2 className="font-semibold text-lg">Shop thumbnail</h2>
-          <Thumbnail
-            className="!h-[20rem]"
-            url={
-              //@ts-ignore
-              typeof form.values.shopThumbnail === "string"
-                ? form.values.shopThumbnail
-                : form.values.shopThumbnail
-                ? URL.createObjectURL(form.values.shopThumbnail as Blob)
-                : undefined
-            }
-            setFile={(file) => {
-              form.setFieldValue("avatar", file);
-            }}
-            defaultPlaceholder={
-              <div className="flex flex-col items-center">
-                <p className="text-4xl font-thin">+</p>
-                <p>Add shop thumbnail</p>
-              </div>
-            }
-            clearable
-            onClear={() => {
-              form.setFieldValue("avatar", undefined);
-            }}
-          />
+        <div className="flex flex-col gap-y-4">
+          <h2 className="font-semibold text-lg">Trang trí</h2>
+          <div>
+            <Thumbnail
+              className="!h-[20rem]"
+              url={
+                //@ts-ignore
+                typeof form.values.shopThumbnail === "string"
+                  ? form.values.shopThumbnail
+                  : form.values.shopThumbnail
+                  ? URL.createObjectURL(form.values.shopThumbnail as Blob)
+                  : undefined
+              }
+              setFile={(file) => {
+                form.setFieldValue("avatar", file);
+              }}
+              defaultPlaceholder={
+                <div className="flex flex-col items-center">
+                  <p className="text-4xl font-thin">+</p>
+                  <p>Add shop thumbnail</p>
+                </div>
+              }
+              clearable
+              onClear={() => {
+                form.setFieldValue("avatar", undefined);
+              }}
+            />
+          </div>
+
+          <Input.Wrapper label="Description">
+            <Input {...form.getInputProps("description")} />
+          </Input.Wrapper>
         </div>
         <div className="flex-1">
           <h2 className="font-semibold text-lg">Thông tin shop</h2>

@@ -21,6 +21,7 @@ export type User = {
   shopName?: string;
   cartItemCount: number;
   shopThumbnailUrl?: string;
+  description?: string;
 };
 
 export type ADDRESS_TYPE_ENUM = keyof typeof ADDRESS_TYPE;

@@ -64,7 +64,7 @@ function OrderDetailPage() {
           </div>
           <div>
             <span className="font-bold">Địa chỉ: </span>
-            <span>{`${data?.deliveryAddress}, ${data?.deliveryWard}`}</span>
+            <span>{`${data?.deliveryAddress}, ${data?.deliveryWard}, ${data?.deliveryDistrict}, ${data?.deliveryProvince}`}</span>
           </div>
         </div>
       </div>
