@@ -137,7 +137,7 @@ function OrderDetailPage() {
         </div>
       </div>
       <Divider />
-      {/* <div className="flex justify-between p-10">
+      <div className="flex justify-between p-10">
         <div className="user-info mr-4">
           <div className="font-bold text-[24px] mb-1 text-primary">
             Địa chỉ nhận hàng
@@ -145,22 +145,20 @@ function OrderDetailPage() {
 
           <div>
             <span className="font-bold">Tên người nhận: </span>
-            {data?.}
+            {data?.order.deliveryName}
           </div>
           <div>
             <span className="font-bold">Số điện thoại: </span>
-            {data?.shippingAddress.phone}
+            {data?.order.deliveryTel}
           </div>
           <div>
             <span className="font-bold">Địa chỉ: </span>
             <span>
-              {`${data?.shippingAddress.address}, ${getReadableWardAddress(
-                data?.shippingAddress.ward
-              )}`}
+              {`${data?.order.deliveryAddress}, ${data?.order.deliveryWard}, ${data?.order.deliveryDistrict}, ${data?.order.deliveryProvince}`}
             </span>
           </div>
         </div>
-      </div> */}
+      </div>
       <Divider />
       <div>
         <div className="p-10">
