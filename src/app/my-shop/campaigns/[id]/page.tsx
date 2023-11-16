@@ -2,6 +2,7 @@
 
 import { NOTIFICATION_TYPE } from "@/constants/common";
 import CampaignGeneralInfoForm from "@/containers/CampaignContainers/CampaignGeneralInfoForm";
+import CampaignHistoryTab from "@/containers/CampaignContainers/CampaignHistoryTab";
 import CustomProductTable from "@/containers/CampaignContainers/CustomProductTable/CustomProductTable";
 import CustomWebTab from "@/containers/CampaignContainers/CustomWebTab";
 import axiosClient from "@/services/backend/axiosClient";
@@ -148,7 +149,7 @@ export default function CampaignDetailPage() {
           <CustomWebTab data={res.data} />
         </Tabs.Panel>
         <Tabs.Panel value="history">
-          <h1>History</h1>
+          <CampaignHistoryTab campaignId={res.data.id as string} />
         </Tabs.Panel>
       </Tabs>
     </>

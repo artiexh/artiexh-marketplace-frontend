@@ -121,7 +121,7 @@ export type CampaignDetail = {
   content: string;
   description: string;
   from: string;
-  id: 0;
+  id: string;
   isPublished: true;
   name: string;
   owner: {
