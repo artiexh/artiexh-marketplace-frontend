@@ -1,5 +1,6 @@
 "use client";
 
+import SaleCampaignDetailContainer from "@/containers/SaleCampaignDetailContainer/SaleCampaignDetailContainer";
 import SaleCampaignStatisticContainer from "@/containers/SaleCampaignStatistic/SaleCampaignStatistic";
 import axiosClient from "@/services/backend/axiosClient";
 import { SALE_CAMPAIGN_ENDPOINT } from "@/services/backend/services/campaign";
@@ -57,7 +58,7 @@ export default function SaleCampaignDetailPage() {
       </div>
       <div className="mt-10 bg-white rounded-md p-8 flex flex-col shadow">
         <div className={isDetailPage ? "" : "hidden"}>
-          <div>Sale Campaign #{res.data.id}</div>
+          <SaleCampaignDetailContainer />
         </div>
         <div className={!isDetailPage ? "" : "hidden"}>
           <SaleCampaignStatisticContainer id={id} />
