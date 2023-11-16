@@ -1,7 +1,7 @@
 export type NavInfo = {
   id: string;
   label: string;
-  iconPath: string;
+  iconPath: JSX.Element;
   href: string;
 };
 

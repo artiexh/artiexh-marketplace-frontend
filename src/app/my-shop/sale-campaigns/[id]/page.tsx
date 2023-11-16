@@ -12,7 +12,7 @@ import useSWR from "swr";
 
 export default function SaleCampaignDetailPage() {
   const params = useParams();
-  const id = params?.id;
+  const id = (params?.id ?? "") as string;
 
   const [isDetailPage, setIsDetailPage] = useState<boolean>(true);
   const {
