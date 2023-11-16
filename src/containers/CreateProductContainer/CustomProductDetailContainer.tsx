@@ -1,4 +1,5 @@
 import Thumbnail from "@/components/CreateProduct/Thumbnail";
+import { NOTIFICATION_TYPE } from "@/constants/common";
 import useCategories from "@/hooks/useCategories";
 import useTags from "@/hooks/useTags";
 import { updateGeneralInformationApi } from "@/services/backend/services/customProduct";
@@ -6,6 +7,7 @@ import { publicUploadFile } from "@/services/backend/services/media";
 import { CustomProductGeneralInfo } from "@/types/CustomProduct";
 import { Tag } from "@/types/Product";
 import { Attaches } from "@/types/common";
+import { getNotificationIcon } from "@/utils/mapper";
 import { customProductValidation } from "@/validation/customProducts";
 import {
   Button,
@@ -16,6 +18,7 @@ import {
   Textarea,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
+import { notifications } from "@mantine/notifications";
 import { IconArrowLeft } from "@tabler/icons-react";
 import { useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
@@ -124,21 +127,33 @@ const CustomProductDetailContainer = ({ data }: Props) => {
         ) as Attaches[]) ?? []),
       ],
     });
-    queryClient.setQueryData(
-      ["/custom-product/[id]/general", { id: data?.id }],
-      res.data
-    );
-    const tmp = res.data.data;
-    setValues({
-      attaches: tmp.attaches?.filter((el) => el.type !== "THUMBNAIL") ?? [],
-      description: tmp.description,
-      maxItemPerOrder: tmp.maxItemPerOrder,
-      name: tmp.name,
-      tags: tmp.tags,
-      variantId: tmp.variant.id,
-      thumbnail: tmp.attaches?.find((el) => el.type === "THUMBNAIL"),
-    });
-    resetDirty();
+
+    if (res.data.data != null) {
+      notifications.show({
+        message: "Cập nhật thông tin sản phẩm thành công",
+        ...getNotificationIcon(NOTIFICATION_TYPE.SUCCESS),
+      });
+      queryClient.setQueryData(
+        ["/custom-product/[id]/general", { id: data?.id }],
+        res.data
+      );
+      const tmp = res.data.data;
+      setValues({
+        attaches: tmp.attaches?.filter((el) => el.type !== "THUMBNAIL") ?? [],
+        description: tmp.description,
+        maxItemPerOrder: tmp.maxItemPerOrder,
+        name: tmp.name,
+        tags: tmp.tags,
+        variantId: tmp.variant.id,
+        thumbnail: tmp.attaches?.find((el) => el.type === "THUMBNAIL"),
+      });
+      resetDirty();
+    } else {
+      notifications.show({
+        message: "Cập nhật sản phẩm thất bại. Vui lòng thử lại sau giây lát",
+        ...getNotificationIcon(NOTIFICATION_TYPE.FAILED),
+      });
+    }
   };
 
   return (

@@ -49,6 +49,7 @@ export default function CustomProductTable({
   useEffect(() => {
     if (
       campaignRes &&
+      campaignRes.data.products.length > 0 &&
       campaignRes.data.products.every((item) => item.price && item.quantity)
     ) {
       setDisabled(false);
