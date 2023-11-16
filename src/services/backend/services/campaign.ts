@@ -17,6 +17,7 @@ type CustomProductBody = {
 
 export const ARTIST_CAMPAIGN_ENDPOINT = "/artist-campaign";
 export const GENERAL_CAMPAIGN_ENDPOINT = "/campaign";
+export const SALE_CAMPAIGN_ENDPOINT = "/sale-campaign";
 
 export const createCampaignApi = (body: {
   name: string;

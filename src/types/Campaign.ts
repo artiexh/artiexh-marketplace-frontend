@@ -244,3 +244,31 @@ export type ProductInCampaignDetail = {
   };
   quantity: 0;
 };
+
+export type SaleCampaignStatistic = {
+  campaignId: string;
+  name: string;
+  from: string;
+  to: string;
+  revenue: Price;
+  profit: Price;
+  bestSoldProduct: {
+    productCode: string;
+    soldQuantity: number;
+    quantity: number;
+    name: string;
+  };
+  worstSoldProduct: {
+    productCode: string;
+    soldQuantity: number;
+    quantity: number;
+    name: string;
+  };
+  products: {
+    productCode: string;
+    soldQuantity: number;
+    quantity: number;
+    name: string;
+    revenue: Price;
+  }[];
+};

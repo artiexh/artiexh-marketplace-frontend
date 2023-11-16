@@ -24,3 +24,9 @@ export const getCampaignTime = (
     return new Date(toTimeString).getTime() - new Date().getTime();
   }
 };
+
+export const getDateRange = (startDate: Date, endDate: Date) => {
+  return Math.floor(
+    (endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24)
+  );
+};

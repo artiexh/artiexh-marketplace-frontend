@@ -1,7 +1,5 @@
-import ImageWithFallback from "@/components/ImageWithFallback/ImageWithFallback";
 import { NavInfo } from "@/types/SideNav";
 import clsx from "clsx";
-import Image from "next/image";
 
 type Props = {
   isChosen: boolean;

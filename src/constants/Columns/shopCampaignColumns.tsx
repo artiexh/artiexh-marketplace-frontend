@@ -1,12 +1,8 @@
 import ImageWithFallback from "@/components/ImageWithFallback/ImageWithFallback";
-import { updateCampaignStatusApi } from "@/services/backend/services/campaign";
 import { ArtistCampaignColumnType } from "@/types/Campaign";
 import { TableColumns } from "@/types/Table";
-import { priceToString } from "@/utils/price";
 import { Badge } from "@mantine/core";
-import { IconTrash } from "@tabler/icons-react";
-import { IconBallpen } from "@tabler/icons-react";
-import Image from "next/image";
+import { IconBallpen, IconTrash } from "@tabler/icons-react";
 
 const shopCampaignColumns: TableColumns<ArtistCampaignColumnType> = [
   {
