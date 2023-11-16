@@ -39,7 +39,7 @@ const SideNav = ({
   return (
     <div
       className={clsx(
-        "max-w-[15.625rem] fixed my-4 ml-4 w-full -translate-x-full overflow-y-auto rounded-2xl bg-white transition-transform duration-200 xl:left-0 xl:translate-x-0 xl:bg-transparent",
+        "max-w-[15.625rem] h-screen z-[990] fixed py-4 w-full -translate-x-full overflow-y-auto !bg-white shadow transition-transform duration-200 xl:left-0 xl:translate-x-0 xl:bg-transparent",
         displaySideNav && "translate-x-0 shadow-soft-xl"
       )}
     >
@@ -58,12 +58,15 @@ const SideNav = ({
           ))}
         </div>
       ))}
-      <Divider />
+      <Divider className="mx-4" />
       <div
         className="mt-0.5 cursor-pointer flex text-sm mx-4 items-center px-4 py-2.5"
         onClick={logoutFunc}
       >
-        <IconLogout className="mr-2" /> Logout
+        <span className="[&_svg]:w-4 ">
+          <IconLogout className="ml-2 mr-4" />
+        </span>
+        Logout
       </div>
     </div>
   );

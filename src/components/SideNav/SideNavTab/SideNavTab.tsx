@@ -20,23 +20,14 @@ const SideNavTab = ({ isChosen, onClick, data }: Props) => {
     >
       <div
         className={clsx(
-          "mr-3 flex h-8 w-8 items-center justify-center rounded-lg bg-white xl:p-2.5",
-          isChosen && "bg-gradient-to-tl from-purple-700 to-pink-500"
+          "mr-3 flex h-8 w-8 items-center justify-center xl:p-2.5 text-black"
         )}
       >
-        <Image
-          className={clsx(
-            "filter",
-            !isChosen &&
-              "brightness-0 saturate-100 invert(11%) sepia(13%) saturate(2254%) hue-rotate(178deg) brightness(94%) contrast(88%)"
-          )}
-          src={`/assets/icons/${data.iconPath}`}
-          alt={data.label}
-          width={12}
-          height={12}
-        />
+        <span className={clsx(isChosen && "text-[#2C49E6]", "[&_svg]:w-4")}>
+          {data.iconPath}
+        </span>
       </div>
-      <div>{data.label}</div>
+      <div className={clsx(isChosen && "text-[#2C49E6]")}>{data.label}</div>
     </div>
   );
 };

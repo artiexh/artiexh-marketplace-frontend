@@ -1,35 +1,50 @@
+import {
+  IconBrandCampaignmonitor,
+  IconBuildingStore,
+  IconBuildingWarehouse,
+  IconPackageExport,
+  IconShoppingBag,
+  IconTemplate,
+} from "@tabler/icons-react";
+
 export const navSections = [
   {
     id: "DASHBOARD",
     navList: [
       {
+        id: "ORDERS",
+        label: "Orders",
+        iconPath: <IconShoppingBag />,
+        href: "/my-shop/orders",
+      },
+      {
         id: "INVENTORY",
         label: "Products",
-        iconPath: "dashboard_icon.svg",
+        iconPath: <IconPackageExport />,
         href: "/my-shop/products",
       },
       {
         id: "PRODUCTS",
         label: "Custom Products",
-        iconPath: "dashboard_icon.svg",
+        iconPath: <IconTemplate />,
         href: "/my-shop/custom-products",
-      },
-      {
-        id: "ORDERS",
-        label: "Orders",
-        iconPath: "tables_icon.svg",
-        href: "/my-shop/orders",
       },
       {
         id: "CAMPAIGNS",
         label: "Campaigns",
-        iconPath: "billing_icon.svg",
+        iconPath: <IconBrandCampaignmonitor />,
         href: "/my-shop/campaigns",
+      },
+      {
+        id: "SALE_CAMPAIGNS",
+        label: "Sale campaigns",
+        iconPath: <IconBuildingStore />,
+        href: "/my-shop/sale-campaigns",
       },
       {
         id: "SHOP_PROFILE",
         label: "Shop profile",
-        iconPath: "billing_icon.svg",
+        iconPath: <IconBuildingWarehouse />,
         href: "/my-shop/profile",
       },
     ],
