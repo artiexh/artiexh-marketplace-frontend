@@ -39,7 +39,7 @@ const SideNav = ({
   return (
     <div
       className={clsx(
-        "max-w-[15.625rem] h-screen z-[990] fixed py-4 w-full -translate-x-full overflow-y-auto !bg-white shadow transition-transform duration-200 xl:left-0 xl:translate-x-0 xl:bg-transparent",
+        "max-w-[15.625rem] h-screen fixed py-4 w-full -translate-x-full overflow-y-auto !bg-white shadow transition-transform duration-200 xl:left-0 xl:translate-x-0 xl:bg-transparent",
         displaySideNav && "translate-x-0 shadow-soft-xl"
       )}
     >

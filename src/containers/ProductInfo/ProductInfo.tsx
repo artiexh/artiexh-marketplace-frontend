@@ -88,12 +88,6 @@ const ProductInfo: FC<ProductInfoProps> = ({ product, special }) => {
       <div className="flex gap-5 mt-5">
         <Button
           disabled={product.quantity == 0 || campaignType === "CLOSED"}
-          className="flex-1 bg-primary !text-white"
-        >
-          Buy now
-        </Button>
-        <Button
-          disabled={product.quantity == 0 || campaignType === "CLOSED"}
           className={clsx(
             "flex-1",
             campaignType === "CLOSED" ? "!text-white" : "!text-primary"
