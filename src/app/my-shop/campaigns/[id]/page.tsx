@@ -116,7 +116,7 @@ export default function CampaignDetailPage() {
           </div>
         </div>
       </div>
-      <Tabs defaultValue="general-info" className="mt-5">
+      <Tabs defaultValue="general-info" className="mt-5" keepMounted={false}>
         <Tabs.List>
           <Tabs.Tab value="general-info">Info</Tabs.Tab>
           <Tabs.Tab value="promote-details">Web</Tabs.Tab>
