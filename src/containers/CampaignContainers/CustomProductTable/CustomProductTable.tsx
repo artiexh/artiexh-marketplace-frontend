@@ -20,11 +20,9 @@ import { defaultButtonStylingClass } from "@/constants/common";
 export default function CustomProductTable({
   data: rawData,
   disabled = false,
-  setDisabled,
 }: {
   data: CampaignDetail["products"];
   disabled?: boolean;
-  setDisabled: Dispatch<SetStateAction<boolean>>;
 }) {
   const routerParams = useParams();
   const queryClient = useQueryClient();
@@ -46,18 +44,6 @@ export default function CustomProductTable({
     });
   };
 
-  useEffect(() => {
-    if (
-      campaignRes &&
-      campaignRes.data.products.length > 0 &&
-      campaignRes.data.products.every((item) => item.price && item.quantity)
-    ) {
-      setDisabled(false);
-    } else {
-      setDisabled(true);
-    }
-  }, [campaignRes]);
-
   return (
     <>
       <div className="table-header flex w-full justify-between">
@@ -72,6 +58,7 @@ export default function CustomProductTable({
         </div>
         <div>
           <Button
+            disabled={disabled}
             className={defaultButtonStylingClass}
             onClick={openCustomProductModal}
           >
@@ -87,17 +74,19 @@ export default function CustomProductTable({
             .map((data) => {
               return {
                 ...data,
-                onEdit: () =>
-                  modals.open({
-                    modalId: `${data.id}-custom-product-edit`,
-                    title: "Edit",
-                    centered: true,
-                    classNames: {
-                      content: "!w-[30rem] !h-fit left-[38%] top-1/3",
-                    },
+                onEdit: !disabled
+                  ? () =>
+                      modals.open({
+                        modalId: `${data.id}-custom-product-edit`,
+                        title: "Edit",
+                        centered: true,
+                        classNames: {
+                          content: "!w-[30rem] !h-fit left-[38%] top-1/3",
+                        },
 
-                    children: <EditCustomProductModal data={data} />,
-                  }),
+                        children: <EditCustomProductModal data={data} />,
+                      })
+                  : undefined,
                 onView: () =>
                   modals.open({
                     modalId: `${data.id}-custom-product-view`,

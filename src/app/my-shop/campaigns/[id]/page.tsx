@@ -12,6 +12,7 @@ import {
 } from "@/services/backend/services/campaign";
 import { CampaignDetail } from "@/types/Campaign";
 import { CommonResponseBase } from "@/types/ResponseBase";
+import { isDisabled } from "@/utils/campaign.utils";
 import { getNotificationIcon } from "@/utils/mapper";
 import { Badge, Button, Tabs } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
@@ -24,7 +25,6 @@ export default function CampaignDetailPage() {
   const params = useParams();
 
   const id = params!.id as string;
-  const [disabled, setDisabled] = useState<boolean>(true);
 
   const {
     data: res,
@@ -107,10 +107,7 @@ export default function CampaignDetailPage() {
               Delete
             </Button>
             <Button
-              disabled={
-                !["DRAFT", "REQUEST_CHANGE"].includes(res.data.status) ||
-                disabled
-              }
+              disabled={isDisabled(res.data.status)}
               onClick={submitCampaignHandler}
               className="mb-0 !text-primary border-primary hover:bg-primary hover:!text-white"
             >
@@ -140,8 +137,8 @@ export default function CampaignDetailPage() {
           />
           <div className="mt-4">
             <CustomProductTable
+              disabled={isDisabled(res.data.status)}
               data={res.data.products}
-              setDisabled={setDisabled}
             />
           </div>
         </Tabs.Panel>

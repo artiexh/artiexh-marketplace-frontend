@@ -1,6 +1,6 @@
 "use client";
 
-import shopCampaignColumns from "@/constants/Columns/shopCampaignColumns";
+import { artistCampaignColumns } from "@/constants/Columns/ArtistCampaignColumn";
 import { NOTIFICATION_TYPE } from "@/constants/common";
 import { ROUTE } from "@/constants/route";
 import TableContainer from "@/containers/TableContainer";
@@ -76,7 +76,7 @@ const ShopCampaignsPage = () => {
           };
           return finalRes;
         }}
-        columns={shopCampaignColumns}
+        columns={artistCampaignColumns}
         pagination
         tableProps={{ verticalSpacing: "sm", className: "font-semibold" }}
         className="mt-2.5"

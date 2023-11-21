@@ -4,6 +4,7 @@ import { TableColumns } from "@/types/Table";
 import { currencyFormatter } from "@/utils/formatter";
 import { Tooltip } from "@mantine/core";
 import { IconBallpen, IconEye } from "@tabler/icons-react";
+import clsx from "clsx";
 
 const productInCampaignColumns: TableColumns<
   CampaignDetail["products"][0] & { onEdit?: Function; onView?: Function }
@@ -78,7 +79,9 @@ const productInCampaignColumns: TableColumns<
       <div className="flex justify-center gap-x-2">
         <Tooltip label="Edit">
           <IconBallpen
-            className="cursor-pointer"
+            className={clsx(
+              record.onEdit ? "cursor-pointer" : "cursor-not-allowed"
+            )}
             onClick={() => record.onEdit && record.onEdit()}
           />
         </Tooltip>

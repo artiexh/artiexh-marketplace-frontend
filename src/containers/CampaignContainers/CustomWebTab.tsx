@@ -14,6 +14,7 @@ import {
 } from "@/services/backend/services/campaign";
 import { useQueryClient } from "@tanstack/react-query";
 import { useEffect } from "react";
+import { isDisabled } from "@/utils/campaign.utils";
 
 function CustomWebTab({ data: campaignData }: { data: CampaignDetail }) {
   const queryClient = useQueryClient();
@@ -75,9 +76,11 @@ function CustomWebTab({ data: campaignData }: { data: CampaignDetail }) {
       res.data
     );
   };
+
   return (
     <form onSubmit={onSubmit(updateWebInfo)} className="mt-5">
       <Thumbnail
+        disabled={isDisabled(campaignData.status)}
         url={
           values.thumbnail instanceof File
             ? URL.createObjectURL(values.thumbnail)
@@ -88,16 +91,19 @@ function CustomWebTab({ data: campaignData }: { data: CampaignDetail }) {
         }}
         error={errors.thumbnail as string}
         defaultPlaceholder={
-          <div className="flex flex-col items-center">
-            <p className="text-4xl font-thin">+</p>
-            <p>Add thumbnail</p>
-          </div>
+          !isDisabled(campaignData.status) ? (
+            <div className="flex flex-col items-center">
+              <p className="text-4xl font-thin">+</p>
+              <p>Add thumbnail</p>
+            </div>
+          ) : (
+            <div className="flex flex-col items-center">
+              <p>No image</p>
+            </div>
+          )
         }
         className="!h-[20rem]"
-        clearable={
-          campaignData.status === "DRAFT" ||
-          campaignData.status === "REQUEST_CHANGE"
-        }
+        clearable={!isDisabled(campaignData.status)}
         onClear={() => {
           setFieldValue("thumbnail", undefined);
         }}
