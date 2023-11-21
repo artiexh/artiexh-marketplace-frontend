@@ -30,7 +30,7 @@ export default function MyShopProfilePage() {
     validate: editShopValidation,
   });
 
-  const { data } = useQuery({
+  const { data, isLoading } = useQuery({
     queryKey: ["aritst", { id: user?.username }],
     queryFn: async () => {
       const res = await axiosClient.get(`/artist/${user?.username}`);
@@ -101,6 +101,8 @@ export default function MyShopProfilePage() {
     shopThumbnail: string | File | null;
     description?: string;
   }) => updateProfileMutation.mutateAsync(values);
+
+  if (isLoading) return null;
 
   return (
     <div className="user-profile-page px-6">

@@ -32,6 +32,8 @@ const Thumbnail: FC<ThumbnailProps> = ({
 }) => {
   const [imageUrl, setImageUrl] = useState(url);
 
+  console.log(imageUrl);
+
   const uploadHandler = (e: ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files) return;
     const file = e.target.files[0];
