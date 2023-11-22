@@ -4,12 +4,13 @@ import axiosClient from "@/services/backend/axiosClient";
 import { SALE_CAMPAIGN_ENDPOINT } from "@/services/backend/services/campaign";
 import { CommonResponseBase } from "@/types/ResponseBase";
 import { SaleCampaignDetail } from "@/types/SaleCampaign";
-import { Tabs } from "@mantine/core";
+import { Badge, Tabs } from "@mantine/core";
 import { useQuery } from "@tanstack/react-query";
 import { useParams, useRouter } from "next/navigation";
 import { useState } from "react";
 import SaleCampaignGeneralInfoForm from "./SaleCampaignGeneralInfoForm";
 import CustomWebTab from "./CustomWebTab";
+import SaleCampaignProductTab from "./SaleCampaignProductTab";
 
 export default function SaleCampaignDetailContainer() {
   const router = useRouter();
@@ -37,11 +38,16 @@ export default function SaleCampaignDetailContainer() {
 
   return (
     <>
-      <div className="mt-10 bg-white rounded-md  px-4 py-2.5 flex flex-col">
+      <div className="bg-white rounded-md py-2.5 flex flex-col">
         <div className="flex justify-between items-center">
-          <div className="flex gap-x-2.5 items-center">
-            {/* <Badge>{res.data.status}</Badge> */}
-            <h1 className="text-2xl">{res.data.name}</h1>
+          <div className="flex flex-col gap-y-0.5">
+            <div className="flex gap-x-2.5 items-center">
+              <Badge>{res.data.status}</Badge>
+              <h1 className="text-2xl">{res.data.name}</h1>
+            </div>
+            <span className="text-gray-400 text-sm">
+              Artist: {res.data.owner.username}
+            </span>
           </div>
 
           <div className="h-fit flex gap-x-3"></div>
@@ -51,6 +57,7 @@ export default function SaleCampaignDetailContainer() {
         <Tabs.List>
           <Tabs.Tab value="general-info">Info</Tabs.Tab>
           <Tabs.Tab value="promote-details">Web</Tabs.Tab>
+          <Tabs.Tab value="product-in-sales">Products</Tabs.Tab>
         </Tabs.List>
         <Tabs.Panel value="general-info">
           <SaleCampaignGeneralInfoForm
@@ -64,15 +71,12 @@ export default function SaleCampaignDetailContainer() {
               type: res.data.type,
             }}
           />
-          <div className="mt-4">
-            {/* <CustomProductTable
-              data={res.data.products}
-              setDisabled={setDisabled}
-            /> */}
-          </div>
         </Tabs.Panel>
         <Tabs.Panel value="promote-details">
           <CustomWebTab data={res.data} />
+        </Tabs.Panel>
+        <Tabs.Panel value="product-in-sales">
+          <SaleCampaignProductTab data={res.data} />
         </Tabs.Panel>
       </Tabs>
     </>

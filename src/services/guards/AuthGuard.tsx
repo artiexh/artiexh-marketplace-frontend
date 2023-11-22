@@ -7,6 +7,7 @@ import { setShop, setStatus, setUser } from "@/store/user";
 import { User } from "@/types/User";
 import { CommonResponseBase } from "@/types/ResponseBase";
 import { Shop } from "@/types/Shop";
+import { logout } from "../backend/services/user";
 
 const AuthGuard = () => {
   const router = useRouter();
@@ -21,6 +22,11 @@ const AuthGuard = () => {
         const { data } = await axiosClient.get<CommonResponseBase<User>>(
           "/account/me"
         );
+
+        if (data.data.role === "ADMIN") {
+          await logout();
+          throw new Error("Invalid role");
+        }
 
         setUser(data.data);
 

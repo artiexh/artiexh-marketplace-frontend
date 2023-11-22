@@ -56,7 +56,7 @@ export default function SaleCampaignDetailPage() {
           History
         </div>
       </div>
-      <div className="mt-10 bg-white rounded-md p-8 flex flex-col shadow">
+      <div className=" bg-white rounded-md p-8 flex flex-col shadow">
         <div className={isDetailPage ? "" : "hidden"}>
           <SaleCampaignDetailContainer />
         </div>

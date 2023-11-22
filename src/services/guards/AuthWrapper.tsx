@@ -16,10 +16,8 @@ export default function AuthWrapper({
   roles,
 }: AuthWrapperProps) {
   const status = useStore($authStatus);
-  console.log("🚀 ~ file: AuthWrapper.tsx:19 ~ status:", status);
 
   const user = useStore($user);
-  console.log("🚀 ~ file: AuthWrapper.tsx:22 ~ user:", user);
 
   if (status === "INIT" || status === "FETCHING") return null;
 
@@ -32,7 +30,7 @@ export default function AuthWrapper({
     return null;
   }
 
-  if (status === "FETCHED" && user?.role === "ADMIN") {
+  if (user?.role === "ADMIN") {
     logout().then(() => {
       router.push(
         `/auth/signin?${new URLSearchParams({
