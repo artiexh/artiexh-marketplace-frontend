@@ -1,6 +1,6 @@
 "use client";
 
-import { artistCampaignColumns } from "@/constants/Columns/ArtistCampaignColumn";
+import { artistCampaignColumns } from "@/constants/Columns/artistCampaignColumn";
 import { NOTIFICATION_TYPE } from "@/constants/common";
 import { ROUTE } from "@/constants/route";
 import TableContainer from "@/containers/TableContainer";
