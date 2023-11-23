@@ -1,3 +1,4 @@
+import ImageWithFallback from "@/components/ImageWithFallback/ImageWithFallback";
 import { ProductInSale } from "@/types/SaleCampaign";
 import { TableColumns } from "@/types/Table";
 import { Badge } from "@mantine/core";
@@ -16,7 +17,12 @@ export const productInSaleColumns: TableColumns<
     render: (record) => (
       <div className="flex items-center gap-5">
         <div className="relative w-16 aspect-square">
-          <img src={record.thumbnailUrl} alt="product-thumb" />
+          <ImageWithFallback
+            className="object-cover w-full h-full"
+            fill
+            src={record.thumbnailUrl}
+            alt="product-thumb"
+          />
         </div>
         <div className="flex flex-col">
           <span>Code: {record.productCode}</span>

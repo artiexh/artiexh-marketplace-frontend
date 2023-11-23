@@ -57,7 +57,7 @@ export default function SaleCampaignProductTab({
               pageNumber: page,
             }))
           }
-          total={productResponse?.data.totalSize ?? 1}
+          total={productResponse?.data.totalPage ?? 1}
           boundaries={2}
         />
       </div>
