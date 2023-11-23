@@ -45,7 +45,7 @@ const ShopCampaignsPage = () => {
           onClick={handleCreateCampaign}
           variant="outline"
         >
-          Create campaign
+          Create campaign request
         </Button>
       </div>
       <TableContainer
@@ -82,7 +82,7 @@ const ShopCampaignsPage = () => {
         className="mt-2.5"
         header={(response) => (
           <>
-            <div className="text-3xl font-bold">My campaigns</div>
+            <div className="text-3xl font-bold">My campaign requests</div>
             <div className="text-[#AFAFAF] mt-1">
               {/* TODO: Replace with API call later or filter based on response */}
               {response?.items?.length} products need to be updated their status

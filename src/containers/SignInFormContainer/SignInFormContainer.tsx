@@ -20,9 +20,13 @@ type FormValues = typeof initialValues;
 
 const validate = {
   username: (value: string) =>
-    value.trim().length > 0 ? null : "Username cannot be empty",
+    value != null && value.trim().length > 0
+      ? null
+      : "Username cannot be empty",
   password: (value: string) =>
-    value.trim().length > 0 ? null : "Password cannot be empty",
+    value != null && value.trim().length > 0
+      ? null
+      : "Password cannot be empty",
 };
 
 const SignInFormContainer = () => {

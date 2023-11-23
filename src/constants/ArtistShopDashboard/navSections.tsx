@@ -31,7 +31,7 @@ export const navSections = [
       },
       {
         id: "CAMPAIGNS",
-        label: "Campaigns",
+        label: "Campaign requests",
         iconPath: <IconBrandCampaignmonitor />,
         href: "/my-shop/campaigns",
       },

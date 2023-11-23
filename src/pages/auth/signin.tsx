@@ -39,11 +39,6 @@ const SignInPage = () => {
           height={300}
           className="aspect-square mx-auto"
         />
-        <h2 className="font-bold text-primary text-center text-4xl">
-          Meo meo meo meo
-          <br />
-          Trả lại tâm trí tôi đây
-        </h2>
       </div>
       <div className="footer-wrapper_mobile sm:hidden">
         Chưa có tài khoản?{" "}
