@@ -18,7 +18,7 @@ type FormValues = typeof initialValues;
 
 const validate = {
   username: (value: string) =>
-    value.trim().length >= 3
+    value != null && value.trim().length >= 3
       ? null
       : "Username must be at least 3 characters long",
   email: (value: string) =>
@@ -26,7 +26,7 @@ const validate = {
       ? null
       : "Invalid email address",
   password: (value: string) =>
-    value.trim().length >= 8
+    value != null && value.trim().length >= 8
       ? null
       : "Password must be at least 8 characters long",
   confirmPassword: (value: string, values: FormValues) => {

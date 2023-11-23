@@ -26,7 +26,7 @@ export const editShopValidation: FormValidateInput<Partial<MyProfileBody>> = {
     return null;
   },
   description: (value) => {
-    if (value && value.trim().length > 300)
+    if (value && value != null && value.trim().length > 300)
       return "Mô tả tài khoản không thể vượt quá 300 kí tự";
   },
 };
@@ -42,7 +42,7 @@ export const editProfileValidation: FormValidateInput<{
     }
   },
   displayName: (value) => {
-    if (value && value.trim().length > 300)
+    if (value && value != null && value.trim().length > 300)
       return "Mô tả tài khoản không thể vượt quá 300 kí tự";
   },
 };

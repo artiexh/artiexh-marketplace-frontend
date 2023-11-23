@@ -21,7 +21,7 @@ const CallbackPage = ({
     },
     validate: {
       username: (value: string) =>
-        value.trim().length >= 3
+        value != null && value.trim().length >= 3
           ? null
           : "Username must be at least 3 characters long",
     },
