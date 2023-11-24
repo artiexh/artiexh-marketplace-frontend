@@ -36,10 +36,7 @@ const productInCampaignColumns: TableColumns<
     render: (record) =>
       record?.providerConfig?.basePriceAmount ? (
         <span>
-          {currencyFormatter("vn", {
-            amount: record?.providerConfig?.basePriceAmount,
-            unit: "VND",
-          })}
+          {currencyFormatter(record?.providerConfig?.basePriceAmount)}
         </span>
       ) : (
         <span>Không khả dụng</span>
@@ -50,12 +47,7 @@ const productInCampaignColumns: TableColumns<
     key: "salePrice",
     render: (record) =>
       record?.price ? (
-        <span>
-          {currencyFormatter("vn", {
-            ...record.price,
-            amount: Number(record.price.amount),
-          })}
-        </span>
+        <span>{currencyFormatter(Number(record.price.amount))}</span>
       ) : (
         <span>Không khả dụng</span>
       ),

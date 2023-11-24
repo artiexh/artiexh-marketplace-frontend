@@ -474,10 +474,9 @@ function VariantAndProviderPicker({
                   <div className="flex justify-end">
                     <span className="font-semibold">
                       From:{" "}
-                      {currencyFormatter("VND", {
-                        amount: config.basePriceAmount,
-                        unit: "VND",
-                      })}
+                      {currencyFormatter( 
+                       config.basePriceAmount
+                      )}
                     </span>
                   </div>
                 </div>
