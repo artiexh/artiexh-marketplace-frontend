@@ -2,6 +2,7 @@ import axiosClient from "@/services/backend/axiosClient";
 import {
   updateImageCombinationApi,
   updateImageSetApi,
+  updateThumbnailApi,
 } from "@/services/backend/services/customProduct";
 import {
   getPrivateFile,
@@ -135,6 +136,10 @@ export default function DesignPortalPage() {
           position: set?.position,
           rotate: set?.rotate,
           scale: set?.scale,
+          mockupImageSize: set?.mockupImageSize ?? {
+            height: 1024,
+            width: 1024,
+          },
         };
       })}
     >
@@ -154,9 +159,11 @@ function DecalWithImageContainer(
   props: React.ComponentProps<typeof Decal> & {
     file: string | File;
     name: string;
+    mockupImageSize?: { height: number; width: number };
   }
 ) {
   const { file, name, ...rest } = props;
+
   const { data, isLoading } = useSWR([name], async () => {
     if (typeof file === "string") return file;
     const { type } = file;
@@ -173,15 +180,17 @@ function DecalWithImageContainer(
 }
 
 function DecalWithImage(
-  props: React.ComponentProps<typeof Decal> & { file: string }
+  props: React.ComponentProps<typeof Decal> & {
+    file: string;
+    mockupImageSize?: { height: number; width: number };
+  }
 ) {
   const { file, ...rest } = props;
   const decalRef = useRef<Mesh | null>(null);
   const texture = useTexture(file);
 
-  const { scale } = rest;
-
-  console.log(texture.image.width, texture.image.height);
+  const { scale = [1, 1, 1], mockupImageSize = { height: 1024, width: 1024 } } =
+    rest;
 
   return (
     <Decal
@@ -189,9 +198,9 @@ function DecalWithImage(
       ref={decalRef}
       scale={[
         //@ts-ignore
-        ((texture.image.width * 1) / 1024) * scale[0],
+        ((texture.image.width * 1) / mockupImageSize.width) * scale[0],
         //@ts-ignore
-        ((texture.image.height * 1) / 1024) * scale[1],
+        ((texture.image.height * 1) / mockupImageSize.width) * scale[1],
         //@ts-ignore
         scale[2],
       ]}
@@ -239,6 +248,7 @@ function DesignPortalContainer({ modelCode }: { modelCode: string }) {
                 rotation={data.rotate}
                 scale={data.scale}
                 file={data.file}
+                mockupImageSize={data.mockupImageSize}
               />
             );
           })}
@@ -400,6 +410,10 @@ type MockupConfig = {
   position?: [number, number, number];
   rotate?: [number, number, number];
   scale?: [number, number, number];
+  mockupImageSize?: {
+    width: number;
+    height: number;
+  };
 };
 
 function MockupImagesProvider({
@@ -437,6 +451,7 @@ function MockupImagesProvider({
             position: set.position,
             rotate: set.rotate,
             scale: set.scale,
+            mockupImageSize: set.mockupImageSize,
           };
         },
       };
@@ -530,7 +545,6 @@ function ImageSetPicker({ currentCombination }: ImageSetPickerProps) {
 
   const updateMockupImageSetMutation = useMutation({
     mutationFn: async (body: { positionCode: string; file: File }) => {
-      console.log("testing");
       const { positionCode, file } = body;
 
       if (!designItemRes?.data) throw new Error("There is something wrong");
@@ -664,6 +678,11 @@ function ImageSetPicker({ currentCombination }: ImageSetPickerProps) {
               (set) => set.positionCode === el.code
             ) ?? {};
 
+          const mockupImageSize = imageSet?.mockupImageSize ?? {
+            width: 1024,
+            height: 1024,
+          };
+
           return (
             <Accordion.Item key={imageSet.code} value={imageSet.code}>
               <Accordion.Control className="hover:text-white">
@@ -671,7 +690,10 @@ function ImageSetPicker({ currentCombination }: ImageSetPickerProps) {
               </Accordion.Control>
               <Accordion.Panel>
                 <Group position="center">
-                  <h3>Mockup image</h3>
+                  <h3>
+                    Mockup image{" "}
+                    {`(${mockupImageSize?.width}x${mockupImageSize?.height})`}
+                  </h3>
                   {mockup?.file && (
                     <ImageLoaderForFile
                       name={imageSet.code}
@@ -833,7 +855,7 @@ function CombinationCodePicker({ combinations }: CombinationCodePickerProps) {
           >
             <span className="font-semibold">{el.name}</span>
             {designItemRes.data?.combinationCode === el.code ? (
-              <Image src={logoImage} className="w-6 aspect-square" alt="logo" />
+              <img src={logoImage} className="w-6 aspect-square" alt="logo" />
             ) : (
               <div></div>
             )}

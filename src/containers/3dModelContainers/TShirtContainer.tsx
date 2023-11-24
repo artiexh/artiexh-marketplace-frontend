@@ -29,7 +29,7 @@ export default function TShirtContainer({
           material={bodyMaterials["tshirt"]}
           position={[0, 0, 0]}
         >
-          <meshStandardMaterial color={value.palette.body} />
+          <meshStandardMaterial color="#d2d2d2" />
           {children}
         </mesh>
       </group>

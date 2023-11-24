@@ -4,8 +4,8 @@ import { FormValidateInput } from "@mantine/form/lib/types";
 export const customProductValidation: FormValidateInput<UpdateGeneralInfoData> =
   {
     description: (value) => {
-      if (value != null && value.trim().length >= 300)
-        return "Mô tả quá dài. Vui lòng nhập mô tả ngắn hơn 300 ký tự";
+      if (value != null && value.trim().length >= 1000)
+        return "Mô tả quá dài. Vui lòng nhập mô tả ngắn hơn 1000 ký tự";
       if (value != null && value.trim().length === 0)
         return "Vui lòng điền mô tả của sản phẩm";
       return null;

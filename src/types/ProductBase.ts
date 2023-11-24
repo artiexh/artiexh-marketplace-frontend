@@ -22,6 +22,10 @@ export type ImageConfig = {
     height: number;
     width: number;
   };
+  mockupImageSize: {
+    height: number;
+    width: number;
+  };
 };
 
 export type ProductVariantOption = {

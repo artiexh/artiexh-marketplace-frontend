@@ -36,29 +36,35 @@ function CustomWebTab({ data: campaignData }: { data: CampaignDetail }) {
     },
   });
 
-  useEffect(() => {
-    setValues({
-      content: campaignData.content,
-      thumbnail: campaignData.thumbnailUrl,
-    });
-  }, [campaignData]);
-
   const editor = useEditor({
     extensions: [StarterKit],
     content: campaignData.content ?? "",
     editable:
       campaignData.status === "DRAFT" ||
-      campaignData.status == "REQUEST_CHANGE",
+      campaignData.status === "REQUEST_CHANGE",
     onUpdate({ editor }) {
       setFieldValue("content", editor.getHTML());
     },
   });
+
+  useEffect(() => {
+    console.log(values);
+    // setValues({
+    //   content: campaignData.content,
+    //   thumbnail: campaignData.thumbnailUrl,
+    // });
+    editor?.setEditable(
+      campaignData.status === "DRAFT" ||
+        campaignData.status === "REQUEST_CHANGE"
+    );
+  }, [campaignData]);
 
   const updateWebInfo = async (data: {
     content?: string;
     thumbnail?: string | File;
   }) => {
     let thumbnailUrl: string | undefined = campaignData.thumbnailUrl;
+    console.log(data.thumbnail);
     if (data.thumbnail instanceof File) {
       const res = await publicUploadFile([data.thumbnail]);
       thumbnailUrl = res?.data.data.fileResponses[0].presignedUrl;
@@ -87,6 +93,7 @@ function CustomWebTab({ data: campaignData }: { data: CampaignDetail }) {
             : values.thumbnail
         }
         setFile={(file) => {
+          console.log(file);
           setFieldValue("thumbnail", file);
         }}
         error={errors.thumbnail as string}
