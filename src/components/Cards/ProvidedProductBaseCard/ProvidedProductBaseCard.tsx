@@ -55,7 +55,7 @@ export default function ProvidedProductBaseCard({
         <div className="text-right mt-2.5 md:mt-6 font-semibold">
           {isNaN(Number(data.minPrice.amount))
             ? "N/A"
-            : currencyFormatter("vn-VN", data.minPrice)}
+            : currencyFormatter(data.minPrice.amount)}
         </div>
       </div>
       <div className="action-group">{actions}</div>

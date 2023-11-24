@@ -67,7 +67,7 @@ const ProductInfo: FC<ProductInfoProps> = ({ product, special }) => {
         </span>
         <Rating value={averageRate} size="lg" color="customPrimary" readOnly />
       </div>
-      <h2 className="text-4xl mt-5">{currencyFormatter("vn", price)}</h2>
+      <h2 className="text-4xl mt-5">{currencyFormatter(price.amount)}</h2>
       {special && <h4 className="text-red-500">{special}</h4>}
       <div className="mt-10 md:mt-auto flex gap-2 items-center">
         <span className="text-lg font-semibold">So luong</span>

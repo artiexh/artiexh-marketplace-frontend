@@ -53,7 +53,7 @@ const ProductPreviewCard = ({ data, className }: IProductPreviewCardProps) => {
         <div className="text-right mt-2.5 md:mt-6 font-semibold">
           {isNaN(data.price.amount)
             ? "N/A"
-            : currencyFormatter("vn-VN", data.price)}
+            : currencyFormatter(data.price.amount)}
         </div>
       </div>
     </div>

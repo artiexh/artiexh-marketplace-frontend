@@ -1,21 +1,24 @@
+import TableComponent from "@/components/TableComponent";
+import productInCampaignColumns from "@/constants/Columns/productInCampaignColumns";
+import { defaultButtonStylingClass } from "@/constants/common";
+import axiosClient from "@/services/backend/axiosClient";
 import {
   ARTIST_CAMPAIGN_ENDPOINT,
   updateCampaignCustomProductsApi,
 } from "@/services/backend/services/campaign";
 import { CampaignDetail, CustomProduct } from "@/types/Campaign";
 import { CommonResponseBase } from "@/types/ResponseBase";
+import { configCalculate } from "@/utils/campaign.utils";
+import { currencyFormatter } from "@/utils/formatter";
+import { Button, NumberInput, Text, Tooltip } from "@mantine/core";
+import { useForm } from "@mantine/form";
 import { modals } from "@mantine/modals";
+import { IconHelpCircle } from "@tabler/icons-react";
 import { useQueryClient } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
-import PickCustomProduct from "./PickCustomProduct";
-import { Button, NumberInput, Popover, Text } from "@mantine/core";
-import TableComponent from "@/components/TableComponent";
-import productInCampaignColumns from "@/constants/Columns/productInCampaignColumns";
+import useSWR from "swr";
 import CustomProductDetailCard from "../CustomProductDetailCard";
-import { useForm } from "@mantine/form";
-import { IconHelpCircle } from "@tabler/icons-react";
-import { Dispatch, SetStateAction, useEffect } from "react";
-import { defaultButtonStylingClass } from "@/constants/common";
+import PickCustomProduct from "./PickCustomProduct";
 
 export default function CustomProductTable({
   data: rawData,
@@ -78,12 +81,12 @@ export default function CustomProductTable({
                   ? () =>
                       modals.open({
                         modalId: `${data.id}-custom-product-edit`,
-                        title: "Edit",
+                        title: "Tùy chỉnh giá bán và số lượng",
                         centered: true,
                         classNames: {
-                          content: "!w-[30rem] !h-fit left-[38%] top-1/3",
+                          content: "!w-[60rem] !h-fit left-[38%] top-1/3",
+                          title: "font-semibold",
                         },
-
                         children: <EditCustomProductModal data={data} />,
                       })
                   : undefined,
@@ -109,6 +112,11 @@ export default function CustomProductTable({
 function EditCustomProductModal({ data: product }: { data: CustomProduct }) {
   const routerParams = useParams();
   const queryClient = useQueryClient();
+  const { data: res } = useSWR("config", async () =>
+    axiosClient("/campaign/artiexh-percentage")
+  );
+
+  const percentage = res?.data.data.percentage;
 
   const id = routerParams!.id as string;
   const form = useForm<{
@@ -178,29 +186,38 @@ function EditCustomProductModal({ data: product }: { data: CustomProduct }) {
 
   return (
     <form onSubmit={form.onSubmit(updateHandler)}>
+      <div className="text-gray-600 mb-6 text-sm">
+        Arty sẽ thu {percentage}% trên mỗi đơn hàng của bạn
+      </div>
       <NumberInput
         classNames={{
           label: "w-full flex items-center",
+          root: "mb-4",
         }}
         label={
           <div className="flex justify-between items-center w-full">
             <span className="flex items-center gap-x-1">
-              <span>
-                {`Price (Min: ${product.providerConfig?.basePriceAmount})`}{" "}
-              </span>
-              <Popover position="top" withArrow shadow="md">
-                <Popover.Target>
-                  <IconHelpCircle size={16} className="text-primary" />
-                </Popover.Target>
-                <Popover.Dropdown style={{ pointerEvents: "none" }}>
-                  <span>Your profit = product price - min sale price</span>
-                </Popover.Dropdown>
-              </Popover>
+              <span>Price</span>
+              <Tooltip
+                label={`Lợi nhuận sẽ bằng giá bạn đưa ra trừ cho giá sản xuất (
+                    ${currencyFormatter(
+                      product.providerConfig?.basePriceAmount
+                    )}
+                    )`}
+              >
+                <IconHelpCircle size={16} className="text-primary" />
+              </Tooltip>
             </span>
-            <span className="text-gray-500">{`Your profit: ${
-              Number(form.values.price ?? 0) -
-              product?.providerConfig?.basePriceAmount
-            }`}</span>
+            {form.values.price &&
+              form.values.price > product?.providerConfig?.basePriceAmount && (
+                <span className="text-gray-500">{`Lợi nhuận của bạn: ${currencyFormatter(
+                  configCalculate(
+                    Number(form.values.price ?? 0),
+                    product?.providerConfig?.basePriceAmount ?? 0,
+                    percentage
+                  ).artistProfit
+                )}`}</span>
+              )}
           </div>
         }
         className="flex-[3]"
@@ -215,20 +232,13 @@ function EditCustomProductModal({ data: product }: { data: CustomProduct }) {
         label={
           <div className="flex">
             <span className="flex gap-x-1 items-center">
-              <span>
-                {`Quantity (Min: ${product.providerConfig?.minQuantity})`}{" "}
-              </span>
-              <Popover position="top" withArrow shadow="md">
-                <Popover.Target>
-                  <IconHelpCircle size={16} className="text-primary" />
-                </Popover.Target>
-                <Popover.Dropdown style={{ pointerEvents: "none" }}>
-                  <span>
-                    The manufacturing provider only accept the quantity that is
-                    greater than the minimum quantity
-                  </span>
-                </Popover.Dropdown>
-              </Popover>
+              <span>Quantity</span>
+              <Tooltip
+                label={`Sản phẩm này chỉ nhận khi đơn sản xuất lớn hơn 
+                    ${product.providerConfig?.minQuantity} cái`}
+              >
+                <IconHelpCircle size={16} className="text-primary" />
+              </Tooltip>
             </span>
           </div>
         }

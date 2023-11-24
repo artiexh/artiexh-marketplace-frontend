@@ -1,11 +1,10 @@
-import { Price } from "@/types/Product";
 import { Ward } from "@/types/User";
 
-export const currencyFormatter = (countryCode: string, value: Price) =>
+export const currencyFormatter = (value: number) =>
   new Intl.NumberFormat("vi-VN", {
     style: "currency",
     currency: "VND",
-  }).format(value.amount);
+  }).format(value);
 
 export const getQueryString = (
   params: { [key: string]: any },
