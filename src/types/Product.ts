@@ -106,7 +106,7 @@ export type ProductInventory = Omit<Product, "id"> & {
 
 export type ArtistProductColumnType = Pick<
   Product,
-  "name" | "maxItemsPerOrder" | "status" | "thumbnailUrl"
+  "name" | "maxItemsPerOrder" | "status" | "thumbnailUrl" | "price"
 >;
 
 export type PaymentMethod = {

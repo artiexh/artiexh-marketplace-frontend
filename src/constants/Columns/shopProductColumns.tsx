@@ -28,7 +28,11 @@ const shopProductColumns: TableColumns<ArtistProductColumnType> = [
   {
     title: "Price",
     key: "price",
-    render: (record) => <div>{currencyFormatter(record.price.amount)}</div>,
+    render: (value) => (
+      <div>
+        {value?.price?.amount ? currencyFormatter(value.price.amount) : "N/A"}
+      </div>
+    ),
   },
   {
     title: "Quantity",
