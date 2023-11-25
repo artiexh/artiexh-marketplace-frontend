@@ -192,15 +192,43 @@ function DecalWithImage(
   const { scale = [1, 1, 1], mockupImageSize = { height: 1024, width: 1024 } } =
     rest;
 
+  const imageSize = {
+    width: texture.image.width ?? 1024,
+    height: texture.image.height ?? 1024,
+  };
+  if (
+    imageSize.width > mockupImageSize.width &&
+    imageSize.height > mockupImageSize.height
+  ) {
+    //scale the image size based on mockupImageSize
+    const scaleRatio = Math.min(
+      mockupImageSize.width / imageSize.width,
+      mockupImageSize.height / imageSize.height
+    );
+    //asign new image size
+    imageSize.width = imageSize.width * scaleRatio;
+    imageSize.height = imageSize.height * scaleRatio;
+  } else if (imageSize.width > mockupImageSize.width) {
+    //scale the image size based on mockupImageSize
+    const scaleRatio = mockupImageSize.width / imageSize.width;
+    //asign new image size
+    imageSize.width = imageSize.width * scaleRatio;
+  } else if (imageSize.height > mockupImageSize.height) {
+    //scale the image size based on mockupImageSize
+    const scaleRatio = mockupImageSize.height / imageSize.height;
+    //asign new image size
+    imageSize.height = imageSize.height * scaleRatio;
+  }
+
   return (
     <Decal
       {...rest}
       ref={decalRef}
       scale={[
         //@ts-ignore
-        ((texture.image.width * 1) / mockupImageSize.width) * scale[0],
+        ((imageSize.width * 1) / mockupImageSize.width) * scale[0],
         //@ts-ignore
-        ((texture.image.height * 1) / mockupImageSize.width) * scale[1],
+        ((imageSize.height * 1) / mockupImageSize.height) * scale[1],
         //@ts-ignore
         scale[2],
       ]}
