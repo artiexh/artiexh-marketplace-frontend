@@ -38,7 +38,7 @@ const ProductListContainer: FC<ProductListContainerProps> = ({
   const [pagination, setPagination] = useState({
     pageSize: 8,
     pageNumber: 1,
-    sortBy: "id",
+    sortBy: "_id",
     sortDirection: "DESC",
   });
 
