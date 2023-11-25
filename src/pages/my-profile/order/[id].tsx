@@ -10,7 +10,7 @@ import { cancelOrderApi } from "@/services/backend/services/order";
 import AuthWrapper from "@/services/guards/AuthWrapper";
 import { Order } from "@/types/Order";
 import { CommonResponseBase } from "@/types/ResponseBase";
-import { getReadableWardAddress } from "@/utils/formatter";
+import { currencyFormatter, getReadableWardAddress } from "@/utils/formatter";
 import { getNotificationIcon } from "@/utils/mapper";
 import { Button, Divider, Text, Timeline } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
@@ -212,8 +212,10 @@ function OrderDetailPage() {
             </div>
             <div>
               <div>
-                Tổng cộng: {orderDetail.price.amount * orderDetail.quantity}{" "}
-                {orderDetail.price.unit}
+                Tổng cộng:{" "}
+                {currencyFormatter(
+                  orderDetail.price.amount * orderDetail.quantity
+                )}
               </div>
             </div>
           </div>

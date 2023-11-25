@@ -19,6 +19,7 @@ import { updateShippingInformation } from "@/services/backend/services/order";
 import { notifications } from "@mantine/notifications";
 import { getNotificationIcon } from "@/utils/mapper";
 import ImageWithFallback from "@/components/ImageWithFallback/ImageWithFallback";
+import { currencyFormatter } from "@/utils/formatter";
 
 const ShopEditOrderPage = ({ params }: { params: { id: string } }) => {
   const router = useRouter();
@@ -232,8 +233,7 @@ const ShopEditOrderPage = ({ params }: { params: { id: string } }) => {
           </div>
           <div>
             <div>
-              {data?.orderDetails[0].price.amount}{" "}
-              {data?.orderDetails[0].price.unit}
+              {currencyFormatter(data?.orderDetails[0]?.price?.amount ?? 0)}
             </div>
             <div>(Phương thức thanh toán: {data?.paymentMethod})</div>
           </div>

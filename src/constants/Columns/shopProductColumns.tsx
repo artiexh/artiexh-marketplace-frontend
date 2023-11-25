@@ -1,6 +1,7 @@
 import ImageWithFallback from "@/components/ImageWithFallback/ImageWithFallback";
 import { ArtistProductColumnType } from "@/types/Product";
 import { TableColumns } from "@/types/Table";
+import { currencyFormatter } from "@/utils/formatter";
 import { Badge } from "@mantine/core";
 import { IconBallpen } from "@tabler/icons-react";
 import Image from "next/image";
@@ -25,14 +26,20 @@ const shopProductColumns: TableColumns<ArtistProductColumnType> = [
     ),
   },
   {
-    title: "Release Date",
-    dataIndex: "publishDatetime",
-    key: "publishDatetime",
+    title: "Price",
+    key: "price",
+    render: (record) => <div>{currencyFormatter(record.price.amount)}</div>,
   },
   {
     title: "Quantity",
-    dataIndex: "remainingQuantity",
-    key: "remainingQuantity",
+    dataIndex: "quantity",
+    key: "quantity",
+    className: "!text-center w-[10rem]",
+  },
+  {
+    title: "Sold quantity",
+    dataIndex: "soldQuantity",
+    key: "soldQuantity",
     className: "!text-center w-[10rem]",
   },
   {

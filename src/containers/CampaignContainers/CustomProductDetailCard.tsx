@@ -25,6 +25,7 @@ import {
 } from "@mantine/core";
 import PrivateFileUploadPreview from "@/components/FileUpload/FileUploadPreview";
 import Thumbnail from "@/components/CreateProduct/Thumbnail";
+import { currencyFormatter } from "@/utils/formatter";
 
 function CustomProductDetailCard({
   campaignId,
@@ -290,7 +291,10 @@ function CustomProductGeneralInfo({
                 </Col>
                 <Col span={6}>
                   <Input.Wrapper label="Price">
-                    <Input readOnly value={data.price.amount} />
+                    <Input
+                      readOnly
+                      value={currencyFormatter(data.price.amount)}
+                    />
                   </Input.Wrapper>
                 </Col>
               </Grid>

@@ -8,7 +8,7 @@ import useSWR from "swr";
 import { Divider } from "@mantine/core";
 import { IconChevronLeft } from "@tabler/icons-react";
 import Image from "next/image";
-import { getReadableWardAddress } from "@/utils/formatter";
+import { currencyFormatter, getReadableWardAddress } from "@/utils/formatter";
 import AuthWrapper from "@/services/guards/AuthWrapper";
 
 function OrderDetailPage() {
@@ -152,8 +152,9 @@ function OrderDetailPage() {
                   <div>
                     <div>
                       Tổng cộng:{" "}
-                      {orderDetail.price.amount * orderDetail.quantity}{" "}
-                      {orderDetail.price.unit}
+                      {currencyFormatter(
+                        orderDetail.price.amount * orderDetail.quantity
+                      )}
                     </div>
                   </div>
                 </div>

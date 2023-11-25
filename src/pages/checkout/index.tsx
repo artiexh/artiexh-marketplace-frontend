@@ -29,7 +29,7 @@ import { isNumber } from "lodash";
 import AuthWrapper from "@/services/guards/AuthWrapper";
 import { CommonResponseBase } from "@/types/ResponseBase";
 import { SelectedItems } from "@/types/Cart";
-import { productInSaleIdFormatter } from "@/utils/formatter";
+import { currencyFormatter, productInSaleIdFormatter } from "@/utils/formatter";
 
 const PAYMENT_ITEM = [
   {
@@ -312,11 +312,11 @@ function CheckoutPage() {
           <div className="text-2xl font-bold mt-10 mb-4">Order Summary</div>
           <div className="flex justify-between">
             <div>Subtotal {`(${flattedCheckoutItems.length} items)`}</div>
-            <div>{`${totalPrice}  ${flattedCheckoutItems[0]?.price?.unit}`}</div>
+            <div>{`${currencyFormatter(totalPrice)}`}</div>
           </div>
           <div className="flex justify-between">
             <div>Shipping fee: {`(${flattedCheckoutItems.length} items)`}</div>
-            <div>{`${shippingFee}  ${flattedCheckoutItems[0]?.price?.unit}`}</div>
+            <div>{`${currencyFormatter(shippingFee ?? 0)}`}</div>
           </div>
           <Divider className="my-2" />
           <div className="flex justify-between">

@@ -69,7 +69,7 @@ export default function CartSection({
       )}
       {campaignType === "IN_COMING" && (
         <div className="text-red-500 mb-4">
-          (Chiến dịch này chỉ bắt đầu mở bán từ{" "}
+          (Bạn chỉ có thể mua sản phẩm này sau ngày{" "}
           {new Date(cartSection.saleCampaign.from).toLocaleDateString()})
         </div>
       )}

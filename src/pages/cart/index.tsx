@@ -6,7 +6,7 @@ import AuthWrapper from "@/services/guards/AuthWrapper";
 import { RootState } from "@/store";
 import { SelectedItems } from "@/types/Cart";
 import { CommonResponseBase } from "@/types/ResponseBase";
-import { productInSaleIdFormatter } from "@/utils/formatter";
+import { currencyFormatter, productInSaleIdFormatter } from "@/utils/formatter";
 import { Button } from "@mantine/core";
 import { IconSearchOff } from "@tabler/icons-react";
 import { useRouter } from "next/router";
@@ -107,7 +107,9 @@ const CartPage = () => {
   return (
     <div className="cart-page relative">
       <div className="hidden card sm:flex justify-between items-center">
-        <div className="font-bold text-[2rem] ">Tổng: {totalPrice} VND</div>
+        <div className="font-bold text-[2rem] ">
+          Tổng: {currencyFormatter(totalPrice)}
+        </div>
         <div>
           <Button
             disabled={selectedItems.length === 0}
@@ -121,7 +123,7 @@ const CartPage = () => {
               tmp.forEach((i) => params.append("itemId", i));
               router.push(`${ROUTE.CHECKOUT}?${params.toString()}`);
             }}
-            className="bg-[#50207D] w-[200px] h-[3rem]"
+            className="bg-[#50207D] !text-white w-[200px] h-[3rem]"
           >
             Checkout
           </Button>
@@ -143,11 +145,11 @@ const CartPage = () => {
         ))}
       </div>
       <div className="flex card sm:hidden justify-between items-center fixed bottom-0 w-[100vw] left-0">
-        <div className="font-bold ">Tổng: {totalPrice} VND</div>
+        <div className="font-bold ">Tổng: {currencyFormatter(totalPrice)}</div>
         <div>
           <Button
             disabled={selectedItems.length === 0}
-            className="bg-[#50207D] w-[120px] h-[3rem]"
+            className="bg-[#50207D] !text-white w-[120px] h-[3rem]"
             onClick={() => router.push(ROUTE.CHECKOUT)}
           >
             Checkout

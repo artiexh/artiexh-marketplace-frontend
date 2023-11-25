@@ -11,6 +11,7 @@ import LogoCheckbox from "@/components/LogoCheckbox/LogoCheckbox";
 import { KeyedMutator } from "swr";
 import { getCampaignType } from "@/utils/mapper";
 import { CampaignData } from "@/types/Campaign";
+import { currencyFormatter } from "@/utils/formatter";
 
 type CartItemCardProps = {
   saleCampaign: CampaignData;
@@ -98,7 +99,7 @@ export default function CartItemCard({
           {cartItem.name}
         </Grid.Col>
         <Grid.Col span={isCartPage ? 2 : 3} className="my-auto font-bold ">
-          {cartItem.price.amount + cartItem.price.unit}
+          {currencyFormatter(cartItem.price.amount)}
         </Grid.Col>
         <Grid.Col span={isCartPage ? 2 : 3} className="my-auto">
           {isCartPage ? (
@@ -123,11 +124,15 @@ export default function CartItemCard({
         {isCartPage ? (
           <>
             <Grid.Col span={2} className="my-auto font-bold">
-              {cartItem.price.amount * quantity}
+              {currencyFormatter(cartItem.price.amount * quantity)}
             </Grid.Col>
             <Grid.Col span={1} className="my-auto text-center">
               <div className="flex justify-center">
-                <IconTrash size="1.125rem" onClick={deleteItemFromCart} />
+                <IconTrash
+                  className="cursor-pointer"
+                  size="1.125rem"
+                  onClick={deleteItemFromCart}
+                />
               </div>
             </Grid.Col>
           </>
@@ -176,7 +181,11 @@ export default function CartItemCard({
           </div>
         </div>
         <div className="flex">
-          <IconTrash size="1.125rem" onClick={deleteItemFromCart} />
+          <IconTrash
+            className="cursor-pointer"
+            size="1.125rem"
+            onClick={deleteItemFromCart}
+          />
         </div>
       </div>
     </div>
