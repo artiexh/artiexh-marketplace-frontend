@@ -9,9 +9,11 @@ import {
 } from "@/services/backend/services/cart";
 import LogoCheckbox from "@/components/LogoCheckbox/LogoCheckbox";
 import { KeyedMutator } from "swr";
+import { getCampaignType } from "@/utils/mapper";
+import { CampaignData } from "@/types/Campaign";
 
 type CartItemCardProps = {
-  saleCampaignId: string;
+  saleCampaign: CampaignData;
   cartItem: CartItem;
   selectEvent?: () => void;
   isChecked?: boolean;
@@ -21,7 +23,7 @@ type CartItemCardProps = {
 };
 
 export default function CartItemCard({
-  saleCampaignId,
+  saleCampaign,
   cartItem,
   selectEvent,
   isChecked = false,
@@ -32,12 +34,14 @@ export default function CartItemCard({
   const [quantity, setQuantity] = useState<number>(cartItem.quantity ?? 1);
   const [loading, setLoading] = useState(false);
 
+  const campaignType = getCampaignType(saleCampaign);
+
   const updateCartQuantity = async (value: number) => {
     if (!loading) {
       setLoading(true);
       const result = await updateCartItem(
         cartItem.productCode,
-        saleCampaignId,
+        saleCampaign.id,
         value
       );
 
@@ -55,7 +59,7 @@ export default function CartItemCard({
       const result = await deleteCartItem([
         {
           productCode: cartItem.productCode,
-          saleCampaignId: saleCampaignId,
+          saleCampaignId: saleCampaign.id,
         },
       ]);
       if (result != null) {
@@ -75,7 +79,11 @@ export default function CartItemCard({
             {isCartPage && (
               <LogoCheckbox
                 configClass="absolute -top-2 -left-2"
-                clickEvent={selectEvent}
+                clickEvent={() => {
+                  if (campaignType !== "IN_COMING") {
+                    selectEvent?.();
+                  }
+                }}
                 isChecked={isChecked}
               />
             )}
@@ -129,7 +137,11 @@ export default function CartItemCard({
         <div className="relative">
           <LogoCheckbox
             configClass="absolute -top-2 -left-2"
-            clickEvent={selectEvent}
+            clickEvent={() => {
+              if (campaignType !== "IN_COMING") {
+                selectEvent?.();
+              }
+            }}
             isChecked={isChecked}
           />
           <img

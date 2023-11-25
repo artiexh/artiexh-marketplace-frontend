@@ -9,6 +9,7 @@ import { deleteItems, toggleSelectItems } from "@/store/slices/cartSlice";
 import { KeyedMutator } from "swr";
 import { useRouter } from "next/router";
 import ImageWithFallback from "../ImageWithFallback/ImageWithFallback";
+import { getCampaignType } from "@/utils/mapper";
 
 type CartSectionProps = {
   cartSection: CartSection;
@@ -38,6 +39,8 @@ export default function CartSection({
     );
   };
 
+  const campaignType = getCampaignType(cartSection.saleCampaign);
+
   const deleteItemFromCart = (productId: string) => {
     dispatch(deleteItems({ productId }));
   };
@@ -46,21 +49,29 @@ export default function CartSection({
       {isCartPage && (
         <LogoCheckbox
           configClass="absolute -top-2 -left-2"
-          clickEvent={() =>
-            dispatch(
-              toggleSelectItems({
-                cartSection: {
-                  saleCampaign: cartSection.saleCampaign,
-                  items: cartSection.items,
-                },
-                isAll: true,
-              })
-            )
-          }
+          clickEvent={() => {
+            if (campaignType !== "IN_COMING") {
+              dispatch(
+                toggleSelectItems({
+                  cartSection: {
+                    saleCampaign: cartSection.saleCampaign,
+                    items: cartSection.items,
+                  },
+                  isAll: true,
+                })
+              );
+            }
+          }}
           isChecked={cartSection.items.every((item) =>
             isChecked(cartSection.saleCampaign.id, item.productCode)
           )}
         />
+      )}
+      {campaignType === "IN_COMING" && (
+        <div className="text-red-500 mb-4">
+          (Chiến dịch này chỉ bắt đầu mở bán từ{" "}
+          {new Date(cartSection.saleCampaign.from).toLocaleDateString()})
+        </div>
       )}
       <div className="flex justify-between items-center">
         <div className="flex items-center">
@@ -119,7 +130,7 @@ export default function CartSection({
         {cartSection.items.map((item, index, arr) => (
           <div key={item.productCode}>
             <CartItemCard
-              saleCampaignId={cartSection.saleCampaign.id}
+              saleCampaign={cartSection.saleCampaign}
               cartItem={item}
               selectEvent={() => toggleCartItemHandler(item)}
               deleteEvent={() => deleteItemFromCart(item.productCode)}
