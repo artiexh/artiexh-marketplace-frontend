@@ -1,3 +1,4 @@
+import ImageWithFallback from "@/components/ImageWithFallback/ImageWithFallback";
 import PostContainer from "@/containers/PostContainer/PostContainer";
 import ShopTabsContainer from "@/containers/ShopTabsContainer/ShopTabsContainer";
 import axiosClient from "@/services/backend/axiosClient";
@@ -19,7 +20,7 @@ const ProfilePage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = ({
   return (
     <div className="user-profile-page relative">
       <div className="hidden md:block">
-        <img
+        <ImageWithFallback
           className="w-full h-[200px] object-cover"
           src={
             user.shopThumbnailUrl ??
@@ -33,24 +34,28 @@ const ProfilePage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = ({
           <div className="bg-white w-full md:w-[300px] pb-20 md:pb-0 rounded-lg relative">
             <div>
               <div className="md:hidden absolute w-full">
-                <img
+                <ImageWithFallback
                   className="w-full h-[200px] object-cover"
                   src={
                     user.shopThumbnailUrl ??
                     "https://i.pinimg.com/originals/ee/26/8c/ee268cf73e3850486966244fe34605d6.png"
                   }
                   alt="img"
+                  height={200}
+                  width={200}
                 />
               </div>
               <div className="relative top-20 md:top-0">
                 <div className="pt-12 relative">
-                  <img
+                  <ImageWithFallback
                     src={
                       user.avatarUrl ??
                       "https://cdn.hero.page/pfp/5e92df9f-2fe9-4b7e-a87a-ba503fe458d2-charming-sakura-inspired-avatar-kawaii-anime-avatar-creations-1.png"
                     }
                     className="w-[120px] h-[120px] object-cover rounded-full mx-auto"
                     alt="img"
+                    width={120}
+                    height={120}
                   />
                 </div>
                 <div className="px-8 pb-12">
@@ -58,9 +63,6 @@ const ProfilePage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = ({
                     {user.displayName}
                   </div>
                   <div className="text-gray-500">{user.description}</div>
-                  <Button className="bg-primary !text-white w-full mt-10">
-                    Following
-                  </Button>
                 </div>
               </div>
             </div>
@@ -92,6 +94,7 @@ export const getStaticProps = async (context: GetStaticPropsContext) => {
       props: {
         user: data.data,
       },
+      revalidate: 10,
     };
   } catch (err) {
     return { props: { user: null } };

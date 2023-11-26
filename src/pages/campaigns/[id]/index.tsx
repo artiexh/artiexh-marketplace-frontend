@@ -1,6 +1,9 @@
 /* eslint-disable @next/next/no-img-element */
 import ProductPreviewCard from "@/components/Cards/ProductCard/ProductPreviewCard";
 // import { campaignData } from "@/constants/campaign";
+import ImageWithFallback from "@/components/ImageWithFallback/ImageWithFallback";
+import Timer from "@/components/Timer/Timer";
+import { CAMPAIGN_TYPE_DATA } from "@/constants/campaign";
 import axiosClient from "@/services/backend/axiosClient";
 import { getMarketplaceCampaignById } from "@/services/backend/services/campaign";
 import productStyles from "@/styles/Products/ProductList.module.scss";
@@ -10,16 +13,13 @@ import {
   CommonResponseBase,
   PaginationResponseBase,
 } from "@/types/ResponseBase";
+import { getCampaignTime } from "@/utils/date";
+import { getCampaignType } from "@/utils/mapper";
 import { Button } from "@mantine/core";
 import clsx from "clsx";
 import * as DOMPurify from "dompurify";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import Timer from "@/components/Timer/Timer";
-import { IconChevronLeft } from "@tabler/icons-react";
-import { CAMPAIGN_TYPE_DATA } from "@/constants/campaign";
-import { getCampaignTime } from "@/utils/date";
-import { getCampaignType } from "@/utils/mapper";
 
 export default function CampaignDetailPage() {
   const params = useSearchParams();
@@ -88,10 +88,12 @@ export default function CampaignDetailPage() {
         </div>
       </div>
       <div className="relative">
-        <img
+        <ImageWithFallback
           src={campaignData.thumbnailUrl}
           alt="campaign-thumbnail"
-          className="w-full h-[300px] object-cover brightness-75"
+          className="!w-full h-[300px] object-cover brightness-75"
+          width={300}
+          height={300}
         />
         <div className="absolute w-full h-full top-0 flex justify-center items-center">
           <div>
@@ -147,10 +149,12 @@ export default function CampaignDetailPage() {
       <div className="flex justify-center gap-10 mt-8">
         <div className="w-[300px] shadow-md rounded-lg">
           <div>
-            <img
+            <ImageWithFallback
               src={campaignData.owner.avatarUrl}
               alt="artist"
-              className="w-full h-[300px] rounded-tl-lg rounded-tr-lg"
+              className="!w-full h-[300px] rounded-tl-lg rounded-tr-lg"
+              width={300}
+              height={300}
             />
           </div>
           <div className="p-4">

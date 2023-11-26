@@ -106,7 +106,7 @@ export default function PostInput({ refreshFunc }: { refreshFunc?: any }) {
       <div className="mt-4 relative">
         {imageUrl && (
           <>
-            <img src={imageUrl} width={200} height={200} alt="comment-img" />
+            <ImageWithFallback src={imageUrl} width={200} height={200} alt="comment-img" />
             <div className="absolute top-0 right-0">
               <IconX
                 className="w-[20px] h-[20px] cursor-pointer"
