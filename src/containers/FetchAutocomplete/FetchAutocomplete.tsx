@@ -33,7 +33,7 @@ export default function FetchAutoComplete() {
         filter={() => true}
         data={
           data?.map((item) => ({
-            value: item.productCode,
+            value: `${item.saleCampaign.id}_${item.productCode}`,
             label: item.name,
           })) ?? []
         }
