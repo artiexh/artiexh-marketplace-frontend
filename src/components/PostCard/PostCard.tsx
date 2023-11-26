@@ -12,6 +12,7 @@ import { useDisclosure } from "@mantine/hooks";
 import { IconHeart, IconMessageCircle } from "@tabler/icons-react";
 import { useState } from "react";
 import useSWRInfinite from "swr/infinite";
+import ImageWithFallback from "../ImageWithFallback/ImageWithFallback";
 
 type PostCardProps = {
   artist: User;
@@ -86,13 +87,15 @@ const PostCardContent = ({ artist, postInformation }: PostCardProps) => {
       <div className="px-6">
         <div className="flex gap-4">
           <div>
-            <img
+            <ImageWithFallback
               src={
                 artist.avatarUrl ??
                 "https://cdn.hero.page/pfp/5e92df9f-2fe9-4b7e-a87a-ba503fe458d2-charming-sakura-inspired-avatar-kawaii-anime-avatar-creations-1.png"
               }
               alt="img"
               className="w-[40px] h-[40px] rounded-full"
+              width={40}
+              height={40}
             />
           </div>
           <div>
@@ -105,10 +108,11 @@ const PostCardContent = ({ artist, postInformation }: PostCardProps) => {
       <Divider className="mt-6" />
       {postInformation.attaches?.[0]?.url && (
         <div>
-          <img
+          <ImageWithFallback
             src={postInformation.attaches?.[0]?.url}
             alt="img"
             className="w-full !h-[400px] object-cover"
+            fill
           />
         </div>
       )}
@@ -129,13 +133,15 @@ const CommentCard = ({ commentInfo }: { commentInfo: Comment }) => {
     <div>
       <div className="flex gap-4">
         <div>
-          <img
+          <ImageWithFallback
             src={
               commentInfo.owner.avatarUrl ??
               "https://cdn.hero.page/pfp/5e92df9f-2fe9-4b7e-a87a-ba503fe458d2-charming-sakura-inspired-avatar-kawaii-anime-avatar-creations-1.png"
             }
             alt="img"
             className="w-[40px] h-[40px] rounded-full"
+            width={40}
+            height={40}
           />
         </div>
         <div className="flex-1">

@@ -1,5 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 import ProductPreviewCard from "@/components/Cards/ProductCard/ProductPreviewCard";
+import ImageWithFallback from "@/components/ImageWithFallback/ImageWithFallback";
 import Description from "@/components/ProductDetail/Description/Description";
 import ShopCard from "@/components/ProductDetail/ShopCard/ShopCard";
 import Timer from "@/components/Timer/Timer";
@@ -67,10 +68,12 @@ const ProductDetailPage: NextPage<
           </div>
         </div>
         <div className="relative">
-          <img
+          <ImageWithFallback
             src={campaign.thumbnailUrl}
             alt="img"
-            className="h-[100px] w-full object-cover brightness-75"
+            className="!h-[100px] !w-full object-cover brightness-75"
+            width={100}
+            height={100}
           />
           <div
             className="absolute w-full h-full top-0 flex justify-center items-center cursor-pointer"
@@ -156,6 +159,7 @@ export const getStaticProps = async (context: GetStaticPropsContext) => {
         (item) => item.productCode !== data.data.productCode
       ),
     },
+    revalidate: 10,
   };
 };
 

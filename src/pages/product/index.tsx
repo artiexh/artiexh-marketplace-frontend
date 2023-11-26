@@ -33,5 +33,6 @@ export async function getStaticProps() {
 
   return {
     props: { categories: categories.data.items, tags: tags.data.items },
+    revalidate: 10,
   };
 }

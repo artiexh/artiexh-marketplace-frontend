@@ -218,7 +218,7 @@ export const getStaticProps = async (context: GetStaticPropsContext) => {
       { data: categoryRes },
     ] = await Promise.all([
       axiosClient.get<CommonResponseBase<PaginationResponseBase<CampaignData>>>(
-        "/marketplace/sale-campaign?pageSize=4"
+        "/marketplace/sale-campaign?pageSize=4&sortBy=id&sortOrder=DESC"
       ),
       axiosClient.get<CommonResponseBase<PaginationResponseBase<Product>>>(
         "/marketplace/product-in-sale?pageSize=4"

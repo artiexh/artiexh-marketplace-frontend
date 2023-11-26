@@ -12,6 +12,7 @@ import { KeyedMutator } from "swr";
 import { getCampaignType } from "@/utils/mapper";
 import { CampaignData } from "@/types/Campaign";
 import { currencyFormatter } from "@/utils/formatter";
+import ImageWithFallback from "@/components/ImageWithFallback/ImageWithFallback";
 
 type CartItemCardProps = {
   saleCampaign: CampaignData;
@@ -88,10 +89,11 @@ export default function CartItemCard({
                 isChecked={isChecked}
               />
             )}
-            <img
+            <ImageWithFallback
               className="object-cover aspect-square w-[80px] md:w-[120px]  rounded-lg"
               src={cartItem.thumbnailUrl}
               alt="product-name"
+              fill
             />
           </div>
         </Grid.Col>
@@ -149,10 +151,11 @@ export default function CartItemCard({
             }}
             isChecked={isChecked}
           />
-          <img
+          <ImageWithFallback
             className="object-fit max-w-[80px] h-[80px] rounded-lg"
             src={cartItem.thumbnailUrl}
             alt="product-name"
+            fill
           />
         </div>
         <div>

@@ -7,6 +7,7 @@ import styles from "./CampaignPreviewCard.module.scss";
 import { useRouter } from "next/router";
 import { getCampaignType } from "@/utils/mapper";
 import { CAMPAIGN_TYPE_DATA } from "@/constants/campaign";
+import ImageWithFallback from "../ImageWithFallback/ImageWithFallback";
 
 export default function CampaignPreviewCard({
   campaign,
@@ -43,11 +44,13 @@ export default function CampaignPreviewCard({
         >
           {campaignTypeData.title}
         </div>
-        <img
+        <ImageWithFallback
           src={campaign.thumbnailUrl}
           // src="https://images.augustman.com/wp-content/uploads/sites/2/2023/04/26131013/dragon-bll.jpeg"
           alt="dogtor"
-          className="w-full object-cover h-[250px] md:h-[300px] brightness-75"
+          className="!w-full object-cover !h-[250px] !md:h-[300px] brightness-75"
+          width={200}
+          height={200}
         />
         <div
           className={clsx("absolute w-full px-2 py-2 bottom-0", contentStyle)}

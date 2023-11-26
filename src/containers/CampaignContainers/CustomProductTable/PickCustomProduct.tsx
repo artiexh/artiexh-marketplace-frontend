@@ -1,4 +1,5 @@
 import DesignItemCard from "@/components/Cards/DesignItemCard/DesignItemCard";
+import ImageWithFallback from "@/components/ImageWithFallback/ImageWithFallback";
 import { fetcher } from "@/services/backend/axiosClient";
 import {
   ARTIST_CAMPAIGN_ENDPOINT,
@@ -240,9 +241,11 @@ function PickProvider({ data }: { data: SimpleCustomProduct[] }) {
                   </Accordion.Control>
                   <ActionIcon variant="subtle" color="gray" className="ml-4">
                     {provider === item.businessCode ? (
-                      <img
+                      <ImageWithFallback
                         src="/assets/logo.svg"
                         onClick={() => setProvider(undefined)}
+                        alt={""}
+                        fill
                       />
                     ) : (
                       <IconCircle
