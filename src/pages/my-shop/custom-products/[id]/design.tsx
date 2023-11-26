@@ -2,7 +2,6 @@ import axiosClient from "@/services/backend/axiosClient";
 import {
   updateImageCombinationApi,
   updateImageSetApi,
-  updateThumbnailApi,
 } from "@/services/backend/services/customProduct";
 import {
   getPrivateFile,
@@ -36,7 +35,6 @@ import {
   useQueryClient,
 } from "@tanstack/react-query";
 import clsx from "clsx";
-import Image from "next/image";
 import { useRouter } from "next/router";
 import {
   ImgHTMLAttributes,
@@ -157,6 +155,7 @@ const MockupImagesContext = createContext<UseQueryResult<MockupConfig>[]>([]);
 
 function DecalWithImageContainer(
   props: React.ComponentProps<typeof Decal> & {
+    imageId?: string;
     file: string | File;
     name: string;
     mockupImageSize?: { height: number; width: number };
@@ -164,7 +163,7 @@ function DecalWithImageContainer(
 ) {
   const { file, name, ...rest } = props;
 
-  const { data, isLoading } = useSWR([name], async () => {
+  const { data, isLoading } = useSWR([name, rest.imageId], async () => {
     if (typeof file === "string") return file;
     const { type } = file;
     const buffer = await file.arrayBuffer();
@@ -176,7 +175,7 @@ function DecalWithImageContainer(
 
   if (typeof data !== "string") return null;
 
-  return <DecalWithImage {...rest} file={data} />;
+  return <DecalWithImage key={rest.id} {...rest} file={data} />;
 }
 
 function DecalWithImage(
@@ -205,6 +204,7 @@ function DecalWithImage(
       mockupImageSize.width / imageSize.width,
       mockupImageSize.height / imageSize.height
     );
+    console.log(scaleRatio);
     //asign new image size
     imageSize.width = imageSize.width * scaleRatio;
     imageSize.height = imageSize.height * scaleRatio;
@@ -213,10 +213,12 @@ function DecalWithImage(
     const scaleRatio = mockupImageSize.width / imageSize.width;
     //asign new image size
     imageSize.width = imageSize.width * scaleRatio;
+    imageSize.height = imageSize.height * scaleRatio;
   } else if (imageSize.height > mockupImageSize.height) {
     //scale the image size based on mockupImageSize
     const scaleRatio = mockupImageSize.height / imageSize.height;
     //asign new image size
+    imageSize.width = imageSize.width * scaleRatio;
     imageSize.height = imageSize.height * scaleRatio;
   }
 
@@ -265,12 +267,14 @@ function DesignPortalContainer({ modelCode }: { modelCode: string }) {
         {imageQueryResults
           .filter((el) => !el.isLoading)
           .map((el) => {
+            console.log(el);
             const data = el.data;
             if (!data?.file) return null;
             return (
               <DecalWithImageContainer
                 name={data.positionCode}
-                key={data.positionCode}
+                key={data.id}
+                imageId={data.id}
                 debug
                 position={data.position}
                 rotation={data.rotate}
@@ -629,16 +633,6 @@ function ImageSetPicker({ currentCombination }: ImageSetPickerProps) {
       return res.data;
     },
     onSuccess: (data, variables) => {
-      queryClient.refetchQueries([
-        "mockup-image",
-        {
-          designItemId: id,
-          positionCode: variables.positionCode,
-          imageId: data.data?.imageSet?.find(
-            (el) => el?.positionCode === variables?.positionCode
-          )?.mockupImage?.id,
-        },
-      ]);
       queryClient.setQueryData(["custom-product", { id: id }], data);
     },
   });
@@ -724,7 +718,8 @@ function ImageSetPicker({ currentCombination }: ImageSetPickerProps) {
                   </h3>
                   {mockup?.file && (
                     <ImageLoaderForFile
-                      name={imageSet.code}
+                      key={mockup.id}
+                      name={mockup.id ?? ""}
                       src={mockup?.file}
                     />
                   )}
@@ -837,6 +832,7 @@ import FileUpload from "@/components/FileUpload/FileUpload";
 import TShirtContainer from "@/containers/3dModelContainers/TShirtContainer";
 import ToteBagContainer from "@/containers/3dModelContainers/ToteBagContainer";
 import logoImage from "../../../../../public/assets/logo.svg";
+import { mock } from "node:test";
 
 function CombinationCodePicker({ combinations }: CombinationCodePickerProps) {
   const queryClient = useQueryClient();
