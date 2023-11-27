@@ -31,14 +31,9 @@ export default function ProductBaseCard({
       <div className="relative w-full aspect-square">
         <ImageWithFallback
           fallback="/assets/default-thumbnail.jpg"
-          className="rounded-2xl rounded-bl-none object-cover"
-          src={thumbnail?.url.includes("http") ? thumbnail.url : defaultImg}
+          className="rounded-2xl rounded-b-none object-cover w-full h-full"
+          src={thumbnail?.url.includes("http") ? thumbnail.url : defaultImg.src}
           alt="dogtor"
-          fill
-          priority
-          sizes="(max-width: 768px) 100vw,
-          (max-width: 1200px) 50vw,
-          33vw"
         />
       </div>
       <div className="p-2.5 sm:p-6 sm:text-xl md:p-4 md:text-xl">

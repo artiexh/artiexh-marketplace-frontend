@@ -19,7 +19,6 @@ export const productInSaleColumns: TableColumns<
         <div className="relative w-16 aspect-square">
           <ImageWithFallback
             className="object-cover w-full h-full"
-            fill
             src={record.thumbnailUrl}
             alt="product-thumb"
           />
