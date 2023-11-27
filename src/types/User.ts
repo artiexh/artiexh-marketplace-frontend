@@ -100,3 +100,17 @@ export type Provider = {
   imageUrl: string;
   categories: Category[];
 };
+
+export type Artist = {
+  id: string;
+  username: string;
+  displayName: string;
+  email: string;
+  avatarUrl: string;
+  numberOfSubscription: number;
+  phone: string;
+  bankAccount: string;
+  bankName: string;
+  shopThumbnailUrl?: string;
+  description: string;
+};

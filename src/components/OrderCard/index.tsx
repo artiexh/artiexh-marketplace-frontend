@@ -1,10 +1,9 @@
+import { ORDER_STATUS } from "@/constants/common";
+import { ROUTE } from "@/constants/route";
 import { Order } from "@/types/Order";
 import { Divider } from "@mantine/core";
-import img from "../../../public/assets/carue.png";
-import Image from "next/image";
 import { useRouter } from "next/router";
-import { ROUTE } from "@/constants/route";
-import { ORDER_STATUS } from "@/constants/common";
+import img from "../../../public/assets/carue.png";
 import ImageWithFallback from "../ImageWithFallback/ImageWithFallback";
 
 type OrderCard = {
@@ -41,7 +40,7 @@ export default function OrderCard({ order }: OrderCard) {
           <ImageWithFallback
             fallback="/assets/default-thumbnail.jpg"
             className="aspect-square"
-            src={img}
+            src={img.src}
             width={100}
             alt="product-img"
           />

@@ -12,12 +12,6 @@ export const navSections = [
     id: "DASHBOARD",
     navList: [
       {
-        id: "ORDERS",
-        label: "Orders",
-        iconPath: <IconShoppingBag />,
-        href: "/my-shop/orders",
-      },
-      {
         id: "INVENTORY",
         label: "Products",
         iconPath: <IconPackageExport />,

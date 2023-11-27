@@ -19,7 +19,7 @@ const CampaignProductList = () => {
     if (pageNumber && !previousPageData.length) return null; // reached the end
     return `/marketplace/sale-campaign/${id}/product-in-sale?pageNumber=${
       pageNumber + 1
-    }&pageSize=8&sortBy=id&sortDirection=DESC`; // SWR key
+    }&pageSize=8`; // SWR key
   }
 
   const { data, size, setSize } = useSWRInfinite(

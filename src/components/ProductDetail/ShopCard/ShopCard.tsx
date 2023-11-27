@@ -11,6 +11,7 @@ type ArtistInfoProps = HTMLAttributes<HTMLDivElement> & {
 };
 
 const ShopCard: FC<ArtistInfoProps> = ({ artist, className, ...rest }) => {
+  console.log(artist);
   const router = useRouter();
   return (
     <div

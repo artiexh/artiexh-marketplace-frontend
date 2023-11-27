@@ -2,11 +2,14 @@ import ImageWithFallback from "@/components/ImageWithFallback/ImageWithFallback"
 import { ArtistProductColumnType } from "@/types/Product";
 import { TableColumns } from "@/types/Table";
 import { currencyFormatter } from "@/utils/formatter";
-import { Badge } from "@mantine/core";
 import { IconBallpen } from "@tabler/icons-react";
-import Image from "next/image";
 
 const shopProductColumns: TableColumns<ArtistProductColumnType> = [
+  {
+    title: "Product code",
+    key: "productCode",
+    dataIndex: "productCode",
+  },
   {
     title: "Name",
     key: "name",
@@ -17,7 +20,6 @@ const shopProductColumns: TableColumns<ArtistProductColumnType> = [
             fallback="/assets/default-thumbnail.jpg"
             src={record.thumbnailUrl}
             alt="product-thumb"
-            fill
             className="object-contain rounded-full"
           />
         </div>
@@ -45,20 +47,6 @@ const shopProductColumns: TableColumns<ArtistProductColumnType> = [
     dataIndex: "soldQuantity",
     key: "soldQuantity",
     className: "!text-center w-[10rem]",
-  },
-  {
-    title: "Status",
-    key: "status",
-    className: "!text-center w-[10rem]",
-    render: (record) => (
-      <Badge
-        variant="gradient"
-        gradient={{ from: "teal", to: "lime", deg: 105 }}
-        classNames={{ inner: "!leading-tight" }}
-      >
-        {record.status}
-      </Badge>
-    ),
   },
   {
     title: "Action",

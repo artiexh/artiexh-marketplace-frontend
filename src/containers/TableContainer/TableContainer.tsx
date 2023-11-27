@@ -36,7 +36,7 @@ const TableContainer = <T,>({
   console.log(response);
 
   return (
-    <div className="py-5 px-7 bg-white rounded-lg">
+    <div className="py-5 px-7 bg-white shadow rounded-lg">
       {header && header(response?.data)}
       <div className="flex flex-col items-center gap-4 w-full">
         <TableComponent

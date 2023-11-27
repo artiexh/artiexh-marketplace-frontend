@@ -118,7 +118,11 @@ function CheckoutPage() {
       flattedItems.forEach((item) => {
         const selectedProducts: CartItem[] = [];
         shopItem.items.forEach((i) => {
-          if (item.productCode === i.productCode) {
+          const [campaignId, productCode] = item.id.split("_");
+          if (
+            productCode === i.productCode &&
+            campaignId === shopItem.saleCampaign.id
+          ) {
             selectedProducts.push(i);
           }
         });

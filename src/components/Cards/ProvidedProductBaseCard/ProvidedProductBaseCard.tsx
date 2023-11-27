@@ -2,7 +2,6 @@ import ImageWithFallback from "@/components/ImageWithFallback/ImageWithFallback"
 import { Price } from "@/types/Product";
 import { currencyFormatter } from "@/utils/formatter";
 import clsx from "clsx";
-import Image from "next/image";
 
 export type ProvidedProductBase = {
   id: string;
@@ -41,7 +40,6 @@ export default function ProvidedProductBaseCard({
           className=" rounded-2xl rounded-bl-none object-cover"
           src={"/assets/carue.png"}
           alt="dogtor"
-          fill
           sizes="(max-width: 768px) 100vw,
           (max-width: 1200px) 50vw,
           33vw"
