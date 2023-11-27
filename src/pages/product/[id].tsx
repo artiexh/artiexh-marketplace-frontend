@@ -33,6 +33,8 @@ const ProductDetailPage: NextPage<
   if (router.isFallback) return <div>Loading...</div>;
   if (!product) return <div>Product not found</div>;
 
+  console.log(product);
+
   const { description, attaches, owner, saleCampaign: campaign } = product;
   console.log("🚀 ~ file: [id].tsx:36 ~ campaign:", campaign);
   const campaignType = getCampaignType(campaign);

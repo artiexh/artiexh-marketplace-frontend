@@ -9,7 +9,6 @@ import {
   PaginationResponseBase,
 } from "@/types/ResponseBase";
 import { TableColumns } from "@/types/Table";
-import { getQueryString } from "@/utils/formatter";
 import { Button, Input, Pagination, Tooltip } from "@mantine/core";
 import {
   IconBallpen,
@@ -26,27 +25,11 @@ const ShopProductsPage = () => {
   const pathname = usePathname();
 
   const [params, setParams] = useState<{ [key: string]: any }>({
-    pageSize: 8,
+    pageSize: 5,
     pageNumber: 1,
     sortBy: null,
     sortDirection: "ASC",
-    statuses: null,
-    from: null,
-    to: null,
-    minPrice: null,
-    maxPrice: null,
-    averageRate: null,
-    provinceId: null,
-    categoryId: null,
-    keyword: null,
   });
-
-  const setField = (key: string, value: any) => {
-    setParams({
-      ...params,
-      [key]: value,
-    });
-  };
 
   const { data: response, isLoading } = useSWR(
     ["custom-product", ...Object.values(params)],
@@ -54,7 +37,11 @@ const ShopProductsPage = () => {
       axiosClient.get<
         CommonResponseBase<PaginationResponseBase<SimpleCustomProduct>>
       >("/custom-product", {
-        params: params,
+        params: {
+          ...params,
+          sortBy: "id",
+          sortDirection: "DESC",
+        },
       })
   );
 
@@ -62,19 +49,7 @@ const ShopProductsPage = () => {
 
   return (
     <div>
-      <div className="flex justify-between mb-4">
-        <Input
-          icon={<IconSearch />}
-          onChange={(e) => {
-            setField("keyword", e.target.value);
-            router.push(
-              `${pathname}?${getQueryString(
-                { ...params, keyword: e.target.value },
-                []
-              )}`
-            );
-          }}
-        />
+      <div className="flex justify-end mb-4">
         <Button
           leftIcon={<IconPlus />}
           type="button"
@@ -84,14 +59,30 @@ const ShopProductsPage = () => {
           Create product
         </Button>
       </div>
-      <div className="py-5 px-7 bg-white rounded-lg">
-        <>
-          <div className="text-3xl font-bold">Custom products</div>
-          <div className="text-[#AFAFAF] mt-1">
-            {/* TODO: Replace with API call later or filter based on response */}
-            {data?.totalSize} custom products
+      <div className="py-5 px-7 bg-white shadow rounded-lg">
+        <div className="flex justify-between items-center mb-6">
+          <div>
+            <div className="text-3xl font-bold">Custom products</div>
+            <div className="text-[#AFAFAF] mt-1">
+              {/* TODO: Replace with API call later or filter based on response */}
+              {data?.totalSize} custom products
+            </div>
           </div>
-        </>
+          <div>
+            <Input
+              className="w-[300px]"
+              icon={<IconSearch />}
+              placeholder="Search by product name..."
+              onChange={(e) => {
+                setParams({
+                  ...params,
+                  name: e.target.value,
+                  pageNumber: 1,
+                });
+              }}
+            />
+          </div>
+        </div>
         <div className="flex flex-col items-center gap-4 w-full">
           {!isLoading && (
             <TableComponent
@@ -109,7 +100,7 @@ const ShopProductsPage = () => {
           )}
           <Pagination
             value={params.pageNumber}
-            onChange={(value) => setField("pageNumber", value)}
+            onChange={(value) => setParams({ ...params, pageNumber: value })}
             //TODO: change this to total of api call later
             total={data?.totalPage ?? 1}
             boundaries={2}

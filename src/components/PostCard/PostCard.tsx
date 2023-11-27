@@ -9,10 +9,9 @@ import {
 import { User } from "@/types/User";
 import { Divider, Modal } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
-import { IconHeart, IconMessageCircle } from "@tabler/icons-react";
+import { IconHeart } from "@tabler/icons-react";
 import { useState } from "react";
 import useSWRInfinite from "swr/infinite";
-import ImageWithFallback from "../ImageWithFallback/ImageWithFallback";
 
 type PostCardProps = {
   artist: User;
@@ -44,8 +43,6 @@ export default function PostCard({ artist, postInformation }: PostCardProps) {
         return res.data.data.items;
       });
   });
-
-  console.log(comments);
 
   return (
     <>
@@ -87,7 +84,7 @@ const PostCardContent = ({ artist, postInformation }: PostCardProps) => {
       <div className="px-6">
         <div className="flex gap-4">
           <div>
-            <ImageWithFallback
+            <img
               src={
                 artist.avatarUrl ??
                 "https://cdn.hero.page/pfp/5e92df9f-2fe9-4b7e-a87a-ba503fe458d2-charming-sakura-inspired-avatar-kawaii-anime-avatar-creations-1.png"
@@ -108,11 +105,10 @@ const PostCardContent = ({ artist, postInformation }: PostCardProps) => {
       <Divider className="mt-6" />
       {postInformation.attaches?.[0]?.url && (
         <div>
-          <ImageWithFallback
+          <img
             src={postInformation.attaches?.[0]?.url}
             alt="img"
             className="w-full !h-[400px] object-cover"
-            fill
           />
         </div>
       )}
@@ -133,7 +129,7 @@ const CommentCard = ({ commentInfo }: { commentInfo: Comment }) => {
     <div>
       <div className="flex gap-4">
         <div>
-          <ImageWithFallback
+          <img
             src={
               commentInfo.owner.avatarUrl ??
               "https://cdn.hero.page/pfp/5e92df9f-2fe9-4b7e-a87a-ba503fe458d2-charming-sakura-inspired-avatar-kawaii-anime-avatar-creations-1.png"

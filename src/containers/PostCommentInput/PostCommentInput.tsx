@@ -1,15 +1,14 @@
 import ImageWithFallback from "@/components/ImageWithFallback/ImageWithFallback";
+import { NOTIFICATION_TYPE } from "@/constants/common";
 import { comment } from "@/services/backend/services/post";
 import { $user } from "@/store/user";
+import { getNotificationIcon } from "@/utils/mapper";
 import { TextInput } from "@mantine/core";
+import { notifications } from "@mantine/notifications";
 import { useStore } from "@nanostores/react";
+import { IconSend } from "@tabler/icons-react";
 import { useState } from "react";
 import defaultImage from "../../../public/assets/default-thumbnail.jpg";
-import { IconSend } from "@tabler/icons-react";
-import { KeyedMutator } from "swr";
-import { NOTIFICATION_TYPE } from "@/constants/common";
-import { getNotificationIcon } from "@/utils/mapper";
-import { notifications } from "@mantine/notifications";
 
 export default function PostCommentInput({
   commentId,
@@ -45,7 +44,9 @@ export default function PostCommentInput({
             width={40}
             height={40}
             src={
-              user?.avatarUrl?.includes("http") ? user.avatarUrl : defaultImage
+              user?.avatarUrl?.includes("http")
+                ? user.avatarUrl
+                : defaultImage.src
             }
             alt="image"
           />

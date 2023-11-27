@@ -1,5 +1,5 @@
-import Image from "next/image";
-import { SyntheticEvent, useEffect, useState } from "react";
+/* eslint-disable @next/next/no-img-element */
+import { ImgHTMLAttributes, SyntheticEvent, useEffect, useState } from "react";
 
 const isValidUrl = (url: string) => {
   try {
@@ -11,12 +11,9 @@ const isValidUrl = (url: string) => {
 
 const fallbackImage = "/assets/default-thumbnail.jpg";
 
-type ImageWithFallbackProps = Omit<
-  React.ComponentProps<typeof Image>,
-  "src"
-> & {
-  fallback?: React.ComponentProps<typeof Image>["src"];
-  src?: React.ComponentProps<typeof Image>["src"];
+type ImageWithFallbackProps = Omit<ImgHTMLAttributes<any>, "src"> & {
+  fallback?: ImgHTMLAttributes<any>["src"];
+  src?: ImgHTMLAttributes<any>["src"];
 };
 
 const ImageWithFallback = ({
@@ -34,11 +31,11 @@ const ImageWithFallback = ({
   }, [src]);
 
   if (src === undefined || (typeof src === "string" && !isValidUrl(src))) {
-    return <Image alt={alt} src={fallback} {...props} />;
+    return <img alt={alt} src={fallback} {...props} />;
   }
 
   return (
-    <Image
+    <img
       alt={alt}
       onError={(e) => setError(e)}
       src={error ? fallback : src}

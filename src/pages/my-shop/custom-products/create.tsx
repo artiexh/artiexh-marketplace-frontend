@@ -1,5 +1,10 @@
 import ProductBaseCard from "@/components/Cards/ProductBaseCard/ProductBaseCard";
+import ImageWithFallback from "@/components/ImageWithFallback/ImageWithFallback";
+import { CategoryItem } from "@/components/ProductList";
+import { MAX_CATEGORIES } from "@/constants/ProductList";
 import { fetcher } from "@/services/backend/axiosClient";
+import { createCustomProductApi } from "@/services/backend/services/customProduct";
+import { Category } from "@/types/Product";
 import { ProductBaseDetail, SimpleProductBase } from "@/types/ProductBase";
 import { SimpleProductVariant } from "@/types/ProductVariant";
 import {
@@ -11,19 +16,17 @@ import { Carousel } from "@mantine/carousel";
 import { Button, Divider, Modal, Pagination } from "@mantine/core";
 import { UseFormReturnType, useForm } from "@mantine/form";
 import { useDisclosure } from "@mantine/hooks";
-import { IconArrowDown, IconArrowLeft, IconFilter } from "@tabler/icons-react";
+import {
+  IconArrowDown,
+  IconArrowLeft,
+  IconArrowUp,
+  IconFilter,
+} from "@tabler/icons-react";
 import clsx from "clsx";
-import Image from "next/image";
 import { useRouter } from "next/router";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import useSWR from "swr";
 import defaultImg from "../../../../public/assets/default-thumbnail.jpg";
-import { createCustomProductApi } from "@/services/backend/services/customProduct";
-import { CategoryItem } from "@/components/ProductList";
-import { MAX_CATEGORIES } from "@/constants/ProductList";
-import { Category } from "@/types/Product";
-import { IconArrowUp } from "@tabler/icons-react";
-import ImageWithFallback from "@/components/ImageWithFallback/ImageWithFallback";
 
 type SidebarProps = {
   form: UseFormReturnType<Partial<any>>;
@@ -256,7 +259,6 @@ function ProductBaseDetailModalContent({
                     src={image.url}
                     className="object-contain"
                     alt={image.title}
-                    fill
                   />
                 </div>
               </Carousel.Slide>
@@ -266,9 +268,8 @@ function ProductBaseDetailModalContent({
                 <div className="flex h-[460px] bg-white">
                   <ImageWithFallback
                     fallback="/assets/default-thumbnail.jpg"
-                    src={defaultImg}
+                    src={defaultImg.src}
                     className="object-contain"
-                    fill
                     alt="default"
                   />
                 </div>
@@ -278,7 +279,7 @@ function ProductBaseDetailModalContent({
           <div className="size-description flex gap-x-3 mt-3">
             <ImageWithFallback
               fallback="/assets/default-thumbnail.jpg"
-              src={productBase?.sizeDescriptionUrl ?? defaultImg}
+              src={productBase?.sizeDescriptionUrl ?? defaultImg.src}
               className="object-contain"
               alt="description"
               width={80}
@@ -473,10 +474,7 @@ function VariantAndProviderPicker({
                   </div>
                   <div className="flex justify-end">
                     <span className="font-semibold">
-                      From:{" "}
-                      {currencyFormatter( 
-                       config.basePriceAmount
-                      )}
+                      From: {currencyFormatter(config.basePriceAmount)}
                     </span>
                   </div>
                 </div>

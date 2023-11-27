@@ -1,18 +1,17 @@
 /* eslint-disable @next/next/no-img-element */
-import { CartData, CartItem } from "@/services/backend/types/Cart";
-import { useState } from "react";
-import { Grid, NumberInput } from "@mantine/core";
-import { IconTrash } from "@tabler/icons-react";
+import LogoCheckbox from "@/components/LogoCheckbox/LogoCheckbox";
 import {
   deleteCartItem,
   updateCartItem,
 } from "@/services/backend/services/cart";
-import LogoCheckbox from "@/components/LogoCheckbox/LogoCheckbox";
-import { KeyedMutator } from "swr";
-import { getCampaignType } from "@/utils/mapper";
+import { CartData, CartItem } from "@/services/backend/types/Cart";
 import { CampaignData } from "@/types/Campaign";
 import { currencyFormatter } from "@/utils/formatter";
-import ImageWithFallback from "@/components/ImageWithFallback/ImageWithFallback";
+import { getCampaignType } from "@/utils/mapper";
+import { Grid, NumberInput } from "@mantine/core";
+import { IconTrash } from "@tabler/icons-react";
+import { useState } from "react";
+import { KeyedMutator } from "swr";
 
 type CartItemCardProps = {
   saleCampaign: CampaignData;
@@ -89,11 +88,10 @@ export default function CartItemCard({
                 isChecked={isChecked}
               />
             )}
-            <ImageWithFallback
+            <img
               className="object-cover aspect-square w-[80px] md:w-[120px]  rounded-lg"
               src={cartItem.thumbnailUrl}
               alt="product-name"
-              fill
             />
           </div>
         </Grid.Col>
@@ -151,11 +149,10 @@ export default function CartItemCard({
             }}
             isChecked={isChecked}
           />
-          <ImageWithFallback
+          <img
             className="object-fit max-w-[80px] h-[80px] rounded-lg"
             src={cartItem.thumbnailUrl}
             alt="product-name"
-            fill
           />
         </div>
         <div>

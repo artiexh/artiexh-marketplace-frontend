@@ -1,8 +1,8 @@
-import clsx from "clsx";
-import { Carousel } from "@mantine/carousel";
-import { Campaign, Promotion } from "@/types/HomeBranding";
-import Image from "next/image";
 import ImageWithFallback from "@/components/ImageWithFallback/ImageWithFallback";
+import { Campaign, Promotion } from "@/types/HomeBranding";
+import { Carousel } from "@mantine/carousel";
+import clsx from "clsx";
+import Image from "next/image";
 
 type HeroSectionProps = {
   className?: string;
@@ -47,7 +47,6 @@ export default function HeroSection({
             <ImageWithFallback
               fallback="/assets/default-thumbnail.jpg"
               src={promotion.url}
-              fill
               alt={promotion.id}
               className="rounded-md object-cover"
             />

@@ -28,8 +28,8 @@ import {
   IconCircle,
   IconCircleMinus,
   IconCirclePlus,
+  IconEye,
 } from "@tabler/icons-react";
-import { IconEye } from "@tabler/icons-react";
 import { useQueryClient } from "@tanstack/react-query";
 import clsx from "clsx";
 import { useParams } from "next/navigation";
@@ -245,7 +245,6 @@ function PickProvider({ data }: { data: SimpleCustomProduct[] }) {
                         src="/assets/logo.svg"
                         onClick={() => setProvider(undefined)}
                         alt={""}
-                        fill
                       />
                     ) : (
                       <IconCircle

@@ -12,16 +12,12 @@ interface IProductPreviewCardProps {
 }
 
 const ProductPreviewCard = ({ data, className }: IProductPreviewCardProps) => {
-  console.log(
-    "🚀 ~ file: ProductPreviewCard.tsx:15 ~ ProductPreviewCard ~ data:",
-    data
-  );
   const router = useRouter();
   return (
     <div
       className={clsx(
         styles["product-preview-card"],
-        "bg-white rounded-2xl !aspect-[3/5] w-full cursor-pointer",
+        "bg-white rounded-2xl !aspect-[3/5] w-full cursor-pointer shadow",
         className
       )}
       onClick={() =>
@@ -31,18 +27,13 @@ const ProductPreviewCard = ({ data, className }: IProductPreviewCardProps) => {
       <div className="relative w-full aspect-square">
         <ImageWithFallback
           fallback="/assets/default-thumbnail.jpg"
-          className="rounded-2xl rounded-bl-none object-cover"
+          className="rounded-2xl rounded-b-none object-cover w-full h-full"
           src={
             data?.thumbnailUrl?.includes("http")
               ? data?.thumbnailUrl
-              : defaultImg
+              : defaultImg.src
           }
           alt="dogtor"
-          fill
-          priority
-          sizes="(max-width: 768px) 100vw,
-              (max-width: 1200px) 50vw,
-              33vw"
         />
       </div>
       <div className="p-2.5 sm:p-6 sm:text-xl md:p-4 md:text-lg md:leading-snug">

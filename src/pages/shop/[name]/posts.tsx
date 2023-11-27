@@ -1,10 +1,10 @@
+/* eslint-disable @next/next/no-img-element */
 import ImageWithFallback from "@/components/ImageWithFallback/ImageWithFallback";
 import PostContainer from "@/containers/PostContainer/PostContainer";
 import ShopTabsContainer from "@/containers/ShopTabsContainer/ShopTabsContainer";
 import axiosClient from "@/services/backend/axiosClient";
 import { CommonResponseBase } from "@/types/ResponseBase";
 import { User } from "@/types/User";
-import { Button } from "@mantine/core";
 import {
   GetStaticPaths,
   GetStaticPropsContext,
@@ -20,7 +20,7 @@ const ProfilePage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = ({
   return (
     <div className="user-profile-page relative">
       <div className="hidden md:block">
-        <ImageWithFallback
+        <img
           className="w-full h-[200px] object-cover"
           src={
             user.shopThumbnailUrl ??
@@ -34,7 +34,7 @@ const ProfilePage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = ({
           <div className="bg-white w-full md:w-[300px] pb-20 md:pb-0 rounded-lg relative">
             <div>
               <div className="md:hidden absolute w-full">
-                <ImageWithFallback
+                <img
                   className="w-full h-[200px] object-cover"
                   src={
                     user.shopThumbnailUrl ??

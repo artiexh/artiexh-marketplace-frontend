@@ -1,4 +1,3 @@
-import ImageWithFallback from "@/components/ImageWithFallback/ImageWithFallback";
 import PrivateImageLoader from "@/components/PrivateImageLoader/PrivateImageLoader";
 import { SimpleCustomProduct } from "@/types/CustomProduct";
 import clsx from "clsx";
