@@ -69,11 +69,6 @@ export default function CampaignGeneralInfoForm({
             (a, b) =>
               new Date(b.eventTime).getTime() - new Date(a.eventTime).getTime()
           ),
-          {
-            action: "START",
-            message: "Start create campaign",
-            updatedBy: "System",
-          },
         ]
       : data.campaignHistories
           .sort(
