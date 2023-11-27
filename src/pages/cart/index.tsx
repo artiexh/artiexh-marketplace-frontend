@@ -58,7 +58,11 @@ const CartPage = () => {
       data?.forEach((shopItem) => {
         const selectedProducts: CartItem[] = [];
         shopItem.items.forEach((i) => {
-          if (item.productCode === i.productCode) {
+          const [campaignId, productCode] = item.id.split("_");
+          if (
+            productCode === i.productCode &&
+            campaignId === shopItem.saleCampaign.id
+          ) {
             selectedProducts.push(i);
           }
         });
@@ -73,7 +77,7 @@ const CartPage = () => {
     });
 
     return items;
-  }, [data, selectedItems]);
+  }, [data, selectedItems, flattedItems]);
 
   const totalPrice = selectedCartItems?.reduce(
     (total, item) =>
@@ -114,6 +118,7 @@ const CartPage = () => {
           <Button
             disabled={selectedItems.length === 0}
             onClick={() => {
+              console.log(selectedCartItems);
               const tmp = selectedCartItems
                 .map((el) =>
                   el.items.map((i) => `${el.saleCampaign.id}_${i.productCode}`)
