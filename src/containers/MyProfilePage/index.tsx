@@ -2,7 +2,6 @@ import ImageWithFallback from "@/components/ImageWithFallback/ImageWithFallback"
 import { User } from "@/types/User";
 import { Button, Modal, Tabs } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
-import defaultImage from "../../../public/assets/default-thumbnail.jpg";
 import ArtistRegisterModal from "../ArtistRegisterModal";
 import AccountTab from "../Tabs/AccountTab";
 import OrderTab from "../Tabs/OrderTab";
@@ -46,7 +45,9 @@ export default function MyProfilePage({ user }: MyProfileProps) {
             width={120}
             height={120}
             src={
-              user.avatarUrl?.includes("http") ? user.avatarUrl : defaultImage
+              user.avatarUrl?.includes("http")
+                ? user.avatarUrl
+                : "/assets/default-thumbnail.jpg"
             }
             alt="image"
           />
