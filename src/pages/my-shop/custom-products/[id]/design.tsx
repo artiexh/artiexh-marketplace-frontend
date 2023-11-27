@@ -2,6 +2,7 @@ import axiosClient from "@/services/backend/axiosClient";
 import {
   updateImageCombinationApi,
   updateImageSetApi,
+  updateThumbnailApi,
 } from "@/services/backend/services/customProduct";
 import {
   getPrivateFile,
@@ -16,6 +17,7 @@ import {
   Button,
   FileButton,
   Group,
+  LoadingOverlay,
   Paper,
   Transition,
 } from "@mantine/core";
@@ -70,6 +72,27 @@ function ImageLoaderForFile({
   return <img {...rest} src={data} />;
 }
 
+const OverlayContext = createContext({
+  overlay: false,
+  setOverlay: (prev: boolean) => {},
+});
+
+function OverlayProvider({ children }: { children: React.ReactNode }) {
+  const [overlay, setOverlay] = useState(false);
+
+  return (
+    <OverlayContext.Provider value={{ overlay, setOverlay }}>
+      {children}
+    </OverlayContext.Provider>
+  );
+}
+
+function OverlayElement() {
+  const { overlay } = useContext(OverlayContext);
+
+  return <LoadingOverlay visible={overlay} zIndex={1000} />;
+}
+
 export default function DesignPortalPage() {
   const router = useRouter();
 
@@ -121,33 +144,36 @@ export default function DesignPortalPage() {
   );
 
   return (
-    <MockupImagesProvider
-      designItemId={designItemId}
-      imageSets={res.data.imageSet.map((el) => {
-        const set = currentCombination?.images.find(
-          (set) => set.code === el.positionCode
-        );
-        return {
-          positionCode: el.positionCode,
-          id: el?.mockupImage?.id.toString(),
-          fileName: el?.mockupImage?.fileName,
-          position: set?.position,
-          rotate: set?.rotate,
-          scale: set?.scale,
-          mockupImageSize: set?.mockupImageSize ?? {
-            height: 1024,
-            width: 1024,
-          },
-        };
-      })}
-    >
-      <div className="!w-screen !h-screen">
-        <ConfigMenu />
-        <DesignPortalContainer
-          modelCode={productTemplateRes?.data.model3DCode}
-        />
-      </div>
-    </MockupImagesProvider>
+    <OverlayProvider>
+      <MockupImagesProvider
+        designItemId={designItemId}
+        imageSets={res.data.imageSet.map((el) => {
+          const set = currentCombination?.images.find(
+            (set) => set.code === el.positionCode
+          );
+          return {
+            positionCode: el.positionCode,
+            id: el?.mockupImage?.id.toString(),
+            fileName: el?.mockupImage?.fileName,
+            position: set?.position,
+            rotate: set?.rotate,
+            scale: set?.scale,
+            mockupImageSize: set?.mockupImageSize ?? {
+              height: 1024,
+              width: 1024,
+            },
+          };
+        })}
+      >
+        <div className="!w-screen !h-screen relative">
+          <OverlayElement />
+          <ConfigMenu />
+          <DesignPortalContainer
+            modelCode={productTemplateRes?.data.model3DCode}
+          />
+        </div>
+      </MockupImagesProvider>
+    </OverlayProvider>
   );
 }
 
@@ -245,8 +271,83 @@ extend({ ConfigMenu });
 
 function DesignPortalContainer({ modelCode }: { modelCode: string }) {
   const imageQueryResults = useContext(MockupImagesContext);
+  const queryClient = useQueryClient();
+  const router = useRouter();
 
+  const { id } = router.query;
   let WrapperContainer = null;
+
+  const latest = useRef<number>();
+  const ids = useRef<string[]>([]);
+  const updateThumbail = useRef(
+    _.debounce(async () => {
+      const canvasElemnt = document.querySelector(
+        "#portal-canvas canvas"
+      ) as HTMLCanvasElement | null;
+
+      if (!canvasElemnt) return;
+
+      const blob = await (() =>
+        new Promise<Blob | null>((resolve) => {
+          canvasElemnt.toBlob((blob) => resolve(blob));
+        }))();
+
+      const designItemRes = queryClient.getQueryData<
+        CommonResponseBase<CustomProductDesignInfo>
+      >(["custom-product", { id: id }]);
+
+      if (!designItemRes || !blob) return;
+
+      let thumbnail: string | undefined = designItemRes.data.modelThumbnail?.id;
+
+      const { data: fileRes } = await privateUploadFiles([
+        new File([blob], "thumbnail.jpg"),
+      ]);
+      thumbnail = fileRes.data.fileResponses[0].id;
+
+      const res = await updateThumbnailApi(designItemRes.data, thumbnail);
+
+      queryClient.setQueryData(["custom-product", { id: id }], res.data);
+    }, 1000)
+  );
+
+  useEffect(() => {
+    if (
+      imageQueryResults.every((el) => el.isFetched) &&
+      latest.current === undefined
+    ) {
+      //first mount
+      latest.current = Math.max(
+        ...imageQueryResults.map((el) => el.dataUpdatedAt)
+      );
+      ids.current = imageQueryResults
+        .map((el) => el.data?.id)
+        .filter((str) => str !== undefined) as string[];
+      return;
+    }
+    if (
+      imageQueryResults.every((el) => el.isFetched) &&
+      imageQueryResults.some(
+        (el) =>
+          new Date(el.dataUpdatedAt ?? 0).getTime() >
+          new Date(latest.current ?? 0).getTime()
+      ) &&
+      imageQueryResults.some((el) => !ids.current.includes(el.data?.id ?? ""))
+    ) {
+      latest.current = Math.max(
+        ...imageQueryResults.map((el) => el.dataUpdatedAt)
+      );
+      ids.current = imageQueryResults
+        .map((el) => el.data?.id)
+        .filter((str) => str !== undefined) as string[];
+
+      try {
+        updateThumbail.current?.();
+      } catch (e) {
+        //ignore
+      }
+    }
+  }, [imageQueryResults]);
 
   if (modelCode === "T_SHIRT") WrapperContainer = TShirtContainer;
   if (modelCode === "TOTE_BAG") WrapperContainer = ToteBagContainer;
@@ -453,6 +554,8 @@ function MockupImagesProvider({
   designItemId,
   children,
 }: ImagesProviderProps) {
+  const { setOverlay } = useContext(OverlayContext);
+
   const userQueriesResults = useQueries<MockupConfig[]>({
     queries: imageSets.map((set) => {
       return {
@@ -465,26 +568,31 @@ function MockupImagesProvider({
           },
         ],
         queryFn: async () => {
-          console.log(set.id);
-          if (!set.id)
+          try {
+            console.log(set.id);
+            setOverlay(true);
+            if (!set.id)
+              return {
+                positionCode: set.positionCode,
+              };
+
+            const res = await getPrivateFile(set.id.toString());
+            const buffer = Buffer.from(res.data, "binary").toString("base64");
+            let image = `data:${res.headers["content-type"]};base64,${buffer}`;
+
             return {
               positionCode: set.positionCode,
+              id: set.id,
+              fileName: set.fileName,
+              file: image,
+              position: set.position,
+              rotate: set.rotate,
+              scale: set.scale,
+              mockupImageSize: set.mockupImageSize,
             };
-
-          const res = await getPrivateFile(set.id.toString());
-          const buffer = Buffer.from(res.data, "binary").toString("base64");
-          let image = `data:${res.headers["content-type"]};base64,${buffer}`;
-
-          return {
-            positionCode: set.positionCode,
-            id: set.id,
-            fileName: set.fileName,
-            file: image,
-            position: set.position,
-            rotate: set.rotate,
-            scale: set.scale,
-            mockupImageSize: set.mockupImageSize,
-          };
+          } finally {
+            setOverlay(false);
+          }
         },
       };
     }),
@@ -568,6 +676,7 @@ function ImageSetPicker({ currentCombination }: ImageSetPickerProps) {
   const imageQueryResults = useContext(MockupImagesContext);
   const queryClient = useQueryClient();
   const router = useRouter();
+  const { setOverlay } = useContext(OverlayContext);
 
   const { id } = router.query;
 
@@ -581,22 +690,8 @@ function ImageSetPicker({ currentCombination }: ImageSetPickerProps) {
 
       if (!designItemRes?.data) throw new Error("There is something wrong");
 
-      const canvasElemnt = document.querySelector(
-        "#portal-canvas canvas"
-      ) as HTMLCanvasElement | null;
-      if (!canvasElemnt) throw new Error("There is something wrong");
+      const { data: fileRes } = await privateUploadFiles([file]);
 
-      const blob = await (() =>
-        new Promise<Blob | null>((resolve) => {
-          canvasElemnt.toBlob((blob) => resolve(blob));
-        }))();
-
-      let thumbnail: string | undefined = designItemRes.data.modelThumbnail?.id;
-
-      const { data: fileRes } = await privateUploadFiles(
-        blob ? [file, new File([blob], "thumbnail.jpg")] : [file]
-      );
-      thumbnail = fileRes.data.fileResponses[1].id;
       const firstImage = fileRes.data.fileResponses[0];
       if (!firstImage) throw new Error("There is something wrong");
 
@@ -627,7 +722,7 @@ function ImageSetPicker({ currentCombination }: ImageSetPickerProps) {
                 },
               },
             ],
-        thumbnail
+        designItemRes.data.modelThumbnail?.id
       );
 
       return res.data;
@@ -639,6 +734,7 @@ function ImageSetPicker({ currentCombination }: ImageSetPickerProps) {
 
   const updateManufacturingImageSetMutation = useMutation({
     mutationFn: async (body: { positionCode: string; file: File }) => {
+      setOverlay(true);
       const { positionCode, file } = body;
       if (!designItemRes?.data) throw new Error("There is something wrong");
       const { data: fileRes } = await privateUploadFiles([file]);
@@ -678,6 +774,9 @@ function ImageSetPicker({ currentCombination }: ImageSetPickerProps) {
     },
     onSuccess: (data, variables) => {
       queryClient.setQueryData(["custom-product", { id: id }], data);
+    },
+    onSettled: () => {
+      setOverlay(false);
     },
   });
 
@@ -833,6 +932,7 @@ import TShirtContainer from "@/containers/3dModelContainers/TShirtContainer";
 import ToteBagContainer from "@/containers/3dModelContainers/ToteBagContainer";
 import logoImage from "../../../../../public/assets/logo.svg";
 import { mock } from "node:test";
+import _ from "lodash";
 
 function CombinationCodePicker({ combinations }: CombinationCodePickerProps) {
   const queryClient = useQueryClient();
