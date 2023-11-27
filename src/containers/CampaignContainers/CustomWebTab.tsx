@@ -12,9 +12,12 @@ import {
   ARTIST_CAMPAIGN_ENDPOINT,
   updateCampaignWebInfoApi,
 } from "@/services/backend/services/campaign";
-import { useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useEffect } from "react";
 import { isDisabled } from "@/utils/campaign.utils";
+import { notifications } from "@mantine/notifications";
+import { getNotificationIcon } from "@/utils/mapper";
+import { NOTIFICATION_TYPE } from "@/constants/common";
 
 function CustomWebTab({ data: campaignData }: { data: CampaignDetail }) {
   const queryClient = useQueryClient();
@@ -59,32 +62,50 @@ function CustomWebTab({ data: campaignData }: { data: CampaignDetail }) {
     );
   }, [campaignData]);
 
-  const updateWebInfo = async (data: {
-    content?: string;
-    thumbnail?: string | File;
-  }) => {
-    let thumbnailUrl: string | undefined = campaignData.thumbnailUrl;
-    console.log(data.thumbnail);
-    if (data.thumbnail instanceof File) {
-      const res = await publicUploadFile([data.thumbnail]);
-      thumbnailUrl = res?.data.data.fileResponses[0].presignedUrl;
-    } else if (!data.thumbnail) {
-      thumbnailUrl = undefined;
-    }
+  const updateWebInfoMutation = useMutation({
+    mutationFn: async (data: {
+      content?: string;
+      thumbnail?: string | File;
+    }) => {
+      let thumbnailUrl: string | undefined = campaignData.thumbnailUrl;
+      console.log(data.thumbnail);
+      if (data.thumbnail instanceof File) {
+        const res = await publicUploadFile([data.thumbnail]);
+        thumbnailUrl = res?.data.data.fileResponses[0].presignedUrl;
+      } else if (!data.thumbnail) {
+        thumbnailUrl = undefined;
+      }
 
-    const res = await updateCampaignWebInfoApi(campaignData, {
-      content: data.content,
-      thumbnailUrl: thumbnailUrl,
-    });
+      const res = await updateCampaignWebInfoApi(campaignData, {
+        content: data.content,
+        thumbnailUrl: thumbnailUrl,
+      });
 
-    queryClient.setQueryData(
-      [ARTIST_CAMPAIGN_ENDPOINT, { id: campaignData.id }],
-      res.data
-    );
-  };
+      return res.data;
+    },
+    onSuccess: (data) => {
+      queryClient.setQueryData(
+        [ARTIST_CAMPAIGN_ENDPOINT, { id: campaignData.id }],
+        data
+      );
+      notifications.show({
+        message: "Chỉnh sửa thành công",
+        ...getNotificationIcon(NOTIFICATION_TYPE.SUCCESS),
+      });
+    },
+    onError: () => {
+      notifications.show({
+        message: "Chỉnh sửa thất bại! Vui lòng thử lại!",
+        ...getNotificationIcon(NOTIFICATION_TYPE.FAILED),
+      });
+    },
+  });
 
   return (
-    <form onSubmit={onSubmit(updateWebInfo)} className="mt-5">
+    <form
+      onSubmit={onSubmit((values) => updateWebInfoMutation.mutate(values))}
+      className="mt-5"
+    >
       <Thumbnail
         disabled={isDisabled(campaignData.status)}
         url={
@@ -159,21 +180,22 @@ function CustomWebTab({ data: campaignData }: { data: CampaignDetail }) {
             <RichTextEditor.AlignJustify />
             <RichTextEditor.AlignRight />
           </RichTextEditor.ControlsGroup>
-          <div className="flex-1 flex justify-end bg-white pr-2">
-            <Button
-              type="submit"
-              disabled={
-                (campaignData.status !== "DRAFT" &&
-                  campaignData.status !== "REQUEST_CHANGE") ||
-                !isDirty()
-              }
-            >
-              Update
-            </Button>
-          </div>
         </RichTextEditor.Toolbar>
         <RichTextEditor.Content />
       </RichTextEditor>
+      <div className="flex-1 flex justify-end mt-4 pr-2">
+        <Button
+          type="submit"
+          loading={updateWebInfoMutation.isLoading}
+          disabled={
+            (campaignData.status !== "DRAFT" &&
+              campaignData.status !== "REQUEST_CHANGE") ||
+            !isDirty()
+          }
+        >
+          Update
+        </Button>
+      </div>
     </form>
   );
 }
