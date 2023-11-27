@@ -110,7 +110,7 @@ export type CampaignDetailResponse = CampaignData & {
 
 export type CampaignHistory = {
   action?: string;
-  eventTime?: string;
+  eventTime: string;
   message?: string;
   updatedBy?: string;
 };

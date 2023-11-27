@@ -65,14 +65,22 @@ export default function CampaignGeneralInfoForm({
   const finalHistory: CampaignHistory[] =
     data.campaignHistories.length < 3
       ? [
-          ...data.campaignHistories,
+          ...data.campaignHistories.sort(
+            (a, b) =>
+              new Date(b.eventTime).getTime() - new Date(a.eventTime).getTime()
+          ),
           {
             action: "START",
             message: "Start create campaign",
             updatedBy: "System",
           },
         ]
-      : data.campaignHistories.slice(-3);
+      : data.campaignHistories
+          .sort(
+            (a, b) =>
+              new Date(b.eventTime).getTime() - new Date(a.eventTime).getTime()
+          )
+          .slice(0, 3);
 
   return (
     <div className="card general-wrapper mt-2 ">
