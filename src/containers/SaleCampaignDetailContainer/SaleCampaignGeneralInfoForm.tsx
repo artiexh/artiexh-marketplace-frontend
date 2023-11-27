@@ -31,16 +31,6 @@ export default function SaleCampaignGeneralInfoForm({
               value={data.name}
               className="flex-[3]"
             />
-            <SegmentedControl
-              readOnly
-              value={data.type}
-              className="h-fit flex-[2]"
-              data={[
-                { label: "Private", value: "PRIVATE" },
-                { label: "Shared", value: "SHARE" },
-                { label: "Public", value: "PUBLIC" },
-              ]}
-            />
           </div>
           <div className="flex items-end gap-x-2">
             <DateTimePicker
@@ -60,6 +50,27 @@ export default function SaleCampaignGeneralInfoForm({
               disabled
               value={data.to ? new Date(data.to) : undefined}
               className="h-fit flex-1"
+            />
+          </div>
+          <div className="flex items-end gap-x-2">
+            <DateTimePicker
+              label="Public date"
+              classNames={{
+                input: "!py-0",
+              }}
+              disabled
+              value={data.publicDate ? new Date(data.publicDate) : undefined}
+              className="h-fit flex-1"
+            />
+            <SegmentedControl
+              readOnly
+              value={data.type}
+              className="h-fit flex-1"
+              data={[
+                { label: "Private", value: "PRIVATE" },
+                { label: "Shared", value: "SHARE" },
+                { label: "Public", value: "PUBLIC" },
+              ]}
             />
           </div>
           <Textarea label="Description" readOnly value={data.description} />
