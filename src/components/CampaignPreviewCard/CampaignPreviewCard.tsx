@@ -6,8 +6,9 @@ import Timer from "../Timer/Timer";
 import styles from "./CampaignPreviewCard.module.scss";
 import { useRouter } from "next/router";
 import { getCampaignType } from "@/utils/mapper";
-import { CAMPAIGN_TYPE_DATA } from "@/constants/campaign";
+import { CAMPAIGN_TYPE_DATA, campaignData } from "@/constants/campaign";
 import ImageWithFallback from "../ImageWithFallback/ImageWithFallback";
+import { Indicator } from "@mantine/core";
 
 export default function CampaignPreviewCard({
   campaign,
@@ -42,7 +43,12 @@ export default function CampaignPreviewCard({
             campaignTypeData.textStyle
           )}
         >
-          {campaignTypeData.title}
+          {campaignTypeData.title}{" "}
+          {campaign.type === "PRIVATE"
+            ? `- ${campaign.owner.displayName} Only`
+            : campaign.type === "PUBLIC"
+            ? "- Arty Only"
+            : undefined}
         </div>
         <ImageWithFallback
           src={campaign.thumbnailUrl}
