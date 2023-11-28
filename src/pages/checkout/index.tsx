@@ -325,14 +325,14 @@ function CheckoutPage() {
           <Divider className="my-2" />
           <div className="flex justify-between">
             <div>Total</div>
-            <div>{`${totalPrice + (isNumber(shippingFee) ? shippingFee : 0)}  ${
-              flattedCheckoutItems[0]?.price?.unit
-            }`}</div>
+            <div>{`${currencyFormatter(
+              totalPrice + (isNumber(shippingFee) ? shippingFee : 0)
+            )}`}</div>
           </div>
           <div className="flex justify-center mt-10 mb-4">
             <Button
               style={{ width: "80%", height: 45 }}
-              className="bg-primary"
+              className="bg-primary !text-white"
               onClick={paymentSubmit}
             >
               Proceed to payment

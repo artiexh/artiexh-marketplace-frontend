@@ -188,6 +188,7 @@ function EditCustomProductModal({ data: product }: { data: CustomProduct }) {
         Arty sẽ thu {percentage}% trên mỗi đơn hàng của bạn
       </div>
       <NumberInput
+        thousandsSeparator=","
         classNames={{
           label: "w-full flex items-center",
           root: "mb-4",
@@ -224,6 +225,7 @@ function EditCustomProductModal({ data: product }: { data: CustomProduct }) {
         {...form.getInputProps(`price`)}
       />
       <NumberInput
+        thousandsSeparator=","
         classNames={{
           label: "w-fit flex items-center",
         }}

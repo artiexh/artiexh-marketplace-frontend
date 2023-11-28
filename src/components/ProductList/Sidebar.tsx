@@ -1,16 +1,16 @@
-import { Category } from "@/types/Product";
-import { Button, Checkbox, Divider, NumberInput, Rating } from "@mantine/core";
-import { FC, useState } from "react";
-import CategoryItem from "./CategoryItem";
-import { UseFormReturnType } from "@mantine/form";
-import { FilterProps } from "@/services/backend/types/Filter";
 import { MAX_CATEGORIES } from "@/constants/ProductList";
+import { FilterProps } from "@/services/backend/types/Filter";
+import { Category } from "@/types/Product";
+import { Button, Divider, NumberInput } from "@mantine/core";
+import { UseFormReturnType } from "@mantine/form";
 import {
   IconArrowDown,
   IconArrowRight,
   IconArrowUp,
   IconFilter,
 } from "@tabler/icons-react";
+import { FC, useState } from "react";
+import CategoryItem from "./CategoryItem";
 
 type SidebarProps = {
   form: UseFormReturnType<Partial<FilterProps>>;
@@ -27,7 +27,6 @@ const Sidebar: FC<SidebarProps> = ({
 }) => {
   const { values: filters, getInputProps, setFieldValue } = form;
   const [moreCategories, setMoreCategories] = useState(false);
-  const [moreLocations, setMoreLocations] = useState(false);
 
   return (
     <nav className="hidden lg:block sticky col-span-3 top-5 h-max">
@@ -45,6 +44,7 @@ const Sidebar: FC<SidebarProps> = ({
       <div className="flex mt-2 items-center justify-between">
         <NumberInput
           hideControls
+          thousandsSeparator="."
           // classNames={{ input: 'rounded-sm' }}
           placeholder="100.000"
           {...getInputProps("minPrice")}
@@ -54,6 +54,7 @@ const Sidebar: FC<SidebarProps> = ({
         </span>
         <NumberInput
           hideControls
+          thousandsSeparator=","
           // classNames={{ input: 'rounded-sm' }}
           placeholder="1.000.000"
           {...getInputProps("maxPrice")}
@@ -147,7 +148,7 @@ const Sidebar: FC<SidebarProps> = ({
       </Checkbox.Group> */}
       {/* <Divider className="my-3" /> */}
       <Button
-        className="bg-primary w-full"
+        className="bg-primary w-full !text-white"
         onClick={() => submitHandler(filters)}
       >
         Apply

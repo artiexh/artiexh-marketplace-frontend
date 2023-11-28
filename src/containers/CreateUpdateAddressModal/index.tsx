@@ -114,7 +114,11 @@ export default function CreateUpdateAddressModal({
           >
             Trở về
           </Button>
-          <Button className="bg-primary" type="submit" loading={loading}>
+          <Button
+            className="bg-primary !text-white"
+            type="submit"
+            loading={loading}
+          >
             {isCreate ? "Tạo" : "Lưu"}
           </Button>
         </div>

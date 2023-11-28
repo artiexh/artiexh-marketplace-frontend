@@ -77,7 +77,7 @@ export default function CartSection({
       <div className="flex justify-between items-center">
         <div className="flex items-center">
           <div>
-            <img
+            <ImageWithFallback
               className="object-fit rounded-full w-[40px] sm:w-[70px] aspect-square mr-3"
               src={cartSection.saleCampaign.thumbnailUrl}
               alt="product-name"

@@ -101,6 +101,7 @@ const ProductListContainer: FC<ProductListContainerProps> = ({
         ...params,
         // sortBy: key,
         sortDirection: direction,
+        pageNumber: 1,
       },
       []
     );
@@ -153,7 +154,6 @@ const ProductListContainer: FC<ProductListContainerProps> = ({
         <div
           className="fixed top-0 left-0 bg-black/50 w-screen h-screen z-10"
           onClick={() => {
-            console.log(document.body.style.overflow);
             document.body.style.overflow = "auto";
             setShowPopup("");
           }}

@@ -1,4 +1,5 @@
 /* eslint-disable @next/next/no-img-element */
+import ImageWithFallback from "@/components/ImageWithFallback/ImageWithFallback";
 import LogoCheckbox from "@/components/LogoCheckbox/LogoCheckbox";
 import {
   deleteCartItem,
@@ -88,7 +89,7 @@ export default function CartItemCard({
                 isChecked={isChecked}
               />
             )}
-            <img
+            <ImageWithFallback
               className="object-cover aspect-square w-[80px] md:w-[120px]  rounded-lg"
               src={cartItem.thumbnailUrl}
               alt="product-name"
@@ -106,6 +107,7 @@ export default function CartItemCard({
             cartItem.remainingQuantity > 0 && (
               <NumberInput
                 className="w-[60px] md:w-[100px]"
+                thousandsSeparator=","
                 value={quantity}
                 onChange={(value) => {
                   if (typeof value === "number") {
@@ -165,6 +167,7 @@ export default function CartItemCard({
               <div>Số lượng:</div>
               {cartItem.remainingQuantity > 0 && (
                 <NumberInput
+                  thousandsSeparator=","
                   className="w-[60px] md:w-[100px]"
                   value={quantity}
                   onChange={(value) => {
