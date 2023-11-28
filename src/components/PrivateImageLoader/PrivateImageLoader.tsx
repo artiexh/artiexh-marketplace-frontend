@@ -15,11 +15,26 @@ export default function PrivateImageLoader({
     return image;
   });
 
+  if (isLoading)
+    return (
+      <div className={clsx("relative w-full h-full", rest.className)}>
+        <LoadingOverlay
+          visible={true}
+          overlayBlur={2}
+          loaderProps={{
+            size: "sm",
+          }}
+        />
+      </div>
+    );
+
   return <ImageWithFallback {...rest} src={data} />;
 }
 
 import Image from "next/image";
 import { ImgHTMLAttributes, SyntheticEvent, useEffect, useState } from "react";
+import clsx from "clsx";
+import { Loader, LoadingOverlay } from "@mantine/core";
 
 const isValidUrl = (url: string) => {
   try {
