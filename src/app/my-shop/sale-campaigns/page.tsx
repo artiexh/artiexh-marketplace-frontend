@@ -1,53 +1,97 @@
 "use client";
 
+import TableComponent from "@/components/TableComponent";
 import { saleCampaignColumns } from "@/constants/Columns/saleCampaignColumn";
-import { ROUTE } from "@/constants/route";
-import TableContainer from "@/containers/TableContainer";
 import axiosClient from "@/services/backend/axiosClient";
+import {
+  CommonResponseBase,
+  PaginationResponseBase,
+} from "@/types/ResponseBase";
+import { PaginationQuery, queryDefaultMapper } from "@/utils/query";
+import { DatePickerInput } from "@mantine/dates";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import useSWR from "swr";
+import { Pagination } from "@mantine/core";
 import { SALE_CAMPAIGN_ENDPOINT } from "@/services/backend/services/campaign";
-import { useRouter, useSearchParams } from "next/navigation";
 
 const PAGE_SIZE = 6;
 const ShopCampaignsPage = () => {
   const router = useRouter();
-  const searchParams = useSearchParams();
+  const [query, setQuery] = useState<
+    PaginationQuery & {
+      status?: string;
+      from?: string;
+      to?: string;
+    }
+  >({
+    pageSize: PAGE_SIZE,
+  });
+
+  const { data: saleCampaignResponse } = useSWR<
+    CommonResponseBase<PaginationResponseBase<any>>
+  >(JSON.stringify(query), async () => {
+    try {
+      const result = await axiosClient.get(
+        `artist${SALE_CAMPAIGN_ENDPOINT}?${new URLSearchParams(
+          queryDefaultMapper(query)
+        )
+          .toString()
+          .trim()}`
+      );
+      return result.data;
+    } catch (e) {
+      console.log(e);
+    }
+  });
 
   return (
-    <>
-      <div className="flex justify-end mb-4"></div>
-      <TableContainer
-        fetchKey="campaigns"
-        fetcher={async (currentPage) => {
-          const res = (
-            await axiosClient.get(
-              `artist${SALE_CAMPAIGN_ENDPOINT}?pageNumber=${currentPage}&pageSize=${PAGE_SIZE}` +
-                new URLSearchParams(searchParams?.toString()).toString()
-            )
-          ).data;
-          const finalRes = {
-            ...res,
-            data: {
-              ...res.data,
-              items: res.data.items?.map((el: any) => ({
-                ...el,
-                onClickEdit: () =>
-                  router.push(`${ROUTE.SHOP}/sale-campaigns/${el.id}`),
-              })),
-            },
-          };
-          return finalRes;
-        }}
+    <div className="py-5 px-7 bg-white shadow rounded-lg">
+      <div className="flex justify-between items-center mb-10">
+        <div className="text-3xl font-bold">My sale campaigns</div>
+        <div className="w-[400px]">
+          <DatePickerInput
+            type="range"
+            allowSingleDateInRange
+            clearable
+            placeholder="Pick dates"
+            onChange={(values) => {
+              setQuery((prev) => ({
+                ...prev,
+                from: values?.[0] ? values[0].toISOString() : undefined,
+                to: values?.[1] ? values[1].toISOString() : undefined,
+              }));
+            }}
+            mx="auto"
+            maw={400}
+          />
+        </div>
+      </div>
+      <TableComponent
         columns={saleCampaignColumns}
-        pagination
         tableProps={{ verticalSpacing: "sm", className: "font-semibold" }}
-        className="mt-2.5"
-        header={(response) => (
-          <>
-            <div className="text-3xl font-bold mb-6">My sale campaigns</div>
-          </>
-        )}
+        data={saleCampaignResponse?.data.items}
       />
-    </>
+      <div className="flex justify-end">
+        <Pagination
+          className="mt-10"
+          value={query.pageNumber ?? 1}
+          onChange={(value: number) => {
+            console.log(value);
+            setQuery((prev) => ({
+              ...prev,
+              pageNumber: value,
+            }));
+          }}
+          //TODO: change this to total of api call later
+          total={saleCampaignResponse?.data.totalPage ?? 1}
+          boundaries={2}
+          classNames={{
+            control: "[&[data-active]]:!text-white",
+          }}
+        />
+      </div>
+    </div>
   );
 };
 

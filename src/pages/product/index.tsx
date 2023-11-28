@@ -10,7 +10,6 @@ import { InferGetStaticPropsType, NextPage } from "next";
 const ProductListPage: NextPage<
   InferGetStaticPropsType<typeof getStaticProps>
 > = ({ categories, tags }) => {
-  console.log(categories);
   return (
     <ProductListContainer
       endpoint="marketplace/product-in-sale"

@@ -1,5 +1,6 @@
 import DesignItemCard from "@/components/Cards/DesignItemCard/DesignItemCard";
 import ImageWithFallback from "@/components/ImageWithFallback/ImageWithFallback";
+import { NOTIFICATION_TYPE } from "@/constants/common";
 import { fetcher } from "@/services/backend/axiosClient";
 import {
   ARTIST_CAMPAIGN_ENDPOINT,
@@ -13,6 +14,7 @@ import {
   PaginationResponseBase,
 } from "@/types/ResponseBase";
 import { currencyFormatter } from "@/utils/formatter";
+import { getNotificationIcon } from "@/utils/mapper";
 import {
   Accordion,
   ActionIcon,
@@ -25,6 +27,7 @@ import {
   Tooltip,
 } from "@mantine/core";
 import { modals } from "@mantine/modals";
+import { notifications } from "@mantine/notifications";
 import {
   IconArchive,
   IconCircle,
@@ -156,6 +159,9 @@ export default function PickCustomProduct({
                 }));
               }}
               total={response?.data?.totalPage ?? 0}
+              classNames={{
+                control: "[&[data-active]]:!text-white",
+              }}
             />
           </div>
         </div>
@@ -191,7 +197,7 @@ function PickProvider({ data }: { data: SimpleCustomProduct[] }) {
         CommonResponseBase<CampaignDetail>
       >([ARTIST_CAMPAIGN_ENDPOINT, { id: id }]);
 
-      if (!campaignRes?.data) throw new Error("What the heck");
+      if (!campaignRes?.data) throw new Error("Data is missing!");
       const res = await updateCampaignCustomProductsApi(
         campaignRes.data,
         data.map((v) => {
@@ -201,13 +207,22 @@ function PickProvider({ data }: { data: SimpleCustomProduct[] }) {
         }),
         provider ?? campaignRes.data.provider.businessCode
       );
+
+      notifications.show({
+        message: "Thêm sản phẩm thành công!",
+        ...getNotificationIcon(NOTIFICATION_TYPE.SUCCESS),
+      });
+
       queryClient.setQueryData(
         [ARTIST_CAMPAIGN_ENDPOINT, { id: id }],
         res.data
       );
       modals.close("custom-product-create-campaign");
     } catch (e) {
-      console.log("🚀 ~ file: page.tsx:578 ~ pickProviderHandler ~ e:", e);
+      notifications.show({
+        message: "Thêm sản phẩm thất bại! Vui lòng thử lại...",
+        ...getNotificationIcon(NOTIFICATION_TYPE.FAILED),
+      });
     }
   };
 
@@ -223,7 +238,12 @@ function PickProvider({ data }: { data: SimpleCustomProduct[] }) {
         >
           <IconArchive className="w-6" />
         </Indicator>
-        <Button onClick={pickProviderHandler}>Update</Button>
+        <Button
+          className="!text-white bg-primary mb-4"
+          onClick={pickProviderHandler}
+        >
+          Update
+        </Button>
       </div>
 
       {!isLoading && (
@@ -252,7 +272,7 @@ function PickProvider({ data }: { data: SimpleCustomProduct[] }) {
                     </Accordion.Control>
                     <ActionIcon variant="subtle" color="gray" className="ml-4">
                       {provider === item.businessCode ? (
-                        <ImageWithFallback
+                        <img
                           src="/assets/logo.svg"
                           onClick={() => setProvider(undefined)}
                           alt={""}
@@ -282,8 +302,12 @@ function PickProvider({ data }: { data: SimpleCustomProduct[] }) {
                         <thead>
                           <tr>
                             <th>Tên</th>
-                            <th>Giá sản xuất</th>
-                            <th>Tối thiểu</th>
+                            <th>
+                              <div className="text-end">Giá sản xuất</div>
+                            </th>
+                            <th>
+                              <div className="text-end">Tối thiểu</div>
+                            </th>
                             <th>Thời gian</th>
                           </tr>
                         </thead>

@@ -1,5 +1,6 @@
 import { CampaignData } from "@/types/Campaign";
 import { TableColumns } from "@/types/Table";
+import { currencyFormatter } from "@/utils/formatter";
 import { Badge } from "@mantine/core";
 import clsx from "clsx";
 
@@ -114,6 +115,6 @@ export const statisticCampaignColumns: TableColumns<{
     title: "Doanh thu",
     key: "revenue",
     className: "!text-center w-[10rem]",
-    render: (value) => <div>{value.revenue.amount}</div>,
+    render: (value) => <div>{currencyFormatter(value.revenue.amount)}</div>,
   },
 ];

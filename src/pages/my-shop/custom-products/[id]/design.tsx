@@ -865,7 +865,7 @@ function ImageSetPicker({ currentCombination }: ImageSetPickerProps) {
                     {(props) => (
                       <Button
                         {...props}
-                        className="px-2 mt-3 rounded-full bg-white text-black border border-black shadow-none outline-none hover:bg-black hover:text-white"
+                        className="px-2 mt-3 rounded-full bg-white text-black border border-black shadow-none outline-none hover:bg-black hover:!text-white"
                       >
                         Upload image
                       </Button>

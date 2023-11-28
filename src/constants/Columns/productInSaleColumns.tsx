@@ -1,6 +1,7 @@
 import ImageWithFallback from "@/components/ImageWithFallback/ImageWithFallback";
 import { ProductInSale } from "@/types/SaleCampaign";
 import { TableColumns } from "@/types/Table";
+import { currencyFormatter } from "@/utils/formatter";
 import { Badge } from "@mantine/core";
 
 import clsx from "clsx";
@@ -47,7 +48,9 @@ export const productInSaleColumns: TableColumns<
     dataIndex: "price",
     key: "price",
     className: "!text-center w-[10rem]",
-    render: (record) => <span>{record.price?.amount ?? "Chưa đăng ký"}</span>,
+    render: (record) => (
+      <span>{currencyFormatter(record.price?.amount) ?? "Chưa đăng ký"}</span>
+    ),
   },
   {
     title: "Lợi nhuận artist",
@@ -55,7 +58,9 @@ export const productInSaleColumns: TableColumns<
     key: "artistProfit",
     className: "!text-center w-[10rem]",
     render: (record) => {
-      return <span>{record.artistProfit ?? "Chưa đăng ký"}</span>;
+      return (
+        <span>{currencyFormatter(record.artistProfit) ?? "Chưa đăng ký"}</span>
+      );
     },
   },
   {

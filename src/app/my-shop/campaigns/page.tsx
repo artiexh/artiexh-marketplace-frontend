@@ -142,7 +142,9 @@ function CreateCampaignModal() {
       <TextInput label="Campaign name" {...form.getInputProps("name")} />
 
       <div className="flex justify-end ">
-        <Button type="submit">Submit</Button>
+        <Button className="bg-primary !text-white" type="submit">
+          Submit
+        </Button>
       </div>
     </form>
   );

@@ -288,7 +288,7 @@ const CustomProductDetailContainer = ({ data }: Props) => {
 
       <div className="btn-wrapper flex flex-col-reverse md:flex-row gap-5 w-full md:w-max ml-auto bg-white p-5 rounded-lg md:bg-transparent sm:p-0">
         <Button
-          className="bg-primary"
+          className="bg-primary !text-white"
           type="submit"
           loading={isSubmitting}
           disabled={!isDirty()}

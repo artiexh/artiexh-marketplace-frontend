@@ -212,6 +212,9 @@ export default function ProductDesignPage() {
                   }));
                 }}
                 total={response?.data?.totalPage ?? 0}
+                classNames={{
+                  control: "[&[data-active]]:!text-white",
+                }}
               />
             </div>
           </div>
@@ -257,7 +260,8 @@ function ProductBaseDetailModalContent({
                   <ImageWithFallback
                     fallback="/assets/default-thumbnail.jpg"
                     src={image.url}
-                    className="object-contain"
+                    className=""
+                    object-contain
                     alt={image.title}
                   />
                 </div>
@@ -397,7 +401,7 @@ function VariantAndProviderPicker({
           <h2 className="font-semibold text-xl">Variants</h2>
           <Button
             disabled={!validVariant}
-            className="text-black hover:text-white rounded-full"
+            className="rounded-full bg-primary !text-white"
             onClick={() =>
               variantResponse?.data.items?.[0] &&
               createDesignItem(variantResponse?.data.items?.[0].id.toString())

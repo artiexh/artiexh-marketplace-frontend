@@ -5,6 +5,7 @@ import { SALE_CAMPAIGN_ENDPOINT } from "@/services/backend/services/campaign";
 import { SaleCampaignStatistic } from "@/types/Campaign";
 import { CommonResponseBase } from "@/types/ResponseBase";
 import { getDateRange } from "@/utils/date";
+import { currencyFormatter } from "@/utils/formatter";
 import { Progress, Tooltip as MantineTooltip } from "@mantine/core";
 import { IconClock } from "@tabler/icons-react";
 import {
@@ -70,7 +71,7 @@ export default function SaleCampaignStatisticContainer({ id }: { id: string }) {
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
       ctx.fillText(
-        `Tổng doanh thu: ${statisticData.revenue.amount}`,
+        `Tổng doanh thu: ${currencyFormatter(statisticData.revenue.amount)}`,
         chart.getDatasetMeta(0).data[0].x,
         chart.getDatasetMeta(0).data[0].y
       );
@@ -91,12 +92,12 @@ export default function SaleCampaignStatisticContainer({ id }: { id: string }) {
     {
       title: "Tổng doanh thu",
       stylingClass: "bg-blue-600",
-      content: statisticData.revenue.amount,
+      content: currencyFormatter(statisticData.revenue.amount),
     },
     {
       title: "Tổng lợi nhuận",
       stylingClass: "bg-green-600",
-      content: statisticData.profit.amount,
+      content: currencyFormatter(statisticData.profit.amount),
     },
   ];
 

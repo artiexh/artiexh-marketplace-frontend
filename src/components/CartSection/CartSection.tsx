@@ -91,7 +91,7 @@ export default function CartSection({
         </div>
         <div>
           <Button
-            className="text-primary font-bold"
+            className="text-primary font-bold hover:bg-white"
             onClick={() => {
               router.push(`/campaigns/${cartSection.saleCampaign.id}`);
             }}

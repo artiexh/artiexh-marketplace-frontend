@@ -36,3 +36,16 @@ export const destructProductInSaleId = (id: string) => {
     productCode,
   };
 };
+
+export const dateFormatter = (date: string, fallback = "N/A") =>
+  date
+    ? new Intl.DateTimeFormat("en-US", {
+        year: "numeric",
+        month: "numeric",
+        day: "numeric",
+        hour: "numeric",
+        minute: "numeric",
+        second: "numeric",
+        hour12: false, // Use 24-hour format
+      }).format(new Date(date))
+    : fallback;

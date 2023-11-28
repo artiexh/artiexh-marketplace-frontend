@@ -7,6 +7,8 @@ import { IconLogout } from "@tabler/icons-react";
 import clsx from "clsx";
 import { useRouter } from "next/navigation";
 import SideNavTab from "./SideNavTab";
+import ImageWithFallback from "../ImageWithFallback/ImageWithFallback";
+import { $user } from "@/store/user";
 
 interface ISideNavProps {
   navSections: NavSection[];
@@ -22,6 +24,7 @@ const SideNav = ({
   isChosen,
 }: ISideNavProps) => {
   const router = useRouter();
+  const user = $user.get();
 
   const logoutFunc = async () => {
     const result = await logout();
@@ -58,15 +61,27 @@ const SideNav = ({
           ))}
         </div>
       ))}
-      <Divider className="mx-4" />
-      <div
-        className="mt-0.5 cursor-pointer flex text-sm mx-4 items-center px-4 py-2.5"
-        onClick={logoutFunc}
-      >
-        <span className="[&_svg]:w-4 ">
-          <IconLogout className="ml-2 mr-4" />
-        </span>
-        Logout
+      <div className="mx-4 px-4 bottom-[60px] w-[calc(100%-32px)] absolute">
+        <Divider className="mb-4" />
+        <div className="flex justify-between">
+          <div className="flex gap-4 items-center">
+            <div>
+              <ImageWithFallback
+                src={user?.avatarUrl}
+                className="rounded-full w-[50px] aspect-square"
+              />
+            </div>
+            <div>{user?.displayName}</div>
+          </div>
+          <div
+            className="mt-0.5 cursor-pointer flex text-sm items-center"
+            onClick={logoutFunc}
+          >
+            <span className="[&_svg]:w-4 ">
+              <IconLogout className="ml-2 mr-4" />
+            </span>
+          </div>
+        </div>
       </div>
     </div>
   );
