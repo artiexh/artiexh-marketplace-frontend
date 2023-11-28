@@ -115,7 +115,7 @@ const HomePage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = ({
       </div>
       <div>
         <div className="flex justify-between items-center mb-6">
-          <div className="font-bold text-xl">Artist của Arty</div>
+          <div className="font-bold text-xl">Những sản phẩm mới nổi</div>
           <div
             className="font-semibold hidden lg:block cursor-pointer"
             onClick={() => router.push(ROUTE.PRODUCT_LIST)}

@@ -1,22 +1,15 @@
-import { Category } from "@/types/Product";
-import {
-  Divider,
-  Accordion,
-  NumberInput,
-  Button,
-  Rating,
-  Checkbox,
-} from "@mantine/core";
-import { FC, useState } from "react";
-import CategoryItem from "./CategoryItem";
-import { UseFormReturnType } from "@mantine/form";
-import { FilterProps } from "@/services/backend/types/Filter";
 import { MAX_CATEGORIES } from "@/constants/ProductList";
+import { FilterProps } from "@/services/backend/types/Filter";
+import { Category } from "@/types/Product";
+import { Accordion, Button, Divider, NumberInput } from "@mantine/core";
+import { UseFormReturnType } from "@mantine/form";
 import {
   IconArrowDown,
   IconArrowRight,
   IconArrowUp,
 } from "@tabler/icons-react";
+import { FC, useState } from "react";
+import CategoryItem from "./CategoryItem";
 
 type MobileFilterProps = {
   categories: Category[];
@@ -50,6 +43,7 @@ const MobileFilter: FC<MobileFilterProps> = ({
               <NumberInput
                 hideControls
                 placeholder="100.000"
+                thousandsSeparator=","
                 {...getInputProps("minPrice")}
                 className="flex-1"
               />
@@ -58,6 +52,7 @@ const MobileFilter: FC<MobileFilterProps> = ({
               </span>
               <NumberInput
                 hideControls
+                thousandsSeparator=","
                 placeholder="1.000.000"
                 {...getInputProps("maxPrice")}
                 className="flex-1"

@@ -49,7 +49,7 @@ const ProductPreviewCard = ({ data, className }: IProductPreviewCardProps) => {
       <div className="relative w-full aspect-square">
         <ImageWithFallback
           fallback="/assets/default-thumbnail.jpg"
-          className="rounded-2xl rounded-b-none object-cover w-full h-full"
+          className="rounded-2xl rounded-b-none object-cover w-full h-full !max-w-[260px]"
           src={
             data?.thumbnailUrl?.includes("http")
               ? data?.thumbnailUrl

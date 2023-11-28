@@ -16,7 +16,7 @@ const ProductListPage: NextPage<
       endpoint="marketplace/product-in-sale"
       categories={categories}
       tags={tags}
-      pathName="marketplace/product-in-sale"
+      pathName="/product"
     />
   );
 };

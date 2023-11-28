@@ -19,7 +19,7 @@ export const fromUserAddressToDefaultAddressFormValue: (
   const { ward, ...data } = address;
   return {
     ...data,
-    wardId: address.ward.id,
+    wardId: address?.ward?.id,
   };
 };
 

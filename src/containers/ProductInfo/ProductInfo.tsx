@@ -85,6 +85,7 @@ const ProductInfo: FC<ProductInfoProps> = ({ product, special }) => {
               classNames={{
                 input: "w-20",
               }}
+              thousandsSeparator=","
               value={quantity}
               onChange={setQuantity as any}
               defaultValue={1}

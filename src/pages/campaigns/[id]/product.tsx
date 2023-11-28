@@ -43,7 +43,7 @@ const CampaignProductList = () => {
         Tất cả sản phẩm của campaign
       </div>
       <div className="campaign-list-page md:flex">
-        <div className="w-[300px] hidden md:block">
+        <div className="!w-[300px] hidden md:block">
           <div className="text-lg font-bold">Lọc theo</div>
           <div className="mt-6 mb-2 text-sm text-gray-500">Danh mục</div>
           <div className="text-sm">
@@ -52,7 +52,7 @@ const CampaignProductList = () => {
             <div className="cursor-pointer">Tote bag</div>
           </div>
         </div>
-        <div className="md:hidden flex gap-2">
+        <div className="md:hidden gap-2">
           <CategoryButton />
           <SortButton />
         </div>
