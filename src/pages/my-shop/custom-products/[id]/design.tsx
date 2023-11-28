@@ -783,7 +783,8 @@ function ImageSetPicker({ currentCombination }: ImageSetPickerProps) {
                   fileName: firstImage.fileName,
                 },
               },
-            ]
+            ],
+        designItemRes.data.modelThumbnail?.id
       );
 
       return res.data;
