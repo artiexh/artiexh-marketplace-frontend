@@ -51,7 +51,6 @@ function CustomWebTab({ data: campaignData }: { data: CampaignDetail }) {
   });
 
   useEffect(() => {
-    console.log(values);
     // setValues({
     //   content: campaignData.content,
     //   thumbnail: campaignData.thumbnailUrl,

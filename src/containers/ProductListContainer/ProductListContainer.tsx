@@ -18,6 +18,7 @@ import clsx from "clsx";
 import { useRouter } from "next/router";
 import { FC, useEffect, useState } from "react";
 import useSWR from "swr";
+import { Menu } from "@mantine/core";
 
 type ProductListContainerProps = {
   categories: Category[];
@@ -52,8 +53,8 @@ const ProductListContainer: FC<ProductListContainerProps> = ({
         .get<CommonResponseBase<PaginationResponseBase<Product>>>(
           `/${endpoint}?${getQueryString(
             {
-              ...pagination,
               ...rest,
+              ...pagination,
             },
             []
           )}`
@@ -181,6 +182,51 @@ const ProductListContainer: FC<ProductListContainerProps> = ({
           form={form}
         />
         <div className="col-span-9">
+          <div className="flex justify-end mb-6">
+            <Menu shadow="md" width={200} trigger="hover">
+              <Menu.Target>
+                <Button className="bg-primary !text-white">Sắp xếp</Button>
+              </Menu.Target>
+              <Menu.Dropdown>
+                <Menu.Item
+                  onClick={() =>
+                    setPagination((prev) => ({
+                      ...prev,
+                      sortBy: "price.amount",
+                      sortDirection: "DESC",
+                      pageNumber: 1,
+                    }))
+                  }
+                >
+                  Giá từ cao đến thấp
+                </Menu.Item>
+                <Menu.Item
+                  onClick={() =>
+                    setPagination((prev) => ({
+                      ...prev,
+                      sortBy: "price.amount",
+                      sortDirection: "ASC",
+                      pageNumber: 1,
+                    }))
+                  }
+                >
+                  Giá từ thấp đến cao
+                </Menu.Item>
+                <Menu.Item
+                  onClick={() => {
+                    setPagination({
+                      pageSize: 8,
+                      pageNumber: 1,
+                      sortBy: "_id",
+                      sortDirection: "DESC",
+                    });
+                  }}
+                >
+                  Mặc định
+                </Menu.Item>
+              </Menu.Dropdown>
+            </Menu>
+          </div>
           <div className="justify-between items-center hidden lg:flex">
             {/* <div className="flex gap-3">
               {tags.map((tag) => (
