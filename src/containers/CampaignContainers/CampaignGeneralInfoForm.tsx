@@ -8,6 +8,7 @@ import {
 } from "@/services/backend/services/campaign";
 import { CampaignDetail, CampaignHistory } from "@/types/Campaign";
 import { CommonResponseBase } from "@/types/ResponseBase";
+import { dateFormatter } from "@/utils/formatter";
 import { getNotificationIcon } from "@/utils/mapper";
 import { campaignInfoValidation } from "@/validation/campaign";
 import {
@@ -79,7 +80,7 @@ export default function CampaignGeneralInfoForm({
 
   return (
     <div className="card general-wrapper mt-2 ">
-      <div className="flex gap-x-4">
+      <div className="flex justify-between gap-x-20">
         <div className="flex flex-col space-y-4 flex-[3]">
           <div className="flex w-full justify-between items-center">
             <h2 className="text-3xl font-bold">Campaign information</h2>
@@ -143,7 +144,7 @@ export default function CampaignGeneralInfoForm({
                   {step.message}
                 </Text>
                 <Text size="xs" mt={4}>
-                  {step.eventTime}
+                  {dateFormatter(step.eventTime)}
                 </Text>
               </Timeline.Item>
             ))}
@@ -257,7 +258,7 @@ function EditCampaignGeneralInfo({
             }}
             popoverProps={{
               classNames: {
-                dropdown: "z-10",
+                dropdown: "!z-[1000]",
               },
             }}
             {...form.getInputProps("from")}
@@ -270,7 +271,7 @@ function EditCampaignGeneralInfo({
             }}
             popoverProps={{
               classNames: {
-                dropdown: "z-10",
+                dropdown: "!z-[1000]",
               },
             }}
             {...form.getInputProps("to")}
@@ -280,7 +281,9 @@ function EditCampaignGeneralInfo({
         <Textarea label="Description" {...form.getInputProps("description")} />
       </div>
       <div className="w-full flex justify-end">
-        <Button type="submit">Submit</Button>
+        <Button className="bg-primary !text-white mt-4" type="submit">
+          Submit
+        </Button>
       </div>
     </form>
   );

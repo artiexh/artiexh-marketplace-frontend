@@ -185,6 +185,7 @@ function CustomWebTab({ data: campaignData }: { data: CampaignDetail }) {
       </RichTextEditor>
       <div className="flex-1 flex justify-end mt-4 pr-2">
         <Button
+          className="bg-primary !text-white"
           type="submit"
           loading={updateWebInfoMutation.isLoading}
           disabled={

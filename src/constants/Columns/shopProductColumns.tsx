@@ -20,7 +20,7 @@ const shopProductColumns: TableColumns<ArtistProductColumnType> = [
             fallback="/assets/default-thumbnail.jpg"
             src={record.thumbnailUrl}
             alt="product-thumb"
-            className="object-contain rounded-full"
+            className="object-cover rounded-full aspect-square"
           />
         </div>
         <div>{record.name}</div>

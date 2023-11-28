@@ -23,7 +23,7 @@ export const artistCampaignColumns: TableColumns<
             fallback="/assets/default-thumbnail.jpg"
             src={record.thumbnailUrl}
             alt="product-thumb"
-            className="object-contain rounded-full"
+            className="object-contain aspect-square rounded-full"
           />
         </div>
         <div>{record.id}</div>

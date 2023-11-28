@@ -1,6 +1,6 @@
 import TableComponent from "@/components/TableComponent";
 import productInCampaignColumns from "@/constants/Columns/productInCampaignColumns";
-import { defaultButtonStylingClass } from "@/constants/common";
+import { NOTIFICATION_TYPE, defaultButtonStylingClass } from "@/constants/common";
 import axiosClient from "@/services/backend/axiosClient";
 import {
   ARTIST_CAMPAIGN_ENDPOINT,
@@ -19,6 +19,8 @@ import { useParams } from "next/navigation";
 import useSWR from "swr";
 import CustomProductDetailCard from "../CustomProductDetailCard";
 import PickCustomProduct from "./PickCustomProduct";
+import { getNotificationIcon } from "@/utils/mapper";
+import { notifications } from "@mantine/notifications";
 
 export default function CustomProductTable({
   data: rawData,
@@ -155,31 +157,45 @@ function EditCustomProductModal({ data: product }: { data: CustomProduct }) {
     const tmp = campaignRes.data.products.filter(
       (d) => d.customProduct.id !== product.customProduct.id
     );
-    const res = await updateCampaignCustomProductsApi(
-      campaignRes.data,
-      [
-        ...tmp.map((v) => {
-          return {
-            customProductId: v.customProduct.id,
-            quantity: v.quantity,
-            price: v.price,
-          } as Pick<CustomProduct, "price" | "quantity"> & {
-            customProductId: string;
-          };
-        }),
-        {
-          customProductId: product.customProduct.id,
-          quantity: data.quantity,
-          price: {
-            amount: data.price,
-            unit: "VND",
+    try {
+      const res = await updateCampaignCustomProductsApi(
+        campaignRes.data,
+        [
+          ...tmp.map((v) => {
+            return {
+              customProductId: v.customProduct.id,
+              quantity: v.quantity,
+              price: v.price,
+            } as Pick<CustomProduct, "price" | "quantity"> & {
+              customProductId: string;
+            };
+          }),
+          {
+            customProductId: product.customProduct.id,
+            quantity: data.quantity,
+            price: {
+              amount: data.price,
+              unit: "VND",
+            },
           },
-        },
-      ],
-      campaignRes.data.provider.businessCode
-    );
-    queryClient.setQueryData([ARTIST_CAMPAIGN_ENDPOINT, { id: id }], res.data);
-    modals.close(`${product.id}-custom-product-edit`);
+        ],
+        campaignRes.data.provider.businessCode
+      );
+      notifications.show({
+        message: "Chỉnh sửa thông tin sản phẩm thành công!",
+        ...getNotificationIcon(NOTIFICATION_TYPE.SUCCESS),
+      });
+      queryClient.setQueryData(
+        [ARTIST_CAMPAIGN_ENDPOINT, { id: id }],
+        res.data
+      );
+      modals.close(`${product.id}-custom-product-edit`);
+    } catch (err) {
+      notifications.show({
+        message: "Chỉnh sửa thông tin sản phẩm thất bại! Vui lòng thử lại",
+        ...getNotificationIcon(NOTIFICATION_TYPE.FAILED),
+      });
+    }
   };
 
   return (
@@ -247,7 +263,9 @@ function EditCustomProductModal({ data: product }: { data: CustomProduct }) {
         {...form.getInputProps(`quantity`)}
       />
       <div className="w-full flex justify-end mt-4">
-        <Button type="submit">Update</Button>
+        <Button className="bg-primary !text-white" type="submit">
+          Update
+        </Button>
       </div>
     </form>
   );

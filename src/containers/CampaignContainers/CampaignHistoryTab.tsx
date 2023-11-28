@@ -62,6 +62,9 @@ export default function CampaignHistoryTab({
           }
           total={data?.data.totalPage ?? 1}
           boundaries={2}
+          classNames={{
+            control: "[&[data-active]]:!text-white",
+          }}
         />
       </div>
     </div>

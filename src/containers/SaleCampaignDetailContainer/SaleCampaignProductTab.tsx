@@ -57,6 +57,9 @@ export default function SaleCampaignProductTab({
               pageNumber: page,
             }))
           }
+          classNames={{
+            control: "[&[data-active]]:!text-white",
+          }}
           total={productResponse?.data.totalPage ?? 1}
           boundaries={2}
         />

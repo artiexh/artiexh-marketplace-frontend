@@ -104,6 +104,9 @@ const ShopProductsPage = () => {
             //TODO: change this to total of api call later
             total={data?.totalPage ?? 1}
             boundaries={2}
+            classNames={{
+              control: "[&[data-active]]:!text-white",
+            }}
           />
         </div>
       </div>

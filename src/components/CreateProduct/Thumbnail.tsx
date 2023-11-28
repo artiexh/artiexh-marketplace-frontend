@@ -61,7 +61,7 @@ const Thumbnail: FC<ThumbnailProps> = ({
           {/* We don't need optimization */}
           {/* eslint-disable-next-line */}
           <img
-            className="object-contain object-center"
+            className="object-contain aspect-square object-center"
             src={imageUrl}
             alt="thumbnail"
           />

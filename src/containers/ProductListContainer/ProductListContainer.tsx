@@ -226,6 +226,9 @@ const ProductListContainer: FC<ProductListContainerProps> = ({
                 setPagination((prev) => ({ ...prev, pageNumber: e }));
               }}
               total={products?.totalPage ?? 0}
+              classNames={{
+                control: "[&[data-active]]:!text-white",
+              }}
             />
           </div>
         </div>
