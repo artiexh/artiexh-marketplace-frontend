@@ -16,6 +16,7 @@ import { GENERAL_CAMPAIGN_ENDPOINT } from "@/services/backend/services/campaign"
 import { useForm } from "@mantine/form";
 import {
   Accordion,
+  Card,
   Col,
   Collapse,
   Grid,
@@ -83,18 +84,27 @@ function CustomProductDetailCard({
           >
             <div className="w-full h-full flex gap-x-8 gap-y-4">
               <div className="relative aspect-[15/10] rounded-md flex-1">
-                <PrivateImageLoader
-                  id={data.customProduct.modelThumbnail?.id.toString()}
-                  alt="test"
-                  className="rounded-md w-full h-full object-cover"
-                />
+                <div className="text-xl font-semibold">Preview</div>
+                <Card
+                  withBorder
+                  className="relative aspect-[15/10] rounded-md mt-2"
+                >
+                  <PrivateImageLoader
+                    id={data.customProduct.modelThumbnail?.id.toString()}
+                    alt="test"
+                    className="rounded-md w-full h-full object-cover"
+                  />
+                </Card>
               </div>
 
               <div className="content flex flex-col justify-between flex-1">
-                <div className="flex flex-col gap-y-4">
+                <div className="flex flex-col gap-y-3">
+                  <div className="text-xl font-semibold">
+                    Thông tin thiết kế
+                  </div>
                   <div className="variant-details">
                     <div className="text-lg font-semibold">
-                      Thông tin thiết kế
+                      Thông tin sản xuất
                     </div>
                     <div className="mt-1">
                       <ul className="grid grid-flow-col">
@@ -314,7 +324,11 @@ function CustomProductGeneralInfo({
                 <Input readOnly value={data.customProduct.category.name} />
               </Input.Wrapper>
               <Input.Wrapper label="Description">
-                <Textarea readOnly value={data.customProduct.description} />
+                <Textarea
+                  minRows={8}
+                  readOnly
+                  value={data.customProduct.description}
+                />
               </Input.Wrapper>
             </div>
           </div>
@@ -323,6 +337,7 @@ function CustomProductGeneralInfo({
 
             <Thumbnail
               url={thumbnail?.url}
+              className="aspect-square flex-none"
               defaultPlaceholder={
                 <div className="flex flex-col items-center">
                   <p className="text-4xl font-thin">+</p>
