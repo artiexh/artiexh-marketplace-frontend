@@ -308,10 +308,26 @@ function DesignPortalContainer({ modelCode }: { modelCode: string }) {
       const res = await updateThumbnailApi(designItemRes.data, thumbnail);
 
       queryClient.setQueryData(["custom-product", { id: id }], res.data);
-    }, 1000)
+    }, 300)
   );
 
   useEffect(() => {
+    if (ids.current.length !== imageQueryResults.length) {
+      //properly upadted
+      latest.current = Math.max(
+        ...imageQueryResults.map((el) => el.dataUpdatedAt)
+      );
+      ids.current = imageQueryResults
+        .map((el) => el.data?.id)
+        .filter((str) => str !== undefined) as string[];
+
+      try {
+        updateThumbail.current?.();
+      } catch (e) {
+        //ignore
+      }
+      return;
+    }
     if (
       imageQueryResults.every((el) => el.isFetched) &&
       latest.current === undefined
