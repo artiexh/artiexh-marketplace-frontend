@@ -17,14 +17,16 @@ export default function PrivateImageLoader({
 
   if (isLoading)
     return (
-      <div className={clsx("relative w-full h-full", rest.className)}>
-        <LoadingOverlay
-          visible={true}
-          overlayBlur={2}
-          loaderProps={{
-            size: "sm",
-          }}
-        />
+      <div className={rest.className}>
+        <div className={clsx("relative w-full h-full")}>
+          <LoadingOverlay
+            visible={true}
+            overlayBlur={2}
+            loaderProps={{
+              size: "sm",
+            }}
+          />
+        </div>
       </div>
     );
 
