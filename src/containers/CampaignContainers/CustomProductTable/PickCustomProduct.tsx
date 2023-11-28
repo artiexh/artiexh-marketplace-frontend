@@ -12,12 +12,14 @@ import {
   CommonResponseBase,
   PaginationResponseBase,
 } from "@/types/ResponseBase";
+import { currencyFormatter } from "@/utils/formatter";
 import {
   Accordion,
   ActionIcon,
   Button,
   Center,
   Indicator,
+  Input,
   Pagination,
   Table,
   Tooltip,
@@ -32,8 +34,10 @@ import {
 } from "@tabler/icons-react";
 import { useQueryClient } from "@tanstack/react-query";
 import clsx from "clsx";
+import _ from "lodash";
 import { useParams } from "next/navigation";
-import { useState } from "react";
+import { ppid } from "process";
+import { useEffect, useRef, useState } from "react";
 import useSWR from "swr";
 
 export default function PickCustomProduct({
@@ -58,86 +62,91 @@ export default function PickCustomProduct({
     pageNumber: 1,
     category: null,
     sortDirection: "ASC",
+    name: "",
   });
   const {
     data: response,
     isLoading,
     mutate,
   } = useSWR<CommonResponseBase<PaginationResponseBase<SimpleCustomProduct>>>(
-    ["/custom-products", params.pageNumber],
+    ["/custom-products", params.pageNumber, params.name],
     () => {
       return fetcher(
         `/custom-product?${new URLSearchParams({
           pageSize: params.pageSize.toString(),
           pageNumber: params.pageNumber.toString(),
+          name: params.name ?? "",
         }).toString()}`
       );
     }
   );
 
-  if (isLoading) return null;
-
-  if (response?.data.totalSize === 0) {
-    return (
-      <div className="h-screen w-full flex flex-col justify-center items-center">
-        <h1>
-          You have no design item to create campaign. Create your first design
-          now!
-        </h1>
-        <Button className="mt-5" variant="default">
-          Create new design
-        </Button>
-      </div>
-    );
-  }
+  const searchHandler = useRef(
+    _.debounce((value: string) => {
+      setParams((prev) => ({
+        ...prev,
+        pageNumber: 1,
+        name: value,
+      }));
+    }, 500)
+  );
 
   return (
     <>
       <div className="flex gap-x-4">
-        <div className="inventory-list flex-1 flex flex-col gap-y-4">
-          {response?.data.items?.map((designItem) => (
-            <DesignItemCard
-              key={designItem.id}
-              data={designItem}
-              actions={
-                <div className="flex gap-x-2">
-                  <Tooltip label="View design detail">
-                    <IconEye
-                      className="w-6 aspect-square"
-                      onClick={() => setSelectedDesign(designItem)}
-                    />
-                  </Tooltip>
-                  {collection
-                    .map((el) => el.id.toString())
-                    .indexOf(designItem.id.toString()) === -1 ? (
-                    <Tooltip label="Add design to campaign">
-                      <IconCirclePlus
-                        className="w-6 aspect-square"
-                        onClick={() =>
-                          setCollection((prev) => [...prev, designItem])
-                        }
+        <div className="inventory-list flex flex-col flex-1 gap-y-4">
+          <Input
+            name="name"
+            className="w-full"
+            placeholder="Search"
+            onChange={(e) => searchHandler.current(e.target.value)}
+          />
+          <div className="min-h-[38rem] flex flex-col gap-y-4">
+            {response?.data.items?.map((designItem) => (
+              <DesignItemCard
+                key={designItem.id}
+                data={designItem}
+                actions={
+                  <div className="flex gap-x-2">
+                    <Tooltip label="View design detail">
+                      <IconEye
+                        className="w-4 aspect-square"
+                        onClick={() => setSelectedDesign(designItem)}
                       />
                     </Tooltip>
-                  ) : (
-                    <Tooltip label="Remove design from campaign">
-                      <IconCircleMinus
-                        className="w-6 aspect-square"
-                        onClick={() =>
-                          setCollection((prev) =>
-                            prev.filter(
-                              (str) =>
-                                str.id.toString() !== designItem.id.toString()
+                    {collection
+                      .map((el) => el.id.toString())
+                      .indexOf(designItem.id.toString()) === -1 ? (
+                      <Tooltip label="Add design to campaign">
+                        <IconCirclePlus
+                          className="w-4 aspect-square"
+                          onClick={() =>
+                            setCollection((prev) => [...prev, designItem])
+                          }
+                        />
+                      </Tooltip>
+                    ) : (
+                      <Tooltip label="Remove design from campaign">
+                        <IconCircleMinus
+                          className="w-4 aspect-square"
+                          onClick={() =>
+                            setCollection((prev) =>
+                              prev.filter(
+                                (str) =>
+                                  str.id.toString() !== designItem.id.toString()
+                              )
                             )
-                          )
-                        }
-                      />
-                    </Tooltip>
-                  )}
-                </div>
-              }
-            />
-          ))}
-          <div className="flex justify-center mt-6 mb-20">
+                          }
+                        />
+                      </Tooltip>
+                    )}
+                  </div>
+                }
+              />
+            ))}
+          </div>
+
+          <div className="flex justify-center mb-4">
             <Pagination
               value={params.pageNumber}
               onChange={(e) => {
@@ -150,7 +159,7 @@ export default function PickCustomProduct({
             />
           </div>
         </div>
-        <div className="flex-1">
+        <div className="flex-1 h-fit">
           <PickProvider data={collection} />
         </div>
       </div>
@@ -204,7 +213,7 @@ function PickProvider({ data }: { data: SimpleCustomProduct[] }) {
 
   return (
     <>
-      <div className="flex w-full gap-x-4 justify-end items-center mt-3">
+      <div className="flex w-full gap-x-4 justify-end items-center mt-1">
         <Indicator
           classNames={{
             root: "h-fit",
@@ -218,96 +227,108 @@ function PickProvider({ data }: { data: SimpleCustomProduct[] }) {
       </div>
 
       {!isLoading && (
-        <div className="overflow-y-scroll">
-          <Accordion multiple={true} chevronPosition="left">
-            {response?.data.data.map((item) => (
-              <Accordion.Item value={item.businessName} key={item.businessCode}>
-                <Center>
-                  <Accordion.Control>
-                    {item.customProducts.length === data.length ? (
-                      <div>
-                        {item.businessName} - Tổng giá:
-                        {item.customProducts.reduce(
-                          (prev, cur) =>
-                            cur.config?.basePriceAmount ?? 0 + prev,
-                          0
-                        )}
-                      </div>
-                    ) : (
-                      <div className="!text-gray-500">
-                        {item.businessName} - Có sản phẩm không hỗ trợ
-                      </div>
-                    )}
-                  </Accordion.Control>
-                  <ActionIcon variant="subtle" color="gray" className="ml-4">
-                    {provider === item.businessCode ? (
-                      <ImageWithFallback
-                        src="/assets/logo.svg"
-                        onClick={() => setProvider(undefined)}
-                        alt={""}
-                      />
-                    ) : (
-                      <IconCircle
-                        className={clsx(
-                          "w-10",
-                          item.customProducts.length !== data.length &&
-                            "text-gray-500 cursor-default"
-                        )}
-                        size={24}
-                        width={24}
-                        height={24}
-                        onClick={
-                          item.customProducts.length === data.length
-                            ? () => setProvider(item.businessCode)
-                            : undefined
-                        }
-                      />
-                    )}
-                  </ActionIcon>
-                </Center>
-                <Accordion.Panel>
-                  {
-                    <Table>
-                      <thead>
-                        <tr>
-                          <th>Design</th>
-                          <th>Price</th>
-                          <th>Time</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {data?.map((designItem) => {
-                          const configItem = item.customProducts.find(
-                            (el) =>
-                              el.id.toString() === designItem.id.toString()
-                          );
+        <div>
+          <Accordion
+            multiple={true}
+            chevronPosition="left"
+            className="overflow-y-scroll max-h-[35rem]"
+          >
+            {response?.data.data
+              .sort((a, b) => a.businessCode.localeCompare(b.businessCode))
+              .map((item) => (
+                <Accordion.Item
+                  value={item.businessName}
+                  key={item.businessCode}
+                >
+                  <Center>
+                    <Accordion.Control>
+                      {item.customProducts.length === data.length ? (
+                        <div>{item.businessName}</div>
+                      ) : (
+                        <div className="!text-gray-500">
+                          {item.businessName} - Có sản phẩm không hỗ trợ
+                        </div>
+                      )}
+                    </Accordion.Control>
+                    <ActionIcon variant="subtle" color="gray" className="ml-4">
+                      {provider === item.businessCode ? (
+                        <ImageWithFallback
+                          src="/assets/logo.svg"
+                          onClick={() => setProvider(undefined)}
+                          alt={""}
+                        />
+                      ) : (
+                        <IconCircle
+                          className={clsx(
+                            "w-10",
+                            item.customProducts.length !== data.length &&
+                              "text-gray-500 cursor-default"
+                          )}
+                          size={24}
+                          width={24}
+                          height={24}
+                          onClick={
+                            item.customProducts.length === data.length
+                              ? () => setProvider(item.businessCode)
+                              : undefined
+                          }
+                        />
+                      )}
+                    </ActionIcon>
+                  </Center>
+                  <Accordion.Panel>
+                    {
+                      <Table>
+                        <thead>
+                          <tr>
+                            <th>Tên</th>
+                            <th>Giá sản xuất</th>
+                            <th>Tối thiểu</th>
+                            <th>Thời gian</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {data?.map((designItem) => {
+                            const configItem = item.customProducts.find(
+                              (el) =>
+                                el.id.toString() === designItem.id.toString()
+                            );
 
-                          if (!configItem) {
+                            if (!configItem) {
+                              return (
+                                <tr
+                                  className="text-red-600"
+                                  key={designItem.name}
+                                >
+                                  <td>{designItem.name}</td>
+                                  <td>Không hỗ trợ</td>
+                                  <td>Không hỗ trợ</td>
+                                  <td>Không hỗ trợ</td>
+                                </tr>
+                              );
+                            }
                             return (
-                              <tr
-                                className="text-red-600"
-                                key={designItem.name}
-                              >
+                              <tr key={designItem.name}>
                                 <td>{designItem.name}</td>
-                                <td>Không hỗ trợ</td>
-                                <td>Không hỗ trợ</td>
+                                <td className="text-end">
+                                  {currencyFormatter(
+                                    configItem.config.basePriceAmount
+                                  )}{" "}
+                                  / cái
+                                </td>
+                                <td className="text-end">
+                                  {configItem.config.minQuantity} cái
+                                </td>
+                                <td>{configItem.config.manufacturingTime}</td>
                               </tr>
                             );
-                          }
-                          return (
-                            <tr key={designItem.name}>
-                              <td>{designItem.name}</td>
-                              <td>{configItem.config.basePriceAmount}</td>
-                              <td>{configItem.config.manufacturingTime}</td>
-                            </tr>
-                          );
-                        })}
-                      </tbody>
-                    </Table>
-                  }
-                </Accordion.Panel>
-              </Accordion.Item>
-            )) ?? null}
+                          })}
+                        </tbody>
+                      </Table>
+                    }
+                  </Accordion.Panel>
+                </Accordion.Item>
+              )) ?? null}
           </Accordion>
         </div>
       )}

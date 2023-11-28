@@ -39,17 +39,15 @@ export default function CustomProductTable({
       modalId: "custom-product-create-campaign",
       title: "Pick custom products",
       centered: true,
-      classNames: {
-        // content: "!max-h-none",
-      },
-      fullScreen: true,
+
+      size: "80rem",
       children: <PickCustomProduct defaultValues={rawData} />,
     });
   };
 
   return (
-    <>
-      <div className="table-header flex w-full justify-between">
+    <div className="py-5 px-7 bg-white shadow rounded-lg">
+      <div className="table-header flex w-full justify-between ">
         <div className="flex justify-end gap-x-2 items-center">
           <Text>
             Provider:{" "}
@@ -105,7 +103,7 @@ export default function CustomProductTable({
             })}
         />
       </div>
-    </>
+    </div>
   );
 }
 

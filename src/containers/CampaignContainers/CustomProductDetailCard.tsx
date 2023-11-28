@@ -332,26 +332,27 @@ function CustomProductGeneralInfo({
               clearable={false}
               disabled
             />
-
-            <div className="grid grid-cols-3 mt-4">
-              {attaches
-                .filter((item) => item.type !== "THUMBNAIL")
-                .map((data, index) => (
-                  <div key={data.id} className="col-span-1">
-                    <Thumbnail
-                      url={data.url}
-                      defaultPlaceholder={
-                        <div className="flex flex-col items-center">
-                          <p className="text-4xl font-thin">+</p>
-                          <p>Add thumbnail</p>
-                        </div>
-                      }
-                      clearable={false}
-                      disabled
-                    />
-                  </div>
-                ))}
-            </div>
+            <Input.Wrapper label="Attachments" className="mt-4">
+              <div className="grid grid-cols-3 gap-x-4">
+                {attaches
+                  .filter((item) => item.type !== "THUMBNAIL")
+                  .map((data, index) => (
+                    <div key={data.id} className="col-span-1">
+                      <Thumbnail
+                        url={data.url}
+                        defaultPlaceholder={
+                          <div className="flex flex-col items-center">
+                            <p className="text-4xl font-thin">+</p>
+                            <p>Add thumbnail</p>
+                          </div>
+                        }
+                        clearable={false}
+                        disabled
+                      />
+                    </div>
+                  ))}
+              </div>
+            </Input.Wrapper>
           </div>
         </div>
       </div>
