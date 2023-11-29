@@ -184,10 +184,6 @@ export default function ProductDesignPage() {
       >
         {productBaseId.current && (
           <ProductBaseDetailModalContent
-            productName={
-              response?.data.items.find((el) => el.id == productBaseId.current)
-                ?.name ?? ""
-            }
             productBaseId={productBaseId.current}
           />
         )}
@@ -236,12 +232,10 @@ export default function ProductDesignPage() {
 
 type ProductBaseDetailModalContentProps = {
   productBaseId: string;
-  productName: string;
 };
 
 function ProductBaseDetailModalContent({
   productBaseId,
-  productName,
 }: ProductBaseDetailModalContentProps) {
   const { data: response, isLoading } = useSWR<
     CommonResponseBase<ProductBaseDetail>
