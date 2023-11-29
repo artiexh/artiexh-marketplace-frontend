@@ -2,9 +2,13 @@ import ImageWithFallback from "@/components/ImageWithFallback/ImageWithFallback"
 import { ArtistProductColumnType } from "@/types/Product";
 import { TableColumns } from "@/types/Table";
 import { currencyFormatter } from "@/utils/formatter";
-import { IconBallpen } from "@tabler/icons-react";
+import { IconBallpen, IconEye } from "@tabler/icons-react";
 
-const shopProductColumns: TableColumns<ArtistProductColumnType> = [
+const shopProductColumns: TableColumns<
+  ArtistProductColumnType & {
+    onView?: () => void;
+  }
+> = [
   {
     title: "Product code",
     key: "productCode",
@@ -43,21 +47,15 @@ const shopProductColumns: TableColumns<ArtistProductColumnType> = [
     className: "!text-center w-[10rem]",
   },
   {
-    title: "Sold quantity",
-    dataIndex: "soldQuantity",
-    key: "soldQuantity",
-    className: "!text-center w-[10rem]",
-  },
-  {
     title: "Action",
     key: "action",
     action: "EDIT",
     className: "!text-center",
-    render: (_, actionHandler) => (
+    render: (record) => (
       <div className="flex justify-center">
-        <IconBallpen
+        <IconEye
           className="cursor-pointer"
-          onClick={() => actionHandler && actionHandler()}
+          onClick={() => record.onView && record.onView()}
         />
       </div>
     ),

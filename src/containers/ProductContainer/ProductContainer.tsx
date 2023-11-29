@@ -188,7 +188,7 @@ export default function ProductDetailContainer({
   };
 
   return (
-    <div>
+    <>
       <form
         className="create-product-container flex flex-col gap-5 w-full pb-5"
         onSubmit={onSubmit(submitHandler)}
@@ -362,6 +362,6 @@ export default function ProductDetailContainer({
           </Button>
         </div>
       </form>
-    </div>
+    </>
   );
 }

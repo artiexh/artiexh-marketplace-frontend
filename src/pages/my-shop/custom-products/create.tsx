@@ -13,7 +13,7 @@ import {
 } from "@/types/ResponseBase";
 import { currencyFormatter } from "@/utils/formatter";
 import { Carousel } from "@mantine/carousel";
-import { Button, Divider, Modal, Pagination } from "@mantine/core";
+import { Button, Card, Divider, Modal, Pagination } from "@mantine/core";
 import { UseFormReturnType, useForm } from "@mantine/form";
 import { useDisclosure } from "@mantine/hooks";
 import {
@@ -175,9 +175,19 @@ export default function ProductDesignPage() {
           <h2 className="font-bold text-xl">Create custom product</h2>
         </div>
       </div>
-      <Modal opened={opened} onClose={close} centered fullScreen>
+      <Modal
+        opened={opened}
+        onClose={close}
+        centered
+        size="80rem"
+        padding={"lg"}
+      >
         {productBaseId.current && (
           <ProductBaseDetailModalContent
+            productName={
+              response?.data.items.find((el) => el.id == productBaseId.current)
+                ?.name ?? ""
+            }
             productBaseId={productBaseId.current}
           />
         )}
@@ -226,10 +236,12 @@ export default function ProductDesignPage() {
 
 type ProductBaseDetailModalContentProps = {
   productBaseId: string;
+  productName: string;
 };
 
 function ProductBaseDetailModalContent({
   productBaseId,
+  productName,
 }: ProductBaseDetailModalContentProps) {
   const { data: response, isLoading } = useSWR<
     CommonResponseBase<ProductBaseDetail>
@@ -243,7 +255,6 @@ function ProductBaseDetailModalContent({
 
   return (
     <div className="w-full h-full">
-      <h1 className="font-bold">{response?.data.name}</h1>
       <div className="w-full flex gap-12">
         <div className="images-wrapper flex flex-col flex-1">
           <Carousel
@@ -260,8 +271,7 @@ function ProductBaseDetailModalContent({
                   <ImageWithFallback
                     fallback="/assets/default-thumbnail.jpg"
                     src={image.url}
-                    className=""
-                    object-contain
+                    className="object-cover w-full h-full"
                     alt={image.title}
                   />
                 </div>
@@ -394,99 +404,131 @@ function VariantAndProviderPicker({
       })
     : undefined;
 
+  const calculatePrice = (variant: SimpleProductVariant) => {
+    const min = Math.min(
+      ...variant.providerConfigs.map((el) => el.basePriceAmount)
+    );
+    const max = Math.max(
+      ...variant.providerConfigs.map((el) => el.basePriceAmount)
+    );
+
+    if (typeof min !== "number" || typeof max !== "number") return "N/A";
+
+    if (min === max) return `${currencyFormatter(min)} /cái`;
+
+    return `${currencyFormatter(min)} - ${currencyFormatter(max)} /cái`;
+  };
+
+  const calculateQuantity = (variant: SimpleProductVariant) => {
+    const min = Math.min(
+      ...variant.providerConfigs.map((el) => el.minQuantity)
+    );
+
+    if (typeof min !== "number") return "N/A";
+
+    return `${min} cái`;
+  };
+
   return (
     <div className="w-full flex flex-col gap-y-5">
-      <div className="variant-picker">
-        <div className="flex w-full justify-between">
-          <h2 className="font-semibold text-xl">Variants</h2>
-          <Button
-            disabled={!validVariant}
-            className="rounded-full bg-primary !text-white"
-            onClick={() =>
-              variantResponse?.data.items?.[0] &&
-              createDesignItem(variantResponse?.data.items?.[0].id.toString())
-            }
-          >
-            Start to design!
-          </Button>
+      <div className="variant-picker mt-2">
+        <div className="flex flex-col w-full mb-1">
+          <h1 className="font-bold mb-0 leading-tight">{productBase.name}</h1>
+          {productBase.productOptions.length && (
+            <h2 className="font-thin text-lg text-gray-500">
+              Vui lòng chọn option để tìm ra template phù hợp với bạn
+            </h2>
+          )}
         </div>
-        {productBase.productOptions
-          .sort((a, b) => a.id - b.id)
-          .map((option) => (
-            <div key={option.id} className="flex flex-col gap-y-1.5 mb-2">
-              <div>
-                {option.name} {option.isOptional ? "(Optional)" : null}
-              </div>
-              <div className="button-groups flex gap-x-2">
-                {option.optionValues
-                  .sort((a, b) => a.id - b.id)
-                  .map((value) => (
-                    <Button
-                      onClick={() => {
-                        if (queryObject[option.id] === value.id.toString()) {
-                          setQueryObject((prev) => ({
-                            ...prev,
-                            [option.id]: undefined,
-                          }));
-                        } else {
-                          setQueryObject((prev) => ({
-                            ...prev,
-                            [option.id]: value.id,
-                          }));
-                        }
-                      }}
-                      disabled={
-                        !optionSuggestionRes?.data[option.id]?.includes(
-                          value.id.toString()
-                        )
-                      }
-                      variant={
-                        queryObject[option.id] === value.id.toString()
-                          ? "filled"
-                          : "outline"
-                      }
-                      className={clsx(
-                        "text-black hover:text-white rounded-full",
-                        queryObject[option.id] === value.id.toString() &&
-                          "!text-white bg-primary"
-                      )}
-                      key={value.id}
-                    >
-                      {value.name}
-                    </Button>
-                  ))}
-              </div>
-            </div>
-          ))}
-      </div>
-      <div className="provider-picker">
-        <h2 className="font-semibold text-xl mb-3">Avaialable provider</h2>
-        <div className="flex flex-col gap-y-4">
-          {validVariant?.providerConfigs?.map((config) => (
-            <div key={config.businessCode}>
-              <div className="size-description flex gap-x-3">
-                <div className="w-20 aspect-square bg-primary rounded-md" />
-                <div className="flex flex-col justify-between">
-                  <div>
-                    <div className="text-lg font-semibold">Provider named</div>
-                    <div className="mt-1 text-sm text-gray-400">
-                      <span>
-                        Manufacturing time: {config.manufacturingTime}
-                      </span>{" "}
-                      -<span>Minimum quantity: {config.minQuantity}</span>
-                    </div>
+        {productBase.productOptions.length && (
+          <Card
+            withBorder
+            padding="sm"
+            radius="md"
+            className="flex flex-col gap-y-2"
+          >
+            {productBase.productOptions
+              .sort((a, b) => a.id - b.id)
+              .map((option) => (
+                <div key={option.id} className="flex flex-col gap-y-1 mb-2">
+                  <div className="text-md font-semibold">
+                    {option.name} {option.isOptional ? "(Optional)" : null}
                   </div>
-                  <div className="flex justify-end">
-                    <span className="font-semibold">
-                      From: {currencyFormatter(config.basePriceAmount)}
-                    </span>
+                  <div className="button-groups flex gap-x-2">
+                    {option.optionValues
+                      .sort((a, b) => a.id - b.id)
+                      .map((value) => (
+                        <Button
+                          onClick={() => {
+                            if (
+                              queryObject[option.id] === value.id.toString()
+                            ) {
+                              setQueryObject((prev) => ({
+                                ...prev,
+                                [option.id]: undefined,
+                              }));
+                            } else {
+                              setQueryObject((prev) => ({
+                                ...prev,
+                                [option.id]: value.id,
+                              }));
+                            }
+                          }}
+                          disabled={
+                            !optionSuggestionRes?.data[option.id]?.includes(
+                              value.id.toString()
+                            )
+                          }
+                          variant={
+                            queryObject[option.id] === value.id.toString()
+                              ? "filled"
+                              : "outline"
+                          }
+                          className={clsx(
+                            "text-black hover:text-white rounded-full",
+                            queryObject[option.id] === value.id.toString() &&
+                              "!text-white bg-primary"
+                          )}
+                          key={value.id}
+                        >
+                          {value.name}
+                        </Button>
+                      ))}
                   </div>
                 </div>
-              </div>
-            </div>
-          ))}
-        </div>
+              ))}
+          </Card>
+        )}
       </div>
+      {validVariant && (
+        <Card withBorder padding="sm" radius="md" className="provider-picker">
+          <Card.Section withBorder inheritPadding py="xs">
+            <h2 className="font-semibold text-lg">Bắt đầu thiết kế với</h2>
+          </Card.Section>
+
+          <div className="flex flex-col gap-y-2 mt-3">
+            <div>
+              <strong>Giá:</strong> {calculatePrice(validVariant)}
+            </div>
+            <div>
+              <strong>Sản xuất tối thiểu:</strong>{" "}
+              {calculateQuantity(validVariant)}
+            </div>
+          </div>
+          <div className="w-full flex justify-end mt-4">
+            <Button
+              disabled={!validVariant}
+              className="rounded-full bg-primary !text-white"
+              onClick={() =>
+                variantResponse?.data.items?.[0] &&
+                createDesignItem(variantResponse?.data.items?.[0].id.toString())
+              }
+            >
+              Start to design!
+            </Button>
+          </div>
+        </Card>
+      )}
     </div>
   );
 }

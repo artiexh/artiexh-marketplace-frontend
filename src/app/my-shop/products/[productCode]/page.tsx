@@ -22,7 +22,7 @@ const ProductDetailPage = () => {
   if (isLoading || !response?.data) return null;
 
   return (
-    <div className="layout-with-sidenav max-w-7xl mx-auto flex gap-10 px-5">
+    <div className="layout-with-sidenav mx-auto flex gap-10 px-5">
       <ProductDetailContainer data={response.data} />
     </div>
   );

@@ -4,6 +4,7 @@ import TableComponent from "@/components/TableComponent";
 import shopProductColumns from "@/constants/Columns/shopProductColumns";
 import axiosClient from "@/services/backend/axiosClient";
 import { SimpleCustomProduct } from "@/types/CustomProduct";
+import { ProductInventory } from "@/types/Product";
 import {
   CommonResponseBase,
   PaginationResponseBase,
@@ -30,7 +31,7 @@ export default function ProductTablePage() {
     ["product-inventory", ...Object.values(params)],
     () =>
       axiosClient.get<
-        CommonResponseBase<PaginationResponseBase<SimpleCustomProduct>>
+        CommonResponseBase<PaginationResponseBase<ProductInventory>>
       >("/product-inventory", {
         params: params,
       })
@@ -71,10 +72,9 @@ export default function ProductTablePage() {
               data={data?.items.map((item) => {
                 return {
                   ...item,
-                  onDesign: () =>
-                    router.push(`/my-shop/custom-products/${item.id}/design`),
-                  onEdit: () =>
-                    router.push(`/my-shop/custom-products/${item.id}/details`),
+                  onView: () => {
+                    router.push(`/my-shop/products/${item.productCode}`);
+                  },
                 };
               })}
             />
