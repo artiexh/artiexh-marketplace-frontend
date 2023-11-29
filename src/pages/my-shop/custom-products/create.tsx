@@ -428,13 +428,13 @@ function VariantAndProviderPicker({
       <div className="variant-picker mt-2">
         <div className="flex flex-col w-full mb-1">
           <h1 className="font-bold mb-0 leading-tight">{productBase.name}</h1>
-          {productBase.productOptions.length && (
+          {productBase.productOptions.length ? (
             <h2 className="font-thin text-lg text-gray-500">
               Vui lòng chọn option để tìm ra template phù hợp với bạn
             </h2>
-          )}
+          ) : null}
         </div>
-        {productBase.productOptions.length && (
+        {productBase.productOptions.length ? (
           <Card
             withBorder
             padding="sm"
@@ -492,7 +492,7 @@ function VariantAndProviderPicker({
                 </div>
               ))}
           </Card>
-        )}
+        ) : null}
       </div>
       {validVariant && (
         <Card withBorder padding="sm" radius="md" className="provider-picker">
