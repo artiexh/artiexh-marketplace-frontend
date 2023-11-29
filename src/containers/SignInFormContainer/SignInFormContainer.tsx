@@ -104,7 +104,7 @@ const SignInFormContainer = () => {
         {...form.getInputProps("password")}
       />
 
-      <Button type="submit" className="bg-primary" disabled={isSubmitting}>
+      <Button type="submit" className="bg-primary !text-white" disabled={isSubmitting}>
         Đăng nhập
       </Button>
     </form>

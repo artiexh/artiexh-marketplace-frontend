@@ -116,7 +116,7 @@ const SignUpFormContainer = () => {
       />
       <Button
         type="submit"
-        className="bg-primary"
+        className="bg-primary !text-white"
         disabled={isSubmitting || hasErrors}
       >
         Đăng kí

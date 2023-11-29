@@ -42,7 +42,7 @@ const SignUpPage = () => {
       </div>
       <div className="footer-wrapper_mobile sm:hidden">
         Đã có tài khoản?{" "}
-        <Link href="/auth/signin" className="font-bold text-primary">
+        <Link href="/auth/signin" className="font-bold text-primary !text-white">
           Đăng nhập
         </Link>
       </div>

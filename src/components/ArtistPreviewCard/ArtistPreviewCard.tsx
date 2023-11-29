@@ -7,6 +7,7 @@ import ImageWithFallback from "../ImageWithFallback/ImageWithFallback";
 
 export default function ArtistPreviewCard({ artist }: { artist: Artist }) {
   const router = useRouter();
+  console.log(artist);
 
   return (
     <div
@@ -25,6 +26,9 @@ export default function ArtistPreviewCard({ artist }: { artist: Artist }) {
       </div>
       <div className="p-2.5 sm:p-6 sm:text-xl md:p-4 md:text-lg md:leading-snug">
         <div className="font-semibold product-name">{artist?.displayName}</div>
+        <div className="text-slate-400 text-base description">
+          {artist.description}
+        </div>
       </div>
     </div>
   );
