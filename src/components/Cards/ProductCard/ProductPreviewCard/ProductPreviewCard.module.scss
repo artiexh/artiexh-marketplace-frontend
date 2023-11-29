@@ -1,6 +1,7 @@
 .product-preview-card {
   :global {
-    .product-name {
+    .product-name,
+    .description {
       overflow: hidden;
       text-overflow: ellipsis;
       -webkit-line-clamp: 2;

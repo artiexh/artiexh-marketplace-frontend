@@ -139,7 +139,7 @@ const HomePage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = ({
           <div className="font-bold text-xl">Artist của Arty</div>
           <div
             className="font-semibold hidden lg:block cursor-pointer"
-            onClick={() => router.push(ROUTE.PRODUCT_LIST)}
+            onClick={() => router.push("/shop")}
           >
             Xem tất cả
           </div>
