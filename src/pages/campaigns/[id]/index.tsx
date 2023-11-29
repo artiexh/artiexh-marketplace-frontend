@@ -163,12 +163,14 @@ export default function CampaignDetailPage() {
           </div>
         </div>
       </div>
-      <div className="text-center mt-20 text-2xl font-semibold">Nội dung</div>
-      <div
-        dangerouslySetInnerHTML={{
-          __html: DOMPurify.sanitize(campaignData.content),
-        }}
-      />
+      <div className="bg-white mt-20 shadow p-10 rounded">
+        <div className="text-center text-2xl font-semibold">Nội dung</div>
+        <div
+          dangerouslySetInnerHTML={{
+            __html: DOMPurify.sanitize(campaignData.content),
+          }}
+        />
+      </div>
     </div>
   );
 }
