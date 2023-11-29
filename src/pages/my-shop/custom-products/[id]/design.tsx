@@ -261,7 +261,12 @@ function DecalWithImage(
         scale[2],
       ]}
     >
-      <meshBasicMaterial map={texture} polygonOffset polygonOffsetFactor={-1} />
+      <meshBasicMaterial
+        transparent
+        map={texture}
+        polygonOffset
+        polygonOffsetFactor={-1}
+      />
     </Decal>
   );
 }
