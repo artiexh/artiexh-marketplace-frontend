@@ -18,6 +18,7 @@ export type Comment = {
   createdAt: string;
   owner: User;
   content: string;
+  createdDate: string;
 };
 
 export type PostBody = {
