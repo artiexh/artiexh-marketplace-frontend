@@ -78,23 +78,6 @@ const ProductInfo: FC<ProductInfoProps> = ({ product, special }) => {
             {new Date(campaign.from).toLocaleDateString()}
           </div>
         )}
-        <div className="flex gap-2 items-center">
-          <span className="text-lg font-semibold">So luong</span>
-          {product.quantity > 0 && (
-            <NumberInput
-              classNames={{
-                input: "w-20",
-              }}
-              thousandsSeparator=","
-              value={quantity}
-              onChange={setQuantity as any}
-              defaultValue={1}
-              min={1}
-              max={product.quantity}
-            />
-          )}
-          <span className="text-subtext">San pham</span>
-        </div>
       </div>
       <div className="flex gap-5 mt-5">
         <Button
