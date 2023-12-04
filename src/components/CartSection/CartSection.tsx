@@ -104,14 +104,14 @@ export default function CartSection({
       <div className="hidden sm:block">
         <Grid className="text-[#AFAFAF] font-bold text-sm md:text-base">
           <Grid.Col span={isCartPage ? 2 : 3} className="my-auto">
-            Product
+            Sản phẩm
           </Grid.Col>
           <Grid.Col span={3} className="my-auto"></Grid.Col>
           <Grid.Col span={isCartPage ? 2 : 3} className="my-auto">
-            Price
+            Giá
           </Grid.Col>
           <Grid.Col span={isCartPage ? 2 : 3} className="my-auto">
-            Quantity
+            Số lượng
           </Grid.Col>
           {isCartPage ? (
             <>

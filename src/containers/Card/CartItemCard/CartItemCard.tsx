@@ -1,6 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 import ImageWithFallback from "@/components/ImageWithFallback/ImageWithFallback";
 import LogoCheckbox from "@/components/LogoCheckbox/LogoCheckbox";
+import { NOTIFICATION_TYPE } from "@/constants/common";
 import {
   deleteCartItem,
   updateCartItem,
@@ -8,9 +9,11 @@ import {
 import { CartData, CartItem } from "@/services/backend/types/Cart";
 import { CampaignData } from "@/types/Campaign";
 import { currencyFormatter } from "@/utils/formatter";
-import { getCampaignType } from "@/utils/mapper";
-import { Grid, NumberInput } from "@mantine/core";
+import { getCampaignType, getNotificationIcon } from "@/utils/mapper";
+import { Grid, Input, NumberInput } from "@mantine/core";
+import { notifications } from "@mantine/notifications";
 import { IconTrash } from "@tabler/icons-react";
+import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
 import { KeyedMutator } from "swr";
 
@@ -38,8 +41,8 @@ export default function CartItemCard({
 
   const campaignType = getCampaignType(saleCampaign);
 
-  const updateCartQuantity = async (value: number) => {
-    if (!loading) {
+  const updateCartQuantityMutation = useMutation({
+    mutationFn: async (value: number) => {
       setLoading(true);
       const result = await updateCartItem(
         cartItem.productCode,
@@ -47,16 +50,29 @@ export default function CartItemCard({
         value
       );
 
-      if (result != null) {
-        setQuantity(value);
-        revalidateFunc?.();
-        setLoading(false);
-      }
-    }
-  };
+      if (result == null) throw result;
+    },
+    onSuccess: (_, variables) => {
+      setQuantity(variables);
+      notifications.show({
+        message: "Cập nhật số lượng thành công",
+        ...getNotificationIcon(NOTIFICATION_TYPE.SUCCESS),
+      });
+    },
+    onError: () => {
+      notifications.show({
+        message: "Cập nhật số lượng thất bại. Vui lòng thử lại sau giây lát",
+        ...getNotificationIcon(NOTIFICATION_TYPE.FAILED),
+      });
+    },
+    onSettled: () => {
+      revalidateFunc?.();
+      setLoading(false);
+    },
+  });
 
-  const deleteItemFromCart = async () => {
-    if (!loading) {
+  const deleteCartItemMutation = useMutation({
+    mutationFn: async () => {
       setLoading(true);
       const result = await deleteCartItem([
         {
@@ -64,14 +80,28 @@ export default function CartItemCard({
           saleCampaignId: saleCampaign.id,
         },
       ]);
-      if (result != null) {
-        deleteEvent?.();
-        revalidateFunc?.();
-        setQuantity(quantity);
-        setLoading(false);
-      }
-    }
-  };
+
+      if (result == null) throw result;
+    },
+    onSuccess: () => {
+      setQuantity(quantity);
+      notifications.show({
+        message: "Xóa sản phẩm thành công",
+        ...getNotificationIcon(NOTIFICATION_TYPE.SUCCESS),
+      });
+    },
+    onError: () => {
+      notifications.show({
+        message: "Xóa sản phẩm thất bại. Vui lòng thử lại sau giây lát",
+        ...getNotificationIcon(NOTIFICATION_TYPE.FAILED),
+      });
+    },
+    onSettled: () => {
+      deleteEvent?.();
+      revalidateFunc?.();
+      setLoading(false);
+    },
+  });
 
   return (
     <div className="cart-item-card">
@@ -110,8 +140,11 @@ export default function CartItemCard({
                 thousandsSeparator=","
                 value={quantity}
                 onChange={(value) => {
-                  if (typeof value === "number") {
-                    updateCartQuantity(value);
+                  if (
+                    typeof value === "number" &&
+                    !updateCartQuantityMutation.isLoading
+                  ) {
+                    updateCartQuantityMutation.mutate(value);
                   }
                 }}
                 defaultValue={1}
@@ -133,7 +166,10 @@ export default function CartItemCard({
                 <IconTrash
                   className="cursor-pointer"
                   size="1.125rem"
-                  onClick={deleteItemFromCart}
+                  onClick={() => {
+                    !deleteCartItemMutation.isLoading &&
+                      deleteCartItemMutation.mutate();
+                  }}
                 />
               </div>
             </Grid.Col>
@@ -166,16 +202,18 @@ export default function CartItemCard({
             <div className="flex gap-2 items-center">
               <div>Số lượng:</div>
               {cartItem.remainingQuantity > 0 && (
-                <NumberInput
-                  thousandsSeparator=","
+                <Input
                   className="w-[60px] md:w-[100px]"
                   value={quantity}
                   onChange={(value) => {
-                    if (typeof value === "number") {
-                      updateCartQuantity(value);
+                    console.log(value);
+                    if (
+                      typeof value === "number" &&
+                      updateCartQuantityMutation.isLoading === false
+                    ) {
+                      updateCartQuantityMutation.mutate(value);
                     }
                   }}
-                  defaultValue={1}
                   min={1}
                   max={cartItem.remainingQuantity}
                 />
@@ -187,7 +225,10 @@ export default function CartItemCard({
           <IconTrash
             className="cursor-pointer"
             size="1.125rem"
-            onClick={deleteItemFromCart}
+            onClick={() => {
+              !deleteCartItemMutation.isLoading &&
+                deleteCartItemMutation.mutate();
+            }}
           />
         </div>
       </div>

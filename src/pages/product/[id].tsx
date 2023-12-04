@@ -161,7 +161,7 @@ export const getStaticProps = async (context: GetStaticPropsContext) => {
         (item) => item.productCode !== data.data.productCode
       ),
     },
-    revalidate: 10,
+    revalidate: 2,
   };
 };
 

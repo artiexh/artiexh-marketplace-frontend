@@ -45,7 +45,7 @@ function CheckoutPage() {
 
   const [loading, setLoading] = useState<boolean>(false);
   const [selectedAddressId, setSelectedAddressId] = useState("");
-  const [paymentMethod, setPaymentMethod] = useState("");
+  const [paymentMethod, setPaymentMethod] = useState("VN_PAY");
   const [noteValues, setNoteValues] = useState<
     {
       shopId: string;
@@ -251,42 +251,66 @@ function CheckoutPage() {
             <CheckoutAddress />
           </div>
           <div className="mt-10">
-            {selectedCartItems.map((cartSection, idx) => (
-              <div key={idx}>
-                <div className="bg-white mt-10 p-2 sm:p-6 rounded-sm relative">
-                  <CartSectionComponent
-                    isCartPage={false}
-                    cartSection={cartSection}
-                    dispatch={dispatch}
-                    isChecked={isChecked}
-                    revalidateFunc={mutate as any}
-                  />
+            {selectedCartItems.map((cartSection, idx) => {
+              const subtotal = cartSection.items.reduce(
+                (acc, cartItem) =>
+                  acc + cartItem.price.amount * cartItem.quantity,
+                0
+              );
+              return (
+                <div key={idx}>
+                  <div className="bg-white mt-10 p-2 sm:p-6 rounded-sm relative">
+                    <CartSectionComponent
+                      isCartPage={false}
+                      cartSection={cartSection}
+                      dispatch={dispatch}
+                      isChecked={isChecked}
+                      revalidateFunc={mutate as any}
+                    />
+                  </div>
+                  <div className="bg-white mt-2 p-2 sm:p-6 rounded-sm relative">
+                    <div className="flex justify-between">
+                      <div>
+                        Phí vận chuyển: {`(${cartSection.items.length} món)`}
+                      </div>
+                      <div>{`${currencyFormatter(shippingFee ?? 0)}`}</div>
+                    </div>
+                    <div className="flex justify-between">
+                      <div>
+                        Tổng tiền {`(${cartSection.items.length} items)`}
+                      </div>
+                      <div>{`${currencyFormatter(
+                        subtotal + (shippingFee ?? 0)
+                      )}`}</div>
+                    </div>
+                  </div>
+                  <div className="bg-white p-2 sm:p-6 mt-2">
+                    Lời nhắn:{" "}
+                    <TextInput
+                      placeholder="Nhập lời nhắn cho shop"
+                      onChange={(event) => {
+                        const arr = noteValues.filter(
+                          (value) =>
+                            value.shopId !== cartSection.saleCampaign.id
+                        );
+                        arr.push({
+                          shopId: cartSection.saleCampaign.id,
+                          note: event.target.value,
+                        });
+                        setNoteValues(arr);
+                      }}
+                    />
+                  </div>
                 </div>
-                <div className="bg-white p-2 sm:p-6 mt-2">
-                  Lời nhắn:{" "}
-                  <TextInput
-                    placeholder="Nhập lời nhắn cho shop"
-                    onChange={(event) => {
-                      const arr = noteValues.filter(
-                        (value) => value.shopId !== cartSection.saleCampaign.id
-                      );
-                      arr.push({
-                        shopId: cartSection.saleCampaign.id,
-                        note: event.target.value,
-                      });
-                      setNoteValues(arr);
-                    }}
-                  />
-                </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
         <div
-          className="payment-sections bg-white p-6 lg:w-[30vw] mt-10 md:mt-0"
+          className="payment-sections bg-white p-6 lg:w-[30vw] mt-10 md:mt-0 sticky top-28"
           style={{ height: "fit-content" }}
         >
-          <div className="text-2xl font-bold mb-8">Select payment method</div>
+          <div className="text-2xl font-bold mb-8">Chọn phương thức</div>
           <div>
             {PAYMENT_ITEM.map((item) => (
               <div
@@ -313,20 +337,26 @@ function CheckoutPage() {
               </div>
             ))}
           </div>
-          <div className="text-2xl font-bold mt-10 mb-4">Order Summary</div>
+          <div className="text-2xl font-bold mt-10 mb-4">Đơn hàng</div>
           <div className="flex justify-between">
-            <div>Subtotal {`(${flattedCheckoutItems.length} items)`}</div>
+            <div>
+              Tổng tiền sản phẩm {`(${flattedCheckoutItems.length} món)`}
+            </div>
             <div>{`${currencyFormatter(totalPrice)}`}</div>
           </div>
           <div className="flex justify-between">
-            <div>Shipping fee: {`(${flattedCheckoutItems.length} items)`}</div>
-            <div>{`${currencyFormatter(shippingFee ?? 0)}`}</div>
+            <div>Tổng phí ship: {`(${flattedCheckoutItems.length} món)`}</div>
+            <div>{`${currencyFormatter(
+              (shippingFee ?? 0) * selectedCartItems.length
+            )}`}</div>
           </div>
           <Divider className="my-2" />
           <div className="flex justify-between">
-            <div>Total</div>
+            <div>Tổng tiền</div>
             <div>{`${currencyFormatter(
-              totalPrice + (isNumber(shippingFee) ? shippingFee : 0)
+              totalPrice +
+                (isNumber(shippingFee) ? shippingFee : 0) *
+                  selectedCartItems.length
             )}`}</div>
           </div>
           <div className="flex justify-center mt-10 mb-4">
@@ -335,7 +365,7 @@ function CheckoutPage() {
               className="bg-primary !text-white"
               onClick={paymentSubmit}
             >
-              Proceed to payment
+              Tiến hành thanh toán
             </Button>
           </div>
         </div>
