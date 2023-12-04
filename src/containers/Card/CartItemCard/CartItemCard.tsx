@@ -43,6 +43,14 @@ export default function CartItemCard({
 
   const updateCartQuantityMutation = useMutation({
     mutationFn: async (value: number) => {
+      if (value === 0) {
+        notifications.show({
+          message: "Số lượng sản phẩm không thể bằng 0",
+          ...getNotificationIcon(NOTIFICATION_TYPE.FAILED),
+        });
+        return;
+      }
+
       setLoading(true);
       const result = await updateCartItem(
         cartItem.productCode,
@@ -51,13 +59,17 @@ export default function CartItemCard({
       );
 
       if (result == null) throw result;
+
+      return result;
     },
-    onSuccess: (_, variables) => {
-      setQuantity(variables);
-      notifications.show({
-        message: "Cập nhật số lượng thành công",
-        ...getNotificationIcon(NOTIFICATION_TYPE.SUCCESS),
-      });
+    onSuccess: (data, variables) => {
+      if (data) {
+        setQuantity(variables);
+        notifications.show({
+          message: "Cập nhật số lượng thành công",
+          ...getNotificationIcon(NOTIFICATION_TYPE.SUCCESS),
+        });
+      }
     },
     onError: () => {
       notifications.show({
@@ -206,7 +218,6 @@ export default function CartItemCard({
                   className="w-[60px] md:w-[100px]"
                   value={quantity}
                   onChange={(value) => {
-                    console.log(value);
                     if (
                       typeof value === "number" &&
                       updateCartQuantityMutation.isLoading === false
