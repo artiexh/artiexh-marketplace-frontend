@@ -36,7 +36,7 @@ const ProductDetailPage: NextPage<
   console.log(product);
 
   const { description, attaches, owner, saleCampaign: campaign } = product;
-  console.log("🚀 ~ file: [id].tsx:36 ~ campaign:", campaign);
+
   const campaignType = getCampaignType(campaign);
   const campaignTime = getCampaignTime(
     campaign.from,
@@ -113,11 +113,7 @@ const ProductDetailPage: NextPage<
           <ProductInfo
             key={product.productCode}
             product={product}
-            special={
-              product.quantity > 0
-                ? `Số lượng còn lại: ${product.quantity}`
-                : "Đã hết hàng!"
-            }
+            special={product.quantity > 0 ? `` : "Đã hết hàng!"}
           />
           <Description description={description} />
           <ShopCard
@@ -148,7 +144,6 @@ export const getStaticProps = async (context: GetStaticPropsContext) => {
       params.id?.split("_")[1]
     }`
   );
-  console.log("🚀 ~ file: [id].tsx:155 ~ getStaticProps ~ data:", data);
 
   const { data: productList } = await axiosClient.get<
     CommonResponseBase<PaginationResponseBase<Product>>
