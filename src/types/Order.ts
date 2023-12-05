@@ -20,7 +20,7 @@ type OrderTransaction = {
   transactionStatus: string;
 };
 
-type OrderItemDetail = {
+export type OrderItemDetail = {
   id: string;
   status: string;
   name: string;
@@ -45,6 +45,7 @@ export type Order = {
       id: string;
       username: string;
     };
+    createdDate: string;
     description: string;
     from: string;
     id: string;

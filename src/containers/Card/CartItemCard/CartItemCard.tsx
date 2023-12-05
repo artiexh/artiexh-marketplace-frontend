@@ -82,7 +82,7 @@ export default function CartItemCard({
               <LogoCheckbox
                 configClass="absolute -top-2 -left-2"
                 clickEvent={() => {
-                  if (campaignType !== "IN_COMING") {
+                  if (!["IN_COMING", "CLOSED"].includes(campaignType)) {
                     selectEvent?.();
                   }
                 }}
@@ -145,7 +145,7 @@ export default function CartItemCard({
           <LogoCheckbox
             configClass="absolute -top-2 -left-2"
             clickEvent={() => {
-              if (campaignType !== "IN_COMING") {
+              if (!["IN_COMING", "CLOSED"].includes(campaignType)) {
                 selectEvent?.();
               }
             }}

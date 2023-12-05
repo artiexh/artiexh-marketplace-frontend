@@ -51,7 +51,7 @@ export default function CartSection({
         <LogoCheckbox
           configClass="absolute -top-2 -left-2"
           clickEvent={() => {
-            if (campaignType !== "IN_COMING") {
+            if (!["IN_COMING", "CLOSED"].includes(campaignType)) {
               dispatch(
                 toggleSelectItems({
                   cartSection: {
@@ -72,6 +72,13 @@ export default function CartSection({
         <div className="text-red-500 mb-4">
           (Bạn chỉ có thể mua sản phẩm này sau ngày{" "}
           {new Date(cartSection.saleCampaign.from).toLocaleDateString()})
+        </div>
+      )}
+      {campaignType === "CLOSED" && (
+        <div className="text-red-500 mb-4">
+          (Chiến dịch này đã kết thúc vào{" "}
+          {new Date(cartSection.saleCampaign.to).toLocaleDateString()}. Vui lòng
+          xóa sản phẩm ra khỏi giỏ hàng!)
         </div>
       )}
       <div className="flex justify-between items-center">

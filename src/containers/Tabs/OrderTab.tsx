@@ -1,16 +1,16 @@
+import OrderCard from "@/components/OrderCard";
 import { ORDER_STATUS } from "@/constants/common";
-import { Badge } from "@mantine/core";
-import { useState } from "react";
-import clsx from "clsx";
-import useSWR from "swr";
 import axiosClient from "@/services/backend/axiosClient";
+import { Order } from "@/types/Order";
 import {
   CommonResponseBase,
   PaginationResponseBase,
 } from "@/types/ResponseBase";
-import { Order } from "@/types/Order";
-import OrderCard from "@/components/OrderCard";
 import { getQueryString } from "@/utils/formatter";
+import { Badge } from "@mantine/core";
+import clsx from "clsx";
+import { useState } from "react";
+import useSWR from "swr";
 
 export default function OrderTab() {
   // readonly

@@ -1,10 +1,12 @@
-import { ORDER_STATUS } from "@/constants/common";
+import { ORDER_STATUS, ORDER_STATUS_ENUM } from "@/constants/common";
 import { ROUTE } from "@/constants/route";
 import { Order } from "@/types/Order";
+import { currencyFormatter, dateFormatter } from "@/utils/formatter";
 import { Divider } from "@mantine/core";
 import { useRouter } from "next/router";
-import img from "../../../public/assets/carue.png";
 import ImageWithFallback from "../ImageWithFallback/ImageWithFallback";
+import { getOrderStatusStylingClass } from "@/utils/mapper";
+import clsx from "clsx";
 
 type OrderCard = {
   order: Order;
@@ -15,18 +17,26 @@ export default function OrderCard({ order }: OrderCard) {
 
   return (
     <div
-      className="order-card bg-white my-4 cursor-pointer"
+      className="order-card bg-white my-10 cursor-pointer shadow"
       onClick={() => router.push(`${ROUTE.MY_PROFILE}/order/${order.id}`)}
     >
       <div className="order-card-header p-4 flex justify-between">
         <div>
           <span className="font-bold">{order.campaignSale.name}</span>
           <span className="ml-4">
-            (Created day: {new Date(order.createdDate).toDateString()})
+            (Ngày tạo:{" "}
+            {dateFormatter(new Date(order.createdDate).toISOString())})
           </span>
         </div>
         <div>
-          <div>
+          <div
+            className={clsx(
+              "text-white font-semibold py-1 px-2 rounded-xl",
+              getOrderStatusStylingClass(
+                ORDER_STATUS[order.status as ORDER_STATUS_ENUM].code
+              )
+            )}
+          >
             {
               //@ts-ignore
               ORDER_STATUS[order.status]?.name
@@ -36,20 +46,19 @@ export default function OrderCard({ order }: OrderCard) {
       </div>
       <Divider />
       <div className="order-card-body p-4 flex justify-between">
-        <div className="flex">
+        <div className="flex items-center">
           <ImageWithFallback
             fallback="/assets/default-thumbnail.jpg"
             className="aspect-square"
-            src={img.src}
+            src={order.campaignSale.thumbnailUrl}
             width={100}
             alt="product-img"
           />
           <div className="ml-4">
-            <div>This is a super long product name</div>
-            <div>x3</div>
+            <div>{order.campaignSale.name}</div>
           </div>
         </div>
-        <div className="self-end">200000VND</div>
+        <div className="self-end">{currencyFormatter(200000)}</div>
       </div>
     </div>
   );
