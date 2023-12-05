@@ -1,6 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 import CartItemCard from "@/containers/Card/CartItemCard/CartItemCard";
-import { Button, Divider, Grid } from "@mantine/core";
+import { ActionIcon, Button, Divider, Grid } from "@mantine/core";
 import LogoCheckbox from "../LogoCheckbox/LogoCheckbox";
 import Image from "next/image";
 import { CartData, CartItem, CartSection } from "@/services/backend/types/Cart";
@@ -11,6 +11,8 @@ import { KeyedMutator } from "swr";
 import { useRouter } from "next/router";
 import ImageWithFallback from "../ImageWithFallback/ImageWithFallback";
 import { getCampaignType } from "@/utils/mapper";
+import { IconTrash } from "@tabler/icons-react";
+import { useMutation } from "@tanstack/react-query";
 
 type CartSectionProps = {
   cartSection: CartSection;
@@ -18,6 +20,17 @@ type CartSectionProps = {
   isChecked: (cmpaignId: string, productCode: string) => boolean;
   isCartPage?: boolean;
   revalidateFunc?: KeyedMutator<CartData>;
+};
+
+const messageMapper = (campaignType: "IN_COMING" | "CLOSED" | "IN_GOING") => {
+  switch (campaignType) {
+    case "IN_COMING":
+      return "Chiến dịch chưa bắt đầu, vui lòng chờ tới ngày mở bán để tiến hành thanh toán";
+    case "CLOSED":
+      return "Chiến dịch đã kết thúc, vui lòng xóa sản phẩm khỏi giỏ hàng";
+    default:
+      return;
+  }
 };
 
 export default function CartSection({
@@ -45,41 +58,34 @@ export default function CartSection({
   const deleteItemFromCart = (productId: string) => {
     dispatch(deleteItems({ productId }));
   };
+
+  const checkCartSection = () => {
+    if (!["IN_COMING", "CLOSED"].includes(campaignType)) {
+      dispatch(
+        toggleSelectItems({
+          cartSection: {
+            saleCampaign: cartSection.saleCampaign,
+            items: cartSection.items,
+          },
+          isAll: true,
+        })
+      );
+    }
+  };
+
   return (
-    <div className="cart-section">
+    <div className="cart-section ">
       {isCartPage && (
         <LogoCheckbox
           configClass="absolute -top-2 -left-2"
-          clickEvent={() => {
-            if (!["IN_COMING", "CLOSED"].includes(campaignType)) {
-              dispatch(
-                toggleSelectItems({
-                  cartSection: {
-                    saleCampaign: cartSection.saleCampaign,
-                    items: cartSection.items,
-                  },
-                  isAll: true,
-                })
-              );
-            }
-          }}
+          clickEvent={checkCartSection}
           isChecked={cartSection.items.every((item) =>
             isChecked(cartSection.saleCampaign.id, item.productCode)
           )}
         />
       )}
-      {campaignType === "IN_COMING" && (
-        <div className="text-red-500 mb-4">
-          (Bạn chỉ có thể mua sản phẩm này sau ngày{" "}
-          {new Date(cartSection.saleCampaign.from).toLocaleDateString()})
-        </div>
-      )}
-      {campaignType === "CLOSED" && (
-        <div className="text-red-500 mb-4">
-          (Chiến dịch này đã kết thúc vào{" "}
-          {new Date(cartSection.saleCampaign.to).toLocaleDateString()}. Vui lòng
-          xóa sản phẩm ra khỏi giỏ hàng!)
-        </div>
+      {messageMapper(campaignType) && (
+        <div className="text-red-500 mb-4 ">{messageMapper(campaignType)}</div>
       )}
       <div className="flex justify-between items-center">
         <div className="flex items-center">
@@ -96,7 +102,7 @@ export default function CartSection({
             <div>{cartSection.saleCampaign.name}</div>
           </div>
         </div>
-        <div>
+        <div className="gap-x-2 flex items-center">
           <Button
             className="text-primary font-bold hover:bg-white"
             onClick={() => {
@@ -111,14 +117,14 @@ export default function CartSection({
       <div className="hidden sm:block">
         <Grid className="text-[#AFAFAF] font-bold text-sm md:text-base">
           <Grid.Col span={isCartPage ? 2 : 3} className="my-auto">
-            Product
+            Sản phẩm
           </Grid.Col>
           <Grid.Col span={3} className="my-auto"></Grid.Col>
           <Grid.Col span={isCartPage ? 2 : 3} className="my-auto">
-            Price
+            Giá
           </Grid.Col>
           <Grid.Col span={isCartPage ? 2 : 3} className="my-auto">
-            Quantity
+            Số lượng
           </Grid.Col>
           {isCartPage ? (
             <>
@@ -137,6 +143,7 @@ export default function CartSection({
         {cartSection.items.map((item, index, arr) => (
           <div key={item.productCode}>
             <CartItemCard
+              disabled={campaignType === "CLOSED"}
               saleCampaign={cartSection.saleCampaign}
               cartItem={item}
               selectEvent={() => toggleCartItemHandler(item)}
