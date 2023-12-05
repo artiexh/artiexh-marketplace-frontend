@@ -10,10 +10,11 @@ import { CartData, CartItem } from "@/services/backend/types/Cart";
 import { CampaignData } from "@/types/Campaign";
 import { currencyFormatter } from "@/utils/formatter";
 import { getCampaignType, getNotificationIcon } from "@/utils/mapper";
-import { Grid, Input, NumberInput } from "@mantine/core";
+import { ActionIcon, Grid, Input, NumberInput } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 import { IconTrash } from "@tabler/icons-react";
 import { useMutation } from "@tanstack/react-query";
+import clsx from "clsx";
 import { useState } from "react";
 import { KeyedMutator } from "swr";
 
@@ -25,6 +26,19 @@ type CartItemCardProps = {
   isCartPage?: boolean;
   deleteEvent?: () => void;
   revalidateFunc?: KeyedMutator<CartData>;
+  disabled?: boolean;
+};
+
+const messageMapper = (item: CartItem) => {
+  if (item.remainingQuantity === 0) {
+    return "Sản phẩm đã hết hàng, vui lòng xóa sản phẩm khỏi giỏ hàng";
+  }
+
+  if (item.remainingQuantity < item.quantity) {
+    return `Sản phẩm chỉ còn ${item.remainingQuantity} sản phẩm, vui lòng cập nhật lại số lượng`;
+  }
+
+  return;
 };
 
 export default function CartItemCard({
@@ -35,6 +49,7 @@ export default function CartItemCard({
   isCartPage = true,
   deleteEvent,
   revalidateFunc,
+  disabled = false,
 }: CartItemCardProps) {
   const [quantity, setQuantity] = useState<number>(cartItem.quantity ?? 1);
   const [loading, setLoading] = useState(false);
@@ -116,7 +131,7 @@ export default function CartItemCard({
   });
 
   return (
-    <div className="cart-item-card">
+    <div className={clsx("cart-item-card", disabled && "opacity-70")}>
       <Grid className="hidden sm:flex text-sm md:text-base">
         <Grid.Col span={isCartPage ? 2 : 3} className="my-auto">
           <div className="relative">
@@ -140,6 +155,11 @@ export default function CartItemCard({
         </Grid.Col>
         <Grid.Col span={3} className="my-auto font-bold">
           {cartItem.name}
+          {messageMapper(cartItem) && (
+            <div className="text-red-500 mb-4 text-sm font-normal">
+              {messageMapper(cartItem)}
+            </div>
+          )}
         </Grid.Col>
         <Grid.Col span={isCartPage ? 2 : 3} className="my-auto font-bold ">
           {currencyFormatter(cartItem.price.amount)}
@@ -148,6 +168,7 @@ export default function CartItemCard({
           {isCartPage ? (
             cartItem.remainingQuantity > 0 && (
               <NumberInput
+                disabled={disabled}
                 className="w-[60px] md:w-[100px]"
                 thousandsSeparator=","
                 value={quantity}
@@ -175,14 +196,14 @@ export default function CartItemCard({
             </Grid.Col>
             <Grid.Col span={1} className="my-auto text-center">
               <div className="flex justify-center">
-                <IconTrash
-                  className="cursor-pointer"
-                  size="1.125rem"
+                <ActionIcon
                   onClick={() => {
                     !deleteCartItemMutation.isLoading &&
                       deleteCartItemMutation.mutate();
                   }}
-                />
+                >
+                  <IconTrash size="1.125rem" />
+                </ActionIcon>
               </div>
             </Grid.Col>
           </>
@@ -214,7 +235,8 @@ export default function CartItemCard({
             <div className="flex gap-2 items-center">
               <div>Số lượng:</div>
               {cartItem.remainingQuantity > 0 && (
-                <Input
+                <NumberInput
+                  disabled={disabled}
                   className="w-[60px] md:w-[100px]"
                   value={quantity}
                   onChange={(value) => {
@@ -233,14 +255,14 @@ export default function CartItemCard({
           </div>
         </div>
         <div className="flex">
-          <IconTrash
-            className="cursor-pointer"
-            size="1.125rem"
+          <ActionIcon
             onClick={() => {
               !deleteCartItemMutation.isLoading &&
                 deleteCartItemMutation.mutate();
             }}
-          />
+          >
+            <IconTrash size="1.125rem" />
+          </ActionIcon>
         </div>
       </div>
     </div>

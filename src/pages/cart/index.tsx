@@ -135,19 +135,21 @@ const CartPage = () => {
         </div>
       </div>
       <div>
-        {data?.map((cartSection, idx) => (
-          <div
-            key={idx}
-            className="bg-white mt-10 p-2 sm:p-6 rounded-sm relative"
-          >
-            <CartSectionComponent
-              cartSection={cartSection}
-              dispatch={dispatch}
-              isChecked={isChecked}
-              revalidateFunc={mutate as any}
-            />
-          </div>
-        ))}
+        {data
+          .sort((a, b) => Number(a.saleCampaign.id) - Number(b.saleCampaign.id))
+          ?.map((cartSection, idx) => (
+            <div
+              key={idx}
+              className="bg-white mt-10 p-2 sm:p-6 rounded-sm relative"
+            >
+              <CartSectionComponent
+                cartSection={cartSection}
+                dispatch={dispatch}
+                isChecked={isChecked}
+                revalidateFunc={mutate as any}
+              />
+            </div>
+          ))}
       </div>
       <div className="flex card sm:hidden justify-between items-center fixed bottom-0 w-[100vw] left-0">
         <div className="font-bold ">Tổng: {currencyFormatter(totalPrice)}</div>
