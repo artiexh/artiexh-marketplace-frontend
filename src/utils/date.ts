@@ -26,7 +26,25 @@ export const getCampaignTime = (
 };
 
 export const getDateRange = (startDate: Date, endDate: Date) => {
-  return Math.floor(
-    (endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24)
-  );
+  const date =
+    (endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24);
+
+  if (Math.floor(date) > 0) {
+    return {
+      type: "date",
+      value: Math.floor(date),
+    };
+  }
+
+  if (Math.ceil(date) < 0) {
+    return {
+      type: "date",
+      value: Math.ceil(date),
+    };
+  }
+
+  return {
+    type: "hours",
+    value: (date > 0 ? date - Math.floor(date) : date - Math.ceil(date)) * 24,
+  };
 };

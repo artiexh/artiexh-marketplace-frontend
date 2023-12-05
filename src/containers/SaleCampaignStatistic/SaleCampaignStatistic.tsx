@@ -101,6 +101,22 @@ export default function SaleCampaignStatisticContainer({ id }: { id: string }) {
     },
   ];
 
+  const getMessage = () => {
+    const gap = getDateRange(new Date(statisticData.from), new Date());
+
+    console.log(gap);
+
+    if (gap.value > 0) {
+      return `Đã diễn ra được ${Math.ceil(gap.value)} ${
+        gap.type === "date" ? "ngày" : "giờ"
+      }`;
+    } else {
+      return `Chiến dịch sẽ diễn ra sau ${Math.abs(Math.floor(gap.value))} ${
+        gap.type === "date" ? "ngày" : "giờ"
+      }`;
+    }
+  };
+
   return (
     <div>
       <div className="mb-6 font-semibold text-xl">Tổng quan:</div>
@@ -114,14 +130,7 @@ export default function SaleCampaignStatisticContainer({ id }: { id: string }) {
           <div className={clsx("py-4 px-6 rounded shadow bg-[#FFDDE3] mb-4")}>
             <div className="text-xl font-semibold flex items-center justify-center gap-2    ">
               <IconClock />
-              <div>
-                {getDateRange(new Date(statisticData.from), new Date()) > 0
-                  ? `Đã diễn ra được:
-                ${getDateRange(new Date(statisticData.from), new Date())} ngày`
-                  : `Chiến dịch sẽ diễn ra sau ${Math.abs(
-                      getDateRange(new Date(statisticData.from), new Date())
-                    )} ngày nữa`}
-              </div>
+              <div>{getMessage()}</div>
             </div>
           </div>
           <div className="grid grid-cols-2 gap-3">
