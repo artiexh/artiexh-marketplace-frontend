@@ -39,7 +39,7 @@ export const destructProductInSaleId = (id: string) => {
 
 export const dateFormatter = (date: string, fallback = "N/A") =>
   date
-    ? new Intl.DateTimeFormat("en-US", {
+    ? new Intl.DateTimeFormat("en-GB", {
         year: "numeric",
         month: "numeric",
         day: "numeric",

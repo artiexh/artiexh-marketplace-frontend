@@ -11,6 +11,7 @@ import { Badge } from "@mantine/core";
 import clsx from "clsx";
 import { useState } from "react";
 import useSWR from "swr";
+import { Pagination } from "@mantine/core";
 
 export default function OrderTab() {
   // readonly
@@ -18,7 +19,8 @@ export default function OrderTab() {
   const [params, setParams] = useState<{ [key: string]: any }>({
     pageSize: 5,
     pageNumber: 1,
-    sortDirection: "ASC",
+    sortBy: "id",
+    sortDirection: "DESC",
     status: null,
     from: null,
     to: null,
@@ -31,7 +33,7 @@ export default function OrderTab() {
     });
   };
 
-  const { data: orders } = useSWR([JSON.stringify(params)], async () => {
+  const { data: orders } = useSWR<any>([JSON.stringify(params)], async () => {
     try {
       const { data } = (
         await axiosClient.get<
@@ -39,12 +41,14 @@ export default function OrderTab() {
         >("/user/campaign-order?" + getQueryString(params, ["id"]))
       ).data;
       // console.log(data.items);
-      return data.items ?? [];
+      return data;
     } catch (err) {
       console.log(err);
       return [];
     }
   });
+
+  console.log(orders);
 
   return (
     <div className="user-profile-page">
@@ -71,11 +75,28 @@ export default function OrderTab() {
         </Badge>
       ))}
       <div className="order-card-list">
-        {orders?.length ? (
-          orders?.map((order) => <OrderCard key={order.id} order={order} />)
+        {orders?.items?.length ? (
+          orders?.items?.map((order: Order) => (
+            <OrderCard key={order.id} order={order} />
+          ))
         ) : (
           <div className="mt-20 text-center">Chưa có đơn hàng</div>
         )}
+      </div>
+      <div className="flex justify-end">
+        <Pagination
+          total={orders?.totalPage ?? 1}
+          value={params.pageNumber}
+          onChange={(value) =>
+            setParams({
+              ...params,
+              pageNumber: value,
+            })
+          }
+          classNames={{
+            control: "[&[data-active]]:!text-white",
+          }}
+        />
       </div>
     </div>
   );
