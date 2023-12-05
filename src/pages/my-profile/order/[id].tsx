@@ -13,17 +13,16 @@ import { cancelOrderApi } from "@/services/backend/services/order";
 import AuthWrapper from "@/services/guards/AuthWrapper";
 import { Order } from "@/types/Order";
 import { CommonResponseBase } from "@/types/ResponseBase";
-import { currencyFormatter, getReadableWardAddress } from "@/utils/formatter";
+import { currencyFormatter } from "@/utils/formatter";
 import {
   getNotificationIcon,
   getOrderStatusStylingClass,
 } from "@/utils/mapper";
-import { Button, Divider, Grid, Stepper, Text, Timeline } from "@mantine/core";
+import { Button, Divider, Grid, Stepper } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 import { IconChevronLeft } from "@tabler/icons-react";
 import { useMutation } from "@tanstack/react-query";
 import clsx from "clsx";
-import Image from "next/image";
 import { useSearchParams } from "next/navigation";
 import { useRouter } from "next/router";
 import useSWR from "swr";
