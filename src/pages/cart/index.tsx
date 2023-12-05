@@ -136,7 +136,9 @@ const CartPage = () => {
       </div>
       <div>
         {data
-          .sort((a, b) => Number(a.saleCampaign.id) - Number(b.saleCampaign.id))
+          ?.sort(
+            (a, b) => Number(a.saleCampaign.id) - Number(b.saleCampaign.id)
+          )
           ?.map((cartSection, idx) => (
             <div
               key={idx}
