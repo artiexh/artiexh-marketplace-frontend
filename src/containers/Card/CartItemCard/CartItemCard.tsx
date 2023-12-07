@@ -147,7 +147,7 @@ export default function CartItemCard({
               />
             )}
             <ImageWithFallback
-              className="object-cover aspect-square w-[80px] md:w-[120px]  rounded-lg"
+              className="object-cover aspect-square w-[80px] md:w-[120px] rounded-lg"
               src={cartItem.thumbnailUrl}
               alt="product-name"
             />

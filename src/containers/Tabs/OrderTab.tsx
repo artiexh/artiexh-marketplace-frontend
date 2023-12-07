@@ -1,7 +1,7 @@
 import OrderCard from "@/components/OrderCard";
 import { ORDER_STATUS } from "@/constants/common";
 import axiosClient from "@/services/backend/axiosClient";
-import { Order } from "@/types/Order";
+import { Order, TotalOrder } from "@/types/Order";
 import {
   CommonResponseBase,
   PaginationResponseBase,
@@ -12,6 +12,7 @@ import clsx from "clsx";
 import { useState } from "react";
 import useSWR from "swr";
 import { Pagination } from "@mantine/core";
+import OrderPaymentCard from "@/components/OrderPaymentCard";
 
 export default function OrderTab() {
   // readonly
@@ -37,8 +38,12 @@ export default function OrderTab() {
     try {
       const { data } = (
         await axiosClient.get<
-          CommonResponseBase<PaginationResponseBase<Order>>
-        >("/user/campaign-order?" + getQueryString(params, ["id"]))
+          CommonResponseBase<PaginationResponseBase<Order | TotalOrder>>
+        >(
+          `/user/${
+            params.status === "PAYING" ? "order" : "campaign-order"
+          }?${getQueryString(params, ["id"])}`
+        )
       ).data;
       // console.log(data.items);
       return data;
@@ -74,11 +79,15 @@ export default function OrderTab() {
           {orderStatus.name}
         </Badge>
       ))}
-      <div className="order-card-list">
+      <div className="order-card-list flex flex-col gap-6 mt-10">
         {orders?.items?.length ? (
-          orders?.items?.map((order: Order) => (
-            <OrderCard key={order.id} order={order} />
-          ))
+          orders?.items?.map((order: any) =>
+            params.status !== "PAYING" ? (
+              <OrderCard key={order.id} order={order} />
+            ) : (
+              <OrderPaymentCard key={order.id} order={order} />
+            )
+          )
         ) : (
           <div className="mt-20 text-center">Chưa có đơn hàng</div>
         )}

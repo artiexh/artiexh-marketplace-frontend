@@ -1,3 +1,4 @@
+import ImageWithFallback from "@/components/ImageWithFallback/ImageWithFallback";
 import { OrderItemDetail } from "@/types/Order";
 import { TableColumns } from "@/types/Table";
 import { currencyFormatter } from "@/utils/formatter";
@@ -14,7 +15,7 @@ export const orderProductColumns: TableColumns<OrderItemDetail> = [
     render: (record: OrderItemDetail) => (
       <div className="flex items-center gap-5">
         <div className="relative w-16 aspect-square">
-          <img
+          <ImageWithFallback
             src={record.thumbnailUrl}
             alt="product-thumb"
             className="object-cover w-full h-full"

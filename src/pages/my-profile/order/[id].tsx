@@ -8,7 +8,6 @@ import {
 } from "@/constants/common";
 import { ROUTE } from "@/constants/route";
 import axiosClient from "@/services/backend/axiosClient";
-import { getPaymentLink } from "@/services/backend/services/cart";
 import { cancelOrderApi } from "@/services/backend/services/order";
 import AuthWrapper from "@/services/guards/AuthWrapper";
 import { Order } from "@/types/Order";
@@ -50,31 +49,6 @@ function OrderDetailPage() {
     <div>Không tìm thấy đơn hàng!</div>;
   }
 
-  const payment = async () => {
-    if (data?.order?.id) {
-      const paymentLink = await getPaymentLink(data?.order?.id);
-
-      if (paymentLink) {
-        window.location.replace(paymentLink);
-      } else {
-        notifications.show({
-          message: "Không tìm thấy link thanh toán",
-          ...getNotificationIcon(NOTIFICATION_TYPE.FAILED),
-        });
-      }
-    }
-  };
-
-  const getDateBasedOnStatus = (status: string) => {
-    let date = data?.orderHistories?.find(
-      (history: any) => history?.status === status
-    )?.datetime;
-
-    if (date) {
-      return new Date(date).toLocaleDateString();
-    }
-  };
-
   const cancelOrderMutation = useMutation({
     mutationFn: async (id: string) => {
       await cancelOrderApi(id);
@@ -114,7 +88,7 @@ function OrderDetailPage() {
             <span
               className={clsx(
                 getOrderStatusStylingClass(data?.status),
-                "ml-4 px-3 py-1 rounded-xl text-base font-semibold"
+                "ml-4 px-3 py-1 rounded-xl text-base font-semibold text-white"
               )}
             >
               {ORDER_STATUS[data.status as ORDER_STATUS_ENUM].name}
@@ -123,17 +97,18 @@ function OrderDetailPage() {
         </div>
       </div>
       <div className="p-10">
-        <div className="user-info mr-4">
-          <div className="font-bold text-[24px] mb-1 text-primary">
+        <div className="user-info mr-4 flex justify-between items-center">
+          <div className="font-bold text-[24px] text-primary">
             Tình trạng đơn hàng
           </div>
-          {data?.status === ORDER_STATUS.PAYING.code ? (
-            <div className="cursor-pointer mt-4 text-primary" onClick={payment}>
-              Nhấn vào đây để tiến hàng thanh toán
-            </div>
-          ) : null}
+          <div
+            className="cursor-pointer text-primary"
+            onClick={() => router.push(`/my-profile/total-order/${data?.order.id}`)}
+          >
+            Xem đơn hàng tổng
+          </div>
         </div>
-        <div className="order-info mt-6">
+        <div className="order-info mt-10">
           <Stepper active={data?.orderHistories.length ?? 1}>
             {Object.keys(ORDER_HISTORY_CONTENT_MAP).map((status) => (
               <Stepper.Step label={status} key={status}></Stepper.Step>

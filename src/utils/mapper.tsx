@@ -77,17 +77,17 @@ export const mapImageUrlToImageBody = (
 export const getOrderStatusStylingClass = (status: string) => {
   switch (status) {
     case "PAYING":
-      return "bg-blue-500 text-blue-700";
+      return "bg-blue-500";
     case "PREPARING":
-      return "bg-cyan-500 text-white";
+      return "bg-cyan-500";
     case "SHIPPING":
-      return "bg-yellow-100 text-yellow-600";
+      return "bg-yellow-100";
     case "COMPLETED":
       return "bg-green-500";
     case "CANCELED":
-      return "bg-red-500 text-white";
+      return "bg-red-500";
     case "REFUNDED":
-      return "bg-gray-500 text-white";
+      return "bg-gray-500";
     default:
       return "bg-red-500";
   }

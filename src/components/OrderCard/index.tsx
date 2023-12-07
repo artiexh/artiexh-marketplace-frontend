@@ -17,7 +17,7 @@ export default function OrderCard({ order }: OrderCard) {
 
   return (
     <div
-      className="order-card bg-white my-10 cursor-pointer shadow"
+      className="order-card bg-white cursor-pointer"
       onClick={() => router.push(`${ROUTE.MY_PROFILE}/order/${order.id}`)}
     >
       <div className="order-card-header p-4 flex justify-between">
@@ -49,7 +49,7 @@ export default function OrderCard({ order }: OrderCard) {
         <div className="flex items-center">
           <ImageWithFallback
             fallback="/assets/default-thumbnail.jpg"
-            className="aspect-square"
+            className="aspect-square object-cover"
             src={order.campaignSale.thumbnailUrl}
             width={100}
             alt="product-img"
@@ -58,7 +58,7 @@ export default function OrderCard({ order }: OrderCard) {
             <div>{order.campaignSale.name}</div>
           </div>
         </div>
-        <div className="self-end">{currencyFormatter(200000)}</div>
+        {/* <div className="self-end">{currencyFormatter(200000)}</div> */}
       </div>
     </div>
   );
