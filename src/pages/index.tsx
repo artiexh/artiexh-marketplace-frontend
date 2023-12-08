@@ -69,7 +69,7 @@ const HomePage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = ({
               <ImageWithFallback
                 src={element.thumbnailUrl}
                 // src="https://images.augustman.com/wp-content/uploads/sites/2/2023/04/26131013/dragon-bll.jpeg"
-                className="object-cover brightness-50"
+                className="object-cover brightness-50 h-full w-full"
                 alt={element.id}
               />
               <div className="absolute bottom-0 text-white opacity-80 w-full pl-10 py-10">
