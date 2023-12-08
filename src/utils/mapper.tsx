@@ -73,3 +73,22 @@ export const mapImageUrlToImageBody = (
     url: file.presignedUrl,
   }));
 };
+
+export const getOrderStatusStylingClass = (status: string) => {
+  switch (status) {
+    case "PAYING":
+      return "bg-blue-500";
+    case "PREPARING":
+      return "bg-cyan-500";
+    case "SHIPPING":
+      return "bg-yellow-100";
+    case "COMPLETED":
+      return "bg-green-500";
+    case "CANCELED":
+      return "bg-red-500";
+    case "REFUNDED":
+      return "bg-gray-500";
+    default:
+      return "bg-red-500";
+  }
+};

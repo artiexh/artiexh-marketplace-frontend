@@ -10,7 +10,7 @@ import { CartData, CartItem } from "@/services/backend/types/Cart";
 import { CampaignData } from "@/types/Campaign";
 import { currencyFormatter } from "@/utils/formatter";
 import { getCampaignType, getNotificationIcon } from "@/utils/mapper";
-import { ActionIcon, Grid, Input, NumberInput } from "@mantine/core";
+import { ActionIcon, Grid, NumberInput } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 import { IconTrash } from "@tabler/icons-react";
 import { useMutation } from "@tanstack/react-query";
@@ -139,7 +139,7 @@ export default function CartItemCard({
               <LogoCheckbox
                 configClass="absolute -top-2 -left-2"
                 clickEvent={() => {
-                  if (campaignType !== "IN_COMING") {
+                  if (!["IN_COMING", "CLOSED"].includes(campaignType)) {
                     selectEvent?.();
                   }
                 }}
@@ -147,7 +147,7 @@ export default function CartItemCard({
               />
             )}
             <ImageWithFallback
-              className="object-cover aspect-square w-[80px] md:w-[120px]  rounded-lg"
+              className="object-cover aspect-square w-[80px] md:w-[120px] rounded-lg"
               src={cartItem.thumbnailUrl}
               alt="product-name"
             />
@@ -214,7 +214,7 @@ export default function CartItemCard({
           <LogoCheckbox
             configClass="absolute -top-2 -left-2"
             clickEvent={() => {
-              if (campaignType !== "IN_COMING") {
+              if (!["IN_COMING", "CLOSED"].includes(campaignType)) {
                 selectEvent?.();
               }
             }}

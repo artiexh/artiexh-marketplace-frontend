@@ -59,7 +59,7 @@ export default function MyProfilePage({ user }: MyProfileProps) {
           </div>
           <div>
             {user.role !== "ARTIST" && (
-              <Button className="bg-primary" onClick={open}>
+              <Button className="bg-primary !text-white" onClick={open}>
                 Be an artist
               </Button>
             )}

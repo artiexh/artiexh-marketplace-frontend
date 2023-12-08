@@ -1,6 +1,7 @@
 import ArtistPreviewCard from "@/components/ArtistPreviewCard/ArtistPreviewCard";
 import CampaignPreviewCard from "@/components/CampaignPreviewCard/CampaignPreviewCard";
 import ProductPreviewCard from "@/components/Cards/ProductCard/ProductPreviewCard";
+import ImageWithFallback from "@/components/ImageWithFallback/ImageWithFallback";
 import { ROUTE } from "@/constants/route";
 import axiosClient from "@/services/backend/axiosClient";
 import productStyles from "@/styles/Products/ProductList.module.scss";
@@ -65,10 +66,9 @@ const HomePage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = ({
         {campaigns.map((element) => (
           <Carousel.Slide key={element.id}>
             <div className="relative h-full">
-              <Image
+              <ImageWithFallback
                 src={element.thumbnailUrl}
                 // src="https://images.augustman.com/wp-content/uploads/sites/2/2023/04/26131013/dragon-bll.jpeg"
-                fill
                 className="object-cover brightness-50"
                 alt={element.id}
               />

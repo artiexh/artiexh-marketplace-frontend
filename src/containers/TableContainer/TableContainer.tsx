@@ -51,6 +51,9 @@ const TableContainer = <T,>({
             //TODO: change this to total of api call later
             total={response?.data.totalPage ?? 1}
             boundaries={2}
+            classNames={{
+              control: "[&[data-active]]:!text-white",
+            }}
           />
         )}
       </div>
