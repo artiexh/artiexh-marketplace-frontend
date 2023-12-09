@@ -1,16 +1,20 @@
 import ImageWithFallback from "@/components/ImageWithFallback/ImageWithFallback";
+import TableComponent from "@/components/TableComponent";
+import { orderProductColumns } from "@/constants/Columns/orderColumn";
 import { NOTIFICATION_TYPE } from "@/constants/common";
 import { ROUTE } from "@/constants/route";
 import axiosClient from "@/services/backend/axiosClient";
 import { getPaymentLink } from "@/services/backend/services/cart";
+import { cancelOrderApi } from "@/services/backend/services/order";
 import AuthWrapper from "@/services/guards/AuthWrapper";
 import { TotalOrder } from "@/types/Order";
 import { CommonResponseBase } from "@/types/ResponseBase";
 import { currencyFormatter } from "@/utils/formatter";
 import { getNotificationIcon } from "@/utils/mapper";
-import { Divider } from "@mantine/core";
+import { Button, Divider, Grid } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 import { IconChevronLeft } from "@tabler/icons-react";
+import { useMutation } from "@tanstack/react-query";
 import { useSearchParams } from "next/navigation";
 import { useRouter } from "next/router";
 import useSWR from "swr";
@@ -19,7 +23,7 @@ function OrderDetailPage() {
   const params = useSearchParams();
   const router = useRouter();
 
-  const { data, isLoading } = useSWR([params?.get("id")], async () => {
+  const { data, isLoading, mutate } = useSWR([params?.get("id")], async () => {
     try {
       const { data } = await axiosClient.get<CommonResponseBase<TotalOrder>>(
         `/user/order/${params?.get("id")}`
@@ -32,6 +36,27 @@ function OrderDetailPage() {
       }
       return;
     }
+  });
+
+  const cancelOrderMutation = useMutation({
+    mutationFn: async (id: string) => {
+      await cancelOrderApi(id);
+    },
+    onSuccess: () => {
+      notifications.show({
+        message: "Huỷ đơn thành công",
+        ...getNotificationIcon(NOTIFICATION_TYPE.SUCCESS),
+      });
+    },
+    onError: (error) => {
+      notifications.show({
+        message: "Huỷ đơn thất bại",
+        ...getNotificationIcon(NOTIFICATION_TYPE.FAILED),
+      });
+    },
+    onSettled: () => {
+      mutate();
+    },
   });
 
   const payment = async () => {
@@ -67,7 +92,6 @@ function OrderDetailPage() {
         </div>
         <div>Mã đơn: {data?.id}</div>
       </div>
-      <Divider />
       <div className="p-10">
         <div className="user-info mr-4">
           <div className="font-bold text-[24px] mb-1 text-primary">
@@ -87,7 +111,6 @@ function OrderDetailPage() {
           </div>
         </div>
       </div>
-      <Divider />
       {data?.currentTransaction ? (
         <div>
           <div className="p-10">
@@ -111,20 +134,19 @@ function OrderDetailPage() {
               {new Date(data.currentTransaction.payDate).toLocaleDateString()}
             </div>
           </div>
-          <Divider />
         </div>
       ) : (
         <></>
       )}
-      <div className="p-10">
+      <div className="p-10 pb-2">
         <div className="font-bold text-[24px] mb-4 text-primary">
           Chi tiết đơn hàng
         </div>
         <div className="flex flex-col gap-10">
           {data?.campaignOrders.map((order) => (
-            <div key={order.id}>
+            <div key={order.id} className="shadow-sm p-4">
               <div>
-                <div className="flex items-center justify-between bg-primary mb-4 p-4">
+                <div className="flex items-center justify-between px-4">
                   <div className="flex items-center">
                     <div>
                       <ImageWithFallback
@@ -135,7 +157,7 @@ function OrderDetailPage() {
                         alt="shop-img"
                       />
                     </div>
-                    <div className="text-white">{order.campaignSale.name}</div>
+                    <div className="text-black">{order.campaignSale.name}</div>
                   </div>
                   <div
                     className="text-white cursor-pointer"
@@ -146,53 +168,97 @@ function OrderDetailPage() {
                     Xem đơn hàng
                   </div>
                 </div>
+                <Divider className="my-4" />
                 <div className="flex flex-col gap-6">
-                  {order.orderDetails.map((orderDetail) => (
-                    <div
-                      className="flex justify-between items-center"
-                      key={orderDetail.id}
-                    >
-                      <div className="flex">
-                        <div>
-                          <ImageWithFallback
-                            className="aspect-square rounded-lg mr-4"
-                            src={orderDetail.thumbnailUrl ?? ""}
-                            width={100}
-                            height={100}
-                            alt="order-img"
-                          />
-                        </div>
-                        <div>
-                          <div className="text-lg font-semibold">
-                            {orderDetail.name}
-                          </div>
-                          <div>{orderDetail.type}</div>
-                          <div>Số lượng: {orderDetail.quantity}</div>
-                        </div>
-                      </div>
-                      <div>
-                        <div>
-                          Tổng cộng:{" "}
-                          {currencyFormatter(
-                            orderDetail.price.amount * orderDetail.quantity
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                  ))}
+                  <TableComponent
+                    columns={orderProductColumns}
+                    data={order.orderDetails.map((el) => ({
+                      ...el,
+                      onClickView: () =>
+                        router.push(
+                          `/product/${order.campaignSale.id}_${el.productCode}`
+                        ),
+                    }))}
+                  />
                 </div>
               </div>
-              <Divider className="mt-3" />
             </div>
           ))}
+          {data && (
+            <div className="flex justify-end text-lg mt-12 mb-4 mr-4">
+              <Grid className="w-[400px]">
+                <Grid.Col span={6} className="font-semibold text-base">
+                  Tổng cộng (sản phẩm):
+                </Grid.Col>
+                <Grid.Col span={6} className="text-end text-base">
+                  {currencyFormatter(
+                    data?.campaignOrders.reduce(
+                      (acc, item) =>
+                        acc +
+                        item.orderDetails.reduce(
+                          (acc, order) =>
+                            acc + order.price.amount * order.quantity,
+                          0
+                        ),
+                      0
+                    )
+                  )}
+                </Grid.Col>
+                <Grid.Col span={6} className="font-semibold text-base">
+                  Tiền vận chuyển:
+                </Grid.Col>
+                <Grid.Col span={6} className="text-end text-base">
+                  {currencyFormatter(
+                    data?.campaignOrders.reduce(
+                      (acc, item) => acc + item.shippingFee,
+                      0
+                    )
+                  )}
+                </Grid.Col>
+                <Divider className="bg-gray-300" />
+                <Grid.Col span={6} className="font-semibold text-base">
+                  Tổng cộng (thanh toán):
+                </Grid.Col>
+                <Grid.Col
+                  span={6}
+                  className="text-end text-base font-semibold text-red-600"
+                >
+                  {currencyFormatter(
+                    data.campaignOrders.reduce(
+                      (acc, item) =>
+                        acc +
+                        item.orderDetails.reduce(
+                          (acc, order) =>
+                            acc + order.price.amount * order.quantity,
+                          0
+                        ) +
+                        item.shippingFee,
+                      0
+                    )
+                  )}
+                </Grid.Col>
+              </Grid>
+            </div>
+          )}
         </div>
       </div>
       {data?.campaignOrders[0].status === "PAYING" && (
-        <div
-          className="p-10 text-end font-semibold text-primary cursor-pointer"
-          onClick={payment}
-        >
-          Nhấn vào đây để tiến hành thanh toán
+        <div className="px-10">
+          <div
+            className="text-end font-semibold text-primary cursor-pointer"
+            onClick={payment}
+          >
+            Nhấn vào đây để tiến hành thanh toán
+          </div>
+          <div className="flex justify-end mt-20 pb-10">
+            <Button
+              variant="outline"
+              disabled={cancelOrderMutation.isLoading}
+              onClick={() => cancelOrderMutation.mutateAsync(data!.id)}
+            >
+              Huỷ đơn
+            </Button>
+          </div>
         </div>
       )}
     </div>

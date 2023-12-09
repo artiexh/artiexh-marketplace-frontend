@@ -22,6 +22,7 @@ type OrderTransaction = {
 
 export type OrderItemDetail = {
   id: string;
+  productCode: string;
   status: string;
   name: string;
   thumbnailUrl: string;

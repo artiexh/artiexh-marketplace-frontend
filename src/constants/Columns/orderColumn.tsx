@@ -12,8 +12,11 @@ export const orderProductColumns: TableColumns<OrderItemDetail> = [
   {
     title: "Name",
     key: "name",
-    render: (record: OrderItemDetail) => (
-      <div className="flex items-center gap-5">
+    render: (record: any) => (
+      <div
+        className="flex items-center gap-5 cursor-pointer"
+        onClick={record?.onClickView}
+      >
         <div className="relative w-16 aspect-square">
           <ImageWithFallback
             src={record.thumbnailUrl}

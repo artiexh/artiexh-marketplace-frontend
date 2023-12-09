@@ -49,7 +49,8 @@ export default function OrderPaymentCard({ order }: { order: TotalOrder }) {
                 item.orderDetails.reduce(
                   (acc, order) => acc + order.price.amount * order.quantity,
                   0
-                ),
+                ) +
+                item.shippingFee,
               0
             )
           )}
