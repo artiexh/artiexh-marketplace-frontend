@@ -2,26 +2,21 @@ import ImageWithFallback from "@/components/ImageWithFallback/ImageWithFallback"
 import TableComponent from "@/components/TableComponent";
 import { orderProductColumns } from "@/constants/Columns/orderColumn";
 import {
-  NOTIFICATION_TYPE,
   ORDER_HISTORY_CONTENT_MAP,
   ORDER_STATUS,
-  ORDER_STATUS_ENUM,
+  ORDER_STATUS_ENUM
 } from "@/constants/common";
 import { ROUTE } from "@/constants/route";
 import axiosClient from "@/services/backend/axiosClient";
-import { cancelOrderApi } from "@/services/backend/services/order";
 import AuthWrapper from "@/services/guards/AuthWrapper";
 import { Order } from "@/types/Order";
 import { CommonResponseBase } from "@/types/ResponseBase";
 import { currencyFormatter } from "@/utils/formatter";
 import {
-  getNotificationIcon,
-  getOrderStatusStylingClass,
+  getOrderStatusStylingClass
 } from "@/utils/mapper";
-import { Button, Divider, Grid, Stepper } from "@mantine/core";
-import { notifications } from "@mantine/notifications";
+import { Divider, Grid, Stepper } from "@mantine/core";
 import { IconChevronLeft } from "@tabler/icons-react";
-import { useMutation } from "@tanstack/react-query";
 import clsx from "clsx";
 import { useSearchParams } from "next/navigation";
 import { useRouter } from "next/router";

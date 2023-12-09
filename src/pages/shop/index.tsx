@@ -50,7 +50,7 @@ export default function ShopListPage() {
           <Input
             className="w-[300px]"
             icon={<IconSearch />}
-            placeholder="Search by product name..."
+            placeholder="Search by artist name..."
             onChange={(e) => {
               setPagination({
                 ...pagination,

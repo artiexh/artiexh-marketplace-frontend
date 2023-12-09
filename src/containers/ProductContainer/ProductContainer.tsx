@@ -106,7 +106,6 @@ export default function ProductDetailContainer({
       thumbnail: File;
     }
   ) => {
-    console.log(values);
     const thumbnail = (await publicUploadFile([
       values.thumbnail,
     ])) as AxiosResponse<
@@ -135,8 +134,6 @@ export default function ProductDetailContainer({
 
     const { productCode, ...rest } = values;
 
-    console.log(rest);
-
     const updateRes = await axiosClient.put(
       `/product-inventory/${data.productCode}`,
       {
@@ -157,8 +154,6 @@ export default function ProductDetailContainer({
         tags: values?.tags,
       }
     );
-
-    console.log(updateRes);
 
     // const res = await updateGeneralInformationApi(data, {
     //   ...values,

@@ -11,14 +11,13 @@ import {
   PaginationResponseBase,
 } from "@/types/ResponseBase";
 import { getQueryString } from "@/utils/formatter";
-import { Button, Pagination } from "@mantine/core";
+import { Button, Menu, Pagination } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { IconFilter, IconSortAscendingLetters } from "@tabler/icons-react";
 import clsx from "clsx";
 import { useRouter } from "next/router";
 import { FC, useEffect, useState } from "react";
 import useSWR from "swr";
-import { Menu } from "@mantine/core";
 
 type ProductListContainerProps = {
   categories: Category[];
@@ -94,18 +93,41 @@ const ProductListContainer: FC<ProductListContainerProps> = ({
     const [key, direction] = value.split("_");
     // sortBy: key,
     // Update pagination
-    setPagination((prev) => ({ ...prev, sortDirection: direction }));
-    //  Format the URL
-    const url = getQueryString(
-      {
-        ...pagination,
-        ...params,
-        // sortBy: key,
+
+    let url = "";
+    if (direction === "DEFAULT") {
+      setPagination((prev) => ({
+        ...prev,
+        pageNumber: 1,
+      }));
+
+      url = getQueryString(
+        {
+          ...pagination,
+          pageNumber: 1,
+        },
+        []
+      );
+    } else {
+      setPagination((prev) => ({
+        ...prev,
+        sortBy: key,
         sortDirection: direction,
         pageNumber: 1,
-      },
-      []
-    );
+      }));
+      //  Format the URL
+      url = getQueryString(
+        {
+          ...pagination,
+          ...params,
+          sortBy: key,
+          sortDirection: direction,
+          pageNumber: 1,
+        },
+        []
+      );
+    }
+
     router.replace(`${pathName}?${url}`, undefined, {
       shallow: true,
     });
@@ -153,7 +175,7 @@ const ProductListContainer: FC<ProductListContainerProps> = ({
       </div>
       {showPopup && (
         <div
-          className="fixed top-0 left-0 bg-black/50 w-screen h-screen z-10"
+          className="fixed top-0 left-0 bg-black/50 w-screen h-screen z-50"
           onClick={() => {
             document.body.style.overflow = "auto";
             setShowPopup("");

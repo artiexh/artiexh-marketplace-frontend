@@ -164,7 +164,7 @@ const MobileFilter: FC<MobileFilterProps> = ({
       {/* <Divider /> */}
       <div className="px-5 py-3 flex gap-3">
         <Button
-          className="bg-primary w-full h-10"
+          className="bg-primary w-full h-10 !text-white"
           onClick={() => submitHandler(filters)}
         >
           Áp dụng

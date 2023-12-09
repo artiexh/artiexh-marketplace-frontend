@@ -9,7 +9,6 @@ import {
 import { User } from "@/types/User";
 import { Divider, Modal } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
-import { IconHeart } from "@tabler/icons-react";
 import moment from "moment";
 import { useState } from "react";
 import useSWRInfinite from "swr/infinite";
@@ -113,14 +112,6 @@ const PostCardContent = ({ artist, postInformation }: PostCardProps) => {
           />
         </div>
       )}
-      <div className="mx-6 flex gap-4 mt-6">
-        <div className="flex gap-2 items-center">
-          <div>
-            <IconHeart />
-          </div>
-          <div>{postInformation.likes}</div>
-        </div>
-      </div>
     </>
   );
 };

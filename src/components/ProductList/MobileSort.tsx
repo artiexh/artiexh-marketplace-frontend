@@ -34,7 +34,7 @@ const MobileSort: FC<MobileSortProps> = ({ options, onSort }) => {
       <Divider />
       <div className="px-5 py-3">
         <Button
-          className="bg-primary w-full h-10"
+          className="bg-primary w-full h-10 !text-white"
           onClick={() => onSort(selected)}
         >
           Áp dụng
