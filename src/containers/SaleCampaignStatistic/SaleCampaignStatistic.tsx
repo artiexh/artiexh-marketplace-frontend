@@ -102,6 +102,10 @@ export default function SaleCampaignStatisticContainer({ id }: { id: string }) {
   ];
 
   const getMessage = () => {
+    if (new Date(statisticData.to).getTime() < new Date().getTime()) {
+      return "Chiến dịch đã kết thúc";
+    }
+
     const gap = getDateRange(new Date(statisticData.from), new Date());
 
     console.log(gap);
