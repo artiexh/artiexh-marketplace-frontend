@@ -1,3 +1,4 @@
+import ImageWithFallback from "@/components/ImageWithFallback/ImageWithFallback";
 import TableComponent from "@/components/TableComponent";
 import { orderProductColumns } from "@/constants/Columns/orderColumn";
 import {
@@ -49,27 +50,6 @@ function OrderDetailPage() {
     <div>Không tìm thấy đơn hàng!</div>;
   }
 
-  const cancelOrderMutation = useMutation({
-    mutationFn: async (id: string) => {
-      await cancelOrderApi(id);
-    },
-    onSuccess: () => {
-      notifications.show({
-        message: "Huỷ đơn thành công",
-        ...getNotificationIcon(NOTIFICATION_TYPE.SUCCESS),
-      });
-    },
-    onError: (error) => {
-      notifications.show({
-        message: "Huỷ đơn thất bại",
-        ...getNotificationIcon(NOTIFICATION_TYPE.FAILED),
-      });
-    },
-    onSettled: () => {
-      mutate();
-    },
-  });
-
   return (
     <div className="order-detail-page bg-white">
       <div className="p-10 flex justify-between">
@@ -103,7 +83,9 @@ function OrderDetailPage() {
           </div>
           <div
             className="cursor-pointer text-primary"
-            onClick={() => router.push(`/my-profile/total-order/${data?.order.id}`)}
+            onClick={() =>
+              router.push(`/my-profile/total-order/${data?.order.id}`)
+            }
           >
             Xem đơn hàng tổng
           </div>
@@ -114,23 +96,6 @@ function OrderDetailPage() {
               <Stepper.Step label={status} key={status}></Stepper.Step>
             ))}
           </Stepper>
-          {/* <Timeline
-            active={(data?.orderHistories.length ?? 1) - 1}
-            bulletSize={24}
-            lineWidth={2}
-          >
-            {Object.keys(ORDER_HISTORY_CONTENT_MAP).map((status) => (
-              <Timeline.Item
-                key={status}
-                bullet={ORDER_HISTORY_CONTENT_MAP[status].icon}
-                title={ORDER_HISTORY_CONTENT_MAP[status].content}
-              >
-                <Text size="xs" mt={4}>
-                  {getDateBasedOnStatus(status)}
-                </Text>
-              </Timeline.Item>
-            ))}
-          </Timeline> */}
         </div>
       </div>
       <div className="flex justify-between p-10">
@@ -155,13 +120,6 @@ function OrderDetailPage() {
           </div>
         </div>
       </div>
-      {/* <div>
-        <div className="p-10">
-          <div className="font-bold text-[24px] mb-1 text-primary">
-            Sản phẩm
-          </div>
-        </div>
-      </div> */}
       <div className="p-10">
         <div className="font-bold text-[24px] mb-1 text-primary">
           Chi tiết đơn hàng:
@@ -170,7 +128,8 @@ function OrderDetailPage() {
           columns={orderProductColumns}
           data={data?.orderDetails.map((el) => ({
             ...el,
-            // onClickView: () => navigate(`/orders/${el.productCode}`),
+            onClickView: () =>
+              router.push(`/product/${data.campaignSale.id}_${el.productCode}`),
           }))}
         />
         <div className="flex justify-end text-lg mt-12 mb-4 mr-4">
@@ -224,7 +183,7 @@ function OrderDetailPage() {
           </div>
         </div>
         <div className="relative">
-          <img
+          <ImageWithFallback
             src={data?.campaignSale.thumbnailUrl}
             className="w-full h-[250px] object-cover brightness-[60%]"
             alt="campaign-img"
@@ -250,15 +209,6 @@ function OrderDetailPage() {
             </div>
           </div>
         </div>
-      </div>
-      <div className="w-full flex justify-end p-10">
-        <Button
-          variant="outline"
-          disabled={data?.status !== "PAYING" || cancelOrderMutation.isLoading}
-          onClick={() => cancelOrderMutation.mutateAsync(data!.id)}
-        >
-          Huỷ đơn
-        </Button>
       </div>
     </div>
   );
