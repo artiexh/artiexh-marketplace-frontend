@@ -1,6 +1,9 @@
 import TableComponent from "@/components/TableComponent";
 import productInCampaignColumns from "@/constants/Columns/productInCampaignColumns";
-import { NOTIFICATION_TYPE, defaultButtonStylingClass } from "@/constants/common";
+import {
+  NOTIFICATION_TYPE,
+  defaultButtonStylingClass,
+} from "@/constants/common";
 import axiosClient from "@/services/backend/axiosClient";
 import {
   ARTIST_CAMPAIGN_ENDPOINT,
@@ -14,13 +17,14 @@ import { Button, NumberInput, Text, Tooltip } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { modals } from "@mantine/modals";
 import { IconHelpCircle } from "@tabler/icons-react";
-import { useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
 import useSWR from "swr";
 import CustomProductDetailCard from "../CustomProductDetailCard";
 import PickCustomProduct from "./PickCustomProduct";
 import { getNotificationIcon } from "@/utils/mapper";
 import { notifications } from "@mantine/notifications";
+import { errorHandler } from "@/utils/errorHandler";
 
 export default function CustomProductTable({
   data: rawData,
@@ -132,7 +136,7 @@ function EditCustomProductModal({ data: product }: { data: CustomProduct }) {
         const index = Number(path.split(".")[1]);
         const config = product;
         if (config && config?.providerConfig?.basePriceAmount >= value) {
-          return `Price of this product should be greater than ${config.providerConfig?.basePriceAmount}`;
+          return `Giá bán phải lớn hơn ${config.providerConfig?.basePriceAmount}`;
         }
         return null;
       },
@@ -140,7 +144,7 @@ function EditCustomProductModal({ data: product }: { data: CustomProduct }) {
         const index = Number(path.split(".")[1]);
         const config = product;
         if (config && config.providerConfig?.minQuantity > value) {
-          return `Quantiy of this product should be equal or greater than ${config.providerConfig?.minQuantity}`;
+          return `Số lượn phải lớn hơn hoặc bằng ${config.providerConfig?.minQuantity}`;
         }
         return null;
       },
@@ -149,11 +153,62 @@ function EditCustomProductModal({ data: product }: { data: CustomProduct }) {
     validateInputOnChange: true,
   });
 
+  const updateCampaignCustomProductsMutation = useMutation({
+    mutationFn: async (data: { quantity: number; price: number }) => {
+      const campaignRes = queryClient.getQueryData<
+        CommonResponseBase<CampaignDetail>
+      >([ARTIST_CAMPAIGN_ENDPOINT, { id: id }]);
+      if (!campaignRes?.data) throw new Error("Campaign not found");
+      const tmp = campaignRes.data.products.filter(
+        (d) => d.customProduct.id !== product.customProduct.id
+      );
+      const res = await updateCampaignCustomProductsApi(
+        campaignRes.data,
+        [
+          ...tmp.map((v) => {
+            return {
+              customProductId: v.customProduct.id,
+              quantity: v.quantity,
+              price: v.price,
+            } as Pick<CustomProduct, "price" | "quantity"> & {
+              customProductId: string;
+            };
+          }),
+          {
+            customProductId: product.customProduct.id,
+            quantity: data.quantity,
+            price: {
+              amount: data.price,
+              unit: "VND",
+            },
+          },
+        ],
+        campaignRes.data.provider.businessCode
+      );
+
+      if (res?.data?.status !== 200) {
+        throw res.data;
+      }
+
+      return res.data;
+    },
+    onSuccess: (data) => {
+      notifications.show({
+        message: "Chỉnh sửa thành công",
+        ...getNotificationIcon(NOTIFICATION_TYPE.SUCCESS),
+      });
+      modals.close(`${product.id}-custom-product-edit`);
+    },
+    onError: (e) => {
+      errorHandler(e);
+    },
+  });
+
   const updateHandler = async (data: { quantity: number; price: number }) => {
     const campaignRes = queryClient.getQueryData<
       CommonResponseBase<CampaignDetail>
     >([ARTIST_CAMPAIGN_ENDPOINT, { id: id }]);
-    if (!campaignRes?.data) throw new Error("What the heck");
+    if (!campaignRes?.data) throw new Error("Campaign not found");
     const tmp = campaignRes.data.products.filter(
       (d) => d.customProduct.id !== product.customProduct.id
     );
@@ -191,10 +246,7 @@ function EditCustomProductModal({ data: product }: { data: CustomProduct }) {
       );
       modals.close(`${product.id}-custom-product-edit`);
     } catch (err) {
-      notifications.show({
-        message: "Chỉnh sửa thông tin sản phẩm thất bại! Vui lòng thử lại",
-        ...getNotificationIcon(NOTIFICATION_TYPE.FAILED),
-      });
+      errorHandler(err);
     }
   };
 

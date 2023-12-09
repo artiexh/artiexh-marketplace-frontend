@@ -46,7 +46,6 @@ export default function CampaignHistoryTab({
       <>
         <div className="text-3xl font-bold">Histories</div>
         <div className="text-[#AFAFAF] mt-1 mb-4">
-          {/* TODO: Replace with API call later or filter based on response */}
           {data?.data.totalSize} histories
         </div>
       </>

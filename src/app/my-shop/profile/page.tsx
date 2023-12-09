@@ -6,6 +6,7 @@ import axiosClient from "@/services/backend/axiosClient";
 import { publicUploadFile } from "@/services/backend/services/media";
 import { updateShopProfileApi } from "@/services/backend/services/user";
 import { $user } from "@/store/user";
+import { errorHandler } from "@/utils/errorHandler";
 import { getNotificationIcon } from "@/utils/mapper";
 import { editShopValidation } from "@/validation/account";
 import { Button, Grid, Input } from "@mantine/core";
@@ -60,11 +61,8 @@ export default function MyShopProfilePage() {
         ...getNotificationIcon(NOTIFICATION_TYPE.SUCCESS),
       });
     },
-    onError: () => {
-      notifications.show({
-        message: "Thay đổi thất bại",
-        ...getNotificationIcon(NOTIFICATION_TYPE.FAILED),
-      });
+    onError: (e) => {
+      errorHandler(e);
     },
   });
 

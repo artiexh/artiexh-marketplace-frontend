@@ -2,6 +2,7 @@ import { NOTIFICATION_TYPE } from "@/constants/common";
 import { increaseCartItem } from "@/services/backend/services/cart";
 import { $user } from "@/store/user";
 import { Product } from "@/types/Product";
+import { errorHandler } from "@/utils/errorHandler";
 import { currencyFormatter } from "@/utils/formatter";
 import { getCampaignType, getNotificationIcon } from "@/utils/mapper";
 import { Button, NumberInput } from "@mantine/core";
@@ -52,11 +53,8 @@ const ProductInfo: FC<ProductInfoProps> = ({ product, special }) => {
         setQuantity(quantity);
       }
     },
-    onError: () => {
-      notifications.show({
-        message: "Thêm vào giỏ hàng thất bại. Vui lòng thử lại sau giây lát",
-        ...getNotificationIcon(NOTIFICATION_TYPE.FAILED),
-      });
+    onError: (e) => {
+      errorHandler(e);
     },
   });
 

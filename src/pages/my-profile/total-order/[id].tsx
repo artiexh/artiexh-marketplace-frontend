@@ -9,6 +9,7 @@ import { cancelOrderApi } from "@/services/backend/services/order";
 import AuthWrapper from "@/services/guards/AuthWrapper";
 import { TotalOrder } from "@/types/Order";
 import { CommonResponseBase } from "@/types/ResponseBase";
+import { errorHandler } from "@/utils/errorHandler";
 import { currencyFormatter } from "@/utils/formatter";
 import { getNotificationIcon } from "@/utils/mapper";
 import { Button, Divider, Grid } from "@mantine/core";
@@ -48,11 +49,8 @@ function OrderDetailPage() {
         ...getNotificationIcon(NOTIFICATION_TYPE.SUCCESS),
       });
     },
-    onError: (error) => {
-      notifications.show({
-        message: "Huỷ đơn thất bại",
-        ...getNotificationIcon(NOTIFICATION_TYPE.FAILED),
-      });
+    onError: (e) => {
+      errorHandler(e);
     },
     onSettled: () => {
       mutate();

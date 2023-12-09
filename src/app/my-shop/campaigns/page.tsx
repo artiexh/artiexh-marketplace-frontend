@@ -10,6 +10,8 @@ import {
   createCampaignApi,
   updateCampaignStatusApi,
 } from "@/services/backend/services/campaign";
+import { ValidationError } from "@/utils/error/ValidationError";
+import { errorHandler } from "@/utils/errorHandler";
 import { getNotificationIcon } from "@/utils/mapper";
 import { campaignValidation } from "@/validation/campaign";
 import { Button, SegmentedControl, TextInput } from "@mantine/core";
@@ -17,6 +19,7 @@ import { useForm } from "@mantine/form";
 import { modals } from "@mantine/modals";
 import { notifications } from "@mantine/notifications";
 import { IconPlus } from "@tabler/icons-react";
+import { useMutation } from "@tanstack/react-query";
 import { useRouter, useSearchParams } from "next/navigation";
 
 const PAGE_SIZE = 4;
@@ -66,10 +69,14 @@ const ShopCampaignsPage = () => {
                 onClickEdit: () =>
                   router.push(`${ROUTE.SHOP}/campaigns/${el.id}`),
                 onClickDelete: async () => {
-                  await updateCampaignStatusApi(el.id, {
-                    message: "Cancel campaign",
-                    status: "CANCELED",
-                  });
+                  try {
+                    await updateCampaignStatusApi(el.id, {
+                      message: "Cancel campaign",
+                      status: "CANCELED",
+                    });
+                  } catch (e) {
+                    errorHandler(e);
+                  }
                 },
               })),
             },
@@ -104,32 +111,40 @@ function CreateCampaignModal() {
     validateInputOnChange: true,
     validateInputOnBlur: true,
   });
-  const submitHandler = async () => {
-    try {
-      if (!form.values.name) return;
+
+  const createCampaignRequestMutation = useMutation({
+    mutationFn: async (values: {
+      name?: string;
+      type: "PRIVATE" | "SHARE";
+    }) => {
+      if (!values.name)
+        throw new ValidationError("Thông tin về tên không phù hợp!");
 
       const res = await createCampaignApi({
-        name: form.values.name,
-        type: form.values.type,
+        name: values.name,
+        type: values.type,
       });
 
+      return res.data;
+    },
+    onSuccess: (data) => {
       notifications.show({
         message: "Tạo campaign thành công!",
         ...getNotificationIcon(NOTIFICATION_TYPE.SUCCESS),
       });
-      router.push(`/my-shop/campaigns/${res.data.data.id}`);
-
+      router.push(`/my-shop/campaigns/${data.data.id}`);
       modals.close("create-campaign-info");
-    } catch (err) {
-      notifications.show({
-        message: "Tạo campaign thất bại! Vui lòng thử lại",
-        ...getNotificationIcon(NOTIFICATION_TYPE.FAILED),
-      });
-    }
-  };
+    },
+    onError: (e) => {
+      errorHandler(e);
+    },
+  });
+
   return (
     <form
-      onSubmit={form.onSubmit(submitHandler)}
+      onSubmit={form.onSubmit((values) =>
+        createCampaignRequestMutation.mutate(values)
+      )}
       className="flex flex-col gap-4"
     >
       <SegmentedControl
@@ -142,7 +157,11 @@ function CreateCampaignModal() {
       <TextInput label="Campaign name" {...form.getInputProps("name")} />
 
       <div className="flex justify-end ">
-        <Button className="bg-primary !text-white" type="submit">
+        <Button
+          loading={createCampaignRequestMutation.isLoading}
+          className="bg-primary !text-white"
+          type="submit"
+        >
           Submit
         </Button>
       </div>

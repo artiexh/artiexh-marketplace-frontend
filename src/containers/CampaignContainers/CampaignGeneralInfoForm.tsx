@@ -8,6 +8,7 @@ import {
 } from "@/services/backend/services/campaign";
 import { CampaignDetail, CampaignHistory } from "@/types/Campaign";
 import { CommonResponseBase } from "@/types/ResponseBase";
+import { errorHandler } from "@/utils/errorHandler";
 import { dateFormatter } from "@/utils/formatter";
 import { getNotificationIcon } from "@/utils/mapper";
 import { campaignInfoValidation } from "@/validation/campaign";
@@ -212,11 +213,8 @@ function EditCampaignGeneralInfo({
         data
       );
     },
-    onError: () => {
-      notifications.show({
-        message: "Chỉnh sửa thất bại! Vui lòng thử lại!",
-        ...getNotificationIcon(NOTIFICATION_TYPE.FAILED),
-      });
+    onError: (e) => {
+      errorHandler(e);
       queryClient.refetchQueries([
         ARTIST_CAMPAIGN_ENDPOINT,
         { id: campaignId },
@@ -281,7 +279,12 @@ function EditCampaignGeneralInfo({
         <Textarea label="Description" {...form.getInputProps("description")} />
       </div>
       <div className="w-full flex justify-end">
-        <Button className="bg-primary !text-white mt-4" type="submit">
+        <Button
+          disabled={!form.isDirty()}
+          loading={editInfoMutation.isLoading}
+          className="bg-primary !text-white mt-4"
+          type="submit"
+        >
           Submit
         </Button>
       </div>

@@ -18,6 +18,7 @@ import { isDisabled } from "@/utils/campaign.utils";
 import { notifications } from "@mantine/notifications";
 import { getNotificationIcon } from "@/utils/mapper";
 import { NOTIFICATION_TYPE } from "@/constants/common";
+import { errorHandler } from "@/utils/errorHandler";
 
 function CustomWebTab({ data: campaignData }: { data: CampaignDetail }) {
   const queryClient = useQueryClient();
@@ -92,11 +93,8 @@ function CustomWebTab({ data: campaignData }: { data: CampaignDetail }) {
         ...getNotificationIcon(NOTIFICATION_TYPE.SUCCESS),
       });
     },
-    onError: () => {
-      notifications.show({
-        message: "Chỉnh sửa thất bại! Vui lòng thử lại!",
-        ...getNotificationIcon(NOTIFICATION_TYPE.FAILED),
-      });
+    onError: (e) => {
+      errorHandler(e);
     },
   });
 

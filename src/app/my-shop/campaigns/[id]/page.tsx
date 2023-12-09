@@ -13,10 +13,11 @@ import {
 import { CampaignDetail } from "@/types/Campaign";
 import { CommonResponseBase } from "@/types/ResponseBase";
 import { isDisabled } from "@/utils/campaign.utils";
+import { errorHandler } from "@/utils/errorHandler";
 import { getNotificationIcon } from "@/utils/mapper";
 import { Badge, Button, Tabs } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { useParams, useRouter } from "next/navigation";
 import { useState } from "react";
 
@@ -41,47 +42,51 @@ export default function CampaignDetailPage() {
     },
   });
 
-  const submitCampaignHandler = async () => {
-    const res = await updateCampaignStatusApi(id, {
-      message: "Submit to admin",
-      status: "WAITING",
-    });
+  const submitCampaignMutation = useMutation({
+    mutationFn: async () => {
+      const res = await updateCampaignStatusApi(id, {
+        message: "Submit to admin",
+        status: "WAITING",
+      });
 
-    if (res != null) {
+      return res;
+    },
+    onSuccess: () => {
       notifications.show({
         message: "Gửi yêu cầu thành công",
         ...getNotificationIcon(NOTIFICATION_TYPE.SUCCESS),
       });
-    } else {
-      notifications.show({
-        message: "Gửi yêu cầu thất bại! Vui lòng thử lại!",
-        ...getNotificationIcon(NOTIFICATION_TYPE.FAILED),
+    },
+    onError: (e) => {
+      errorHandler(e);
+    },
+    onSettled: () => {
+      refetch();
+    },
+  });
+
+  const deleteCampaignMutation = useMutation({
+    mutationFn: async () => {
+      const res = await updateCampaignStatusApi(id, {
+        message: "Cancel campaign",
+        status: "CANCELED",
       });
-    }
 
-    refetch();
-  };
-
-  const deleteCampaignHandler = async () => {
-    const res = await updateCampaignStatusApi(id, {
-      message: "Cancel campaign",
-      status: "CANCELED",
-    });
-
-    if (res != null) {
+      return res;
+    },
+    onSuccess: () => {
       notifications.show({
         message: "Xóa thành công",
         ...getNotificationIcon(NOTIFICATION_TYPE.SUCCESS),
       });
-    } else {
-      notifications.show({
-        message: "Xóa thất bại! Vui lòng thử lại!",
-        ...getNotificationIcon(NOTIFICATION_TYPE.FAILED),
-      });
-    }
-
-    refetch();
-  };
+    },
+    onError: (e) => {
+      errorHandler(e);
+    },
+    onSettled: () => {
+      refetch();
+    },
+  });
 
   if (isLoading || !res?.data) return null;
 
@@ -98,17 +103,20 @@ export default function CampaignDetailPage() {
 
           <div className="h-fit flex gap-x-3">
             <Button
-              disabled={["APPROVED", "REJECTED", "CANCELED"].includes(
-                res.data.status
-              )}
-              onClick={deleteCampaignHandler}
+              disabled={
+                ["APPROVED", "REJECTED", "CANCELED"].includes(
+                  res.data.status
+                ) || submitCampaignMutation.isLoading
+              }
+              onClick={() => deleteCampaignMutation.mutate()}
               className="mb-0 !text-red-600 border-red-600 hover:bg-red-600 hover:!text-white"
             >
               Delete
             </Button>
             <Button
               disabled={isDisabled(res.data.status)}
-              onClick={submitCampaignHandler}
+              loading={submitCampaignMutation.isLoading}
+              onClick={() => submitCampaignMutation.mutate()}
               className="mb-0 !text-primary border-primary hover:bg-primary hover:!text-white"
             >
               Submit

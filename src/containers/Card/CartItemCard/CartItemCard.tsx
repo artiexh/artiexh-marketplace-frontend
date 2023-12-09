@@ -8,6 +8,7 @@ import {
 } from "@/services/backend/services/cart";
 import { CartData, CartItem } from "@/services/backend/types/Cart";
 import { CampaignData } from "@/types/Campaign";
+import { errorHandler } from "@/utils/errorHandler";
 import { currencyFormatter } from "@/utils/formatter";
 import { getCampaignType, getNotificationIcon } from "@/utils/mapper";
 import { ActionIcon, Grid, NumberInput } from "@mantine/core";
@@ -86,11 +87,8 @@ export default function CartItemCard({
         });
       }
     },
-    onError: () => {
-      notifications.show({
-        message: "Cập nhật số lượng thất bại. Vui lòng thử lại sau giây lát",
-        ...getNotificationIcon(NOTIFICATION_TYPE.FAILED),
-      });
+    onError: (e) => {
+      errorHandler(e);
     },
     onSettled: () => {
       revalidateFunc?.();
@@ -117,11 +115,8 @@ export default function CartItemCard({
         ...getNotificationIcon(NOTIFICATION_TYPE.SUCCESS),
       });
     },
-    onError: () => {
-      notifications.show({
-        message: "Xóa sản phẩm thất bại. Vui lòng thử lại sau giây lát",
-        ...getNotificationIcon(NOTIFICATION_TYPE.FAILED),
-      });
+    onError: (e) => {
+      errorHandler(e);
     },
     onSettled: () => {
       deleteEvent?.();

@@ -16,6 +16,7 @@ export const campaignInfoValidation: FormValidateInput<{
   to?: Date;
 }> = {
   name: (value) => {
+    if (!value) return "Tên của chiến dịch không được để trống.";
     if (value != null && value.trim().length > 50)
       return "Tên của chiến dịch không thể vượt quá 50 ký tự.";
   },
