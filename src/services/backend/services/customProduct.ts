@@ -127,3 +127,6 @@ type ProviderConfigByDesignItem = {
 
 export const deleteDesignItemApi = (id: string) =>
   axiosClient.delete(`/inventory-item/${id}`);
+
+export const deleteCustomProductApi = (id: string) =>
+  axiosClient.delete(`/custom-product/${id}`);

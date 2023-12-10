@@ -23,7 +23,7 @@ const ProductDetailPage = () => {
 
   return (
     <div className="layout-with-sidenav mx-auto flex gap-10 px-5">
-      <ProductDetailContainer data={response.data} />
+      <ProductDetailContainer data={response.data} editable={false} />
     </div>
   );
 };

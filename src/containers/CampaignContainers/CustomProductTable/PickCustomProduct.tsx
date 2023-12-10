@@ -13,6 +13,7 @@ import {
   CommonResponseBase,
   PaginationResponseBase,
 } from "@/types/ResponseBase";
+import { errorHandler } from "@/utils/errorHandler";
 import { currencyFormatter } from "@/utils/formatter";
 import { getNotificationIcon } from "@/utils/mapper";
 import {
@@ -35,7 +36,7 @@ import {
   IconCirclePlus,
   IconEye,
 } from "@tabler/icons-react";
-import { useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import clsx from "clsx";
 import _ from "lodash";
 import { useParams } from "next/navigation";
@@ -191,13 +192,14 @@ function PickProvider({ data }: { data: SimpleCustomProduct[] }) {
     () => calculateDesignItemConfig(data.map((e) => e.id.toString()))
   );
 
-  const pickProviderHandler = async () => {
-    try {
+  const pickProviderMutation = useMutation({
+    mutationFn: async () => {
       const campaignRes = queryClient.getQueryData<
         CommonResponseBase<CampaignDetail>
       >([ARTIST_CAMPAIGN_ENDPOINT, { id: id }]);
 
-      if (!campaignRes?.data) throw new Error("Data is missing!");
+      if (!campaignRes?.data)
+        throw new Error("Có lỗi xảy ra, vui lòng thử lại sau");
       const res = await updateCampaignCustomProductsApi(
         campaignRes.data,
         data.map((v) => {
@@ -208,23 +210,33 @@ function PickProvider({ data }: { data: SimpleCustomProduct[] }) {
         provider ?? campaignRes.data.provider.businessCode
       );
 
+      return res.data;
+    },
+    onSuccess: (data) => {
+      modals.close("custom-product-create-campaign");
       notifications.show({
-        message: "Thêm sản phẩm thành công!",
+        message: "Chỉnh sửa thành công",
         ...getNotificationIcon(NOTIFICATION_TYPE.SUCCESS),
       });
 
-      queryClient.setQueryData(
-        [ARTIST_CAMPAIGN_ENDPOINT, { id: id }],
-        res.data
+      queryClient.setQueryData([ARTIST_CAMPAIGN_ENDPOINT, { id: id }], data);
+    },
+    onError: (e) => {
+      errorHandler(e);
+    },
+  });
+
+  useEffect(() => {
+    if (provider) {
+      const tmp = response?.data.data.find(
+        (el) => el.businessCode === provider
       );
-      modals.close("custom-product-create-campaign");
-    } catch (e) {
-      notifications.show({
-        message: "Thêm sản phẩm thất bại! Vui lòng thử lại...",
-        ...getNotificationIcon(NOTIFICATION_TYPE.FAILED),
-      });
+      if (!tmp || tmp.customProducts.length !== data.length) {
+        setProvider(undefined);
+        return;
+      }
     }
-  };
+  }, [response]);
 
   return (
     <>
@@ -239,8 +251,10 @@ function PickProvider({ data }: { data: SimpleCustomProduct[] }) {
           <IconArchive className="w-6" />
         </Indicator>
         <Button
+          disabled={!provider}
           className="!text-white bg-primary mb-4"
-          onClick={pickProviderHandler}
+          loading={pickProviderMutation.isLoading}
+          onClick={() => pickProviderMutation.mutate()}
         >
           Update
         </Button>

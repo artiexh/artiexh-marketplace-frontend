@@ -7,6 +7,7 @@ import { publicUploadFile } from "@/services/backend/services/media";
 import { CustomProductGeneralInfo } from "@/types/CustomProduct";
 import { Tag } from "@/types/Product";
 import { Attaches } from "@/types/common";
+import { errorHandler } from "@/utils/errorHandler";
 import { getNotificationIcon } from "@/utils/mapper";
 import { customProductValidation } from "@/validation/customProducts";
 import {
@@ -20,7 +21,7 @@ import {
 import { useForm } from "@mantine/form";
 import { notifications } from "@mantine/notifications";
 import { IconArrowLeft } from "@tabler/icons-react";
-import { useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
@@ -52,6 +53,7 @@ const CustomProductDetailContainer = ({ data }: Props) => {
     resetDirty,
     setFieldValue,
     removeListItem,
+    errors,
   } = useForm<UpdateGeneralInfoData>({
     initialValues: {
       attaches: data.attaches?.filter((el) => el.type !== "THUMBNAIL") ?? [],
@@ -66,8 +68,6 @@ const CustomProductDetailContainer = ({ data }: Props) => {
     validateInputOnChange: true,
     validate: customProductValidation,
   });
-
-  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const mapTagDataToTagOption = (data: Tag[]) =>
     data?.map((tag) => ({
@@ -95,49 +95,48 @@ const CustomProductDetailContainer = ({ data }: Props) => {
     label: category.name,
   }));
 
-  const submitHandler = async (values: UpdateGeneralInfoData) => {
-    const needToUploadArr = values.attaches?.filter(
-      (attach) => attach instanceof File
-    ) as File[] | undefined;
+  const updateCustomProductMutation = useMutation({
+    mutationFn: async (values: UpdateGeneralInfoData) => {
+      const needToUploadArr = values.attaches?.filter(
+        (attach) => attach instanceof File
+      ) as File[] | undefined;
 
-    const uploadArr =
-      values.thumbnail instanceof File
-        ? [values.thumbnail, ...(needToUploadArr ?? [])]
-        : [...(needToUploadArr ?? [])];
+      const uploadArr =
+        values.thumbnail instanceof File
+          ? [values.thumbnail, ...(needToUploadArr ?? [])]
+          : [...(needToUploadArr ?? [])];
 
-    const results = uploadArr.length
-      ? await publicUploadFile(uploadArr)
-      : undefined;
+      const results = uploadArr.length
+        ? await publicUploadFile(uploadArr)
+        : undefined;
 
-    const attaches =
-      results?.data.data.fileResponses.map((res, index) => {
-        return {
-          title: res.fileName,
-          type: index === 0 ? "THUMBNAIL" : "OTHER",
-          url: res.presignedUrl,
-        };
-      }) ?? [];
+      const attaches =
+        results?.data.data.fileResponses.map((res, index) => {
+          return {
+            title: res.fileName,
+            type: index === 0 ? "THUMBNAIL" : "OTHER",
+            url: res.presignedUrl,
+          };
+        }) ?? [];
 
-    const res = await updateGeneralInformationApi(data, {
-      ...values,
-      attaches: [
-        ...(attaches as Attaches[]),
-        ...((values.attaches?.filter(
-          (attach) => !(attach instanceof File)
-        ) as Attaches[]) ?? []),
-      ],
-    });
+      const res = await updateGeneralInformationApi(data, {
+        ...values,
+        attaches: [
+          ...(attaches as Attaches[]),
+          ...((values.attaches?.filter(
+            (attach) => !(attach instanceof File)
+          ) as Attaches[]) ?? []),
+        ],
+      });
 
-    if (res.data.data != null) {
+      return res.data;
+    },
+    onSuccess: (returnData) => {
       notifications.show({
         message: "Cập nhật thông tin sản phẩm thành công",
         ...getNotificationIcon(NOTIFICATION_TYPE.SUCCESS),
       });
-      queryClient.setQueryData(
-        ["/custom-product/[id]/general", { id: data?.id }],
-        res.data
-      );
-      const tmp = res.data.data;
+      const tmp = returnData.data;
       setValues({
         attaches: tmp.attaches?.filter((el) => el.type !== "THUMBNAIL") ?? [],
         description: tmp.description,
@@ -148,18 +147,22 @@ const CustomProductDetailContainer = ({ data }: Props) => {
         thumbnail: tmp.attaches?.find((el) => el.type === "THUMBNAIL"),
       });
       resetDirty();
-    } else {
-      notifications.show({
-        message: "Cập nhật sản phẩm thất bại. Vui lòng thử lại sau giây lát",
-        ...getNotificationIcon(NOTIFICATION_TYPE.FAILED),
-      });
-    }
-  };
+      queryClient.setQueryData(
+        ["/custom-product/[id]/general", { id: data?.id }],
+        returnData
+      );
+    },
+    onError: (e) => {
+      errorHandler(e);
+    },
+  });
 
   return (
     <form
       className="create-product-container flex flex-col gap-5 w-full pb-5"
-      onSubmit={onSubmit(submitHandler)}
+      onSubmit={onSubmit((values) =>
+        updateCustomProductMutation.mutate(values)
+      )}
     >
       <div className="card general-wrapper">
         <div className="flex gap-x-2 items-center">
@@ -179,7 +182,7 @@ const CustomProductDetailContainer = ({ data }: Props) => {
               className="col-span-12"
               withAsterisk
               {...getInputProps("name")}
-              disabled={isSubmitting}
+              disabled={updateCustomProductMutation.isLoading}
             />
             <MultiSelect
               data={tags}
@@ -199,7 +202,7 @@ const CustomProductDetailContainer = ({ data }: Props) => {
                 return item;
               }}
               {...getInputProps("tags")}
-              disabled={isSubmitting}
+              disabled={updateCustomProductMutation.isLoading}
             />
             <Select
               data={categoryOptions || []}
@@ -219,7 +222,7 @@ const CustomProductDetailContainer = ({ data }: Props) => {
                 input: "h-full",
               }}
               {...getInputProps("description")}
-              disabled={isSubmitting}
+              disabled={updateCustomProductMutation.isLoading}
             />
           </div>
           <div className="image-wrapper flex flex-col md:w-6/12">
@@ -290,7 +293,7 @@ const CustomProductDetailContainer = ({ data }: Props) => {
         <Button
           className="bg-primary !text-white"
           type="submit"
-          loading={isSubmitting}
+          loading={updateCustomProductMutation.isLoading}
           disabled={!isDirty()}
         >
           Save

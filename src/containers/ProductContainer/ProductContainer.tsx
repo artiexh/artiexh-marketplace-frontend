@@ -36,8 +36,10 @@ type UpdateGeneralInfoData = {
 
 export default function ProductDetailContainer({
   data,
+  editable = true,
 }: {
   data: ProductInventory;
+  editable?: boolean;
 }) {
   const { data: categories } = useCategories();
   const { data: tagList } = useTags();
@@ -70,7 +72,7 @@ export default function ProductDetailContainer({
     },
     validateInputOnBlur: true,
     validateInputOnChange: true,
-    validate: productValidation,
+    validate: editable ? productValidation : undefined,
   });
 
   const mapTagDataToTagOption = (data: Tag[]) =>
@@ -158,8 +160,6 @@ export default function ProductDetailContainer({
       }
     );
 
-    console.log(updateRes);
-
     // const res = await updateGeneralInformationApi(data, {
     //   ...values,
     //   attaches: [
@@ -207,6 +207,7 @@ export default function ProductDetailContainer({
           <div className="flex flex-col-reverse md:flex-row mt-5 gap-10">
             <div className="grid grid-cols-12 w-full gap-5 md:gap-x-10">
               <TextInput
+                readOnly={!editable}
                 label="Product name"
                 className="col-span-12"
                 withAsterisk
@@ -214,6 +215,7 @@ export default function ProductDetailContainer({
                 disabled={isSubmitting}
               />
               <MultiSelect
+                readOnly={!editable}
                 data={tags}
                 label="Tags"
                 className="col-span-12"
@@ -243,6 +245,7 @@ export default function ProductDetailContainer({
                 disabled={true}
               />
               <Textarea
+                readOnly={!editable}
                 label="Description"
                 className="col-span-12 row-span-6 order-1 md:order-none"
                 classNames={{
@@ -254,6 +257,7 @@ export default function ProductDetailContainer({
                 disabled={isSubmitting}
               />
               <TextInput
+                readOnly={!editable}
                 label="Price"
                 className="col-span-5"
                 withAsterisk
@@ -261,6 +265,7 @@ export default function ProductDetailContainer({
                 disabled={isSubmitting}
               />
               <TextInput
+                readOnly={!editable}
                 label="Quantity"
                 className="col-span-5"
                 withAsterisk
@@ -268,6 +273,7 @@ export default function ProductDetailContainer({
                 disabled={isSubmitting}
               />
               <TextInput
+                readOnly={!editable}
                 label="Weight"
                 className="col-span-5"
                 withAsterisk
@@ -275,6 +281,7 @@ export default function ProductDetailContainer({
                 disabled={isSubmitting}
               />
               <TextInput
+                readOnly={!editable}
                 label="Max item per order"
                 className="col-span-5"
                 withAsterisk
@@ -285,6 +292,7 @@ export default function ProductDetailContainer({
             <div className="image-wrapper flex flex-col md:w-6/12">
               <Input.Wrapper label="Thumbnail" withAsterisk>
                 <Thumbnail
+                  disabled={!editable}
                   url={
                     //@ts-ignore
                     values.thumbnail?.url ??
@@ -296,10 +304,16 @@ export default function ProductDetailContainer({
                     setFieldValue("thumbnail", file);
                   }}
                   defaultPlaceholder={
-                    <div className="flex flex-col items-center">
-                      <p className="text-4xl font-thin">+</p>
-                      <p>Add thumbnail</p>
-                    </div>
+                    editable ? (
+                      <div className="flex flex-col items-center">
+                        <p className="text-4xl font-thin">+</p>
+                        <p>Add thumbnail</p>
+                      </div>
+                    ) : (
+                      <div className="flex flex-col items-center">
+                        <p className="text-4xl font-thin">No image</p>
+                      </div>
+                    )
                   }
                   clearable
                   onClear={() => {
@@ -314,6 +328,7 @@ export default function ProductDetailContainer({
                     values.attaches?.map((attach, index) => (
                       <Thumbnail
                         // Make this unique
+                        disabled={!editable}
                         url={
                           //@ts-ignore
                           attach?.url ??
@@ -336,7 +351,7 @@ export default function ProductDetailContainer({
                       />
                     ))
                   }
-                  {values.attaches?.length < 6 && (
+                  {editable && values.attaches?.length < 6 && (
                     <Thumbnail
                       setFile={(file) => {
                         console.log(attaches);
@@ -352,14 +367,16 @@ export default function ProductDetailContainer({
         </div>
 
         <div className="btn-wrapper flex flex-col-reverse md:flex-row gap-5 w-full md:w-max ml-auto bg-white p-5 rounded-lg md:bg-transparent sm:p-0">
-          <Button
-            className="bg-primary"
-            type="submit"
-            loading={isSubmitting}
-            disabled={!isDirty()}
-          >
-            Save
-          </Button>
+          {editable && (
+            <Button
+              className="bg-primary"
+              type="submit"
+              loading={isSubmitting}
+              disabled={!isDirty()}
+            >
+              Save
+            </Button>
+          )}
         </div>
       </form>
     </>

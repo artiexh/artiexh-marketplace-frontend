@@ -2,20 +2,28 @@
 
 import PrivateImageLoader from "@/components/PrivateImageLoader/PrivateImageLoader";
 import TableComponent from "@/components/TableComponent";
+import { NOTIFICATION_TYPE } from "@/constants/common";
 import axiosClient from "@/services/backend/axiosClient";
+import { deleteCustomProductApi } from "@/services/backend/services/customProduct";
 import { SimpleCustomProduct } from "@/types/CustomProduct";
 import {
   CommonResponseBase,
   PaginationResponseBase,
 } from "@/types/ResponseBase";
 import { TableColumns } from "@/types/Table";
-import { Button, Input, Pagination, Tooltip } from "@mantine/core";
+import { ValidationError } from "@/utils/error/ValidationError";
+import { errorHandler } from "@/utils/errorHandler";
+import { getNotificationIcon } from "@/utils/mapper";
+import { ActionIcon, Button, Input, Pagination, Tooltip } from "@mantine/core";
+import { notifications } from "@mantine/notifications";
 import {
   IconBallpen,
   IconPalette,
   IconPlus,
   IconSearch,
+  IconTrash,
 } from "@tabler/icons-react";
+import { useMutation } from "@tanstack/react-query";
 import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
 import useSWR from "swr";
@@ -31,21 +39,46 @@ const ShopProductsPage = () => {
     sortDirection: "ASC",
   });
 
-  const { data: response, isLoading } = useSWR(
-    ["custom-product", ...Object.values(params)],
-    () =>
-      axiosClient.get<
-        CommonResponseBase<PaginationResponseBase<SimpleCustomProduct>>
-      >("/custom-product", {
-        params: {
-          ...params,
-          sortBy: "id",
-          sortDirection: "DESC",
-        },
-      })
+  const {
+    data: response,
+    isLoading,
+    mutate,
+  } = useSWR(["custom-product", ...Object.values(params)], () =>
+    axiosClient.get<
+      CommonResponseBase<PaginationResponseBase<SimpleCustomProduct>>
+    >("/custom-product", {
+      params: {
+        ...params,
+        sortBy: "id",
+        sortDirection: "DESC",
+      },
+    })
   );
 
   const data = response?.data.data;
+
+  const deleteCustomProductMutation = useMutation({
+    mutationFn: async (data: SimpleCustomProduct) => {
+      if (typeof data.campaignLock !== "undefined") {
+        throw new ValidationError(
+          "Sản phẩm này đang thuộc vào một chiến dịch, không thể xóa"
+        );
+      }
+      await deleteCustomProductApi(data.id);
+    },
+    onSuccess: () => {
+      notifications.show({
+        message: "Xóa thành công",
+        ...getNotificationIcon(NOTIFICATION_TYPE.SUCCESS),
+      });
+    },
+    onError: (e) => {
+      errorHandler(e);
+    },
+    onSettled: () => {
+      mutate();
+    },
+  });
 
   return (
     <div>
@@ -94,6 +127,9 @@ const ShopProductsPage = () => {
                     router.push(`/my-shop/custom-products/${item.id}/design`),
                   onEdit: () =>
                     router.push(`/my-shop/custom-products/${item.id}/details`),
+                  onDelete: () => {
+                    deleteCustomProductMutation.mutate(item);
+                  },
                 };
               })}
             />
@@ -118,6 +154,7 @@ const customProductColumns: TableColumns<
   SimpleCustomProduct & {
     onDesign: Function;
     onEdit: Function;
+    onDelete: Function;
   }
 > = [
   {
@@ -177,16 +214,19 @@ const customProductColumns: TableColumns<
     render: (record) => (
       <div className="flex justify-center gap-x-2">
         <Tooltip label="Edit">
-          <IconBallpen
-            className="cursor-pointer"
-            onClick={() => record.onEdit && record.onEdit()}
-          />
+          <ActionIcon onClick={() => record.onEdit && record.onEdit()}>
+            <IconBallpen />
+          </ActionIcon>
         </Tooltip>
         <Tooltip label="Desgin">
-          <IconPalette
-            className="cursor-pointer"
-            onClick={() => record.onDesign && record.onDesign()}
-          />
+          <ActionIcon onClick={() => record.onDesign && record.onDesign()}>
+            <IconPalette />
+          </ActionIcon>
+        </Tooltip>
+        <Tooltip label="Delete">
+          <ActionIcon onClick={() => record.onDelete && record.onDelete()}>
+            <IconTrash />
+          </ActionIcon>
         </Tooltip>
       </div>
     ),

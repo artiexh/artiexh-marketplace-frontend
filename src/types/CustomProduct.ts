@@ -6,11 +6,13 @@ export type CustomDesignImageSet = {
     fileName: string;
     id: string;
     file?: string | File;
+    name?: string;
   };
   mockupImage: {
     fileName: string;
     id: string;
     file?: string | File;
+    name?: string;
   };
   positionCode: string;
 };

@@ -2,6 +2,7 @@ import ImageWithFallback from "@/components/ImageWithFallback/ImageWithFallback"
 import { ArtistProductColumnType } from "@/types/Product";
 import { TableColumns } from "@/types/Table";
 import { currencyFormatter } from "@/utils/formatter";
+import { ActionIcon } from "@mantine/core";
 import { IconBallpen, IconEye } from "@tabler/icons-react";
 
 const shopProductColumns: TableColumns<
@@ -53,10 +54,9 @@ const shopProductColumns: TableColumns<
     className: "!text-center",
     render: (record) => (
       <div className="flex justify-center">
-        <IconEye
-          className="cursor-pointer"
-          onClick={() => record.onView && record.onView()}
-        />
+        <ActionIcon onClick={() => record.onView && record.onView()}>
+          <IconEye />
+        </ActionIcon>
       </div>
     ),
   },

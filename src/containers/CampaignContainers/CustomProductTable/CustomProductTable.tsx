@@ -202,56 +202,17 @@ function EditCustomProductModal({ data: product }: { data: CustomProduct }) {
     onError: (e) => {
       errorHandler(e);
     },
+    onSettled: () => {
+      queryClient.refetchQueries([ARTIST_CAMPAIGN_ENDPOINT, { id: id }]);
+    },
   });
 
-  const updateHandler = async (data: { quantity: number; price: number }) => {
-    const campaignRes = queryClient.getQueryData<
-      CommonResponseBase<CampaignDetail>
-    >([ARTIST_CAMPAIGN_ENDPOINT, { id: id }]);
-    if (!campaignRes?.data) throw new Error("Campaign not found");
-    const tmp = campaignRes.data.products.filter(
-      (d) => d.customProduct.id !== product.customProduct.id
-    );
-    try {
-      const res = await updateCampaignCustomProductsApi(
-        campaignRes.data,
-        [
-          ...tmp.map((v) => {
-            return {
-              customProductId: v.customProduct.id,
-              quantity: v.quantity,
-              price: v.price,
-            } as Pick<CustomProduct, "price" | "quantity"> & {
-              customProductId: string;
-            };
-          }),
-          {
-            customProductId: product.customProduct.id,
-            quantity: data.quantity,
-            price: {
-              amount: data.price,
-              unit: "VND",
-            },
-          },
-        ],
-        campaignRes.data.provider.businessCode
-      );
-      notifications.show({
-        message: "Chỉnh sửa thông tin sản phẩm thành công!",
-        ...getNotificationIcon(NOTIFICATION_TYPE.SUCCESS),
-      });
-      queryClient.setQueryData(
-        [ARTIST_CAMPAIGN_ENDPOINT, { id: id }],
-        res.data
-      );
-      modals.close(`${product.id}-custom-product-edit`);
-    } catch (err) {
-      errorHandler(err);
-    }
-  };
-
   return (
-    <form onSubmit={form.onSubmit(updateHandler)}>
+    <form
+      onSubmit={form.onSubmit((values) =>
+        updateCampaignCustomProductsMutation.mutate(values)
+      )}
+    >
       <div className="text-gray-600 mb-6 text-sm">
         Arty sẽ thu {percentage}% trên mỗi đơn hàng của bạn
       </div>
@@ -315,7 +276,11 @@ function EditCustomProductModal({ data: product }: { data: CustomProduct }) {
         {...form.getInputProps(`quantity`)}
       />
       <div className="w-full flex justify-end mt-4">
-        <Button className="bg-primary !text-white" type="submit">
+        <Button
+          loading={updateCampaignCustomProductsMutation.isLoading}
+          className="bg-primary !text-white"
+          type="submit"
+        >
           Update
         </Button>
       </div>

@@ -709,12 +709,16 @@ function ImageSetPicker({ currentCombination }: ImageSetPickerProps) {
     mutationFn: async (body: { positionCode: string; file: File }) => {
       const { positionCode, file } = body;
 
-      if (!designItemRes?.data) throw new Error("There is something wrong");
+      if (file.size > 5 * 1024 * 1024)
+        throw new ValidationError("File mockup chỉ được tối đa 5MB");
+
+      if (!designItemRes?.data)
+        throw new Error("Có lỗi xảy ra, vui lòng thử lại sau");
 
       const { data: fileRes } = await privateUploadFiles([file]);
 
       const firstImage = fileRes.data.fileResponses[0];
-      if (!firstImage) throw new Error("There is something wrong");
+      if (!firstImage) throw new Error("Có lỗi xảy ra, vui lòng thử lại sau");
 
       const res = await updateImageSetApi(
         designItemRes.data,
@@ -750,6 +754,9 @@ function ImageSetPicker({ currentCombination }: ImageSetPickerProps) {
     },
     onSuccess: (data, variables) => {
       queryClient.setQueryData(["custom-product", { id: id }], data);
+    },
+    onError: (e) => {
+      errorHandler(e);
     },
   });
 
@@ -757,11 +764,12 @@ function ImageSetPicker({ currentCombination }: ImageSetPickerProps) {
     mutationFn: async (body: { positionCode: string; file: File }) => {
       setOverlay(true);
       const { positionCode, file } = body;
-      if (!designItemRes?.data) throw new Error("There is something wrong");
+      if (!designItemRes?.data)
+        throw new Error("Có lỗi xảy ra, vui lòng thử lại sau");
       const { data: fileRes } = await privateUploadFiles([file]);
 
       const firstImage = fileRes.data.fileResponses[0];
-      if (!firstImage) throw new Error("There is something wrong");
+      if (!firstImage) throw new Error("Có lỗi xảy ra, vui lòng thử lại sau");
       const res = await updateImageSetApi(
         designItemRes.data,
         //@ts-ignore
@@ -796,6 +804,9 @@ function ImageSetPicker({ currentCombination }: ImageSetPickerProps) {
     },
     onSuccess: (data, variables) => {
       queryClient.setQueryData(["custom-product", { id: id }], data);
+    },
+    onError: (e) => {
+      errorHandler(e);
     },
     onSettled: () => {
       setOverlay(false);
@@ -883,7 +894,9 @@ function ImageSetPicker({ currentCombination }: ImageSetPickerProps) {
                     value={
                       manufacturingImage
                         ? {
-                            fileName: manufacturingImage.fileName,
+                            fileName:
+                              manufacturingImage.name ??
+                              manufacturingImage.fileName,
                             file: manufacturingImage.fileName,
                           }
                         : undefined
@@ -955,6 +968,8 @@ import ToteBagContainer from "@/containers/3dModelContainers/ToteBagContainer";
 import logoImage from "../../../../../public/assets/logo.svg";
 import { mock } from "node:test";
 import _ from "lodash";
+import { errorHandler } from "@/utils/errorHandler";
+import { ValidationError } from "@/utils/error/ValidationError";
 
 function CombinationCodePicker({ combinations }: CombinationCodePickerProps) {
   const queryClient = useQueryClient();
@@ -968,7 +983,8 @@ function CombinationCodePicker({ combinations }: CombinationCodePickerProps) {
 
   const updateCombinationCodeMutate = useMutation({
     mutationFn: async (combinationCode: string) => {
-      if (!designItemRes?.data) throw new Error("There is something wrong");
+      if (!designItemRes?.data)
+        throw new Error("Có lỗi xảy ra, vui lòng thử lại sau");
       const res = await updateImageCombinationApi(
         designItemRes.data,
         combinationCode
@@ -978,6 +994,9 @@ function CombinationCodePicker({ combinations }: CombinationCodePickerProps) {
     },
     onSuccess: (data) => {
       queryClient.setQueryData(["custom-product", { id: id }], data);
+    },
+    onError: (e) => {
+      errorHandler(e);
     },
   });
 
