@@ -11,8 +11,10 @@ export const DEFAULT_FILTERS: Partial<FilterProps> = {
 };
 
 export const SORT_OPTIONS = [
-  { value: "cost_asc", label: "Price low to high" },
-  { value: "cost_desc", label: "Price high to low" },
-  { value: "ratings_asc", label: "Ratings low to high" },
-  { value: "ratings_desc", label: "Ratings high to low" },
+  { value: "price.amount_ASC", label: "Giá từ thấp đến cao" },
+  { value: "price.amount_DESC", label: "Giá từ cao đến thấp" },
+  {
+    value: "price_DEFAULT",
+    label: "Mặc định",
+  },
 ];
