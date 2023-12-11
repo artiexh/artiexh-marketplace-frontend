@@ -22,7 +22,7 @@ export default function OrderTab() {
     pageNumber: 1,
     sortBy: "id",
     sortDirection: "DESC",
-    status: null,
+    status: "PAYING",
     from: null,
     to: null,
   });
@@ -34,39 +34,32 @@ export default function OrderTab() {
     });
   };
 
-  const { data: orders } = useSWR<any>([JSON.stringify(params)], async () => {
-    try {
-      const { data } = (
-        await axiosClient.get<
-          CommonResponseBase<PaginationResponseBase<Order | TotalOrder>>
-        >(
-          `/user/${
-            params.status === "PAYING" ? "order" : "campaign-order"
-          }?${getQueryString(params, ["id"])}`
-        )
-      ).data;
-      // console.log(data.items);
-      return data;
-    } catch (err) {
-      console.log(err);
-      return [];
+  const { data: orders, mutate } = useSWR<any>(
+    [JSON.stringify(params)],
+    async () => {
+      try {
+        const { data } = (
+          await axiosClient.get<
+            CommonResponseBase<PaginationResponseBase<Order | TotalOrder>>
+          >(
+            `/user/${
+              params.status === "PAYING" ? "order" : "campaign-order"
+            }?${getQueryString(params, ["id"])}`
+          )
+        ).data;
+        // console.log(data.items);
+        return data;
+      } catch (err) {
+        console.log(err);
+        return [];
+      }
     }
-  });
+  );
 
   console.log(orders);
 
   return (
     <div className="user-profile-page">
-      <Badge
-        className={clsx(
-          "mr-3 cursor-pointer",
-          !params.status && "bg-primary text-white"
-        )}
-        key={"ALL"}
-        onClick={() => setField("status", null)}
-      >
-        Tất cả
-      </Badge>
       {Object.values(ORDER_STATUS).map((orderStatus) => (
         <Badge
           className={clsx(
@@ -85,7 +78,7 @@ export default function OrderTab() {
             params.status !== "PAYING" ? (
               <OrderCard key={order.id} order={order} />
             ) : (
-              <OrderPaymentCard key={order.id} order={order} />
+              <OrderPaymentCard key={order.id} order={order} mutate={mutate} />
             )
           )
         ) : (
