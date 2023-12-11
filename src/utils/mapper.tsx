@@ -91,3 +91,24 @@ export const getOrderStatusStylingClass = (status: string) => {
       return "bg-red-500";
   }
 };
+
+export const getNotificationRedirectUrl = (referenceData: {
+  id: string;
+  referenceEntity: string;
+}) => {
+  const { id, referenceEntity } = referenceData;
+  switch (referenceEntity) {
+    case "CAMPAIGN_SALE":
+      return `/my-shop/sale-campaigns/${id}`;
+    case "CAMPAIGN_REQUEST":
+      return `/my-shop/campaigns/${id}`;
+    case "ORDER":
+      return `/my-profile/order/${id}`;
+    case "CAMPAIGN_ORDER":
+      return `/my-profile/total-order/${id}`;
+    case "POST":
+      return `/my-profile`;
+    default:
+      break;
+  }
+};

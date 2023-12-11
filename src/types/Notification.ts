@@ -6,4 +6,8 @@ export type NotificationType = {
   createdDate: string;
   modifiedDate: string;
   readAt?: string;
+  referenceData: {
+    id: string;
+    referenceEntity: string;
+  };
 };
