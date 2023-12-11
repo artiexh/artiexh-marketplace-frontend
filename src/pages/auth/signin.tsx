@@ -20,7 +20,7 @@ const SignInPage = () => {
       <div className="flex flex-col w-full sm:flex-1 gap-3">
         <div className="header_desktop hidden sm:flex flex-col">
           <h1 className="font-bold text-primary w-full max-w-xs mx-auto">
-            Artiexh
+            Arty
           </h1>
           <h2 className="text-subtext max-w-xs mx-auto w-full">
             Chưa có tài khoản?{" "}

@@ -7,7 +7,6 @@ import ImageWithFallback from "../ImageWithFallback/ImageWithFallback";
 
 export default function ArtistPreviewCard({ artist }: { artist: Artist }) {
   const router = useRouter();
-  console.log(artist);
 
   return (
     <div

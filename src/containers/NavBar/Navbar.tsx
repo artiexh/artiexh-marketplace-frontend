@@ -4,10 +4,10 @@ import { logout } from "@/services/backend/services/user";
 import { $user } from "@/store/user";
 import { HoverCard } from "@mantine/core";
 import { useStore } from "@nanostores/react";
-import { IconShoppingCart, IconUser } from "@tabler/icons-react";
-import Image from "next/image";
+import { IconShoppingCart } from "@tabler/icons-react";
 import { useRouter } from "next/router";
 import FetchAutoComplete from "../FetchAutocomplete/FetchAutocomplete";
+import NotificationContainer from "../NotificationContainer.tsx/NotificationContainer";
 
 type NavBarProps = {};
 
@@ -30,7 +30,7 @@ export default function NavBar(props: NavBarProps) {
             />
           </div>
           <div className="hidden sm:block text-3xl ml-3 font-bold text-[#50207D]">
-            Artiexh
+            Arty
           </div>
         </div>
         <div className="w-[60%]">
@@ -52,6 +52,11 @@ export default function NavBar(props: NavBarProps) {
               )}
             </div>
           </div>
+          {user != null && (
+            <div className="mr-6">
+              <NotificationContainer />
+            </div>
+          )}
           {user != null ? (
             <HoverCard width={200}>
               <HoverCard.Target>

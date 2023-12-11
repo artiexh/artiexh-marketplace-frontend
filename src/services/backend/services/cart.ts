@@ -36,20 +36,13 @@ export const increaseCartItem = async (
   saleCampaignId: string
 ) => {
   let cartItems;
-  try {
-    const { data: result } = await axiosClient.patch<CartData>(
-      "/cart/item/add",
-      {
-        productCode,
-        saleCampaignId,
-      }
-    );
+  const { data: result } = await axiosClient.patch<CartData>("/cart/item/add", {
+    productCode,
+    saleCampaignId,
+  });
 
-    cartItems = result;
-    await updateUserInformation();
-  } catch (err) {
-    console.log(err);
-  }
+  cartItems = result;
+  await updateUserInformation();
 
   return cartItems;
 };

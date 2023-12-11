@@ -15,7 +15,6 @@ import { Artist } from "@/types/User";
 import { Carousel } from "@mantine/carousel";
 import clsx from "clsx";
 import { GetStaticPropsContext, InferGetStaticPropsType, NextPage } from "next";
-import Image from "next/image";
 import { useRouter } from "next/router";
 import useSWR from "swr";
 
