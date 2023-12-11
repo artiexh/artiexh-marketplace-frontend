@@ -68,9 +68,6 @@ export default function CampaignPreviewCard({
                 Từ: {new Date(campaign.from).toLocaleDateString()} đến{" "}
                 {new Date(campaign.to).toLocaleDateString()}
               </div>
-              {campaignType === "IN_GOING" && (
-                <div className="text-xs mt-2">Đã bán: 10000+</div>
-              )}
             </div>
             {campaignTime && (
               <div className="pt-3 py-4 px-3">

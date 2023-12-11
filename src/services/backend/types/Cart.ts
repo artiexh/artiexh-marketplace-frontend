@@ -14,9 +14,8 @@ export type CartItem = {
   deliveryType: string;
   quantity: number;
   thumbnailUrl: string;
-
+  weight: number;
   maxItemsPerOrder: number;
-
   productCode: string;
 };
 

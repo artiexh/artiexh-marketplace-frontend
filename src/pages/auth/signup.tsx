@@ -19,7 +19,7 @@ const SignUpPage = () => {
       <div className="flex flex-col w-full sm:flex-1 gap-3">
         <div className="header_desktop hidden sm:flex flex-col">
           <h1 className="font-bold text-primary w-full max-w-xs mx-auto">
-            Artiexh
+            Arty
           </h1>
           <h2 className="text-subtext max-w-xs mx-auto w-full">
             Đã có tài khoản?{" "}
@@ -38,11 +38,13 @@ const SignUpPage = () => {
           height={300}
           className="aspect-square mx-auto"
         />
-       
       </div>
       <div className="footer-wrapper_mobile sm:hidden">
         Đã có tài khoản?{" "}
-        <Link href="/auth/signin" className="font-bold text-primary !text-white">
+        <Link
+          href="/auth/signin"
+          className="font-bold text-primary !text-white"
+        >
           Đăng nhập
         </Link>
       </div>

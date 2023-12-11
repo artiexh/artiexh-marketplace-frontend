@@ -165,7 +165,16 @@ function CheckoutPage() {
       const res = await getShippingFee({
         addressId: selectedAddressId,
         tags: [],
-        totalWeight: 10,
+        totalWeight:
+          selectedCartItems?.reduce(
+            (total, item) =>
+              total +
+              item.items.reduce(
+                (acc, cartItem) => acc + (cartItem?.weight ?? 3),
+                0
+              ),
+            0
+          ) ?? 0,
       });
 
       setShippingFee(res);

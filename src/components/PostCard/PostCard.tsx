@@ -97,7 +97,9 @@ const PostCardContent = ({ artist, postInformation }: PostCardProps) => {
           </div>
           <div>
             <div className="text-sm">{artist.displayName}</div>
-            <div className="text-sm text-gray-500">1 day ago</div>
+            <div className="text-sm text-gray-500">
+              {moment(postInformation.createdDate).toNow()}
+            </div>
           </div>
         </div>
         <div className="mt-6">{postInformation.description}</div>

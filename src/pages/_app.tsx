@@ -18,6 +18,7 @@ import {
   QueryClientProvider,
   useQuery,
 } from "@tanstack/react-query";
+import NotificationWrapper from "@/services/guards/NotificationWrapper";
 
 const queryClient = new QueryClient();
 
@@ -100,17 +101,19 @@ export default function App({ Component, pageProps }: AppProps) {
         <ModalsProvider>
           <Notifications limit={5} autoClose={3000} position="top-right" />
           <SWRConfig>
-            <Provider store={store}>
-              {/* @ts-ignore */}
-              <PersistGate loading={null} persistor={persistor}>
-                <AuthGuard />
+            <NotificationWrapper>
+              <Provider store={store}>
                 {/* @ts-ignore */}
-                <Layout>
+                <PersistGate loading={null} persistor={persistor}>
+                  <AuthGuard />
                   {/* @ts-ignore */}
-                  {getLayout(<Component {...pageProps} />)}
-                </Layout>
-              </PersistGate>
-            </Provider>
+                  <Layout>
+                    {/* @ts-ignore */}
+                    {getLayout(<Component {...pageProps} />)}
+                  </Layout>
+                </PersistGate>
+              </Provider>
+            </NotificationWrapper>
           </SWRConfig>
         </ModalsProvider>
       </MantineProvider>
