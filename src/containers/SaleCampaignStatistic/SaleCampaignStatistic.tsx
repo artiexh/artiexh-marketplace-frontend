@@ -6,7 +6,13 @@ import { SaleCampaignStatistic } from "@/types/Campaign";
 import { CommonResponseBase } from "@/types/ResponseBase";
 import { getDateRange } from "@/utils/date";
 import { currencyFormatter } from "@/utils/formatter";
-import { Progress, Tooltip as MantineTooltip } from "@mantine/core";
+import {
+  Progress,
+  Tooltip as MantineTooltip,
+  Paper,
+  Group,
+  Text,
+} from "@mantine/core";
 import { IconClock } from "@tabler/icons-react";
 import {
   ArcElement,
@@ -55,8 +61,9 @@ export default function SaleCampaignStatisticContainer({ id }: { id: string }) {
           statisticData.profit.amount,
           statisticData.revenue.amount - statisticData.profit.amount,
         ],
-        backgroundColor: ["rgba(255, 99, 132, 0.2)", "rgba(54, 162, 235, 0.2)"],
-        borderColor: ["rgba(255, 99, 132, 0.2)", "rgba(54, 162, 235, 0.2)"],
+
+        backgroundColor: ["#7D3EC9", "#CAABF1"],
+        borderColor: ["#7D3EC9", "#CAABF1"],
         borderWidth: 1,
       },
     ],
@@ -71,7 +78,7 @@ export default function SaleCampaignStatisticContainer({ id }: { id: string }) {
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
       ctx.fillText(
-        `Tổng doanh thu: ${currencyFormatter(statisticData.revenue.amount)}`,
+        `Tổng: ${currencyFormatter(statisticData.revenue.amount)}`,
         chart.getDatasetMeta(0).data[0].x,
         chart.getDatasetMeta(0).data[0].y
       );
@@ -83,21 +90,25 @@ export default function SaleCampaignStatisticContainer({ id }: { id: string }) {
       title: "Ngày bắt đầu",
       stylingClass: "bg-yellow-400",
       content: new Date(statisticData.from).toLocaleDateString(),
+      desc: "Ngày bắt đầu chiến dịch",
     },
     {
       title: "Ngày kết thúc",
       stylingClass: "bg-red-600",
       content: new Date(statisticData.to).toLocaleDateString(),
+      desc: "Ngày kết thúc chiến dịch",
     },
     {
       title: "Tổng doanh thu",
       stylingClass: "bg-blue-600",
       content: currencyFormatter(statisticData.revenue.amount),
+      desc: "Tổng tiền bán được",
     },
     {
       title: "Tổng lợi nhuận",
       stylingClass: "bg-green-600",
       content: currencyFormatter(statisticData.profit.amount),
+      desc: "Tổng lợi nhuận mà bạn sẽ nhận được",
     },
   ];
 
@@ -108,12 +119,8 @@ export default function SaleCampaignStatisticContainer({ id }: { id: string }) {
 
     const gap = getDateRange(new Date(statisticData.from), new Date());
 
-    console.log(gap);
-
     if (gap.value > 0) {
-      return `Đã diễn ra được ${Math.ceil(gap.value)} ${
-        gap.type === "date" ? "ngày" : "giờ"
-      }`;
+      return `Chiến dịch đang diễn ra`;
     } else {
       return `Chiến dịch sẽ diễn ra sau ${Math.abs(Math.floor(gap.value))} ${
         gap.type === "date" ? "ngày" : "giờ"
@@ -131,21 +138,40 @@ export default function SaleCampaignStatisticContainer({ id }: { id: string }) {
           plugins={[textCenter]}
         />
         <div className="flex-1">
-          <div className={clsx("py-4 px-6 rounded shadow bg-[#FFDDE3] mb-4")}>
-            <div className="text-xl font-semibold flex items-center justify-center gap-2    ">
+          <div
+            className={clsx(
+              "py-4 px-6 rounded shadow bg-[rgba(235,222,247,1)] mb-4"
+            )}
+          >
+            <div className="text-xl font-semibold flex items-center justify-center gap-2 ">
               <IconClock />
               <div>{getMessage()}</div>
             </div>
           </div>
           <div className="grid grid-cols-2 gap-3">
             {statisticCardData.map((item) => (
-              <div
-                className={clsx("py-6 px-6 rounded shadow border bg-[#D8EBFF]")}
-                key={item.title}
-              >
-                <div className="text-xl font-semibold mb-4">{item.title}</div>
-                <div>{item.content}</div>
-              </div>
+              <Paper withBorder p="md" radius="md" key={item.title}>
+                <Group>
+                  <div>
+                    <Text c="dimmed" tt="uppercase" fw={700} fz="xs">
+                      {item.title}
+                    </Text>
+                    <Text fw={700} fz="xl">
+                      {item.content}
+                    </Text>
+                  </div>
+                </Group>
+                <Text c="dimmed" fz="sm" mt="md">
+                  {item.desc}
+                </Text>
+              </Paper>
+              // <div
+              //   className={clsx("py-6 px-6 rounded shadow border bg-[#D8EBFF]")}
+              //   key={item.title}
+              // >
+              //   <div className="text-xl font-semibold mb-4">{item.title}</div>
+              //   <div>{item.content}</div>
+              // </div>
             ))}
           </div>
         </div>

@@ -15,7 +15,7 @@ import useSWR from "swr";
 import { Pagination } from "@mantine/core";
 import { SALE_CAMPAIGN_ENDPOINT } from "@/services/backend/services/campaign";
 
-const PAGE_SIZE = 6;
+const PAGE_SIZE = 8;
 const ShopCampaignsPage = () => {
   const router = useRouter();
   const [query, setQuery] = useState<
@@ -70,7 +70,12 @@ const ShopCampaignsPage = () => {
       <TableComponent
         columns={saleCampaignColumns}
         tableProps={{ verticalSpacing: "sm", className: "font-semibold" }}
-        data={saleCampaignResponse?.data.items}
+        data={saleCampaignResponse?.data.items.map((el) => ({
+          ...el,
+          onView: () => {
+            router.push(`/my-shop/sale-campaigns/${el.id}`);
+          },
+        }))}
       />
       <div className="flex justify-end">
         <Pagination

@@ -22,7 +22,7 @@ import { IconPlus } from "@tabler/icons-react";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter, useSearchParams } from "next/navigation";
 
-const PAGE_SIZE = 4;
+const PAGE_SIZE = 8;
 const ShopCampaignsPage = () => {
   const router = useRouter();
   const searchParams = useSearchParams();

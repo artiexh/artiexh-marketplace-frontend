@@ -13,7 +13,7 @@ import { CampaignDetail, CustomProduct } from "@/types/Campaign";
 import { CommonResponseBase } from "@/types/ResponseBase";
 import { configCalculate } from "@/utils/campaign.utils";
 import { currencyFormatter } from "@/utils/formatter";
-import { Button, NumberInput, Text, Tooltip } from "@mantine/core";
+import { Button, Input, NumberInput, Text, Tooltip } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { modals } from "@mantine/modals";
 import { IconHelpCircle } from "@tabler/icons-react";
@@ -25,6 +25,8 @@ import PickCustomProduct from "./PickCustomProduct";
 import { getNotificationIcon } from "@/utils/mapper";
 import { notifications } from "@mantine/notifications";
 import { errorHandler } from "@/utils/errorHandler";
+import CurrencyInput from "react-currency-input-field";
+import clsx from "clsx";
 
 export default function CustomProductTable({
   data: rawData,
@@ -87,8 +89,8 @@ export default function CustomProductTable({
                         modalId: `${data.id}-custom-product-edit`,
                         title: "Tùy chỉnh giá bán và số lượng",
                         centered: true,
+                        size: "lg",
                         classNames: {
-                          content: "!w-[60rem] !h-fit left-[38%] top-1/3",
                           title: "font-semibold",
                         },
                         children: <EditCustomProductModal data={data} />,
@@ -216,12 +218,12 @@ function EditCustomProductModal({ data: product }: { data: CustomProduct }) {
       <div className="text-gray-600 mb-6 text-sm">
         Arty sẽ thu {percentage}% trên mỗi đơn hàng của bạn
       </div>
-      <NumberInput
-        thousandsSeparator=","
+      <Input.Wrapper
         classNames={{
-          label: "w-full flex items-center",
-          root: "mb-4",
+          label: "w-full",
         }}
+        className="flex-[3]"
+        error={form.errors.price}
         label={
           <div className="flex justify-between items-center w-full">
             <span className="flex items-center gap-x-1">
@@ -248,11 +250,26 @@ function EditCustomProductModal({ data: product }: { data: CustomProduct }) {
               )}
           </div>
         }
-        className="flex-[3]"
-        hideControls
-        min={1}
-        {...form.getInputProps(`price`)}
-      />
+      >
+        <div className="w-full">
+          <CurrencyInput
+            id="input-example"
+            name="input-name"
+            placeholder="Please enter a number"
+            decimalsLimit={3}
+            className={clsx(
+              "w-full border rounded-lg border-[#ced4da] !leading-[calc(2.25rem-0.125rem)] px-3 !font-[inherit] !text-sm mb-1",
+              form.errors.price && "!border-[#fa5252]"
+            )}
+            min={product.providerConfig.basePriceAmount ?? 0}
+            onValueChange={(value, name, values) =>
+              form.setFieldValue("price", values?.float ?? 0)
+            }
+            value={form.values.price}
+          />
+        </div>
+      </Input.Wrapper>
+
       <NumberInput
         thousandsSeparator=","
         classNames={{

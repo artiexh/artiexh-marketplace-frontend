@@ -69,30 +69,4 @@ export const productInSaleColumns: TableColumns<
     className: "!text-center w-[10rem]",
     render: (record) => <Badge>{record.status}</Badge>,
   },
-  {
-    title: "Action",
-    key: "action",
-    className: "!text-center",
-    render: (record) => (
-      <div className="flex justify-center gap-x-2">
-        <div
-          className="cursor-pointer border-blue-400 py-[3px] px-2 rounded-2xl text-xs bg-blue-400 text-white font-semibold"
-          onClick={() => record.onEdit && record.onEdit(record)}
-        >
-          Edit
-        </div>
-        <div
-          className={clsx(
-            " py-[3px] px-2 rounded-2xl text-xs text-white font-semibold",
-            record.onDelete
-              ? "cursor-pointer border-red-500 bg-red-500"
-              : "cursor-not-allowed bg-slate-400 border-slate-400"
-          )}
-          onClick={() => record.onDelete && record.onDelete(record)}
-        >
-          Remove
-        </div>
-      </div>
-    ),
-  },
 ];

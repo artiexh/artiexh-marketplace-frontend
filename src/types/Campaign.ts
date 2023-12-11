@@ -44,6 +44,7 @@ export type CampaignData = {
   thumbnailUrl: string;
   to: string;
   type: "SHARE" | "PUBLIC" | "PRIVATE";
+  status: string;
 };
 
 export type CustomProduct = {

@@ -1,6 +1,7 @@
 import ImageWithFallback from "@/components/ImageWithFallback/ImageWithFallback";
 import { CampaignData } from "@/types/Campaign";
 import { TableColumns } from "@/types/Table";
+import { dateFormatter } from "@/utils/formatter";
 import { Badge } from "@mantine/core";
 import clsx from "clsx";
 
@@ -10,50 +11,39 @@ export const artistCampaignColumns: TableColumns<
   }
 > = [
   {
-    title: "ID",
+    title: "Id",
     key: "id",
-    render: (
-      record: CampaignData & {
-        onClickEdit: () => void;
-      }
-    ) => (
-      <div className="flex items-center gap-5">
-        <div className="relative w-16 aspect-square">
-          <ImageWithFallback
-            fallback="/assets/default-thumbnail.jpg"
-            src={record.thumbnailUrl}
-            alt="product-thumb"
-            className="object-contain aspect-square rounded-full"
-          />
-        </div>
-        <div>{record.id}</div>
-      </div>
-    ),
+    dataIndex: "id",
   },
   {
     title: "Name",
     key: "name",
     dataIndex: "name",
-  },
-  {
-    title: "Start day",
-    key: "from",
-    render: (record: CampaignData) => (
-      <span>{new Date(record.from).toLocaleDateString()}</span>
+    render: (record) => (
+      <div className="flex flex-col">
+        <span>{record.name}</span>
+        <span className="text-sm text-gray-500">
+          Owner: {record.owner.username}
+        </span>
+      </div>
     ),
   },
   {
-    title: "End day",
-    key: "to",
-    render: (record: CampaignData) => (
-      <span>{new Date(record.to).toLocaleDateString()}</span>
+    title: "Order time",
+    key: "orderTime",
+    render: (record) => (
+      <div className="flex flex-col">
+        <span>From: {dateFormatter(record.from)}</span>
+        <span>To: {dateFormatter(record.to)}</span>
+      </div>
     ),
   },
+
   {
     title: "Type",
     key: "type",
     className: "!text-center w-[10rem]",
-    render: (record: CampaignData) => {
+    render: (record) => {
       let color;
       switch (record.type) {
         case "SHARE":
@@ -79,6 +69,50 @@ export const artistCampaignColumns: TableColumns<
     },
   },
   {
+    title: "Status",
+    key: "status",
+    className: "!text-center w-[10rem]",
+    render: (record) => {
+      let color;
+      switch (record.status) {
+        case "WAITING":
+          color = "bg-[#DBD33E]";
+          break;
+        case "REQUEST_CHANGE":
+          color = "bg-[#FB931D] text-white";
+          break;
+        case "CANCELED":
+          color = "bg-[#9093A4] text-white";
+          break;
+        case "APPROVED":
+          color = "bg-[#1AC455] text-white";
+          break;
+        case "REJECTED":
+          color = "bg-[##F21616] text-white";
+          break;
+        case "MANUFACTURING":
+          color = "bg-[#9E3FC9] text-white";
+          break;
+        case "MANUFACTURED":
+          color = "bg-[#5C68AC] text-white";
+          break;
+        default:
+          color = "bg-[#09B8FF]";
+      }
+
+      return (
+        <Badge
+          className={clsx(
+            `text-white font-semibold px-2 py-1 rounded-2xl`,
+            color
+          )}
+        >
+          {record.status}
+        </Badge>
+      );
+    },
+  },
+  {
     title: "Actions",
     key: "actions",
     className: "!text-center",
@@ -86,7 +120,7 @@ export const artistCampaignColumns: TableColumns<
       <div>
         <span
           className="cursor-pointer border-blue-400 py-[3px] px-2 rounded-2xl text-xs bg-blue-400 text-white font-semibold"
-          onClick={record.onClickEdit}
+          onClick={() => record?.onClickEdit()}
         >
           View
         </span>
