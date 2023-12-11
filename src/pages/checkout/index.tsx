@@ -165,7 +165,10 @@ function CheckoutPage() {
           getShippingFee({
             addressId: selectedAddressId,
             tags: [],
-            totalWeight: 10,
+            totalWeight: item.items.reduce(
+              (acc, cartItem) => acc + cartItem.weight * cartItem.quantity,
+              0
+            ),
           })
         )
       );
