@@ -27,26 +27,16 @@ export const artistRegister = async (shopName: ArtistRegisterData) => {
 };
 
 export const createUserAddress = async (values: CreateUserAddress) => {
-  try {
-    const data = await axiosClient.post("/user/address", values);
-    return data;
-  } catch (err) {
-    console.log(err);
-    return undefined;
-  }
+  const data = await axiosClient.post("/user/address", values);
+  return data;
 };
 
 export const updateUserAddress = async (
   values: Partial<CreateUserAddress>,
   id: string
 ) => {
-  try {
-    const data = await axiosClient.put(`/user/address/${id}`, values);
-    return data;
-  } catch (err) {
-    console.log(err);
-    return undefined;
-  }
+  const data = await axiosClient.put(`/user/address/${id}`, values);
+  return data;
 };
 
 export const updateUserProfileApi = async (body: {

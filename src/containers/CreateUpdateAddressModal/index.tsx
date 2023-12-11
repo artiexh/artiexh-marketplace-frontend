@@ -14,6 +14,8 @@ import {
   fromUserAddressToDefaultAddressFormValue,
   getNotificationIcon,
 } from "@/utils/mapper";
+import { errorHandler } from "@/utils/errorHandler";
+import { useMutation } from "@tanstack/react-query";
 
 export default function CreateUpdateAddressModal({
   closeModal,
@@ -38,43 +40,43 @@ export default function CreateUpdateAddressModal({
         wardId: "",
       };
 
-  const { getInputProps, onSubmit } = useForm({
+  const { getInputProps, onSubmit, values } = useForm({
     initialValues,
     validateInputOnBlur: true,
     validateInputOnChange: true,
     validate: createUpdateAddressValidation,
   });
 
-  const [loading, setLoading] = useState<boolean>(false);
+  const submitHandlerMutation = useMutation({
+    mutationFn: async (values: CreateUserAddress) => {
+      const result = await (isCreate
+        ? createUserAddress(values)
+        : updateUserAddress(values, address?.id ?? ""));
+    },
+    onSuccess: () => {
+      notifications.show({
+        message: "Địa chỉ của bạn đã được thêm thành công",
+        ...getNotificationIcon(NOTIFICATION_TYPE.SUCCESS),
+      });
+      revalidateFunc?.();
+      closeModal();
+    },
+    onError: (e) => {
+      errorHandler(e);
+    },
+  });
 
-  const submitHandler = async (values: CreateUserAddress) => {
-    setLoading(true);
-    const result = await (isCreate
-      ? createUserAddress(values)
-      : updateUserAddress(values, address?.id ?? ""));
-
-    let isSuccess = result != null;
-    notifications.show({
-      message: isSuccess
-        ? "Địa chỉ của bạn đã được thêm thành công"
-        : "Thêm địa chỉ thất bại! Vui lòng thử lại!",
-      ...getNotificationIcon(
-        NOTIFICATION_TYPE[isSuccess ? "SUCCESS" : "FAILED"]
-      ),
-    });
-    revalidateFunc?.();
-    closeModal();
-    setLoading(false);
-  };
   return (
     <div className="create-address-modal">
-      <form onSubmit={onSubmit(submitHandler)}>
+      <form
+        onSubmit={onSubmit((values) => submitHandlerMutation.mutate(values))}
+      >
         <TextInput
           className="my-4"
           label="Điền địa chỉ tại đây"
           withAsterisk
           {...getInputProps("address")}
-          disabled={loading}
+          disabled={submitHandlerMutation.isLoading}
         />
         <WardSelects getInputProps={getInputProps} ward={address?.ward} />
         <TextInput
@@ -82,14 +84,14 @@ export default function CreateUpdateAddressModal({
           label="Điền tên người nhận tại đây"
           withAsterisk
           {...getInputProps("receiverName")}
-          disabled={loading}
+          disabled={submitHandlerMutation.isLoading}
         />
         <TextInput
           className="my-4"
           label="Điền số điện thoại tại đây"
           withAsterisk
           {...getInputProps("phone")}
-          disabled={loading}
+          disabled={submitHandlerMutation.isLoading}
         />
         <Select
           className="my-4"
@@ -103,13 +105,14 @@ export default function CreateUpdateAddressModal({
         />
         <Checkbox
           label="Đặt làm địa chỉ mặc định"
+          checked={values.isDefault}
           {...getInputProps("isDefault")}
         />
         <div className="mt-6 btn-wrapper flex flex-col-reverse md:flex-row gap-5 w-full md:w-max ml-auto bg-white p-5 rounded-lg md:bg-transparent sm:p-0">
           <Button
             variant="outline"
             type="button"
-            disabled={loading}
+            disabled={submitHandlerMutation.isLoading}
             onClick={closeModal}
           >
             Trở về
@@ -117,7 +120,7 @@ export default function CreateUpdateAddressModal({
           <Button
             className="bg-primary !text-white"
             type="submit"
-            loading={loading}
+            loading={submitHandlerMutation.isLoading}
           >
             {isCreate ? "Tạo" : "Lưu"}
           </Button>

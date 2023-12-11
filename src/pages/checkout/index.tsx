@@ -1,35 +1,28 @@
-import { RootState } from "@/store";
-import { useDispatch, useSelector } from "react-redux";
-import { Button, Divider, TextInput } from "@mantine/core";
 import CartSectionComponent from "@/components/CartSection/CartSection";
-import vnpayImg from "../../../public/assets/vn_pay.svg";
-import Image from "next/image";
 import LogoCheckbox from "@/components/LogoCheckbox/LogoCheckbox";
-import { useEffect, useMemo, useState } from "react";
-import axiosClient from "@/services/backend/axiosClient";
-import { CartData, CartItem } from "@/services/backend/types/Cart";
-import useSWR from "swr";
-import { CartSection } from "@/services/backend/types/Cart";
-import CheckoutAddress from "@/containers/CheckoutAddress";
-import { checkout, getPaymentLink } from "@/services/backend/services/cart";
-import { CheckoutContext } from "@/contexts/CheckoutContext";
-import {
-  NOTIFICATION_TYPE,
-  PAYMENT_METHOD,
-  PAYMENT_METHOD_ENUM,
-} from "@/constants/common";
-import { clearItems } from "@/store/slices/cartSlice";
-import { useRouter } from "next/router";
+import { PAYMENT_METHOD_ENUM } from "@/constants/common";
 import { ROUTE } from "@/constants/route";
-import { IconSearchOff } from "@tabler/icons-react";
-import { getNotificationIcon } from "@/utils/mapper";
-import { notifications } from "@mantine/notifications";
+import CheckoutAddress from "@/containers/CheckoutAddress";
+import { CheckoutContext } from "@/contexts/CheckoutContext";
+import axiosClient from "@/services/backend/axiosClient";
+import { checkout, getPaymentLink } from "@/services/backend/services/cart";
 import { getShippingFee } from "@/services/backend/services/order";
-import { isNumber } from "lodash";
+import { CartItem, CartSection } from "@/services/backend/types/Cart";
 import AuthWrapper from "@/services/guards/AuthWrapper";
-import { CommonResponseBase } from "@/types/ResponseBase";
 import { SelectedItems } from "@/types/Cart";
+import { CommonResponseBase } from "@/types/ResponseBase";
+import { errorHandler } from "@/utils/errorHandler";
 import { currencyFormatter, productInSaleIdFormatter } from "@/utils/formatter";
+import { Button, Divider, LoadingOverlay, TextInput } from "@mantine/core";
+import { IconSearchOff } from "@tabler/icons-react";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { isNumber } from "lodash";
+import Image from "next/image";
+import { useRouter } from "next/router";
+import { useMemo, useState } from "react";
+import { useDispatch } from "react-redux";
+import useSWR from "swr";
+import vnpayImg from "../../../public/assets/vn_pay.svg";
 
 const PAYMENT_ITEM = [
   {
@@ -43,7 +36,6 @@ function CheckoutPage() {
   const dispatch = useDispatch();
   const router = useRouter();
 
-  const [loading, setLoading] = useState<boolean>(false);
   const [selectedAddressId, setSelectedAddressId] = useState("");
   const [paymentMethod, setPaymentMethod] = useState("VN_PAY");
   const [noteValues, setNoteValues] = useState<
@@ -52,9 +44,12 @@ function CheckoutPage() {
       note: string;
     }[]
   >([]);
-  const [shippingFee, setShippingFee] = useState<number | undefined>();
 
-  const { data, mutate } = useSWR("cart", async () => {
+  const {
+    data,
+    mutate,
+    isLoading: isCartLoading,
+  } = useSWR("cart", async () => {
     try {
       const result = await axiosClient.get<
         CommonResponseBase<{ campaigns: SelectedItems[] }>
@@ -160,65 +155,79 @@ function CheckoutPage() {
     0
   );
 
-  useEffect(() => {
-    const getTotalShippingFee = async () => {
-      const res = await getShippingFee({
+  const { data: shippingFees, isLoading: isShippingLoading } = useQuery({
+    queryKey: ["shipping-fee", selectedAddressId, selectedCartItems],
+    queryFn: async () => {
+      if (!selectedAddressId || selectedCartItems.length === 0) return null;
+
+      const res = await Promise.all(
+        selectedCartItems.map((item) =>
+          getShippingFee({
+            addressId: selectedAddressId,
+            tags: [],
+            totalWeight: 10,
+          })
+        )
+      );
+
+      return res.map((item, index) => ({
+        campaignId: selectedCartItems[index].saleCampaign.id,
+        shippingFee: item,
+      }));
+    },
+  });
+
+  const paymentSubmitMutation = useMutation({
+    mutationFn: async () => {
+      const data = await checkout({
         addressId: selectedAddressId,
-        tags: [],
-        totalWeight: 10,
+        paymentMethod: paymentMethod as PAYMENT_METHOD_ENUM,
+        campaigns: selectedCartItems.map((cartItem) => {
+          const shippingFee = shippingFees?.find(
+            (el) => el.campaignId === cartItem.saleCampaign.id
+          );
+          if (!shippingFee?.shippingFee)
+            throw new Error("Có lỗi xảy ra, mua sản phẩm thất bại");
+          return {
+            campaignId: cartItem.saleCampaign.id,
+            note:
+              noteValues.find(
+                (item) => item.shopId === cartItem.saleCampaign.id
+              )?.note ?? "",
+            itemIds: cartItem.items.map((item) => item.productCode),
+            shippingFee: isNumber(shippingFee.shippingFee)
+              ? shippingFee.shippingFee
+              : 0,
+          };
+        }),
       });
 
-      setShippingFee(res);
-    };
-    getTotalShippingFee();
-  }, [selectedAddressId, selectedCartItems]);
+      if (!data) throw new Error("Có lỗi xảy ra, mua sản phẩm thất bại");
 
-  const paymentSubmit = async () => {
-    setLoading(true);
-    console.log(shippingFee);
-    const data = await checkout({
-      addressId: selectedAddressId,
-      paymentMethod: paymentMethod as PAYMENT_METHOD_ENUM,
-      campaigns: selectedCartItems.map((cartItem) => ({
-        campaignId: cartItem.saleCampaign.id,
-        note:
-          noteValues.find((item) => item.shopId === cartItem.saleCampaign.id)
-            ?.note ?? "",
-        itemIds: cartItem.items.map((item) => item.productCode),
-        shippingFee: isNumber(shippingFee) ? shippingFee : 0,
-      })),
-    });
-    const isSuccess = data != null;
-    if (isSuccess) {
-      if (data.paymentMethod === PAYMENT_METHOD.VN_PAY) {
-        const paymentLink = await getPaymentLink(data.id);
-        if (paymentLink) {
-          window.location.replace(paymentLink);
-        } else {
-          notifications.show({
-            message: "Không tìm thấy link thanh toán",
-            ...getNotificationIcon(NOTIFICATION_TYPE.FAILED),
-          });
-        }
-        return;
-      } else {
-        dispatch(clearItems());
-        router.push(`${ROUTE.ORDER_CONFIRM}/${data.id}`);
-      }
-    }
-    notifications.show({
-      message: isSuccess ? "Mua sản phẩm thành công!" : "Mua sản phẩm thất bại",
-      ...getNotificationIcon(
-        NOTIFICATION_TYPE[isSuccess ? "SUCCESS" : "FAILED"]
-      ),
-    });
-    setLoading(false);
-  };
+      const paymentLink = await getPaymentLink(data.id);
+
+      if (!paymentLink)
+        throw new Error("Có lỗi xảy ra, Không tìm thấy link thanh toán");
+
+      window.location.replace(paymentLink);
+
+      return paymentLink;
+    },
+    onSuccess: (data) => {
+      window.location.replace(data);
+    },
+    onError: (e) => {
+      errorHandler(e);
+    },
+  });
+
+  const loadingVisibility = isShippingLoading || isCartLoading;
 
   if (
-    selectedItems.length === 0 ||
-    data?.length === 0 ||
-    flattedCheckoutItems.length === 0
+    !loadingVisibility &&
+    (selectedItems.length === 0 ||
+      data?.length === 0 ||
+      flattedCheckoutItems.length === 0)
   ) {
     return (
       <div className="text-center mt-[20%]">
@@ -245,7 +254,8 @@ function CheckoutPage() {
         setSelectedAddressId: setSelectedAddressId,
       }}
     >
-      <div className="checkout-page lg:flex gap-16">
+      <LoadingOverlay visible={loadingVisibility} zIndex={1000} />
+      <div className="checkout-page lg:flex gap-y-16 gap-x-4 relative">
         <div className="checkout-items flex-1">
           <div className="bg-white p-6">
             <CheckoutAddress />
@@ -256,6 +266,9 @@ function CheckoutPage() {
                 (acc, cartItem) =>
                   acc + cartItem.price.amount * cartItem.quantity,
                 0
+              );
+              const shippingFee = shippingFees?.find(
+                (el) => el.campaignId === cartSection.saleCampaign.id
               );
               return (
                 <div key={idx}>
@@ -273,14 +286,18 @@ function CheckoutPage() {
                       <div>
                         Phí vận chuyển: {`(${cartSection.items.length} món)`}
                       </div>
-                      <div>{`${currencyFormatter(shippingFee ?? 0)}`}</div>
+                      <div>{`${
+                        typeof shippingFee?.shippingFee === "number"
+                          ? currencyFormatter(shippingFee.shippingFee)
+                          : "N/A"
+                      }`}</div>
                     </div>
                     <div className="flex justify-between">
                       <div>
                         Tổng tiền {`(${cartSection.items.length} items)`}
                       </div>
                       <div>{`${currencyFormatter(
-                        subtotal + (shippingFee ?? 0)
+                        subtotal + (shippingFee?.shippingFee ?? 0)
                       )}`}</div>
                     </div>
                   </div>
@@ -346,24 +363,41 @@ function CheckoutPage() {
           </div>
           <div className="flex justify-between">
             <div>Tổng phí ship: {`(${flattedCheckoutItems.length} món)`}</div>
-            <div>{`${currencyFormatter(
-              (shippingFee ?? 0) * selectedCartItems.length
-            )}`}</div>
+            <div>{`${
+              shippingFees?.every((el) => typeof el.shippingFee === "number")
+                ? currencyFormatter(
+                    shippingFees.reduce(
+                      (acc, item) => acc + (item.shippingFee as number),
+                      0
+                    )
+                  )
+                : "N/A"
+            }`}</div>
           </div>
           <Divider className="my-2" />
           <div className="flex justify-between">
             <div>Tổng tiền</div>
             <div>{`${currencyFormatter(
               totalPrice +
-                (isNumber(shippingFee) ? shippingFee : 0) *
+                (shippingFees?.every((el) => typeof el.shippingFee === "number")
+                  ? shippingFees.reduce(
+                      (acc, item) => acc + (item.shippingFee as number),
+                      0
+                    )
+                  : 0) *
                   selectedCartItems.length
             )}`}</div>
           </div>
           <div className="flex justify-center mt-10 mb-4">
             <Button
+              disabled={
+                isShippingLoading ||
+                shippingFees?.some((el) => typeof el.shippingFee !== "number")
+              }
+              loading={paymentSubmitMutation.isLoading}
               style={{ width: "80%", height: 45 }}
               className="bg-primary !text-white"
-              onClick={paymentSubmit}
+              onClick={() => paymentSubmitMutation.mutate()}
             >
               Tiến hành thanh toán
             </Button>

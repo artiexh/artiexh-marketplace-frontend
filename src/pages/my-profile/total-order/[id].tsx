@@ -57,20 +57,24 @@ function OrderDetailPage() {
     },
   });
 
-  const payment = async () => {
-    if (data?.id) {
-      const paymentLink = await getPaymentLink(data?.id);
+  const paymentMutation = useMutation({
+    mutationFn: async (id: string) => {
+      const paymentLink = await getPaymentLink(id);
 
-      if (paymentLink) {
-        window.location.replace(paymentLink);
-      } else {
-        notifications.show({
-          message: "Không tìm thấy link thanh toán",
-          ...getNotificationIcon(NOTIFICATION_TYPE.FAILED),
-        });
-      }
-    }
-  };
+      if (!paymentLink) throw new Error("Không tìm thấy link thanh toán");
+
+      return paymentLink;
+    },
+    onSuccess: (data) => {
+      window.location.replace(data);
+    },
+    onError: (e) => {
+      errorHandler(e);
+    },
+    onSettled: () => {
+      mutate();
+    },
+  });
 
   if (!data) {
     <div>Không tìm thấy đơn hàng!</div>;
@@ -242,19 +246,23 @@ function OrderDetailPage() {
       </div>
       {data?.campaignOrders[0].status === "PAYING" && (
         <div className="px-10">
-          <div
-            className="text-end font-semibold text-primary cursor-pointer"
-            onClick={payment}
-          >
-            Nhấn vào đây để tiến hành thanh toán
-          </div>
-          <div className="flex justify-end mt-20 pb-10">
+          <div className="flex justify-end mt-20 pb-10 gap-x-4">
             <Button
               variant="outline"
-              disabled={cancelOrderMutation.isLoading}
+              loading={cancelOrderMutation.isLoading}
+              disabled={paymentMutation.isLoading}
               onClick={() => cancelOrderMutation.mutateAsync(data!.id)}
             >
               Huỷ đơn
+            </Button>
+            <Button
+              variant="default"
+              className="!bg-primary !text-white"
+              disabled={cancelOrderMutation.isLoading}
+              loading={paymentMutation.isLoading}
+              onClick={() => paymentMutation.mutate(data.id)}
+            >
+              Thanh toán
             </Button>
           </div>
         </div>
