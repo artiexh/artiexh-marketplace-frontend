@@ -1,24 +1,19 @@
-import "@/styles/globals.css";
-import type { AppProps } from "next/app";
-import Head from "next/head";
-import { MantineProvider } from "@mantine/core";
-import { Notifications } from "@mantine/notifications";
-import { ModalsProvider } from "@mantine/modals";
-import { Nunito } from "next/font/google";
-import { SWRConfig } from "swr";
-import AuthGuard from "@/services/guards/AuthGuard";
 import Layout from "@/layouts/Layout/Layout";
-import { usePathname } from "next/navigation";
-import { AUTH_ROUTE } from "@/constants/route";
+import AuthGuard from "@/services/guards/AuthGuard";
+import NotificationWrapper from "@/services/guards/NotificationWrapper";
 import { persistor, store } from "@/store";
+import "@/styles/globals.css";
+import { MantineProvider } from "@mantine/core";
+import { ModalsProvider } from "@mantine/modals";
+import { Notifications } from "@mantine/notifications";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import type { AppProps } from "next/app";
+import { Nunito } from "next/font/google";
+import Head from "next/head";
+import { usePathname } from "next/navigation";
 import { Provider } from "react-redux";
 import { PersistGate } from "redux-persist/integration/react";
-import {
-  QueryClient,
-  QueryClientProvider,
-  useQuery,
-} from "@tanstack/react-query";
-import NotificationWrapper from "@/services/guards/NotificationWrapper";
+import { SWRConfig } from "swr";
 
 const queryClient = new QueryClient();
 

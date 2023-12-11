@@ -103,9 +103,9 @@ export const getNotificationRedirectUrl = (referenceData: {
     case "CAMPAIGN_REQUEST":
       return `/my-shop/campaigns/${id}`;
     case "ORDER":
-      return `/my-profile/order/${id}`;
-    case "CAMPAIGN_ORDER":
       return `/my-profile/total-order/${id}`;
+    case "CAMPAIGN_ORDER":
+      return `/my-profile/order/${id}`;
     case "POST":
       return `/my-profile`;
     default:
