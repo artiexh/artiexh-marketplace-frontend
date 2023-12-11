@@ -1,21 +1,37 @@
 import CampaignPreviewCard from "@/components/CampaignPreviewCard/CampaignPreviewCard";
 import { paginationFetcher } from "@/services/backend/axiosClient";
 import { CampaignData } from "@/types/Campaign";
+import { getQueryString } from "@/utils/formatter";
+import { Input } from "@mantine/core";
 import { useWindowScroll } from "@mantine/hooks";
+import { IconSearch } from "@tabler/icons-react";
 import clsx from "clsx";
-import { useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
 import useSWRInfinite from "swr/infinite";
 
-function getKey(pageNumber: number, previousPageData: CampaignData[]) {
-  if (pageNumber && !previousPageData.length) return null; // reached the end
-  return `/marketplace/sale-campaign?pageNumber=${
-    pageNumber + 1
-  }&pageSize=8&sortBy=id&sortDirection=DESC`; // SWR key
-}
-
 export default function CampaignListPage() {
+  const [searchValue, setSearchValue] = useState<string>();
+
+  const getKey = useCallback(
+    () =>
+      function getKey(pageNumber: number, previousPageData: CampaignData[]) {
+        if (pageNumber && !previousPageData.length) return null; // reached the end
+        return `/marketplace/sale-campaign?${getQueryString(
+          {
+            pageNumber: pageNumber ? pageNumber + 1 : 1,
+            pageSize: 8,
+            sortBy: "id",
+            sortDirection: "DESC",
+            name: searchValue,
+          },
+          []
+        )}`; // SWR key
+      },
+    [searchValue]
+  );
+
   const { data, size, setSize } = useSWRInfinite(
-    getKey,
+    getKey(),
     paginationFetcher<CampaignData>
   );
 
@@ -27,13 +43,22 @@ export default function CampaignListPage() {
     }
   }, [scroll]);
 
-  if (!data) {
-    return <div>Không tìm thấy sản phẩm nào</div>;
-  }
-
   return (
     <div className="campaign-list-page md:mx-10">
-      <div className="text-xl font-semibold">Tất cả chiến dịch của Arty</div>
+      <div className="flex justify-between items-center">
+        <div className="text-xl font-semibold">Tất cả chiến dịch của Arty</div>
+        <div>
+          <Input
+            className="w-[300px]"
+            icon={<IconSearch />}
+            placeholder="Search by campaign name..."
+            value={searchValue}
+            onChange={(e) => {
+              setSearchValue(e.target.value);
+            }}
+          />
+        </div>
+      </div>
       <div className={clsx("mt-6 grid grid-cols-1 md:!grid-cols-2 !gap-8")}>
         {data?.flat()?.map((campaign, index) => (
           <CampaignPreviewCard

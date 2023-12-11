@@ -88,7 +88,7 @@ export const artistCampaignColumns: TableColumns<
           color = "bg-[#1AC455] text-white";
           break;
         case "REJECTED":
-          color = "bg-[##F21616] text-white";
+          color = "bg-[#F21616] text-white";
           break;
         case "MANUFACTURING":
           color = "bg-[#9E3FC9] text-white";

@@ -61,7 +61,7 @@ export default function NavBar(props: NavBarProps) {
             <HoverCard width={200}>
               <HoverCard.Target>
                 <img
-                  src={user.avatarUrl}
+                  src={user.avatarUrl ?? "/assets/default-thumbnail.jpg"}
                   alt="avatar"
                   className="w-[20px] h-[20px] rounded-full cursor-pointer"
                 />
