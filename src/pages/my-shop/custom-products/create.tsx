@@ -152,7 +152,6 @@ export default function ProductDesignPage() {
   const [opened, { open, close }] = useDisclosure(false);
 
   const submitHandler = (data: Record<string, string>) => {
-    console.log("🚀 ~ file: index.tsx:142 ~ submitHandler ~ data:", data);
     form.setValues(data);
     mutate();
   };

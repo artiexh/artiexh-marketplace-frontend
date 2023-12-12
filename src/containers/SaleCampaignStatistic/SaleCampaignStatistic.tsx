@@ -3,7 +3,10 @@ import { statisticCampaignColumns } from "@/constants/Columns/saleCampaignColumn
 import axiosClient from "@/services/backend/axiosClient";
 import { SALE_CAMPAIGN_ENDPOINT } from "@/services/backend/services/campaign";
 import { SaleCampaignStatistic } from "@/types/Campaign";
-import { CommonResponseBase } from "@/types/ResponseBase";
+import {
+  CommonResponseBase,
+  PaginationResponseBase,
+} from "@/types/ResponseBase";
 import { getDateRange } from "@/utils/date";
 import { currencyFormatter } from "@/utils/formatter";
 import {
@@ -12,8 +15,12 @@ import {
   Paper,
   Group,
   Text,
+  Tabs,
+  Table,
+  Pagination,
 } from "@mantine/core";
 import { IconClock } from "@tabler/icons-react";
+import { useQuery } from "@tanstack/react-query";
 import {
   ArcElement,
   BarElement,
@@ -25,6 +32,7 @@ import {
   Tooltip,
 } from "chart.js";
 import clsx from "clsx";
+import { useState } from "react";
 import { Doughnut } from "react-chartjs-2";
 import useSWR from "swr";
 
@@ -38,7 +46,7 @@ ChartJS.register(
   ArcElement
 );
 
-export default function SaleCampaignStatisticContainer({ id }: { id: string }) {
+function SaleCampaignStatisticContainer({ id }: { id: string }) {
   const { data: statisticData, isLoading } = useSWR(
     [SALE_CAMPAIGN_ENDPOINT, id, "statistic"],
     async () => {
@@ -214,5 +222,65 @@ export default function SaleCampaignStatisticContainer({ id }: { id: string }) {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function SaleCampaignStatistics({ id }: { id: string }) {
+  return (
+    <Tabs defaultValue="general-info" className="mt-5">
+      <Tabs.List>
+        <Tabs.Tab value="general-info">Statistics</Tabs.Tab>
+
+        <Tabs.Tab value="products">Products</Tabs.Tab>
+      </Tabs.List>
+      <Tabs.Panel value="general-info">
+        <SaleCampaignStatisticContainer id={id} />
+      </Tabs.Panel>
+      <Tabs.Panel value="products">
+        <ProductStatisticTable id={id} />
+      </Tabs.Panel>
+    </Tabs>
+  );
+}
+
+function ProductStatisticTable({ id }: { id: string }) {
+  const [params, setParams] = useState({
+    pageNumber: 1,
+    pageSize: 10,
+  });
+
+  const { data, isLoading } = useQuery({
+    queryKey: [SALE_CAMPAIGN_ENDPOINT, id, "products", params],
+    queryFn: async () => {
+      const p = new URLSearchParams();
+      p.append("pageNumber", params.pageNumber.toString());
+      p.append("pageSize", params.pageSize.toString());
+      const res = await axiosClient.get<
+        CommonResponseBase<
+          PaginationResponseBase<SaleCampaignStatistic["products"][0]>
+        >
+      >(`${SALE_CAMPAIGN_ENDPOINT}/${id}/sold-product?` + p.toString());
+
+      return res.data;
+    },
+  });
+
+  return (
+    <>
+      <TableComponent
+        columns={statisticCampaignColumns}
+        data={data?.data.items ?? []}
+      />
+      <Pagination
+        value={params.pageNumber}
+        onChange={(value) => setParams({ ...params, pageNumber: value })}
+        //TODO: change this to total of api call later
+        total={data?.data.totalPage ?? 1}
+        boundaries={2}
+        classNames={{
+          control: "[&[data-active]]:!text-white",
+        }}
+      />
+    </>
   );
 }
