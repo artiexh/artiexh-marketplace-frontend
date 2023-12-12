@@ -66,7 +66,10 @@ export default function MyProfilePage({ user }: MyProfileProps) {
           </div>
         </div>
       </div>
-      <Tabs defaultValue={user.role === "ARTIST" ? "posts" : "order"}>
+      <Tabs
+        defaultValue={user.role === "ARTIST" ? "posts" : "order"}
+        keepMounted={false}
+      >
         <div className="bg-white mt-2 py-4 px-6 mb-6">
           <Tabs.List>
             {(user.role !== "ARTIST"
