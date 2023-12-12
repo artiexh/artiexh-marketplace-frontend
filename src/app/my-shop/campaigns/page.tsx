@@ -108,6 +108,7 @@ const ShopCampaignsPage = () => {
                   }}
                   data={[
                     {
+                      //@ts-ignore
                       value: null,
                       label: "All",
                     },
