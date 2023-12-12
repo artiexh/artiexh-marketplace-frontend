@@ -1,4 +1,5 @@
 import {
+  IconCheck,
   IconCircleX,
   IconMoodCheck,
   IconMoodDollar,
@@ -96,19 +97,27 @@ export const ORDER_HISTORY_CONTENT_MAP: {
     content: "Đơn hàng được tạo",
     icon: <IconShoppingCart size={12} />,
   },
-  PAID: {
-    content: "Đơn hàng đã được thanh toán",
+  PAYING: {
+    content: "Đơn hàng đang chờ thành toán",
     icon: <IconMoodDollar size={12} />,
   },
-  SHIPPED: {
-    content: "Đơn hàng đang được vận chuyển",
+  PREPARING: {
+    content: "Đơn hàng đang được chuẩn bị",
     icon: <IconTruckDelivery size={12} />,
   },
-  DELIVERED: {
-    content: "Đơn hàng đã được nhận",
+  SHIPPING: {
+    content: "Đơn hàng đang được vận chuyển",
     icon: <IconMoodCheck size={12} />,
   },
-  CANCELLED: {
+  COMPLETED: {
+    content: "Đơn hàng đã hoàn thành",
+    icon: <IconCheck size={12} />,
+  },
+  REFUNDING: {
+    content: "Đơn hàng đang được hoàn tiền",
+    icon: <IconMoodDollar size={12} />,
+  },
+  CANCELED: {
     content: "Đơn hàng đã bị hủy",
     icon: <IconCircleX size={12} />,
   },

@@ -80,7 +80,7 @@ export const getOrderStatusStylingClass = (status: string) => {
     case "PREPARING":
       return "bg-cyan-500";
     case "SHIPPING":
-      return "bg-yellow-100";
+      return "bg-yellow-500";
     case "COMPLETED":
       return "bg-green-500";
     case "CANCELED":

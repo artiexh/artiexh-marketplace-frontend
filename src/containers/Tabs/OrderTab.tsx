@@ -85,7 +85,7 @@ export default function OrderTab() {
           <div className="mt-20 text-center">Chưa có đơn hàng</div>
         )}
       </div>
-      <div className="flex justify-end">
+      <div className="flex justify-end mt-4">
         <Pagination
           total={orders?.totalPage ?? 1}
           value={params.pageNumber}

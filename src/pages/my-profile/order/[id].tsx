@@ -85,9 +85,20 @@ function OrderDetailPage() {
         </div>
         <div className="order-info mt-10">
           <Stepper active={data?.orderHistories.length ?? 1}>
-            {Object.keys(ORDER_HISTORY_CONTENT_MAP).map((status) => (
-              <Stepper.Step label={status} key={status}></Stepper.Step>
-            ))}
+            {Object.keys(ORDER_HISTORY_CONTENT_MAP)
+              .filter((el) => {
+                if (
+                  data?.status === "REFUNDING" ||
+                  data?.status === "CANCELED"
+                ) {
+                  return el !== "COMPLETED";
+                }
+
+                return el !== "REFUNDING" && el !== "CANCELED";
+              })
+              .map((status) => (
+                <Stepper.Step label={status} key={status}></Stepper.Step>
+              ))}
           </Stepper>
         </div>
       </div>
@@ -96,34 +107,38 @@ function OrderDetailPage() {
           <div className="font-bold text-[24px] mb-1 text-primary">
             Địa chỉ nhận hàng
           </div>
-          {orderData?.shippingLabel && (
-            <div className="mb-5">
+          <div className="flex flex-col flex-wrap justify-between gap-x-5 gap-y-5">
+            <div className="flex-1">
               <div>
-                <span className="font-bold">Đơn vị vận chuyển:</span> GHTK
+                <span className="font-bold">Tên người nhận: </span>
+                {data?.order.deliveryName}
               </div>
               <div>
-                <span className="font-bold">Mã vận đơn:</span>{" "}
-                {orderData.shippingLabel}
+                <span className="font-bold">Số điện thoại: </span>
+                {data?.order.deliveryTel}
               </div>
-              <span className="inline-block text-sm text-gray-500">
-                Vui lòng sử dụng mã vận đơn để tra cứu trên trang web của đơn vị
-                vận chuyển
-              </span>
+              <div>
+                <span className="font-bold">Địa chỉ: </span>
+                <span>
+                  {`${data?.order.deliveryAddress}, ${data?.order.deliveryWard}, ${data?.order.deliveryDistrict}, ${data?.order.deliveryProvince}`}
+                </span>
+              </div>
             </div>
-          )}
-          <div>
-            <span className="font-bold">Tên người nhận: </span>
-            {data?.order.deliveryName}
-          </div>
-          <div>
-            <span className="font-bold">Số điện thoại: </span>
-            {data?.order.deliveryTel}
-          </div>
-          <div>
-            <span className="font-bold">Địa chỉ: </span>
-            <span>
-              {`${data?.order.deliveryAddress}, ${data?.order.deliveryWard}, ${data?.order.deliveryDistrict}, ${data?.order.deliveryProvince}`}
-            </span>
+            {data?.shippingLabel && (
+              <div className="mb-5 flex-1">
+                <div>
+                  <span className="font-bold">Đơn vị vận chuyển:</span> GHTK
+                </div>
+                <div>
+                  <span className="font-bold">Mã vận đơn:</span>{" "}
+                  {data.shippingLabel}
+                </div>
+                <span className="inline-block text-sm text-gray-500">
+                  Vui lòng sử dụng mã vận đơn để tra cứu trên trang web của đơn
+                  vị vận chuyển
+                </span>
+              </div>
+            )}
           </div>
         </div>
       </div>
