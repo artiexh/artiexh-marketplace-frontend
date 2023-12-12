@@ -4,7 +4,7 @@ import { dateFormatter } from "@/utils/formatter";
 import { getNotificationRedirectUrl } from "@/utils/mapper";
 import { IconCheck } from "@tabler/icons-react";
 import clsx from "clsx";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 
 export default function NotificationCard({
   notification,
