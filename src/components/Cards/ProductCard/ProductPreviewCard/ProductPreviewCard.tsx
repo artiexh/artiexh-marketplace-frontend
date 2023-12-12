@@ -57,6 +57,16 @@ const ProductPreviewCard = ({ data, className }: IProductPreviewCardProps) => {
           }
           alt="dogtor"
         />
+        {data.quantity === 0 ? (
+          <div className="p-4 text-red-600 absolute top-20 w-full text-center bg-white opacity-80 font-semibold">
+            Đã hết hàng
+          </div>
+        ) : data.saleCampaign.status === "CLOSED" ||
+          new Date(data.saleCampaign.to).getTime() < new Date().getTime() ? (
+          <div className="p-4 text-red-600 absolute top-20 w-full text-center bg-white opacity-80 font-semibold">
+            Chiến dịch đã kết thúc
+          </div>
+        ) : null}
       </div>
       <div className="p-2.5 sm:p-6 sm:text-xl md:p-4 md:text-lg md:leading-snug">
         <div className="font-semibold product-name">{data?.name}</div>
