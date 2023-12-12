@@ -73,17 +73,18 @@ export default function CreateUpdateAddressModal({
       >
         <TextInput
           className="my-4"
-          label="Điền địa chỉ tại đây"
-          withAsterisk
-          {...getInputProps("address")}
-          disabled={submitHandlerMutation.isLoading}
-        />
-        <WardSelects getInputProps={getInputProps} ward={address?.ward} />
-        <TextInput
-          className="my-4"
           label="Điền tên người nhận tại đây"
           withAsterisk
           {...getInputProps("receiverName")}
+          disabled={submitHandlerMutation.isLoading}
+        />
+
+        <WardSelects getInputProps={getInputProps} ward={address?.ward} />
+        <TextInput
+          className="my-4"
+          label="Điền địa chỉ tại đây"
+          withAsterisk
+          {...getInputProps("address")}
           disabled={submitHandlerMutation.isLoading}
         />
         <TextInput

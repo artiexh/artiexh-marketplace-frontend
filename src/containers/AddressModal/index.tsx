@@ -3,6 +3,12 @@ import { Address } from "@/types/User";
 import { Badge, Button, Checkbox } from "@mantine/core";
 import { useState } from "react";
 import CreateUpdateAddressModal from "../CreateUpdateAddressModal";
+import axiosClient from "@/services/backend/axiosClient";
+import { useMutation } from "@tanstack/react-query";
+import { errorHandler } from "@/utils/errorHandler";
+import { notifications } from "@mantine/notifications";
+import { getNotificationIcon } from "@/utils/mapper";
+import { NOTIFICATION_TYPE } from "@/constants/common";
 
 export default function AddressModal({
   submitHandler,
@@ -23,6 +29,22 @@ export default function AddressModal({
   const [currentAddressId, setCurrentAddressId] = useState<string | undefined>(
     defaultValue
   );
+
+  const deleteAddressMutation = useMutation({
+    mutationFn: async (id: string) => {
+      await axiosClient.delete(`/user/address/${id}`);
+    },
+    onSuccess: () => {
+      notifications.show({
+        message: "Xoá địa chỉ thành công",
+        ...getNotificationIcon(NOTIFICATION_TYPE.SUCCESS),
+      });
+      mutate();
+    },
+    onError: (e) => {
+      errorHandler(e);
+    },
+  });
 
   return (
     <div className="address-modal py-4">
@@ -45,6 +67,11 @@ export default function AddressModal({
               id={address.id}
               address={address}
               onChange={(id) => setCurrentAddressId(id)}
+              onDelete={
+                addresses.length > 1 && address.id !== defaultValue
+                  ? (id) => deleteAddressMutation.mutate(id)
+                  : undefined
+              }
             />
           ))}
           <div className="w-full flex justify-end">
@@ -70,12 +97,14 @@ const AddressOption = ({
   switchEditStatus,
   isChecked,
   onChange,
+  onDelete,
 }: {
   id: string;
   address: Address;
   switchEditStatus: () => void;
   isChecked?: boolean;
   onChange: (id: string) => void;
+  onDelete?: (id: string) => void;
 }) => {
   return (
     <div className="address-option flex justify-between my-3">
@@ -95,8 +124,18 @@ const AddressOption = ({
           </div>
         </div>
       </div>
-      <div className="cursor-pointer" onClick={switchEditStatus}>
-        Cập nhật
+      <div className="flex gap-x-4">
+        {!isChecked && onDelete && (
+          <div
+            className="cursor-pointer text-red-500"
+            onClick={() => onDelete(id)}
+          >
+            Xoá
+          </div>
+        )}
+        <div className="cursor-pointer" onClick={switchEditStatus}>
+          Cập nhật
+        </div>
       </div>
     </div>
   );

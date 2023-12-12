@@ -60,15 +60,23 @@ export default function CheckoutAddress() {
               close();
             }}
           />
-          <div className="w-full mt-4">
-            <span>Địa chỉ không phù hợp?</span>{" "}
-            <strong
-              onClick={createOpen}
-              className="text-primary cursor-pointer"
-            >
-              Thêm địa chỉ
-            </strong>
-          </div>
+          {addresses?.length && addresses?.length < 5 ? (
+            <div className="w-full mt-4">
+              <span>Địa chỉ không phù hợp?</span>{" "}
+              <strong
+                onClick={createOpen}
+                className="text-primary cursor-pointer"
+              >
+                Thêm địa chỉ
+              </strong>
+            </div>
+          ) : (
+            <div className="w-full mt-4">
+              <span>
+                Đã đạt giới hạn số địa chỉ, vui lòng xoá bớt để tạo thêm
+              </span>
+            </div>
+          )}
         </Modal>
       </div>
       <div className="flex justify-between mb-4 text-secondary font-bold">
