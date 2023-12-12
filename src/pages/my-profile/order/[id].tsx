@@ -4,7 +4,7 @@ import { orderProductColumns } from "@/constants/Columns/orderColumn";
 import {
   ORDER_HISTORY_CONTENT_MAP,
   ORDER_STATUS,
-  ORDER_STATUS_ENUM
+  ORDER_STATUS_ENUM,
 } from "@/constants/common";
 import { ROUTE } from "@/constants/route";
 import axiosClient from "@/services/backend/axiosClient";
@@ -12,9 +12,7 @@ import AuthWrapper from "@/services/guards/AuthWrapper";
 import { Order } from "@/types/Order";
 import { CommonResponseBase } from "@/types/ResponseBase";
 import { currencyFormatter } from "@/utils/formatter";
-import {
-  getOrderStatusStylingClass
-} from "@/utils/mapper";
+import { getOrderStatusStylingClass } from "@/utils/mapper";
 import { Divider, Grid, Stepper } from "@mantine/core";
 import { IconChevronLeft } from "@tabler/icons-react";
 import clsx from "clsx";
@@ -98,7 +96,21 @@ function OrderDetailPage() {
           <div className="font-bold text-[24px] mb-1 text-primary">
             Địa chỉ nhận hàng
           </div>
-
+          {orderData?.shippingLabel && (
+            <div className="mb-5">
+              <div>
+                <span className="font-bold">Đơn vị vận chuyển:</span> GHTK
+              </div>
+              <div>
+                <span className="font-bold">Mã vận đơn:</span>{" "}
+                {orderData.shippingLabel}
+              </div>
+              <span className="inline-block text-sm text-gray-500">
+                Vui lòng sử dụng mã vận đơn để tra cứu trên trang web của đơn vị
+                vận chuyển
+              </span>
+            </div>
+          )}
           <div>
             <span className="font-bold">Tên người nhận: </span>
             {data?.order.deliveryName}

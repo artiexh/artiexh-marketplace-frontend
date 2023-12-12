@@ -76,7 +76,7 @@ export type Order = {
   }[];
   order: TotalOrder;
   shippingFee: number;
-  shippingLabel: string;
+  shippingLabel?: string;
   status: string;
 };
 
