@@ -70,6 +70,10 @@ export const ORDER_STATUS = {
     code: "COMPLETED",
     name: "Hoàn thành",
   },
+  REFUNDING: {
+    code: "REFUNDING",
+    name: "Đang hoàn tiền",
+  },
   CANCELED: {
     code: "CANCELED",
     name: "Đã hủy",
