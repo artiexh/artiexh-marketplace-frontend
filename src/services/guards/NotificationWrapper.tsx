@@ -34,7 +34,7 @@ export default function NotificationWrapper({ children }: any) {
         setIsHasNewNotification(true);
       }
     } catch (err) {
-      errorHandler(err);
+      // errorHandler(err);
     }
   };
 

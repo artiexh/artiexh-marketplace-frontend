@@ -6,7 +6,6 @@ import {
   CommonResponseBase,
   PaginationResponseBase,
 } from "@/types/ResponseBase";
-import { errorHandler } from "@/utils/errorHandler";
 import { HoverCard } from "@mantine/core";
 import { useStore } from "@nanostores/react";
 import { IconBell } from "@tabler/icons-react";
@@ -32,7 +31,6 @@ export default function NotificationContainer() {
           >
         >("/notification?sortBy=id&sortDirection=DESC")
         .then((res) => res?.data?.data)
-        .catch((err) => errorHandler(err))
   );
 
   if (notifications?.unreadCount === 0) {
