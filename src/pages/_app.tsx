@@ -94,7 +94,7 @@ export default function App({ Component, pageProps }: AppProps) {
           />
         </Head>
         <ModalsProvider>
-          <Notifications limit={5} autoClose={3000} position="top-right" />
+          <Notifications limit={5} autoClose={3000} position="bottom-left" />
           <SWRConfig>
             <NotificationWrapper>
               <Provider store={store}>
