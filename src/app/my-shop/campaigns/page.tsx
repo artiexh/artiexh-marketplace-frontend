@@ -1,5 +1,6 @@
 "use client";
 
+import TableComponent from "@/components/TableComponent";
 import { artistCampaignColumns } from "@/constants/Columns/artistCampaignColumn";
 import { NOTIFICATION_TYPE } from "@/constants/common";
 import { ROUTE } from "@/constants/route";
@@ -10,22 +11,55 @@ import {
   createCampaignApi,
   updateCampaignStatusApi,
 } from "@/services/backend/services/campaign";
+import { CampaignData } from "@/types/Campaign";
+import {
+  CommonResponseBase,
+  PaginationResponseBase,
+} from "@/types/ResponseBase";
 import { ValidationError } from "@/utils/error/ValidationError";
 import { errorHandler } from "@/utils/errorHandler";
 import { getNotificationIcon } from "@/utils/mapper";
 import { campaignValidation } from "@/validation/campaign";
-import { Button, SegmentedControl, TextInput } from "@mantine/core";
+import {
+  Button,
+  Input,
+  Pagination,
+  SegmentedControl,
+  Select,
+  TextInput,
+} from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { modals } from "@mantine/modals";
 import { notifications } from "@mantine/notifications";
 import { IconPlus } from "@tabler/icons-react";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter, useSearchParams } from "next/navigation";
+import { useState } from "react";
+import useSWR from "swr";
 
 const PAGE_SIZE = 8;
 const ShopCampaignsPage = () => {
   const router = useRouter();
-  const searchParams = useSearchParams();
+
+  const [params, setParams] = useState<{ [key: string]: any }>({
+    pageSize: 6,
+    pageNumber: 1,
+    status: null,
+    keyword: null,
+  });
+
+  const { data: response, isLoading } = useSWR(
+    ["campaign-request", ...Object.values(params)],
+    () =>
+      axiosClient.get<CommonResponseBase<PaginationResponseBase<CampaignData>>>(
+        `${ARTIST_CAMPAIGN_ENDPOINT}`,
+        {
+          params: params,
+        }
+      )
+  );
+
+  const data = response?.data.data;
 
   const handleCreateCampaign = () => {
     modals.open({
@@ -51,48 +85,103 @@ const ShopCampaignsPage = () => {
           Create campaign request
         </Button>
       </div>
-      <TableContainer
-        fetchKey="campaigns"
-        fetcher={async (currentPage) => {
-          const res = (
-            await axiosClient.get(
-              `${ARTIST_CAMPAIGN_ENDPOINT}?pageNumber=${currentPage}&pageSize=${PAGE_SIZE}` +
-                new URLSearchParams(searchParams?.toString()).toString()
-            )
-          ).data;
-          const finalRes = {
-            ...res,
-            data: {
-              ...res.data,
-              items: res.data.items?.map((el: any) => ({
-                ...el,
-                onClickEdit: () =>
-                  router.push(`${ROUTE.SHOP}/campaigns/${el.id}`),
-                onClickDelete: async () => {
-                  try {
-                    await updateCampaignStatusApi(el.id, {
-                      message: "Cancel campaign",
-                      status: "CANCELED",
+      <div className="product-table-page">
+        <div className="py-5 px-7 bg-white shadow rounded-lg">
+          <div className="flex justify-between items-center mb-6">
+            <div>
+              <div className="text-3xl font-bold">Campaign requests</div>
+              <div className="text-[#AFAFAF] mt-1 mb-4">
+                {/* TODO: Replace with API call later or filter based on response */}
+                {data?.totalSize} campaign requests
+              </div>
+            </div>
+            <div>
+              <Input.Wrapper label="Status">
+                <Select
+                  value={params.status}
+                  onChange={(value) => {
+                    setParams({
+                      ...params,
+                      status: value,
+                      pageNumber: 1,
                     });
-                  } catch (e) {
-                    errorHandler(e);
-                  }
-                },
-              })),
-            },
-          };
-          return finalRes;
-        }}
-        columns={artistCampaignColumns}
-        pagination
-        tableProps={{ verticalSpacing: "sm", className: "font-semibold" }}
-        className="mt-2.5"
-        header={(response) => (
-          <>
-            <div className="text-3xl font-bold mb-6">My campaign requests</div>
-          </>
-        )}
-      />
+                  }}
+                  data={[
+                    {
+                      value: null,
+                      label: "All",
+                    },
+                    {
+                      value: "DRAFT",
+                      label: "Draft",
+                    },
+                    {
+                      value: "WAITING",
+                      label: "Waiting",
+                    },
+                    {
+                      value: "REQUEST_CHANGE",
+                      label: "Request change",
+                    },
+                    {
+                      value: "REJECTED",
+                      label: "Rejected",
+                    },
+                    {
+                      value: "APPROVED",
+                      label: "Approved",
+                    },
+                    {
+                      value: "MANUFACTURING",
+                      label: "Manufacturing",
+                    },
+                    {
+                      value: "MANUFACTURED",
+                      label: "Manufactured",
+                    },
+                    {
+                      value: "CANCELED",
+                      label: "Canceled",
+                    },
+                  ]}
+                />
+              </Input.Wrapper>
+            </div>
+          </div>
+          <div className="flex flex-col items-center gap-4 w-full">
+            {!isLoading && (
+              <TableComponent
+                columns={artistCampaignColumns}
+                data={data?.items.map((el) => ({
+                  ...el,
+                  onClickEdit: () =>
+                    router.push(`${ROUTE.SHOP}/campaigns/${el.id}`),
+                  onClickDelete: async () => {
+                    try {
+                      await updateCampaignStatusApi(el.id, {
+                        message: "Cancel campaign",
+                        status: "CANCELED",
+                      });
+                    } catch (e) {
+                      errorHandler(e);
+                    }
+                  },
+                }))}
+              />
+            )}
+            <Pagination
+              value={params.pageNumber}
+              onChange={(value) => setParams({ ...params, pageNumber: value })}
+              //TODO: change this to total of api call later
+              total={data?.totalPage ?? 1}
+              boundaries={2}
+              classNames={{
+                control: "[&[data-active]]:!text-white",
+              }}
+            />
+          </div>
+        </div>
+      </div>
     </>
   );
 };
