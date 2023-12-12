@@ -57,7 +57,8 @@ const ProductPreviewCard = ({ data, className }: IProductPreviewCardProps) => {
           }
           alt="dogtor"
         />
-        {data.quantity === 0 ? (
+        {data.quantity === 0 &&
+        new Date(data.saleCampaign.from) > new Date() ? (
           <div className="p-4 text-red-600 absolute top-20 w-full text-center bg-white opacity-80 font-semibold">
             Đã hết hàng
           </div>
