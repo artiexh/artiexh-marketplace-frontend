@@ -35,8 +35,8 @@ const ShopCard: FC<ArtistInfoProps> = ({ artist, className, ...rest }) => {
           />
         </div>
         <div className="flex flex-col ml-5">
-          <h3 className="text-2xl font-bold">{artist.shopName}</h3>
-          <span className="text-gray-500 text-xl">@{artist.displayName}</span>
+          <h3 className="text-2xl font-bold">{artist.displayName}</h3>
+          <span className="text-gray-500 text-xl">@{artist.username}</span>
         </div>
       </div>
       <div
