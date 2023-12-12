@@ -137,7 +137,7 @@ function SaleCampaignStatisticContainer({ id }: { id: string }) {
   };
 
   return (
-    <div>
+    <div className="mt-2">
       <div className="mb-6 font-semibold text-xl">Tổng quan:</div>
       <div className="flex items-center gap-20">
         <Doughnut
@@ -227,7 +227,7 @@ function SaleCampaignStatisticContainer({ id }: { id: string }) {
 
 export default function SaleCampaignStatistics({ id }: { id: string }) {
   return (
-    <Tabs defaultValue="general-info" className="mt-5">
+    <Tabs defaultValue="general-info" className="mt-2">
       <Tabs.List>
         <Tabs.Tab value="general-info">Statistics</Tabs.Tab>
 
@@ -246,7 +246,7 @@ export default function SaleCampaignStatistics({ id }: { id: string }) {
 function ProductStatisticTable({ id }: { id: string }) {
   const [params, setParams] = useState({
     pageNumber: 1,
-    pageSize: 10,
+    pageSize: 2,
   });
 
   const { data, isLoading } = useQuery({
@@ -266,21 +266,23 @@ function ProductStatisticTable({ id }: { id: string }) {
   });
 
   return (
-    <>
+    <div className="mt-2">
       <TableComponent
         columns={statisticCampaignColumns}
         data={data?.data.items ?? []}
       />
-      <Pagination
-        value={params.pageNumber}
-        onChange={(value) => setParams({ ...params, pageNumber: value })}
-        //TODO: change this to total of api call later
-        total={data?.data.totalPage ?? 1}
-        boundaries={2}
-        classNames={{
-          control: "[&[data-active]]:!text-white",
-        }}
-      />
-    </>
+      <div className="w-full flex justify-center">
+        <Pagination
+          value={params.pageNumber}
+          onChange={(value) => setParams({ ...params, pageNumber: value })}
+          //TODO: change this to total of api call later
+          total={data?.data.totalPage ?? 1}
+          boundaries={2}
+          classNames={{
+            control: "[&[data-active]]:!text-white",
+          }}
+        />
+      </div>
+    </div>
   );
 }
