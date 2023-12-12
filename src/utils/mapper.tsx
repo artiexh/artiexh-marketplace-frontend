@@ -1,12 +1,7 @@
-import {
-  ATTACHMENT_TYPE,
-  NOTIFICATION_TYPE,
-  NOTIFICATION_TYPE_ENUM,
-} from "@/constants/common";
-import { CampaignData } from "@/types/Campaign";
+import { NOTIFICATION_TYPE, NOTIFICATION_TYPE_ENUM } from "@/constants/common";
 import { Product } from "@/types/Product";
 import { CommonResponseBase } from "@/types/ResponseBase";
-import { CreateUserAddress, Address } from "@/types/User";
+import { Address, CreateUserAddress } from "@/types/User";
 import {
   IconCircleCheckFilled,
   IconExclamationCircle,
@@ -29,7 +24,11 @@ export const getCampaignType = (campaign: Product["saleCampaign"]) => {
 
   if (Date.parse(from) > today) {
     return "IN_COMING";
-  } else if (Date.parse(from) < today && today < Date.parse(to)) {
+  } else if (
+    Date.parse(from) < today &&
+    today < Date.parse(to) &&
+    campaign.status !== "CLOSED"
+  ) {
     return "IN_GOING";
   } else {
     return "CLOSED";

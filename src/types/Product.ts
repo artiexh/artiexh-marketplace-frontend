@@ -92,6 +92,7 @@ export type Product = {
     thumbnailUrl: string;
     to: string;
     type: "SHARE" | "PUBLIC" | "PRIVATE";
+    status: string;
   };
   status: string;
   tags: string[];
