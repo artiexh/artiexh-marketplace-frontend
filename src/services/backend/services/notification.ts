@@ -3,7 +3,7 @@ import axiosClient from "../axiosClient";
 
 export const readNotification = async (id: string) => {
   try {
-    const result = await axiosClient.post(`/notification/${id}
+    const result = await axiosClient.put(`/notification/${id}
     `);
 
     return result;
