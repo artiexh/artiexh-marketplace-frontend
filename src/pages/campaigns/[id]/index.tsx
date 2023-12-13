@@ -147,7 +147,12 @@ export default function CampaignDetailPage() {
       <div className="text-center mt-12 text-2xl font-semibold">Giới thiệu</div>
       <div className="text-center mt-2 px-20">{campaignData.description}</div>
       <div className="flex justify-center gap-10 mt-8">
-        <div className="w-[300px] shadow-md rounded-lg">
+        <div
+          className="w-[300px] shadow-md rounded-lg cursor-pointer"
+          onClick={() =>
+            router.push(`/shop/${campaignData.owner.username}/home`)
+          }
+        >
           <div>
             <ImageWithFallback
               src={campaignData.owner.avatarUrl}

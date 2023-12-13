@@ -46,7 +46,7 @@ function OrderDetailPage() {
   }
 
   const stepArr =
-    data?.status && ["REFUNDING", "CANCELED"].includes(data?.status)
+    data?.status && ["REFUNDING", "CANCELED", "REFUNDED"].includes(data?.status)
       ? data?.orderHistories
           .sort(
             (a, b) =>
@@ -97,7 +97,15 @@ function OrderDetailPage() {
         </div>
         {data?.status ? (
           <div className="order-info mt-10">
-            <Stepper active={stepArr.indexOf(data.status)}>
+            <Stepper
+              active={
+                ["REFUNDING", "CANCELED", "REFUNDED", "COMPLETED"].includes(
+                  data?.status
+                )
+                  ? stepArr.length + 1
+                  : stepArr.indexOf(data.status)
+              }
+            >
               {stepArr.map((status) => (
                 <Stepper.Step label={status} key={status}></Stepper.Step>
               ))}

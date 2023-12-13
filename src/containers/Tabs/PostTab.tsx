@@ -9,15 +9,15 @@ import PostCard from "@/components/PostCard/PostCard";
 import { useWindowScroll } from "@mantine/hooks";
 import { useEffect } from "react";
 
-function getKey(pageNumber: number, previousPageData: PostInformation[]) {
-  if (pageNumber && !previousPageData.length) return null; // reached the end
-  return `/post?pageNumber=${
-    pageNumber + 1
-  }&pageSize=4&sortBy=id&sortDirection=DESC`; // SWR key
-}
-
 export default function PostTab() {
   const user = useStore($user);
+
+  function getKey(pageNumber: number, previousPageData: PostInformation[]) {
+    if (pageNumber && !previousPageData.length) return null; // reached the end
+    return `/post?username=${user?.username}&pageNumber=${
+      pageNumber + 1
+    }&pageSize=4&sortBy=id&sortDirection=DESC`; // SWR key
+  }
 
   const { data, size, setSize, mutate } = useSWRInfinite(
     getKey,

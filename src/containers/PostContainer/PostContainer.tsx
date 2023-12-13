@@ -9,7 +9,7 @@ import useSWRInfinite from "swr/infinite";
 export default function PostContainer({ artist }: { artist: User }) {
   function getKey(pageNumber: number, previousPageData: PostInformation[]) {
     if (pageNumber && !previousPageData.length) return null; // reached the end
-    return `/artist/${artist.id}/post?pageNumber=${
+    return `/post?username=${artist.username}&pageNumber=${
       pageNumber + 1
     }&pageSize=4&sortBy=id&sortDirection=DESC`; // SWR key
   }
