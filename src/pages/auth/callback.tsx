@@ -36,7 +36,7 @@ const CallbackPage = ({
 
     try {
       const { data } = await axiosClient.post<CommonResponseBase<User>>(
-        "https://api.artiexh.com/api/v1/registration/user",
+        "/registration/user",
         {
           username: values.username,
           ...provider,
