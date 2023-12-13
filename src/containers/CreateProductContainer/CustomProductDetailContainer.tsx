@@ -60,7 +60,7 @@ const CustomProductDetailContainer = ({ data }: Props) => {
       description: data.description,
       maxItemPerOrder: data.maxItemPerOrder,
       name: data.name,
-      tags: data.tags,
+      tags: data.tags ?? [],
       variantId: data.variant.id,
       thumbnail: data.attaches?.find((el) => el.type === "THUMBNAIL"),
     },
@@ -142,7 +142,7 @@ const CustomProductDetailContainer = ({ data }: Props) => {
         description: tmp.description,
         maxItemPerOrder: tmp.maxItemPerOrder,
         name: tmp.name,
-        tags: tmp.tags,
+        tags: tmp?.tags ?? [],
         variantId: tmp.variant.id,
         thumbnail: tmp.attaches?.find((el) => el.type === "THUMBNAIL"),
       });
@@ -202,6 +202,7 @@ const CustomProductDetailContainer = ({ data }: Props) => {
                 return item;
               }}
               {...getInputProps("tags")}
+              value={values.tags}
               disabled={updateCustomProductMutation.isLoading}
             />
             <Select

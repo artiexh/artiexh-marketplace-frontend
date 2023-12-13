@@ -127,7 +127,7 @@ function CustomWebTab({ data: campaignData }: { data: CampaignDetail }) {
             </div>
           )
         }
-        className="!h-[20rem]"
+        className="!h-[25rem]"
         clearable={!isDisabled(campaignData.status)}
         onClear={() => {
           setFieldValue("thumbnail", undefined);

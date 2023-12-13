@@ -13,9 +13,9 @@ export default function CampaignListPage() {
 
   function getKey(pageNumber: number, previousPageData: CampaignData[]) {
     if (pageNumber && !previousPageData.length) return null; // reached the end
-    return `/marketplace/sale-campaign?pageNumber=${
+    return `/marketplace/artist/${username}/sale-campaign?pageNumber=${
       pageNumber + 1
-    }&pageSize=8&sortBy=id&sortDirection=DESC&username=${username}`; // SWR key
+    }&pageSize=8&sortBy=id&sortDirection=DESC`; // SWR key
   }
 
   const { data, size, setSize } = useSWRInfinite(
