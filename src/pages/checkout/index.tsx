@@ -394,7 +394,7 @@ function CheckoutPage() {
           <div className="flex justify-center mt-10 mb-4">
             <Button
               disabled={
-                typeof selectedAddressId !== "string" ||
+                !selectedAddressId ||
                 isShippingLoading ||
                 shippingFees?.some((el) => typeof el?.shippingFee !== "number")
               }
