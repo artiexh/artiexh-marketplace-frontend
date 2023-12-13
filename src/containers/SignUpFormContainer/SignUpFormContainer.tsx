@@ -1,7 +1,7 @@
 import { ROUTE } from "@/constants/route";
 import axiosClient from "@/services/backend/axiosClient";
 import { User } from "@/types/User";
-import { Button, Divider, TextInput, PasswordInput } from "@mantine/core";
+import { Button, PasswordInput, TextInput } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { useRouter } from "next/router";
 import { useState } from "react";
@@ -81,15 +81,15 @@ const SignUpFormContainer = () => {
       onSubmit={form.onSubmit(onSubmit)}
     >
       <TextInput
-        label="Username"
-        placeholder="username nè"
+        label="Tên tài khoản"
+        placeholder="Điền tên tài khoản tại đây..."
         disabled={isSubmitting}
         autoComplete="username"
         {...form.getInputProps("username")}
       />
       <TextInput
-        label="Display name"
-        placeholder="tên mọi người thấy nè"
+        label="Tên hiển thị"
+        placeholder="Điền tên hiển thị tại đây..."
         disabled={isSubmitting}
         {...form.getInputProps("displayName")}
       />
@@ -102,14 +102,14 @@ const SignUpFormContainer = () => {
       />
       <PasswordInput
         label="Mật khẩu"
-        placeholder="Siêu bí mật"
+        placeholder="Điền mật khẩu tại đây..."
         disabled={isSubmitting}
         autoComplete="new-password"
         {...form.getInputProps("password")}
       />
       <PasswordInput
         label="Mật khẩu xác nhận"
-        placeholder="Giống cái ở trên"
+        placeholder="Mật khẩu xác nhận phải trùng với mật khẩu ở trên"
         disabled={isSubmitting}
         autoComplete="new-password"
         {...form.getInputProps("confirmPassword")}
@@ -121,34 +121,6 @@ const SignUpFormContainer = () => {
       >
         Đăng kí
       </Button>
-      <Divider label="Hoặc đăng nhập bằng" labelPosition="center" />
-      <div className="flex flex-row sm:flex-col gap-3">
-        <Button
-          className="flex-1 p-2"
-          color="blue"
-          variant="outline"
-          disabled={isSubmitting}
-          onClick={() => {
-            router.push(
-              `${
-                process.env.NEXT_PUBLIC_AUTH_ENDPOINT
-              }/oauth2/authorization/google?redirect_uri=${encodeURIComponent(
-                `${location.origin}/auth/callback`
-              )}`
-            );
-          }}
-        >
-          Google
-        </Button>
-        <Button
-          className="flex-1 p-2"
-          color="red"
-          variant="outline"
-          disabled={isSubmitting}
-        >
-          Facebook
-        </Button>
-      </div>
     </form>
   );
 };

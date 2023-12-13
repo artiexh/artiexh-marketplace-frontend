@@ -106,7 +106,7 @@ export default function CartSection({
               router.push(`/campaigns/${cartSection.saleCampaign.id}`);
             }}
           >
-            View campaign
+            Xem chi tiết
           </Button>
         </div>
       </div>

@@ -1,7 +1,10 @@
 /* eslint-disable @next/next/no-img-element */
 import CampaignPreviewCard from "@/components/CampaignPreviewCard/CampaignPreviewCard";
 import ProductPreviewCard from "@/components/Cards/ProductCard/ProductPreviewCard";
+import ImageWithFallback from "@/components/ImageWithFallback/ImageWithFallback";
+import ShopTabsContainer from "@/containers/ShopTabsContainer/ShopTabsContainer";
 import axiosClient from "@/services/backend/axiosClient";
+import productStyles from "@/styles/Products/ProductList.module.scss";
 import { CampaignData } from "@/types/Campaign";
 import { Product } from "@/types/Product";
 import {
@@ -9,14 +12,10 @@ import {
   PaginationResponseBase,
 } from "@/types/ResponseBase";
 import { User } from "@/types/User";
-import { Button, Divider, Rating } from "@mantine/core";
 import { clsx } from "clsx";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import useSWR from "swr";
-import productStyles from "@/styles/Products/ProductList.module.scss";
-import ShopTabsContainer from "@/containers/ShopTabsContainer/ShopTabsContainer";
-import ImageWithFallback from "@/components/ImageWithFallback/ImageWithFallback";
 
 const ARTY_SHOP_NAME = "arty-shop";
 
@@ -27,13 +26,6 @@ const ShopDetailPage = () => {
   const [campaignList, setCampaignList] = useState<CampaignData[]>([]);
 
   const [shopProducts, setShopProducts] = useState<Product[]>([]);
-
-  const [pagination, setPagination] = useState({
-    pageSize: 8,
-    pageNumber: 1,
-    sortBy: "id",
-    sortDirection: "DESC",
-  });
 
   const { data } = useSWR([name], async () => {
     try {
@@ -104,10 +96,7 @@ const ShopDetailPage = () => {
               <div className="relative top-20 md:top-0">
                 <div className="pt-12 relative">
                   <ImageWithFallback
-                    src={
-                      data.avatarUrl ??
-                      "https://cdn.hero.page/pfp/5e92df9f-2fe9-4b7e-a87a-ba503fe458d2-charming-sakura-inspired-avatar-kawaii-anime-avatar-creations-1.png"
-                    }
+                    src={data.avatarUrl}
                     className="w-[120px] h-[120px] object-cover rounded-full mx-auto"
                     alt="img"
                     width={120}
@@ -128,47 +117,67 @@ const ShopDetailPage = () => {
           <div className="mt-5 md:mt-10">
             <ShopTabsContainer />
           </div>
-          <div className="flex items-center justify-between mt-10">
-            <div className="font-semibold text-2xl">Campaign đang diễn ra</div>
-            <div
-              className="text-sm cursor-pointer"
-              onClick={() => {
-                router.push(`/shop/${data.username}/campaigns`);
-              }}
-            >
-              Xem tất cả
-            </div>
-          </div>
-          <div className={clsx("mt-3 grid !grid-cols-1 gap-8 !md:hidden")}>
-            {campaignList
-              ?.filter((item, idx) => idx <= 1)
-              .map((campaign, index) => (
-                <CampaignPreviewCard campaign={campaign} key={index} />
-              ))}
-          </div>
-          <div>
-            <div className="flex items-center justify-between mt-20">
-              <div className="font-semibold text-2xl">Sản phẩm của shop</div>
+          {campaignList.length > 0 ? (
+            <>
+              <div className="flex items-center justify-between mt-10">
+                <div className="font-semibold text-2xl">
+                  Chiến dịch đang diễn ra
+                </div>
+                <div
+                  className="text-sm cursor-pointer"
+                  onClick={() => {
+                    router.push(`/shop/${data.username}/campaigns`);
+                  }}
+                >
+                  Xem tất cả
+                </div>
+              </div>
+              <div className={clsx("mt-3 grid !grid-cols-1 gap-8 !md:hidden")}>
+                {campaignList
+                  ?.filter((item, idx) => idx <= 1)
+                  .map((campaign, index) => (
+                    <CampaignPreviewCard campaign={campaign} key={index} />
+                  ))}
+              </div>
+            </>
+          ) : (
+            <>
+              <div className="font-semibold text-2xl mt-10">
+                Hiện không có chiến dịch nào đang diễn ra
+              </div>
+            </>
+          )}
+          {shopProducts.length > 0 ? (
+            <div>
+              <div className="flex items-center justify-between mt-20">
+                <div className="font-semibold text-2xl">Sản phẩm của shop</div>
+                <div
+                  className="text-sm cursor-pointer"
+                  onClick={() => {
+                    router.push(`/shop/${data.username}/products`);
+                  }}
+                >
+                  Xem tất cả
+                </div>
+              </div>
               <div
-                className="text-sm cursor-pointer"
-                onClick={() => {
-                  router.push(`/shop/${data.username}/products`);
-                }}
+                className={clsx(
+                  productStyles["product-list-grid"],
+                  "mt-3 lg:!grid-cols-4"
+                )}
               >
-                Xem tất cả
+                {shopProducts?.map((product, index) => (
+                  <ProductPreviewCard data={product} key={index} />
+                ))}
               </div>
             </div>
-            <div
-              className={clsx(
-                productStyles["product-list-grid"],
-                "mt-3 lg:!grid-cols-4"
-              )}
-            >
-              {shopProducts?.map((product, index) => (
-                <ProductPreviewCard data={product} key={index} />
-              ))}
-            </div>
-          </div>
+          ) : (
+            <>
+              <div className="font-semibold text-2xl mt-10">
+                Hiện artist này đăng bán sản phẩm nào
+              </div>
+            </>
+          )}
         </div>
       </div>
     </div>

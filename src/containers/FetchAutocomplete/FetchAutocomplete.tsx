@@ -29,7 +29,7 @@ export default function FetchAutoComplete() {
       <Autocomplete
         value={searchKey}
         onChange={(value) => setSearchKey(value)}
-        placeholder="Find your favorite product..."
+        placeholder="Tìm sản phẩm bạn yêu thích..."
         filter={() => true}
         data={
           data?.map((item) => ({

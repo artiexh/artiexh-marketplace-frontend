@@ -48,10 +48,7 @@ const ProfilePage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = ({
               <div className="relative top-20 md:top-0">
                 <div className="pt-12 relative">
                   <ImageWithFallback
-                    src={
-                      user.avatarUrl ??
-                      "https://cdn.hero.page/pfp/5e92df9f-2fe9-4b7e-a87a-ba503fe458d2-charming-sakura-inspired-avatar-kawaii-anime-avatar-creations-1.png"
-                    }
+                    src={user.avatarUrl}
                     className="w-[120px] h-[120px] object-cover rounded-full mx-auto"
                     alt="img"
                     width={120}

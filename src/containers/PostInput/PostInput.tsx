@@ -86,7 +86,7 @@ export default function PostInput({ refreshFunc }: { refreshFunc?: any }) {
         <div>
           <ImageWithFallback
             fallback="/assets/default-thumbnail.jpg"
-            className="rounded-full aspect-square "
+            className="rounded-full aspect-square object-cover"
             width={60}
             height={60}
             src={

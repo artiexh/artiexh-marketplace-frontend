@@ -12,6 +12,7 @@ import { useDisclosure } from "@mantine/hooks";
 import moment from "moment";
 import { useState } from "react";
 import useSWRInfinite from "swr/infinite";
+import ImageWithFallback from "../ImageWithFallback/ImageWithFallback";
 
 type PostCardProps = {
   artist: User;
@@ -84,11 +85,8 @@ const PostCardContent = ({ artist, postInformation }: PostCardProps) => {
       <div className="px-6">
         <div className="flex gap-4">
           <div>
-            <img
-              src={
-                artist.avatarUrl ??
-                "https://cdn.hero.page/pfp/5e92df9f-2fe9-4b7e-a87a-ba503fe458d2-charming-sakura-inspired-avatar-kawaii-anime-avatar-creations-1.png"
-              }
+            <ImageWithFallback
+              src={artist.avatarUrl}
               alt="img"
               className="w-[40px] h-[40px] rounded-full"
               width={40}

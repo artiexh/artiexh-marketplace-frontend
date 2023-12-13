@@ -83,11 +83,11 @@ export type Ward = {
 };
 
 export type ArtistRegisterData = {
-  shopAddress: string;
-  shopImageUrl: string;
-  shopName: string;
-  shopPhone: string;
-  shopWardId: string;
+  bankAccount: string;
+  bankName: string;
+  description: string;
+  phone: string;
+  shopThumbnailUrl: string;
 };
 
 export type Provider = {
