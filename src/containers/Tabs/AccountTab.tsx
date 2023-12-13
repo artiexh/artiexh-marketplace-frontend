@@ -1,11 +1,17 @@
 import Thumbnail from "@/components/CreateProduct/Thumbnail";
+import { NOTIFICATION_TYPE } from "@/constants/common";
+import axiosClient from "@/services/backend/axiosClient";
 import { publicUploadFile } from "@/services/backend/services/media";
 import { updateUserProfileApi } from "@/services/backend/services/user";
 import { $user, setUser } from "@/store/user";
 import { User } from "@/types/User";
+import { errorHandler } from "@/utils/errorHandler";
+import { getNotificationIcon } from "@/utils/mapper";
 import { editProfileValidation } from "@/validation/account";
 import { Button, Grid, TextInput } from "@mantine/core";
 import { useForm } from "@mantine/form";
+import { notifications } from "@mantine/notifications";
+import { useMutation } from "@tanstack/react-query";
 
 export default function AccountTab() {
   const form = useForm<{
@@ -23,32 +29,47 @@ export default function AccountTab() {
     validate: editProfileValidation,
   });
 
-  const handleSubmit = async (values: {
-    displayName?: string;
-    email?: string;
-    avatar?: string | File;
-  }) => {
-    if (!values.displayName) return;
-    let avatarUrl = $user.get()?.avatarUrl;
-    if (values.avatar instanceof File) {
-      const res = await publicUploadFile([values.avatar]);
+  const updateUserProfileMutation = useMutation({
+    mutationFn: async (values: {
+      displayName?: string;
+      email?: string;
+      avatar?: string | File;
+    }) => {
+      if (!values.displayName) return;
+      let avatarUrl = $user.get()?.avatarUrl;
+      if (values.avatar instanceof File) {
+        const res = await publicUploadFile([values.avatar]);
 
-      avatarUrl = res?.data.data.fileResponses[0].presignedUrl;
-    } else if (!values.avatar) {
-      avatarUrl = undefined;
-    }
+        avatarUrl = res?.data.data.fileResponses[0].presignedUrl;
+      } else if (!values.avatar) {
+        avatarUrl = undefined;
+      }
 
-    const res = await updateUserProfileApi({
-      avatarUrl: avatarUrl,
-      displayName: values.displayName,
-      email: values.email,
-    });
-    setUser({
-      ...($user.get() ?? {}),
-      ...res.data.data,
-    } as User);
-    form.resetDirty();
-  };
+      const res = await updateUserProfileApi({
+        avatarUrl: avatarUrl,
+        displayName: values.displayName,
+        email: values.email,
+      });
+
+      //refresh token
+      await axiosClient.post("/auth/refresh");
+
+      setUser({
+        ...($user.get() ?? {}),
+        ...res.data.data,
+      } as User);
+      form.resetDirty();
+    },
+    onSuccess: () => {
+      notifications.show({
+        message: "Cập nhật thông tin thành công",
+        ...getNotificationIcon(NOTIFICATION_TYPE.SUCCESS),
+      });
+    },
+    onError: (error) => {
+      errorHandler(error);
+    },
+  });
 
   return (
     <div className="user-profile-page px-6">
@@ -59,7 +80,9 @@ export default function AccountTab() {
       {/* <Divider className="mt-4" /> */}
       <form
         className="mt-8 flex gap-x-4"
-        onSubmit={form.onSubmit(handleSubmit)}
+        onSubmit={form.onSubmit((values) =>
+          updateUserProfileMutation.mutate(values)
+        )}
       >
         <div className="w-64">
           <Thumbnail
@@ -121,6 +144,7 @@ export default function AccountTab() {
               <Button
                 type="submit"
                 disabled={!form.isDirty()}
+                loading={updateUserProfileMutation.isLoading}
                 className="bg-primary !text-white"
               >
                 Update
