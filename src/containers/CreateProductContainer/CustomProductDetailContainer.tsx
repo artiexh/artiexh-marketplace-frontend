@@ -185,7 +185,7 @@ const CustomProductDetailContainer = ({ data }: Props) => {
               disabled={updateCustomProductMutation.isLoading}
             />
             <MultiSelect
-              data={tags}
+              data={Array.from(new Set([...tags, ...values.tags]))}
               label="Tags"
               className="col-span-12"
               searchable

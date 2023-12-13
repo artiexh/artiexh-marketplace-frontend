@@ -394,8 +394,9 @@ function CheckoutPage() {
           <div className="flex justify-center mt-10 mb-4">
             <Button
               disabled={
+                typeof selectedAddressId !== "number" ||
                 isShippingLoading ||
-                shippingFees?.some((el) => typeof el.shippingFee !== "number")
+                shippingFees?.some((el) => typeof el?.shippingFee !== "number")
               }
               loading={paymentSubmitMutation.isLoading}
               style={{ width: "80%", height: 45 }}
