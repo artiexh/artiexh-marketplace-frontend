@@ -152,17 +152,29 @@ function OrderDetailPage() {
                   <div className="flex items-center">
                     <div>
                       <ImageWithFallback
-                        className="rounded-full mr-8 aspect-square"
+                        className="rounded-full mr-4 aspect-square"
                         src={order.campaignSale.thumbnailUrl}
                         width={60}
                         height={60}
                         alt="shop-img"
                       />
                     </div>
-                    <div className="text-black">{order.campaignSale.name}</div>
+                    <div className="flex flex-col">
+                      <div
+                        className="px-0 text-lg cursor-pointer"
+                        onClick={() =>
+                          router.push(`/campaigns/${order.campaignSale.id}`)
+                        }
+                      >
+                        {order.campaignSale.name}
+                      </div>
+                      <span className="text-sm text-gray-500">
+                        Owner: ${order.campaignSale.owner.username}
+                      </span>
+                    </div>
                   </div>
                   <div
-                    className="text-white cursor-pointer"
+                    className="font-semibold text-primary cursor-pointer"
                     onClick={() =>
                       router.push(`${ROUTE.MY_PROFILE}/order/${order.id}`)
                     }
