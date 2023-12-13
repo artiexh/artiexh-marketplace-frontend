@@ -91,7 +91,7 @@ export const getStaticProps = async (context: GetStaticPropsContext) => {
       props: {
         user: data.data,
       },
-      revalidate: 10,
+      revalidate: 2,
     };
   } catch (err) {
     return { props: { user: null } };

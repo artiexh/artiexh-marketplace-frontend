@@ -173,7 +173,7 @@ export const getStaticProps = async (context: GetStaticPropsContext) => {
     props: {
       campaigns,
     },
-    revalidate: 10,
+    revalidate: 2,
   };
 };
 
