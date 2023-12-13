@@ -20,6 +20,8 @@ import { useSearchParams } from "next/navigation";
 import { useRouter } from "next/router";
 import useSWR from "swr";
 
+const steps = ["PAYING", "PREPARING", "SHIPPING", "COMPLETED"];
+
 function OrderDetailPage() {
   const params = useSearchParams();
   const router = useRouter();
@@ -39,9 +41,19 @@ function OrderDetailPage() {
     }
   });
 
-  if (!data) {
+  if (data == null) {
     <div>Không tìm thấy đơn hàng!</div>;
   }
+
+  const stepArr =
+    data?.status && ["REFUNDING", "CANCELED"].includes(data?.status)
+      ? data?.orderHistories
+          .sort(
+            (a, b) =>
+              new Date(a.datetime).getTime() - new Date(b.datetime).getTime()
+          )
+          .map((item) => item.status)
+      : steps;
 
   return (
     <div className="order-detail-page bg-white">
@@ -83,24 +95,15 @@ function OrderDetailPage() {
             Xem đơn hàng tổng
           </div>
         </div>
-        <div className="order-info mt-10">
-          <Stepper active={data?.orderHistories.length ?? 1}>
-            {Object.keys(ORDER_HISTORY_CONTENT_MAP)
-              .filter((el) => {
-                if (
-                  data?.status === "REFUNDING" ||
-                  data?.status === "CANCELED"
-                ) {
-                  return el !== "COMPLETED";
-                }
-
-                return el !== "REFUNDING" && el !== "CANCELED";
-              })
-              .map((status) => (
+        {data?.status ? (
+          <div className="order-info mt-10">
+            <Stepper active={stepArr.indexOf(data.status)}>
+              {stepArr.map((status) => (
                 <Stepper.Step label={status} key={status}></Stepper.Step>
               ))}
-          </Stepper>
-        </div>
+            </Stepper>
+          </div>
+        ) : null}
       </div>
       <div className="flex justify-between p-10">
         <div className="user-info mr-4">

@@ -63,7 +63,7 @@ export default function NavBar(props: NavBarProps) {
                 <img
                   src={user.avatarUrl ?? "/assets/default-thumbnail.jpg"}
                   alt="avatar"
-                  className="w-[20px] h-[20px] rounded-full cursor-pointer"
+                  className="w-[20px] h-[20px] rounded-full cursor-pointer object-cover"
                 />
               </HoverCard.Target>
               <HoverCard.Dropdown>
@@ -98,7 +98,7 @@ export default function NavBar(props: NavBarProps) {
               className="cursor-pointer"
               onClick={() => router.push(ROUTE.SIGN_IN)}
             >
-              Sign in
+              Đăng nhập
             </div>
           )}
         </div>

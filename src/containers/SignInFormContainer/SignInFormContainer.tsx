@@ -90,21 +90,25 @@ const SignInFormContainer = () => {
       onSubmit={form.onSubmit(onSubmit)}
     >
       <TextInput
-        label="Username"
-        placeholder="username nè"
+        label="Tên tài khoản"
+        placeholder="Điền tên tài khoản tại đây..."
         disabled={isSubmitting}
         autoComplete="username"
         {...form.getInputProps("username")}
       />
       <PasswordInput
         label="Mật khẩu"
-        placeholder="Siêu bí mật"
+        placeholder="Điền mật khẩu tại đây..."
         disabled={isSubmitting}
         autoComplete="password"
         {...form.getInputProps("password")}
       />
 
-      <Button type="submit" className="bg-primary !text-white" disabled={isSubmitting}>
+      <Button
+        type="submit"
+        className="bg-primary !text-white"
+        disabled={isSubmitting}
+      >
         Đăng nhập
       </Button>
     </form>

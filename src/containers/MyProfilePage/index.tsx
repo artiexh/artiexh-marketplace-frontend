@@ -41,7 +41,7 @@ export default function MyProfilePage({ user }: MyProfileProps) {
         <div className="absolute -top-16">
           <ImageWithFallback
             fallback="/assets/default-thumbnail.jpg"
-            className="rounded-full aspect-square "
+            className="rounded-full aspect-square object-cover"
             width={120}
             height={120}
             src={
@@ -60,7 +60,7 @@ export default function MyProfilePage({ user }: MyProfileProps) {
           <div>
             {user.role !== "ARTIST" && (
               <Button className="bg-primary !text-white" onClick={open}>
-                Be an artist
+                Trở thành artist
               </Button>
             )}
           </div>

@@ -1,14 +1,14 @@
 import { NOTIFICATION_TYPE } from "@/constants/common";
+import { publicUploadFile } from "@/services/backend/services/media";
 import { artistRegister } from "@/services/backend/services/user";
 import { ArtistRegisterData } from "@/types/User";
-import { artistRegisterValidation } from "@/utils/validations";
-import { TextInput, Button, FileInput } from "@mantine/core";
-import { useForm } from "@mantine/form";
-import { useState } from "react";
-import WardSelects from "../WardSelects";
-import { notifications } from "@mantine/notifications";
 import { getNotificationIcon } from "@/utils/mapper";
-import { publicUploadFile } from "@/services/backend/services/media";
+import { updateUserInformation } from "@/utils/user";
+import { artistRegisterValidation } from "@/utils/validations";
+import { Button, FileInput, TextInput } from "@mantine/core";
+import { useForm } from "@mantine/form";
+import { notifications } from "@mantine/notifications";
+import { useState } from "react";
 
 export default function ArtistRegisterModal({
   closeModal,
@@ -18,11 +18,11 @@ export default function ArtistRegisterModal({
   revalidateFunc?: () => void;
 }) {
   const initialValues = {
-    shopAddress: "",
-    shopImageUrl: "",
-    shopName: "",
-    shopPhone: "",
-    shopWardId: "",
+    bankAccount: "",
+    bankName: "",
+    description: "",
+    phone: "",
+    shopThumbnailUrl: "",
   };
 
   const [file, setFile] = useState<File | null>(null);
@@ -52,14 +52,14 @@ export default function ArtistRegisterModal({
       if (data?.fileResponses && data.fileResponses.length > 0) {
         const result = await artistRegister({
           ...values,
-          shopImageUrl: data.fileResponses[0].presignedUrl,
+          shopThumbnailUrl: data.fileResponses[0].presignedUrl,
         });
 
         let isSuccess = result != null;
         notifications.show({
           message: isSuccess
-            ? "Địa chỉ của bạn đã được thêm thành công"
-            : "Thêm địa chỉ thất bại! Vui lòng thử lại!",
+            ? "Đăng ký trở thành artist thành công"
+            : "Đăng ký trở thành artist thất bại! Vui lòng thử lại!",
           ...getNotificationIcon(
             NOTIFICATION_TYPE[isSuccess ? "SUCCESS" : "FAILED"]
           ),
@@ -67,6 +67,7 @@ export default function ArtistRegisterModal({
 
         if (isSuccess) {
           revalidateFunc?.();
+          updateUserInformation();
           closeModal();
         }
       }
@@ -79,17 +80,30 @@ export default function ArtistRegisterModal({
       <form onSubmit={onSubmit(submitHandler)}>
         <TextInput
           className="my-4"
-          label="Điền địa chỉ của shop tại đây"
+          label="Số tài khoản ngân hàng"
           withAsterisk
-          {...getInputProps("shopAddress")}
+          {...getInputProps("bankAccount")}
           disabled={loading}
         />
-        <WardSelects getInputProps={getInputProps} fieldName={"shopWardId"} />
         <TextInput
           className="my-4"
-          label="Điền tên của shop tại đây"
+          label="Tên tài khoản ngân hàng"
           withAsterisk
-          {...getInputProps("shopName")}
+          {...getInputProps("bankName")}
+          disabled={loading}
+        />
+        <TextInput
+          className="my-4"
+          label="Mô tả về bản thân"
+          withAsterisk
+          {...getInputProps("description")}
+          disabled={loading}
+        />
+        <TextInput
+          className="my-4"
+          label="Điền số điện thoại của shop tại đây"
+          withAsterisk
+          {...getInputProps("phone")}
           disabled={loading}
         />
         <FileInput
@@ -97,13 +111,6 @@ export default function ArtistRegisterModal({
           label="Điền ảnh của shop tại đây"
           value={file}
           onChange={setFile}
-        />
-        <TextInput
-          className="my-4"
-          label="Điền số điện thoại của shop tại đây"
-          withAsterisk
-          {...getInputProps("shopPhone")}
-          disabled={loading}
         />
         <div className="mt-6 btn-wrapper flex flex-col-reverse md:flex-row gap-5 w-full md:w-max ml-auto bg-white p-5 rounded-lg md:bg-transparent sm:p-0">
           <Button
@@ -114,7 +121,11 @@ export default function ArtistRegisterModal({
           >
             Trở về
           </Button>
-          <Button className="bg-primary" type="submit" loading={loading}>
+          <Button
+            className="bg-primary !text-white"
+            type="submit"
+            loading={loading}
+          >
             Tạo
           </Button>
         </div>

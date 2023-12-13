@@ -34,8 +34,7 @@ const ProductPreviewCard = ({ data, className }: IProductPreviewCardProps) => {
       {data.saleCampaign.type !== "SHARE" && (
         <div
           className={clsx(
-            "absolute right-0 top-[5%] z-10 pl-2 pr-2 py-1 rounded-l-lg font-semibold text-sm",
-            campaignTypeData.textStyle,
+            "absolute right-0 top-[5%] z-10 pl-2 pr-2 py-1 rounded-l-lg font-semibold text-sm !text-white",
             "bg-primary"
           )}
         >

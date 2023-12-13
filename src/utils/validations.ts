@@ -30,21 +30,23 @@ export const createUpdateAddressValidation: FormValidateInput<CreateUserAddress>
   };
 
 export const artistRegisterValidation: FormValidateInput<ArtistRegisterData> = {
-  shopAddress: (shopAddress) => {
-    if (shopAddress.trim().length === 0) return "Address is required";
+  bankAccount: (bankAccount) => {
+    if (bankAccount.trim().length === 0)
+      return "Bạn phải điền số tài khoản ngân hàng";
     return null;
   },
-  shopPhone: (shopPhone) => {
+  phone: (shopPhone) => {
     if (!phoneNumberRegex.test(shopPhone.trim())) return "Invalid phone number";
-    if (shopPhone.trim().length === 0) return "Phone is required";
+    if (shopPhone.trim().length === 0) return "Bạn phải điền số điện thoại";
     return null;
   },
-  shopName: (shopName) => {
-    if (shopName.trim().length === 0) return "Shop name is required";
+  bankName: (bankName) => {
+    if (bankName.trim().length === 0)
+      return "Bạn phải điền tên tài khoản ngân hàng của bạn";
     return null;
   },
-  shopWardId: (shopWardId) => {
-    if (shopWardId.trim().length === 0) return "Ward is required";
+  description: (description) => {
+    if (description.trim().length === 0) return "Bạn phải điền mô tả của mình";
     return null;
   },
 };

@@ -78,7 +78,7 @@ const HomePage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = ({
                   className="font-bold text-sm cursor-pointer"
                   onClick={() => router.push(`/campaigns/${element.id}`)}
                 >
-                  VIEW CAMPAIGN
+                  Xem chi tiết
                 </div>
               </div>
             </div>
