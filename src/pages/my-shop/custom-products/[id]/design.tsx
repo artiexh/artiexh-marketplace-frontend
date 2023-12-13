@@ -965,11 +965,10 @@ type CombinationCodePickerProps = {
 import FileUpload from "@/components/FileUpload/FileUpload";
 import TShirtContainer from "@/containers/3dModelContainers/TShirtContainer";
 import ToteBagContainer from "@/containers/3dModelContainers/ToteBagContainer";
-import logoImage from "../../../../../public/assets/logo.svg";
-import { mock } from "node:test";
-import _ from "lodash";
-import { errorHandler } from "@/utils/errorHandler";
 import { ValidationError } from "@/utils/error/ValidationError";
+import { errorHandler } from "@/utils/errorHandler";
+import _ from "lodash";
+import logoImage from "../../../../../public/assets/logo.svg";
 
 function CombinationCodePicker({ combinations }: CombinationCodePickerProps) {
   const queryClient = useQueryClient();
@@ -980,6 +979,8 @@ function CombinationCodePicker({ combinations }: CombinationCodePickerProps) {
   const designItemRes = queryClient.getQueryData<
     CommonResponseBase<CustomProductDesignInfo>
   >(["custom-product", { id: id }]);
+
+  console.log(logoImage.src);
 
   const updateCombinationCodeMutate = useMutation({
     mutationFn: async (combinationCode: string) => {
@@ -1020,7 +1021,11 @@ function CombinationCodePicker({ combinations }: CombinationCodePickerProps) {
           >
             <span className="font-semibold">{el.name}</span>
             {designItemRes.data?.combinationCode === el.code ? (
-              <img src={logoImage} className="w-6 aspect-square" alt="logo" />
+              <img
+                src="/assets/logo.svg"
+                className="w-6 aspect-square"
+                alt="logo"
+              />
             ) : (
               <div></div>
             )}
