@@ -1,18 +1,15 @@
 /* eslint-disable @next/next/no-img-element */
 import CartItemCard from "@/containers/Card/CartItemCard/CartItemCard";
-import { ActionIcon, Button, Divider, Grid } from "@mantine/core";
-import LogoCheckbox from "../LogoCheckbox/LogoCheckbox";
-import Image from "next/image";
 import { CartData, CartItem, CartSection } from "@/services/backend/types/Cart";
-import { AnyAction } from "@reduxjs/toolkit";
-import { Dispatch } from "react";
 import { deleteItems, toggleSelectItems } from "@/store/slices/cartSlice";
-import { KeyedMutator } from "swr";
-import { useRouter } from "next/router";
-import ImageWithFallback from "../ImageWithFallback/ImageWithFallback";
 import { getCampaignType } from "@/utils/mapper";
-import { IconTrash } from "@tabler/icons-react";
-import { useMutation } from "@tanstack/react-query";
+import { Button, Divider, Grid } from "@mantine/core";
+import { AnyAction } from "@reduxjs/toolkit";
+import { useRouter } from "next/router";
+import { Dispatch } from "react";
+import { KeyedMutator } from "swr";
+import ImageWithFallback from "../ImageWithFallback/ImageWithFallback";
+import LogoCheckbox from "../LogoCheckbox/LogoCheckbox";
 
 type CartSectionProps = {
   cartSection: CartSection;
