@@ -1,13 +1,17 @@
 import { NOTIFICATION_TYPE } from "@/constants/common";
+import axiosClient from "@/services/backend/axiosClient";
 import { publicUploadFile } from "@/services/backend/services/media";
 import { artistRegister } from "@/services/backend/services/user";
 import { ArtistRegisterData } from "@/types/User";
+import { ValidationError } from "@/utils/error/ValidationError";
+import { errorHandler } from "@/utils/errorHandler";
 import { getNotificationIcon } from "@/utils/mapper";
 import { updateUserInformation } from "@/utils/user";
 import { artistRegisterValidation } from "@/utils/validations";
 import { Button, FileInput, TextInput } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { notifications } from "@mantine/notifications";
+import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
 
 export default function ArtistRegisterModal({
@@ -34,19 +38,12 @@ export default function ArtistRegisterModal({
     validate: artistRegisterValidation,
   });
 
-  const [loading, setLoading] = useState<boolean>(false);
+  const registerArtistMutation = useMutation({
+    mutationFn: async (values: ArtistRegisterData) => {
+      if (file == null) {
+        throw new ValidationError("Xin hãy upload ảnh shop của bạn");
+      }
 
-  const submitHandler = async (values: ArtistRegisterData) => {
-    if (file == null) {
-      notifications.show({
-        message: "Xin hãy upload ảnh shop của bạn",
-        ...getNotificationIcon(NOTIFICATION_TYPE["FAILED"]),
-      });
-    }
-
-    setLoading(true);
-
-    if (file != null) {
       const data = (await publicUploadFile([file]))?.data?.data;
 
       if (data?.fileResponses && data.fileResponses.length > 0) {
@@ -55,56 +52,58 @@ export default function ArtistRegisterModal({
           shopThumbnailUrl: data.fileResponses[0].presignedUrl,
         });
 
-        let isSuccess = result != null;
-        notifications.show({
-          message: isSuccess
-            ? "Đăng ký trở thành artist thành công"
-            : "Đăng ký trở thành artist thất bại! Vui lòng thử lại!",
-          ...getNotificationIcon(
-            NOTIFICATION_TYPE[isSuccess ? "SUCCESS" : "FAILED"]
-          ),
-        });
-
-        if (isSuccess) {
-          revalidateFunc?.();
-          updateUserInformation();
-          closeModal();
-        }
+        //refresh token
+        await axiosClient.post("/auth/refresh");
+      } else {
+        throw new Error("Có lỗi xảy ra, vui lòng thử lại sau!");
       }
-    }
+    },
+    onSuccess: () => {
+      notifications.show({
+        message: "Đăng ký trở thành artist thành công",
+        ...getNotificationIcon(NOTIFICATION_TYPE.SUCCESS),
+      });
+      revalidateFunc?.();
+      updateUserInformation();
+      closeModal();
+    },
+    onError: (e) => {
+      errorHandler(e);
+    },
+  });
 
-    setLoading(false);
-  };
   return (
     <div className="create-address-modal">
-      <form onSubmit={onSubmit(submitHandler)}>
+      <form
+        onSubmit={onSubmit((values) => registerArtistMutation.mutate(values))}
+      >
         <TextInput
           className="my-4"
           label="Số tài khoản ngân hàng"
           withAsterisk
           {...getInputProps("bankAccount")}
-          disabled={loading}
+          disabled={registerArtistMutation.isLoading}
         />
         <TextInput
           className="my-4"
           label="Tên tài khoản ngân hàng"
           withAsterisk
           {...getInputProps("bankName")}
-          disabled={loading}
+          disabled={registerArtistMutation.isLoading}
         />
         <TextInput
           className="my-4"
           label="Mô tả về bản thân"
           withAsterisk
           {...getInputProps("description")}
-          disabled={loading}
+          disabled={registerArtistMutation.isLoading}
         />
         <TextInput
           className="my-4"
           label="Điền số điện thoại của shop tại đây"
           withAsterisk
           {...getInputProps("phone")}
-          disabled={loading}
+          disabled={registerArtistMutation.isLoading}
         />
         <FileInput
           className="my-4"
@@ -116,7 +115,7 @@ export default function ArtistRegisterModal({
           <Button
             variant="outline"
             type="button"
-            disabled={loading}
+            disabled={registerArtistMutation.isLoading}
             onClick={closeModal}
           >
             Trở về
@@ -124,7 +123,7 @@ export default function ArtistRegisterModal({
           <Button
             className="bg-primary !text-white"
             type="submit"
-            loading={loading}
+            loading={registerArtistMutation.isLoading}
           >
             Tạo
           </Button>
