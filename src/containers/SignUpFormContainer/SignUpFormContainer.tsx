@@ -51,15 +51,12 @@ const SignUpFormContainer = () => {
     setIsSubmitting(true);
     try {
       const { email, password, username, displayName } = values;
-      const { data } = await axiosClient.post<User>(
-        "https://api.artiexh.com/api/v1/registration/user",
-        {
-          email,
-          password,
-          username,
-          displayName,
-        }
-      );
+      const { data } = await axiosClient.post<User>("/registration/user", {
+        email,
+        password,
+        username,
+        displayName,
+      });
       console.log(data);
       // TODO:
       // Save this
