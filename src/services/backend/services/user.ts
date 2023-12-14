@@ -17,13 +17,8 @@ export const logout = async () => {
 };
 
 export const artistRegister = async (shopName: ArtistRegisterData) => {
-  try {
-    const data = await axiosClient.post("/registration/artist", shopName);
-    return data;
-  } catch (err) {
-    console.log(err);
-    return undefined;
-  }
+  const data = await axiosClient.post("/registration/artist", shopName);
+  return data;
 };
 
 export const createUserAddress = async (values: CreateUserAddress) => {

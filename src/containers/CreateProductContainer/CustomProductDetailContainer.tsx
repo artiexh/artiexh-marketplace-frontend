@@ -207,7 +207,7 @@ const CustomProductDetailContainer = ({ data }: Props) => {
             />
             <Select
               data={categoryOptions || []}
-              className="col-span-12 md:col-span-8 order-1 md:order-none"
+              className="col-span-12 md:col-span-12 order-1 md:order-none"
               label="Category"
               nothingFound="Nothing found"
               searchable

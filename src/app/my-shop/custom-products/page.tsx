@@ -89,7 +89,7 @@ const ShopProductsPage = () => {
           onClick={() => router.push(`/my-shop/custom-products/create`)}
           variant="outline"
         >
-          Create product
+          Tạo custom product
         </Button>
       </div>
       <div className="py-5 px-7 bg-white shadow rounded-lg">
@@ -105,7 +105,7 @@ const ShopProductsPage = () => {
             <Input
               className="w-[300px]"
               icon={<IconSearch />}
-              placeholder="Search by product name..."
+              placeholder="Tìm kiếm..."
               onChange={(e) => {
                 setParams({
                   ...params,
@@ -158,7 +158,7 @@ const customProductColumns: TableColumns<
   }
 > = [
   {
-    title: "Name",
+    title: "Tên",
     key: "name",
     render: (record) => (
       <div className="flex items-center gap-5">
@@ -179,7 +179,7 @@ const customProductColumns: TableColumns<
     ),
   },
   {
-    title: "Variant",
+    title: "Thông số",
     key: "variant",
     render: (record) => (
       <span>
@@ -196,7 +196,7 @@ const customProductColumns: TableColumns<
     ),
   },
   {
-    title: "Updated time",
+    title: "Chỉnh sửa lúc",
     key: "modifiedDate",
     render: (record) => (
       <span>
@@ -208,22 +208,22 @@ const customProductColumns: TableColumns<
     ),
   },
   {
-    title: "Action",
+    title: "Tác vụ",
     key: "action",
     className: "!text-center",
     render: (record) => (
       <div className="flex justify-center gap-x-2">
-        <Tooltip label="Edit">
+        <Tooltip label="Chỉnh sửa">
           <ActionIcon onClick={() => record.onEdit && record.onEdit()}>
             <IconBallpen />
           </ActionIcon>
         </Tooltip>
-        <Tooltip label="Desgin">
+        <Tooltip label="Thiết kế">
           <ActionIcon onClick={() => record.onDesign && record.onDesign()}>
             <IconPalette />
           </ActionIcon>
         </Tooltip>
-        <Tooltip label="Delete">
+        <Tooltip label="Xoá">
           <ActionIcon onClick={() => record.onDelete && record.onDelete()}>
             <IconTrash />
           </ActionIcon>

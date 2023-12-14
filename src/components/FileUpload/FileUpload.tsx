@@ -19,7 +19,7 @@ type FileUploadProps = {
     actions: string;
   };
   fileActions?: {
-    reupload?: MouseEventHandler<HTMLButtonElement>;
+    reupload?: FileButtonProps["onChange"];
     remove?: MouseEventHandler<HTMLButtonElement>;
   };
   disabled?: boolean;
@@ -56,7 +56,7 @@ export default function FileUpload({
           </div>
         ) : (
           <div className="flex gap-x-1 items-center">
-            <IconFile className="aspect-square text-gray-600" />
+            <IconFile className="w-10 aspect-square text-gray-600" />
             <span className="text-ellipsis overflow-hidden whitespace-nowrap ">
               No file
             </span>
@@ -82,7 +82,20 @@ export default function FileUpload({
 
             <Menu.Dropdown>
               <Menu.Label>File actions</Menu.Label>
-              <Menu.Item onClick={fileActions?.reupload}>Reupload</Menu.Item>
+              {fileActions?.reupload && (
+                <FileButton onChange={fileActions?.reupload} accept={accept}>
+                  {(props) => (
+                    <Button
+                      {...props}
+                      variant="outline"
+                      className="border-none px-3 text-primary w-full flex font-bold "
+                    >
+                      Reupload
+                    </Button>
+                  )}
+                </FileButton>
+              )}
+
               <Menu.Item onClick={fileActions?.remove}>Remove</Menu.Item>
             </Menu.Dropdown>
           </Menu>

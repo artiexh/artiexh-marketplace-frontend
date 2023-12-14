@@ -14,9 +14,11 @@ import { CommonResponseBase } from "@/types/ResponseBase";
 import { createImageUrl } from "@/utils/three";
 import {
   Accordion,
+  ActionIcon,
   Button,
   FileButton,
   Group,
+  Loader,
   LoadingOverlay,
   Paper,
   Transition,
@@ -27,7 +29,10 @@ import {
   IconAdjustmentsAlt,
   IconArrowLeft,
   IconArrowRight,
+  IconEdit,
+  IconPencil,
   IconPhotoEdit,
+  IconX,
 } from "@tabler/icons-react";
 import {
   UseQueryResult,
@@ -134,10 +139,19 @@ export default function DesignPortalPage() {
 
   const combinations = productTemplateRes?.data.imageCombinations ?? [];
 
-  if (isLoading || isProductTemplateLoading) return <h1>Loading</h1>;
+  if (isLoading || isProductTemplateLoading)
+    return (
+      <div className="w-screen h-screen flex justify-center items-center">
+        <Loader size={"xl"} />
+      </div>
+    );
 
   if (!res?.data || !productTemplateRes?.data)
-    return <h1>Something went wrong</h1>;
+    return (
+      <div className="w-screen h-screen flex justify-center items-center">
+        <NotFoundComponent title="Custom product hoặc Template không phù hợp vui lòng thử lại sau" />
+      </div>
+    );
 
   const currentCombination = combinations.find(
     (combination) => combination.code === res.data.combinationCode
@@ -397,7 +411,6 @@ function DesignPortalContainer({ modelCode }: { modelCode: string }) {
                 name={data.positionCode}
                 key={data.id}
                 imageId={data.id}
-                debug
                 position={data.position}
                 rotation={data.rotate}
                 scale={data.scale}
@@ -412,7 +425,7 @@ function DesignPortalContainer({ modelCode }: { modelCode: string }) {
 }
 
 function ConfigMenu() {
-  const [tab, setTab] = useState<"META" | "IMAGE" | undefined>("META");
+  const [tab, setTab] = useState<"META" | "IMAGE" | undefined>("IMAGE");
 
   const queryClient = useQueryClient();
   const router = useRouter();
@@ -448,18 +461,6 @@ function ConfigMenu() {
           </Button>
         </div>
         <div className="edit-menu mt-5 bg-white py-4 px-3 flex flex-col items-center gap-y-5 w-fit rounded-full">
-          <Button
-            onClick={() =>
-              setTab((prev) => (prev === "META" ? undefined : "META"))
-            }
-            variant="filled"
-            className={clsx(
-              "px-2 h-10 aspect-square w-fit rounded-full border-none shadow-none outline-none",
-              tab === "META" && "bg-primary !text-white"
-            )}
-          >
-            <IconAdjustmentsAlt className="w-6 aspect-square" />
-          </Button>
           <Button
             onClick={() =>
               setTab((prev) => (prev === "IMAGE" ? undefined : "IMAGE"))
@@ -656,7 +657,7 @@ function ImageCombinationPicker({
       {step === 0 && (
         <>
           <div className="flex justify-between">
-            <h3>Combinations</h3>
+            <h3>Combo hình ảnh</h3>
             <div>
               {currentCombination && (
                 <IconArrowRight
@@ -760,6 +761,48 @@ function ImageSetPicker({ currentCombination }: ImageSetPickerProps) {
     },
   });
 
+  const clearMockupImageSetMutation = useMutation({
+    mutationFn: async (body: { positionCode: string }) => {
+      const { positionCode } = body;
+
+      if (!designItemRes?.data)
+        throw new Error("Có lỗi xảy ra, vui lòng thử lại sau");
+
+      let imageId;
+      const res = await updateImageSetApi(
+        designItemRes.data,
+        //@ts-ignore
+        designItemRes.data.imageSet.map((set) => {
+          if (set.positionCode !== positionCode) return set;
+
+          imageId = set.mockupImage?.id;
+
+          return {
+            ...set,
+            mockupImage: undefined,
+          };
+        }),
+        designItemRes.data.modelThumbnail?.id
+      );
+
+      return { returnData: res.data, imageId: imageId };
+    },
+    onSuccess: (data, variables) => {
+      queryClient.setQueryData(["custom-product", { id: id }], data.returnData);
+      queryClient.removeQueries([
+        "mockup-image",
+        {
+          designItemId: data.returnData.data.id,
+          positionCode: variables.positionCode,
+          imageId: data.imageId,
+        },
+      ]);
+    },
+    onError: (e) => {
+      errorHandler(e);
+    },
+  });
+
   const updateManufacturingImageSetMutation = useMutation({
     mutationFn: async (body: { positionCode: string; file: File }) => {
       setOverlay(true);
@@ -813,6 +856,40 @@ function ImageSetPicker({ currentCombination }: ImageSetPickerProps) {
     },
   });
 
+  const clearManufacturingImageSetMutation = useMutation({
+    mutationFn: async (body: { positionCode: string }) => {
+      const { positionCode } = body;
+
+      if (!designItemRes?.data)
+        throw new Error("Có lỗi xảy ra, vui lòng thử lại sau");
+
+      let imageId;
+      const res = await updateImageSetApi(
+        designItemRes.data,
+        //@ts-ignore
+        designItemRes.data.imageSet.map((set) => {
+          if (set.positionCode !== positionCode) return set;
+
+          imageId = set.manufacturingImage?.id;
+
+          return {
+            ...set,
+            manufacturingImage: undefined,
+          };
+        }),
+        designItemRes.data.modelThumbnail?.id
+      );
+
+      return { returnData: res.data, imageId: imageId };
+    },
+    onSuccess: (data, variables) => {
+      queryClient.setQueryData(["custom-product", { id: id }], data.returnData);
+    },
+    onError: (e) => {
+      errorHandler(e);
+    },
+  });
+
   return (
     <>
       <Accordion multiple={true}>
@@ -840,56 +917,101 @@ function ImageSetPicker({ currentCombination }: ImageSetPickerProps) {
           return (
             <Accordion.Item key={imageSet.code} value={imageSet.code}>
               <Accordion.Control className="hover:text-white">
-                {imageSet.name}
+                {index + 1}. {imageSet.name}
               </Accordion.Control>
               <Accordion.Panel>
                 <Group position="center">
-                  <h3>
-                    Mockup image{" "}
-                    {`(${mockupImageSize?.width}x${mockupImageSize?.height})`}
-                  </h3>
+                  <div className="flex justify-between w-full">
+                    <h3 className="font-semibold">File mockup </h3>
+                    <span>{`(${mockupImageSize?.width}x${mockupImageSize?.height}px)`}</span>
+                  </div>
                   {mockup?.file && (
-                    <ImageLoaderForFile
-                      key={mockup.id}
-                      name={mockup.id ?? ""}
-                      src={mockup?.file}
-                    />
+                    <div className="relative w-full aspect-video [&_.actions]:hover:!flex">
+                      <ImageLoaderForFile
+                        key={mockup.id}
+                        name={mockup.id ?? ""}
+                        src={mockup?.file}
+                        className="w-full h-full object-contain"
+                      />
+                      <div className="hidden actions gap-x-1 absolute right-0 top-0">
+                        <FileButton
+                          key={imageSet.code}
+                          disabled={
+                            updateMockupImageSetMutation.isLoading ||
+                            queryClient.getQueryState([
+                              "mockup-image",
+                              {
+                                designItemId: id,
+                                positionCode: imageSet.code,
+                                imageId: mockup?.id,
+                              },
+                            ])?.status === "loading"
+                          }
+                          onChange={async (e) => {
+                            const file = e;
+                            if (!file) return;
+                            updateMockupImageSetMutation.mutateAsync({
+                              positionCode: imageSet.code,
+                              file: file,
+                            });
+                          }}
+                          accept="image/png,image/jpeg"
+                        >
+                          {(props) => (
+                            <ActionIcon {...props}>
+                              <IconPencil />
+                            </ActionIcon>
+                          )}
+                        </FileButton>
+                        <ActionIcon
+                          onClick={() =>
+                            clearMockupImageSetMutation.mutate({
+                              positionCode: imageSet.code,
+                            })
+                          }
+                        >
+                          <IconX color="red" />
+                        </ActionIcon>
+                      </div>
+                    </div>
                   )}
-                  <FileButton
-                    key={imageSet.code}
-                    disabled={
-                      updateMockupImageSetMutation.isLoading ||
-                      queryClient.getQueryState([
-                        "mockup-image",
-                        {
-                          designItemId: id,
+                  {!mockup?.file && (
+                    <FileButton
+                      key={imageSet.code}
+                      disabled={
+                        updateMockupImageSetMutation.isLoading ||
+                        queryClient.getQueryState([
+                          "mockup-image",
+                          {
+                            designItemId: id,
+                            positionCode: imageSet.code,
+                            imageId: mockup?.id,
+                          },
+                        ])?.status === "loading"
+                      }
+                      onChange={async (e) => {
+                        const file = e;
+                        if (!file) return;
+                        updateMockupImageSetMutation.mutateAsync({
                           positionCode: imageSet.code,
-                          imageId: mockup?.id,
-                        },
-                      ])?.status === "loading"
-                    }
-                    onChange={async (e) => {
-                      const file = e;
-                      if (!file) return;
-                      updateMockupImageSetMutation.mutateAsync({
-                        positionCode: imageSet.code,
-                        file: file,
-                      });
-                    }}
-                    accept="image/png,image/jpeg"
-                  >
-                    {(props) => (
-                      <Button
-                        {...props}
-                        className="px-2 mt-3 rounded-full bg-white text-black border border-black shadow-none outline-none hover:bg-black hover:!text-white"
-                      >
-                        Upload image
-                      </Button>
-                    )}
-                  </FileButton>
+                          file: file,
+                        });
+                      }}
+                      accept="image/png,image/jpeg"
+                    >
+                      {(props) => (
+                        <Button
+                          {...props}
+                          className="px-2 mt-3 rounded-full bg-white text-black border border-black shadow-none outline-none hover:bg-black hover:!text-white"
+                        >
+                          Tải ảnh
+                        </Button>
+                      )}
+                    </FileButton>
+                  )}
                 </Group>
-                <div>
-                  <h3>Manufacturing image</h3>
+                <div className="mt-6">
+                  <h3 className="font-semibold">File sản xuất</h3>
                   <FileUpload
                     value={
                       manufacturingImage
@@ -909,42 +1031,23 @@ function ImageSetPicker({ currentCombination }: ImageSetPickerProps) {
                         file: file,
                       });
                     }}
-                  />
-                </div>
-                {/* <Group position="center">
-                  <h3>Manufacturing image</h3>
-                  <div className="flex justify-between items-center w-full">
-                    {manufacturingImage && (
-                      <div className="w-1/2 flex gap-x-1">
-                        <IconFileCheck className="w-6 aspect-square text-green-600 " />
-                        <span className="whitespace-nowrap overflow-hidden text-ellipsis w-3/4">
-                          {manufacturingImage?.fileName}
-                        </span>
-                      </div>
-                    )}
-                    <FileButton
-                      key={imageSet.code}
-                      onChange={async (e) => {
+                    fileActions={{
+                      remove: () => {
+                        clearManufacturingImageSetMutation.mutate({
+                          positionCode: imageSet.code,
+                        });
+                      },
+                      reupload: (e) => {
                         const file = e;
                         if (!file) return;
                         updateManufacturingImageSetMutation.mutateAsync({
                           positionCode: imageSet.code,
                           file: file,
                         });
-                      }}
-                      accept="*"
-                    >
-                      {(props) => (
-                        <Button
-                          {...props}
-                          className=" px-2 rounded-full bg-white text-black border border-black shadow-none outline-none hover:bg-black hover:text-white"
-                        >
-                          Upload file
-                        </Button>
-                      )}
-                    </FileButton>
-                  </div>
-                </Group> */}
+                      },
+                    }}
+                  />
+                </div>
               </Accordion.Panel>
             </Accordion.Item>
           );
@@ -968,7 +1071,8 @@ import ToteBagContainer from "@/containers/3dModelContainers/ToteBagContainer";
 import { ValidationError } from "@/utils/error/ValidationError";
 import { errorHandler } from "@/utils/errorHandler";
 import _ from "lodash";
-import logoImage from "../../../../../public/assets/logo.svg";
+
+import NotFoundComponent from "@/components/NotFoundComponents/NotFoundComponent";
 
 function CombinationCodePicker({ combinations }: CombinationCodePickerProps) {
   const queryClient = useQueryClient();
@@ -979,8 +1083,6 @@ function CombinationCodePicker({ combinations }: CombinationCodePickerProps) {
   const designItemRes = queryClient.getQueryData<
     CommonResponseBase<CustomProductDesignInfo>
   >(["custom-product", { id: id }]);
-
-  console.log(logoImage.src);
 
   const updateCombinationCodeMutate = useMutation({
     mutationFn: async (combinationCode: string) => {

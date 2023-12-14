@@ -171,7 +171,7 @@ export default function ProductDesignPage() {
             className="cursor-pointer"
             onClick={() => router.push("/my-shop/custom-products")}
           />
-          <h2 className="font-bold text-xl">Create custom product</h2>
+          <h2 className="font-bold text-xl">Tạo custom product</h2>
         </div>
       </div>
       <Modal
@@ -287,13 +287,13 @@ function ProductBaseDetailModalContent({
             <ImageWithFallback
               fallback="/assets/default-thumbnail.jpg"
               src={productBase?.sizeDescriptionUrl ?? defaultImg.src}
-              className="object-contain"
+              className="object-contain w-[80px] h-[80px]"
               alt="description"
               width={80}
               height={80}
             />
-            <div className="flex flex-col gap-y-3">
-              <div className="text-2xl font-semibold">Size information</div>
+            <div className="flex flex-col gap-y-1">
+              <div className="text-2xl font-semibold">Thông số</div>
               <span>
                 {productBase?.sizes.reduce(
                   (prev, cur) =>
@@ -445,7 +445,8 @@ function VariantAndProviderPicker({
               .map((option) => (
                 <div key={option.id} className="flex flex-col gap-y-1 mb-2">
                   <div className="text-md font-semibold">
-                    {option.name} {option.isOptional ? "(Optional)" : null}
+                    {option.name}{" "}
+                    {option.isOptional ? "(Không bắt buộc)" : null}
                   </div>
                   <div className="button-groups flex gap-x-2">
                     {option.optionValues
@@ -517,7 +518,7 @@ function VariantAndProviderPicker({
                 createDesignItem(variantResponse?.data.items?.[0].id.toString())
               }
             >
-              Start to design!
+              Bắt đầu thiết kế!
             </Button>
           </div>
         </Card>
