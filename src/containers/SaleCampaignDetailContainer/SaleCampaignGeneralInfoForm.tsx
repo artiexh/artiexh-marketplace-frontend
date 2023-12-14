@@ -22,11 +22,11 @@ export default function SaleCampaignGeneralInfoForm({
       <div className="flex gap-x-4">
         <div className="flex flex-col space-y-4 flex-[3]">
           <div className="flex w-full justify-between items-center">
-            <h2 className="text-3xl font-bold">Campaign information</h2>
+            <h2 className="text-3xl font-bold">Thông tin cơ bản</h2>
           </div>
           <div className="flex items-end gap-x-2">
             <TextInput
-              label="Campaign name"
+              label="Tên"
               readOnly
               value={data.name}
               className="flex-[3]"
@@ -34,7 +34,7 @@ export default function SaleCampaignGeneralInfoForm({
           </div>
           <div className="flex items-end gap-x-2">
             <DateTimePicker
-              label="From"
+              label="Mở bán từ"
               classNames={{
                 input: "!py-0",
               }}
@@ -43,7 +43,7 @@ export default function SaleCampaignGeneralInfoForm({
               className="h-fit flex-1"
             />
             <DateTimePicker
-              label="To"
+              label="Kết thúc sau"
               classNames={{
                 input: "!py-0",
               }}
@@ -54,7 +54,7 @@ export default function SaleCampaignGeneralInfoForm({
           </div>
           <div className="flex items-end gap-x-2">
             <DateTimePicker
-              label="Public date"
+              label="Ngày hiển thị"
               classNames={{
                 input: "!py-0",
               }}
@@ -73,7 +73,7 @@ export default function SaleCampaignGeneralInfoForm({
               ]}
             />
           </div>
-          <Textarea label="Description" readOnly value={data.description} />
+          <Textarea label="Mô tả" readOnly value={data.description} />
         </div>
       </div>
     </div>

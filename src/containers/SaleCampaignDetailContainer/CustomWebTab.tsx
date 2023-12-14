@@ -52,7 +52,7 @@ function CustomWebTab({ data: campaignData }: { data: SaleCampaignDetail }) {
         defaultPlaceholder={
           <div className="flex flex-col items-center">
             <p className="text-4xl font-thin">+</p>
-            <p>Add thumbnail</p>
+            <p>Không có hình ảnh</p>
           </div>
         }
         className="!h-[20rem]"

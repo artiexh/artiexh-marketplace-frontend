@@ -16,31 +16,31 @@ export const artistCampaignColumns: TableColumns<
     dataIndex: "id",
   },
   {
-    title: "Name",
+    title: "Tên",
     key: "name",
     dataIndex: "name",
     render: (record) => (
       <div className="flex flex-col">
         <span>{record.name}</span>
         <span className="text-sm text-gray-500">
-          Owner: {record.owner.username}
+          Artist: {record.owner.username}
         </span>
       </div>
     ),
   },
   {
-    title: "Order time",
+    title: "Thời gian đặt hàng",
     key: "orderTime",
     render: (record) => (
       <div className="flex flex-col">
-        <span>From: {dateFormatter(record.from)}</span>
-        <span>To: {dateFormatter(record.to)}</span>
+        <span>Từ: {dateFormatter(record.from)}</span>
+        <span>Đến: {dateFormatter(record.to)}</span>
       </div>
     ),
   },
 
   {
-    title: "Type",
+    title: "Loại",
     key: "type",
     className: "!text-center w-[10rem]",
     render: (record) => {
@@ -69,7 +69,7 @@ export const artistCampaignColumns: TableColumns<
     },
   },
   {
-    title: "Status",
+    title: "Trạng thái",
     key: "status",
     className: "!text-center w-[10rem]",
     render: (record) => {
@@ -113,7 +113,7 @@ export const artistCampaignColumns: TableColumns<
     },
   },
   {
-    title: "Actions",
+    title: "Tác vụ",
     key: "actions",
     className: "!text-center",
     render: (record) => (

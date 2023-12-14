@@ -138,7 +138,7 @@ function ShopProfileForm({
             defaultPlaceholder={
               <div className="flex flex-col items-center">
                 <p className="text-4xl font-thin">+</p>
-                <p>Add shop thumbnail</p>
+                <p>Tải ảnh nền</p>
               </div>
             }
             clearable
@@ -157,7 +157,7 @@ function ShopProfileForm({
         <Grid align="center">
           <Grid.Col span={6}>
             <Input.Wrapper
-              label="Bank account"
+              label="Số tài khoản ngân hàng"
               error={form.errors["bankAccount"]}
             >
               <Input {...form.getInputProps("bankAccount")} />
@@ -165,12 +165,15 @@ function ShopProfileForm({
           </Grid.Col>
 
           <Grid.Col span={6}>
-            <Input.Wrapper label="Bank name" error={form.errors["bankName"]}>
+            <Input.Wrapper
+              label="Tên chủ tài khoản"
+              error={form.errors["bankName"]}
+            >
               <Input {...form.getInputProps("bankName")} />
             </Input.Wrapper>
           </Grid.Col>
           <Grid.Col span={12}>
-            <Input.Wrapper label="Phone number" error={form.errors["phone"]}>
+            <Input.Wrapper label="Số điện thoại" error={form.errors["phone"]}>
               <Input {...form.getInputProps("phone")} />
             </Input.Wrapper>
           </Grid.Col>
@@ -181,7 +184,7 @@ function ShopProfileForm({
               disabled={loading}
               className="bg-primary !text-white"
             >
-              Update
+              Cập
             </Button>
           </Grid.Col>
         </Grid>

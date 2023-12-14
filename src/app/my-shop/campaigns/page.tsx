@@ -42,7 +42,7 @@ const ShopCampaignsPage = () => {
   const router = useRouter();
 
   const [params, setParams] = useState<{ [key: string]: any }>({
-    pageSize: 6,
+    pageSize: PAGE_SIZE,
     pageNumber: 1,
     status: null,
     keyword: null,
@@ -82,7 +82,7 @@ const ShopCampaignsPage = () => {
           onClick={handleCreateCampaign}
           variant="outline"
         >
-          Create campaign request
+          Tạo campaign request
         </Button>
       </div>
       <div className="product-table-page">
@@ -96,7 +96,7 @@ const ShopCampaignsPage = () => {
               </div>
             </div>
             <div>
-              <Input.Wrapper label="Status">
+              <Input.Wrapper label="Trạng thái">
                 <Select
                   value={params.status}
                   onChange={(value) => {
@@ -173,7 +173,6 @@ const ShopCampaignsPage = () => {
             <Pagination
               value={params.pageNumber}
               onChange={(value) => setParams({ ...params, pageNumber: value })}
-              //TODO: change this to total of api call later
               total={data?.totalPage ?? 1}
               boundaries={2}
               classNames={{

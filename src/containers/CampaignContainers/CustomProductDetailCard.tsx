@@ -69,8 +69,8 @@ function CustomProductDetailCard({
     <>
       <Tabs defaultValue="general-info" className="mt-5">
         <Tabs.List>
-          <Tabs.Tab value="general-info">Info</Tabs.Tab>
-          <Tabs.Tab value="design">Design</Tabs.Tab>
+          <Tabs.Tab value="general-info">Thông tin</Tabs.Tab>
+          <Tabs.Tab value="design">Thiết kế</Tabs.Tab>
         </Tabs.List>
         <Tabs.Panel value="general-info">
           <CustomProductGeneralInfo data={data} />
@@ -287,20 +287,20 @@ function CustomProductGeneralInfo({
         <div className="flex flex-col-reverse md:flex-row mt-5 gap-20">
           <div className="flex flex-col w-8/12">
             <div>
-              <h2 className="text-xl font-bold mb-4">General information</h2>
+              <h2 className="text-xl font-bold mb-4">Thông tin cơ bản</h2>
             </div>
             <div className="flex flex-col gap-y-3">
-              <Input.Wrapper label="Name">
+              <Input.Wrapper label="Tên">
                 <Input readOnly value={data.customProduct.name} />
               </Input.Wrapper>
               <Grid justify="space-between">
                 <Col span={6}>
-                  <Input.Wrapper label="Quantity">
+                  <Input.Wrapper label="Số lượng">
                     <Input readOnly value={data.quantity} />
                   </Input.Wrapper>
                 </Col>
                 <Col span={6}>
-                  <Input.Wrapper label="Price">
+                  <Input.Wrapper label="Giá bán">
                     <Input
                       readOnly
                       value={currencyFormatter(data.price.amount)}
@@ -310,7 +310,7 @@ function CustomProductGeneralInfo({
               </Grid>
               <Grid justify="space-between">
                 <Col span={12}>
-                  <Input.Wrapper label="Limit per order">
+                  <Input.Wrapper label="Giới hạn mỗi đơn hàng">
                     <Input
                       type="number"
                       readOnly
@@ -320,10 +320,10 @@ function CustomProductGeneralInfo({
                 </Col>
               </Grid>
 
-              <Input.Wrapper label="Category">
+              <Input.Wrapper label="Loại">
                 <Input readOnly value={data.customProduct.category.name} />
               </Input.Wrapper>
-              <Input.Wrapper label="Description">
+              <Input.Wrapper label="Mô tả">
                 <Textarea
                   minRows={8}
                   readOnly
@@ -333,21 +333,20 @@ function CustomProductGeneralInfo({
             </div>
           </div>
           <div className="image-wrapper flex flex-col w-3/12">
-            <div className="text-xl font-bold mb-4">Thumbnail:</div>
+            <div className="text-xl font-bold mb-4">Hình ảnh chính:</div>
 
             <Thumbnail
               url={thumbnail?.url}
               className="aspect-square flex-none"
               defaultPlaceholder={
                 <div className="flex flex-col items-center">
-                  <p className="text-4xl font-thin">+</p>
-                  <p>Add thumbnail</p>
+                  <p>Không có hình ảnh</p>
                 </div>
               }
               clearable={false}
               disabled
             />
-            <Input.Wrapper label="Attachments" className="mt-4">
+            <Input.Wrapper label="Hình ảnh kèm" className="mt-4">
               <div className="grid grid-cols-3 gap-x-4">
                 {attaches
                   .filter((item) => item.type !== "THUMBNAIL")
@@ -358,7 +357,7 @@ function CustomProductGeneralInfo({
                         defaultPlaceholder={
                           <div className="flex flex-col items-center">
                             <p className="text-4xl font-thin">+</p>
-                            <p>Add thumbnail</p>
+                            <p>Không có hình ảnh</p>
                           </div>
                         }
                         clearable={false}
@@ -366,6 +365,20 @@ function CustomProductGeneralInfo({
                       />
                     </div>
                   ))}
+                {attaches.filter((el) => el.type !== "THUMBNAIL").length ===
+                  0 && (
+                  <div key={data.id} className="col-span-1">
+                    <Thumbnail
+                      defaultPlaceholder={
+                        <div className="flex flex-col items-center">
+                          <p>Không có hình ảnh</p>
+                        </div>
+                      }
+                      clearable={false}
+                      disabled
+                    />
+                  </div>
+                )}
               </div>
             </Input.Wrapper>
           </div>

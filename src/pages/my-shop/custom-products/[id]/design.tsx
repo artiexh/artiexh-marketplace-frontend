@@ -936,7 +936,7 @@ function ImageSetPicker({ currentCombination }: ImageSetPickerProps) {
               <Accordion.Panel>
                 <Group position="center">
                   <div className="flex justify-between w-full">
-                    <h3 className="font-semibold">File mockup </h3>
+                    <h3 className="font-semibold">File mockup</h3>
                     <span>{`(${mockupImageSize?.width}x${mockupImageSize?.height}px)`}</span>
                   </div>
                   {mockup?.file && (

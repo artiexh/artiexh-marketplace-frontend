@@ -229,9 +229,9 @@ export default function SaleCampaignStatistics({ id }: { id: string }) {
   return (
     <Tabs defaultValue="general-info" className="mt-2">
       <Tabs.List>
-        <Tabs.Tab value="general-info">Statistics</Tabs.Tab>
+        <Tabs.Tab value="general-info">Thông số</Tabs.Tab>
 
-        <Tabs.Tab value="products">Products</Tabs.Tab>
+        <Tabs.Tab value="products">Sản phẩm</Tabs.Tab>
       </Tabs.List>
       <Tabs.Panel value="general-info">
         <SaleCampaignStatisticContainer id={id} />

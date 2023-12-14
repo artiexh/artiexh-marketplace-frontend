@@ -55,9 +55,9 @@ export default function SaleCampaignDetailContainer() {
       </div>
       <Tabs defaultValue="general-info" className="mt-5">
         <Tabs.List>
-          <Tabs.Tab value="general-info">Info</Tabs.Tab>
+          <Tabs.Tab value="general-info">Thông tin</Tabs.Tab>
           <Tabs.Tab value="promote-details">Web</Tabs.Tab>
-          <Tabs.Tab value="product-in-sales">Products</Tabs.Tab>
+          <Tabs.Tab value="product-in-sales">Sản phẩm</Tabs.Tab>
         </Tabs.List>
         <Tabs.Panel value="general-info">
           <SaleCampaignGeneralInfoForm

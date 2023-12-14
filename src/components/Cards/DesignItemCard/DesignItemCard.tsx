@@ -48,7 +48,7 @@ export default function DesignItemCard({
               </div>
 
               <div className="text-xs text-gray-500">
-                Variant:{" "}
+                Thông số:{" "}
                 {data.variant.variantCombinations.reduce(
                   (prev, combination) => {
                     if (!combination.optionValue)

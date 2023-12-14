@@ -84,7 +84,7 @@ export default function CampaignGeneralInfoForm({
       <div className="flex justify-between gap-x-20">
         <div className="flex flex-col space-y-4 flex-[3]">
           <div className="flex w-full justify-between items-center">
-            <h2 className="text-3xl font-bold">Campaign information</h2>
+            <h2 className="text-3xl font-bold">Thông tin cơ bản</h2>
             <Button
               disabled={
                 data.status !== "DRAFT" && data.status !== "REQUEST_CHANGE"
@@ -92,12 +92,12 @@ export default function CampaignGeneralInfoForm({
               onClick={editHandler}
               className={defaultButtonStylingClass}
             >
-              Edit
+              Cập nhật
             </Button>
           </div>
           <div className="flex items-end gap-x-2">
             <TextInput
-              label="Campaign name"
+              label="Tên"
               readOnly
               value={data.name}
               className="flex-[3]"
@@ -114,7 +114,7 @@ export default function CampaignGeneralInfoForm({
           </div>
           <div className="flex items-end gap-x-2">
             <DateTimePicker
-              label="From"
+              label="Bắt đầu từ"
               classNames={{
                 input: "!py-0",
               }}
@@ -123,7 +123,7 @@ export default function CampaignGeneralInfoForm({
               className="h-fit flex-1"
             />
             <DateTimePicker
-              label="To"
+              label="Kết thúc sau"
               classNames={{
                 input: "!py-0",
               }}
@@ -132,7 +132,7 @@ export default function CampaignGeneralInfoForm({
               className="h-fit flex-1"
             />
           </div>
-          <Textarea label="Description" readOnly value={data.description} />
+          <Textarea label="Mô tả" readOnly value={data.description} />
         </div>
         <div className="flex-[2] p-4">
           <Timeline active={0} bulletSize={18} lineWidth={2}>

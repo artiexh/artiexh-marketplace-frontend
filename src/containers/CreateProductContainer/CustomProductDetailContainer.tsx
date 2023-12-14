@@ -308,7 +308,7 @@ const CustomProductDetailContainer = ({ data }: Props) => {
           loading={updateCustomProductMutation.isLoading}
           disabled={!isDirty()}
         >
-          Save
+          Lưu
         </Button>
       </div>
     </form>

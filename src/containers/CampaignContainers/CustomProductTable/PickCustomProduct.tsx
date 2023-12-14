@@ -102,7 +102,7 @@ export default function PickCustomProduct({
           <Input
             name="name"
             className="w-full"
-            placeholder="Search"
+            placeholder="Tìm kiếm"
             onChange={(e) => searchHandler.current(e.target.value)}
           />
           <div className="min-h-[38rem] flex flex-col gap-y-4">
@@ -256,7 +256,7 @@ function PickProvider({ data }: { data: SimpleCustomProduct[] }) {
           loading={pickProviderMutation.isLoading}
           onClick={() => pickProviderMutation.mutate()}
         >
-          Update
+          Cập nhật
         </Button>
       </div>
 

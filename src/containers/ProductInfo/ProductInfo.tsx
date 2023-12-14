@@ -89,7 +89,7 @@ const ProductInfo: FC<ProductInfoProps> = ({ product, special }) => {
       <div className="md:mt-auto">
         {campaignType === "IN_COMING" && (
           <div className="text-red-500 mb-4">
-            Bạn chỉ có thể mua sản phẩm này sau ngày{" "}
+            Sản phẩm này chỉ chính thức được bán sau ngày{" "}
             {new Date(campaign.from).toLocaleDateString()}
           </div>
         )}

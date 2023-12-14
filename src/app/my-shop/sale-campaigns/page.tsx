@@ -48,13 +48,13 @@ const ShopCampaignsPage = () => {
   return (
     <div className="py-5 px-7 bg-white shadow rounded-lg">
       <div className="flex justify-between items-center mb-10">
-        <div className="text-3xl font-bold">My sale campaigns</div>
+        <div className="text-3xl font-bold">Sale campaigns của tôi</div>
         <div className="w-[400px]">
           <DatePickerInput
             type="range"
             allowSingleDateInRange
             clearable
-            placeholder="Pick dates"
+            placeholder="Chọn khoảng thời gian"
             onChange={(values) => {
               setQuery((prev) => ({
                 ...prev,

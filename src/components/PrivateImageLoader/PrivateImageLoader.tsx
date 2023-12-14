@@ -22,6 +22,7 @@ export default function PrivateImageLoader({
           <LoadingOverlay
             visible={true}
             overlayBlur={2}
+            zIndex={10}
             loaderProps={{
               size: "sm",
             }}

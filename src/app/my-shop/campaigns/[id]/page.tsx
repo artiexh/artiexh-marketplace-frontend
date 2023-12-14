@@ -111,7 +111,7 @@ export default function CampaignDetailPage() {
               onClick={() => deleteCampaignMutation.mutate()}
               className="mb-0 !text-red-600 border-red-600 hover:bg-red-600 hover:!text-white"
             >
-              Delete
+              Huỷ chiến dịch
             </Button>
             <Button
               disabled={isDisabled(res.data.status)}
@@ -119,16 +119,16 @@ export default function CampaignDetailPage() {
               onClick={() => submitCampaignMutation.mutate()}
               className="mb-0 !text-primary border-primary hover:bg-primary hover:!text-white"
             >
-              Submit
+              Nộp chiến dịch
             </Button>
           </div>
         </div>
       </div>
       <Tabs defaultValue="general-info" className="mt-5" keepMounted={false}>
         <Tabs.List>
-          <Tabs.Tab value="general-info">Info</Tabs.Tab>
+          <Tabs.Tab value="general-info">Thông tin</Tabs.Tab>
           <Tabs.Tab value="promote-details">Web</Tabs.Tab>
-          <Tabs.Tab value="history">History</Tabs.Tab>
+          <Tabs.Tab value="history">Lịch sử</Tabs.Tab>
         </Tabs.List>
         <Tabs.Panel value="general-info">
           <CampaignGeneralInfoForm

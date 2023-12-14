@@ -15,36 +15,36 @@ export const saleCampaignColumns: TableColumns<
     dataIndex: "id",
   },
   {
-    title: "Name",
+    title: "Tên",
     key: "name",
     dataIndex: "name",
     render: (record) => (
       <div className="flex flex-col">
         <span>{record.name}</span>
         <span className="text-sm text-gray-500">
-          Owner: {record.owner.username}
+          Artist: {record.owner.username}
         </span>
       </div>
     ),
   },
   {
-    title: "Order time",
+    title: "Ngày mở bán",
     key: "orderTime",
     render: (record) => (
       <div className="flex flex-col">
-        <span>From: {dateFormatter(record.from)}</span>
-        <span>To: {dateFormatter(record.to)}</span>
+        <span>Từ: {dateFormatter(record.from)}</span>
+        <span>Đến: {dateFormatter(record.to)}</span>
       </div>
     ),
   },
   {
-    title: "Public date",
+    title: "Ngày hiển thị",
     key: "publicDate",
     dataIndex: "publicDate",
     render: (record) => <span>{dateFormatter(record.publicDate)}</span>,
   },
   {
-    title: "Type",
+    title: "Loại",
     key: "type",
     className: "!text-center w-[10rem]",
     render: (record) => {
@@ -73,7 +73,7 @@ export const saleCampaignColumns: TableColumns<
     },
   },
   {
-    title: "Status",
+    title: "Trạng thái",
     key: "status",
     className: "!text-center w-[10rem]",
     render: (record) => {
@@ -102,7 +102,7 @@ export const saleCampaignColumns: TableColumns<
     },
   },
   {
-    title: "Actions",
+    title: "Tác vụ",
     key: "actions",
     className: "!text-center",
     render: (record) => (

@@ -10,7 +10,7 @@ const productInCampaignColumns: TableColumns<
   CampaignDetail["products"][0] & { onEdit?: Function; onView?: Function }
 > = [
   {
-    title: "Name",
+    title: "Tên",
     key: "name",
     render: (record) => (
       <div className="flex items-center gap-5">
@@ -64,12 +64,12 @@ const productInCampaignColumns: TableColumns<
   },
 
   {
-    title: "Action",
+    title: "Tác vụ",
     key: "action",
     className: "!text-center",
     render: (record) => (
       <div className="flex justify-center gap-x-2">
-        <Tooltip label="Edit">
+        <Tooltip label="Chỉnh sửa">
           <IconBallpen
             className={clsx(
               record.onEdit ? "cursor-pointer" : "cursor-not-allowed"
@@ -77,7 +77,7 @@ const productInCampaignColumns: TableColumns<
             onClick={() => record.onEdit && record.onEdit()}
           />
         </Tooltip>
-        <Tooltip label="View">
+        <Tooltip label="Xem">
           <IconEye
             className="cursor-pointer"
             onClick={() => record.onView && record.onView()}

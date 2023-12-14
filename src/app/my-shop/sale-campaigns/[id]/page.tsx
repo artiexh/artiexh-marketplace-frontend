@@ -42,7 +42,7 @@ export default function SaleCampaignDetailPage() {
           )}
           onClick={() => setIsDetailPage(true)}
         >
-          General information
+          Thông tin cơ bản
         </div>
         <div
           className={clsx(
@@ -53,7 +53,7 @@ export default function SaleCampaignDetailPage() {
           )}
           onClick={() => setIsDetailPage(false)}
         >
-          History
+          Thống kê
         </div>
       </div>
       <div className=" bg-white rounded-md p-8 flex flex-col shadow">

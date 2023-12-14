@@ -45,7 +45,7 @@ export default function CustomProductTable({
   const openCustomProductModal = () => {
     modals.open({
       modalId: "custom-product-create-campaign",
-      title: "Pick custom products",
+      title: "Chọn custom products",
       centered: true,
 
       size: "80rem",
@@ -71,7 +71,7 @@ export default function CustomProductTable({
             className={defaultButtonStylingClass}
             onClick={openCustomProductModal}
           >
-            Add item
+            Thêm custom product
           </Button>
         </div>
       </div>
@@ -99,7 +99,7 @@ export default function CustomProductTable({
                 onView: () =>
                   modals.open({
                     modalId: `${data.id}-custom-product-view`,
-                    title: "Product detail",
+                    title: "Thông tin custom product",
                     fullScreen: true,
                     children: (
                       <div className="">
@@ -146,7 +146,7 @@ function EditCustomProductModal({ data: product }: { data: CustomProduct }) {
         const index = Number(path.split(".")[1]);
         const config = product;
         if (config && config.providerConfig?.minQuantity > value) {
-          return `Số lượn phải lớn hơn hoặc bằng ${config.providerConfig?.minQuantity}`;
+          return `Số lượng phải lớn hơn hoặc bằng ${config.providerConfig?.minQuantity}`;
         }
         return null;
       },
@@ -216,7 +216,10 @@ function EditCustomProductModal({ data: product }: { data: CustomProduct }) {
       )}
     >
       <div className="text-gray-600 mb-6 text-sm">
-        Arty sẽ thu {percentage}% trên mỗi đơn hàng của bạn
+        Arty sẽ thu {percentage}% trên mỗi đơn hàng của bạn, từ đó bạn có thể
+        tính lợi nhuận bằng:
+        <br />
+        {`Lợi nhuận Artist = (Giá bán - Giá sản xuất) * (100 - ${percentage})%`}
       </div>
       <Input.Wrapper
         classNames={{
@@ -227,7 +230,7 @@ function EditCustomProductModal({ data: product }: { data: CustomProduct }) {
         label={
           <div className="flex justify-between items-center w-full">
             <span className="flex items-center gap-x-1">
-              <span>Price</span>
+              <span>Giá bán</span>
               <Tooltip
                 label={`Lợi nhuận sẽ bằng giá bạn đưa ra trừ cho giá sản xuất (
                     ${currencyFormatter(
@@ -278,7 +281,7 @@ function EditCustomProductModal({ data: product }: { data: CustomProduct }) {
         label={
           <div className="flex">
             <span className="flex gap-x-1 items-center">
-              <span>Quantity</span>
+              <span>Số lượng</span>
               <Tooltip
                 label={`Sản phẩm này chỉ nhận khi đơn sản xuất lớn hơn 
                     ${product.providerConfig?.minQuantity} cái`}
@@ -298,7 +301,7 @@ function EditCustomProductModal({ data: product }: { data: CustomProduct }) {
           className="bg-primary !text-white"
           type="submit"
         >
-          Update
+          Cập nhật
         </Button>
       </div>
     </form>
