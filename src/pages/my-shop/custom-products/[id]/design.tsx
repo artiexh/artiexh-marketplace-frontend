@@ -940,7 +940,7 @@ function ImageSetPicker({ currentCombination }: ImageSetPickerProps) {
                     <span>{`(${mockupImageSize?.width}x${mockupImageSize?.height}px)`}</span>
                   </div>
                   {mockup?.file && (
-                    <div className="relative w-full aspect-video [&_.actions]:hover:!flex">
+                    <div className="relative w-full aspect-video [&_.actions]:hover:!flex border border-gray-500">
                       <ImageLoaderForFile
                         key={mockup.id}
                         name={mockup.id ?? ""}
