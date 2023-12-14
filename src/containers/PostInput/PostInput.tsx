@@ -4,7 +4,7 @@ import { NOTIFICATION_TYPE } from "@/constants/common";
 import { publicUploadFile } from "@/services/backend/services/media";
 import { $user } from "@/store/user";
 import { getNotificationIcon } from "@/utils/mapper";
-import { Button, Divider, TextInput } from "@mantine/core";
+import { Button, Divider, TextInput, Textarea } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 import { useStore } from "@nanostores/react";
 import { IconPhoto, IconX } from "@tabler/icons-react";
@@ -98,7 +98,8 @@ export default function PostInput({ refreshFunc }: { refreshFunc?: any }) {
           />
         </div>
         <div className="flex-1">
-          <TextInput
+          <Textarea
+            rows={3}
             placeholder="Bạn đang nghĩ gì...?"
             value={description}
             onChange={(value) => setDescription(value.target.value)}
