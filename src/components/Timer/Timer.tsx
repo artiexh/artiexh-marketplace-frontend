@@ -6,12 +6,19 @@ interface ITimer {
   initValue?: number; //milliseconds
   onCompleted?: () => void;
   className?: string;
+  classNames?: {
+    root?: string;
+    element?: string;
+  };
 }
+
+const defaultClasses = "bg-black rounded-sm p-1.5 text-white";
 
 const Timer: FC<ITimer> = ({
   initValue = 60 * 60 * 1000,
   onCompleted,
   className,
+  classNames,
 }) => {
   const [time, setTime] = useState<number>(initValue);
   const interValRef = useRef<NodeJS.Timer | null>(null);
@@ -41,16 +48,21 @@ const Timer: FC<ITimer> = ({
     <div
       className={clsx(
         "flex justify-around xs:justify-center xs:gap-1 w-full",
-        className
+        className,
+        classNames?.root
       )}
     >
-      <span className="bg-black rounded-sm px-1 text-white">{date}d</span>
+      <span className={clsx(defaultClasses, classNames?.element)}>{date}d</span>
       <span className="text-black">:</span>
-      <span className="bg-black rounded-sm px-1 text-white">{hour}h</span>
+      <span className={clsx(defaultClasses, classNames?.element)}>{hour}h</span>
       <span className="text-black">:</span>
-      <span className="bg-black rounded-sm px-1 text-white">{minute}m</span>
+      <span className={clsx(defaultClasses, classNames?.element)}>
+        {minute}m
+      </span>
       <span className="text-black">:</span>
-      <span className="bg-black rounded-sm px-1 text-white">{second}s</span>
+      <span className={clsx(defaultClasses, classNames?.element)}>
+        {second}s
+      </span>
     </div>
   );
 };

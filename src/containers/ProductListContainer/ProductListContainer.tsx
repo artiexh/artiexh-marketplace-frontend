@@ -263,21 +263,23 @@ const ProductListContainer: FC<ProductListContainerProps> = ({
 								value={`${pagination.sortBy}_${pagination.sortDirection}`}
 							/> */}
           </div>
-          <div
-            className={clsx(productStyles["product-list-grid"], "col-span-4")}
-          >
-            {products?.items?.length ? (
-              products.items?.map((product, index) => (
-                <ProductPreviewCard data={product} key={index} />
-              ))
-            ) : (
-              <div className="col-span-4">
-                <NotFoundComponent
-                  title={notfoundMessages.NOT_FOUND_PRODUCTS}
-                />
-              </div>
-            )}
-          </div>
+          {isLoading ? null : (
+            <div
+              className={clsx(productStyles["product-list-grid"], "col-span-4")}
+            >
+              {products?.items?.length ? (
+                products.items?.map((product, index) => (
+                  <ProductPreviewCard data={product} key={index} />
+                ))
+              ) : (
+                <div className="col-span-4">
+                  <NotFoundComponent
+                    title={notfoundMessages.NOT_FOUND_PRODUCTS}
+                  />
+                </div>
+              )}
+            </div>
+          )}
           <div className="flex justify-center mt-6 mb-20">
             <Pagination
               value={pagination.pageNumber}

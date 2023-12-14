@@ -13,19 +13,19 @@ type MyProfileProps = {
 
 const tabs = [
   {
-    key: "account",
-    element: <AccountTab />,
-    title: "Account",
-  },
-  {
     key: "order",
     element: <OrderTab />,
-    title: "My Orders",
+    title: "Đơn hàng",
   },
   {
     key: "posts",
     element: <PostTab />,
-    title: "My Posts",
+    title: "Bài viết",
+  },
+  {
+    key: "account",
+    element: <AccountTab />,
+    title: "Tài khoản",
   },
 ];
 

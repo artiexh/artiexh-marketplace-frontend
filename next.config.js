@@ -18,6 +18,15 @@ const nextConfig = {
     ],
   },
   transpilePackages: ["@react-three/drei"],
+  async redirects() {
+    return [
+      {
+        source: "/shop/:name",
+        destination: "/shop/:name/home", // Matched parameters can be used in the destination
+        permanent: true,
+      },
+    ];
+  },
 };
 
 module.exports = nextConfig;

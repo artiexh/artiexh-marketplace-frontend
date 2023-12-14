@@ -71,7 +71,7 @@ export default function NavBar(props: NavBarProps) {
                   onClick={() => router.push(`${ROUTE.MY_PROFILE}`)}
                   className="cursor-pointer mb-4"
                 >
-                  Account
+                  Tài khoản
                 </div>
                 {user.role === "ARTIST" && (
                   <div
@@ -89,7 +89,7 @@ export default function NavBar(props: NavBarProps) {
                   }}
                   className="cursor-pointer"
                 >
-                  Logout
+                  Đăng xuất
                 </div>
               </HoverCard.Dropdown>
             </HoverCard>

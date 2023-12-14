@@ -125,7 +125,7 @@ export default function ArtistRegisterModal({
             type="submit"
             loading={registerArtistMutation.isLoading}
           >
-            Tạo
+            Đăng ký
           </Button>
         </div>
       </form>

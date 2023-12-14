@@ -1,3 +1,4 @@
+import NotFoundComponent from "@/components/NotFoundComponents/NotFoundComponent";
 import MyProfilePage from "@/containers/MyProfilePage";
 import AuthWrapper from "@/services/guards/AuthWrapper";
 import { $user } from "@/store/user";
@@ -11,7 +12,7 @@ const ProfilePage = () => {
     return <MyProfilePage user={$storedUser} />;
   }
 
-  return <>Not found</>;
+  return <NotFoundComponent />;
 };
 
 ProfilePage.getLayout = function getLayout(page: any) {

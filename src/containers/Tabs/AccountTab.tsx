@@ -112,7 +112,7 @@ export default function AccountTab() {
         <div className="flex-1">
           <Grid align="center">
             <Grid.Col span={2} className="text-end mb-4">
-              Username:
+              Tên tài khoản:
             </Grid.Col>
             <Grid.Col span={9} className="mb-4">
               <TextInput
@@ -122,7 +122,7 @@ export default function AccountTab() {
               />
             </Grid.Col>
             <Grid.Col span={2} className="text-end mb-4">
-              Display name:
+              Tên hiển thị:
             </Grid.Col>
             <Grid.Col span={9} className="mb-4">
               <TextInput
@@ -147,7 +147,7 @@ export default function AccountTab() {
                 loading={updateUserProfileMutation.isLoading}
                 className="bg-primary !text-white"
               >
-                Update
+                Cập nhật
               </Button>
             </Grid.Col>
           </Grid>

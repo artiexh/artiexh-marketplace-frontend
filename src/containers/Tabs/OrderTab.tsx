@@ -13,6 +13,8 @@ import { useState } from "react";
 import useSWR from "swr";
 import { Pagination } from "@mantine/core";
 import OrderPaymentCard from "@/components/OrderPaymentCard";
+import NotFoundComponent from "@/components/NotFoundComponents/NotFoundComponent";
+import { notfoundMessages } from "@/constants/notfoundMesssages";
 
 export default function OrderTab() {
   // readonly
@@ -37,26 +39,19 @@ export default function OrderTab() {
   const { data: orders, mutate } = useSWR<any>(
     [JSON.stringify(params)],
     async () => {
-      try {
-        const { data } = (
-          await axiosClient.get<
-            CommonResponseBase<PaginationResponseBase<Order | TotalOrder>>
-          >(
-            `/user/${
-              params.status === "PAYING" ? "order" : "campaign-order"
-            }?${getQueryString(params, ["id"])}`
-          )
-        ).data;
-        // console.log(data.items);
-        return data;
-      } catch (err) {
-        console.log(err);
-        return [];
-      }
+      const { data } = (
+        await axiosClient.get<
+          CommonResponseBase<PaginationResponseBase<Order | TotalOrder>>
+        >(
+          `/user/${
+            params.status === "PAYING" ? "order" : "campaign-order"
+          }?${getQueryString(params, ["id"])}`
+        )
+      ).data;
+
+      return data;
     }
   );
-
-  console.log(orders);
 
   return (
     <div className="user-profile-page">
@@ -82,7 +77,7 @@ export default function OrderTab() {
             )
           )
         ) : (
-          <div className="mt-20 text-center">Chưa có đơn hàng</div>
+          <NotFoundComponent title={notfoundMessages.NOT_FOUND_ORDERS} />
         )}
       </div>
       <div className="flex justify-end mt-4">
