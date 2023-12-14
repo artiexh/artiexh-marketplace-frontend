@@ -1,10 +1,12 @@
 /* eslint-disable @next/next/no-img-element */
 import ProductPreviewCard from "@/components/Cards/ProductCard/ProductPreviewCard";
 import ImageWithFallback from "@/components/ImageWithFallback/ImageWithFallback";
+import NotFoundComponent from "@/components/NotFoundComponents/NotFoundComponent";
 import Description from "@/components/ProductDetail/Description/Description";
 import ShopCard from "@/components/ProductDetail/ShopCard/ShopCard";
 import Timer from "@/components/Timer/Timer";
 import { CAMPAIGN_TYPE_DATA } from "@/constants/campaign";
+import { notfoundMessages } from "@/constants/notfoundMesssages";
 import ProductInfo from "@/containers/ProductInfo/ProductInfo";
 import axiosClient from "@/services/backend/axiosClient";
 import { Product } from "@/types/Product";
@@ -15,6 +17,7 @@ import {
 import { getCampaignTime } from "@/utils/date";
 import { getCampaignType } from "@/utils/mapper";
 import { Carousel } from "@mantine/carousel";
+import { IconBuildingFactory, IconSparkles } from "@tabler/icons-react";
 import clsx from "clsx";
 import {
   GetStaticPaths,
@@ -95,39 +98,94 @@ const ProductDetailPage: NextPage<
               indicator: "data-[active=true]:gradient bg-gray-300",
             }}
           >
-            {attaches.map((image) => (
-              <Carousel.Slide key={image.id}>
+            {
+              <Carousel.Slide key={"thumbanil"}>
                 <div className="flex h-[250px] sm:h-[460px] bg-white">
-                  <Image
-                    src={image.url}
-                    className="object-contain"
-                    alt={image.title}
-                    fill
-                  />
+                  <div className="w-full h-full relative">
+                    <ImageWithFallback
+                      src={attaches.find((el) => el.type === "THUMBNAIL")?.url}
+                      className="object-contain w-full h-full"
+                      alt={"thumbail"}
+                    />
+                  </div>
                 </div>
               </Carousel.Slide>
-            ))}
+            }
+            {attaches
+              .filter((el) => el.type !== "THUMBNAIL")
+              .map((image) => (
+                <Carousel.Slide key={image.id}>
+                  <div className="flex h-[250px] sm:h-[460px] bg-white">
+                    <div className="w-full h-full relative">
+                      <ImageWithFallback
+                        src={image.url}
+                        className="object-contain w-full h-full"
+                        alt={image.title}
+                      />
+                    </div>
+                  </div>
+                </Carousel.Slide>
+              ))}
           </Carousel>
           <ProductInfo
             key={product.productCode}
             product={product}
             special={product.quantity > 0 ? `` : "Đã hết hàng!"}
           />
-          <Description description={description} />
-          <ShopCard
-            className="col-span-12 md:col-span-5"
-            artist={owner as any}
-          />
+          <Description product={product} description={description} />
+          <div className="col-span-12 md:col-span-5">
+            <ShopCard artist={owner as any} />
+            <div className="mt-6 hidden md:block">
+              <div className="flex flex-col w-full justify-between gap-x-4 gap-y-3">
+                <div className="flex flex-1 gap-x-4 bg-white  shadow py-4 px-6 rounded-md">
+                  <div className="bg-primary w-fit h-fit p-3 rounded-xl">
+                    <IconSparkles size={36} color="white" />
+                  </div>
+                  <div>
+                    <div className="text-xl font-semibold">
+                      Thuộc loại chiến dịch: {product.saleCampaign.type}
+                    </div>
+                    {product.saleCampaign.type === "PRIVATE"
+                      ? `Chiến dịch độc quyền chỉ bán duy nhất tại hệ thống Marketplace của Arty!`
+                      : product.saleCampaign.type === "PUBLIC"
+                      ? "Chiến dịch độc quyền chỉ bán duy nhất tại Shop riêng của Artist!"
+                      : "Dễ dàng mua sắm nhanh chóng ở mọi nơi trong nền tảng của Arty!"}
+                  </div>
+                </div>
+                <div className="flex flex-1 gap-x-4 bg-white  shadow py-4 px-6 rounded-md">
+                  <div className="bg-primary w-fit h-fit p-3 rounded-xl">
+                    <IconBuildingFactory size={36} color="white" />
+                  </div>
+                  <div>
+                    <div className="text-xl font-semibold">
+                      Chất lượng sản phẩm
+                    </div>
+                    Chất lượng sản phẩm được đảm bảo bởi Arty và các bên cung
+                    cấp.
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
-        <h2 className="font-bold text-lg mt-10">Related products:</h2>
+        <h2 className="font-bold text-lg mt-10">Sản phẩm liên quan:</h2>
         <div className="interest-wrapper grid grid-cols-4 md:grid-cols-10 gap-5 mt-5">
-          {relatedProducts.map((product, index) => (
-            <ProductPreviewCard
-              className="col-span-2"
-              key={product.productCode}
-              data={product}
+          {relatedProducts.length ? (
+            relatedProducts.map((product, index) => (
+              <ProductPreviewCard
+                className="col-span-2"
+                key={product.productCode}
+                data={product}
+              />
+            ))
+          ) : (
+            <NotFoundComponent
+              title={notfoundMessages.NOT_FOUND_PRODUCTS}
+              classNames={{
+                root: "col-span-full",
+              }}
             />
-          ))}
+          )}
         </div>
       </div>
     </>

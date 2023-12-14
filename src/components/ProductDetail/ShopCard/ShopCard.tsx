@@ -11,12 +11,11 @@ type ArtistInfoProps = HTMLAttributes<HTMLDivElement> & {
 };
 
 const ShopCard: FC<ArtistInfoProps> = ({ artist, className, ...rest }) => {
-  console.log(artist);
   const router = useRouter();
   return (
     <div
       className={clsx(
-        "rounded-lg md:rounded-full p-5 bg-white flex h-max items-center justify-between gap-2",
+        "rounded-lg md:rounded-full p-5 bg-white flex h-max items-center justify-between gap-2 shadow",
         className
       )}
       {...rest}
@@ -29,8 +28,8 @@ const ShopCard: FC<ArtistInfoProps> = ({ artist, className, ...rest }) => {
               artist.avatarUrl ??
               "https://cdn.hero.page/pfp/5e92df9f-2fe9-4b7e-a87a-ba503fe458d2-charming-sakura-inspired-avatar-kawaii-anime-avatar-creations-1.png"
             }
-            width={100}
-            height={100}
+            width={80}
+            height={80}
             alt="shop-card"
           />
         </div>
@@ -51,7 +50,7 @@ const ShopCard: FC<ArtistInfoProps> = ({ artist, className, ...rest }) => {
           )
         }
       >
-        View shop
+        Xem shop
       </div>
     </div>
   );
