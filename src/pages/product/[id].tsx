@@ -25,7 +25,6 @@ import {
   InferGetStaticPropsType,
   NextPage,
 } from "next";
-import Image from "next/image";
 import { useRouter } from "next/router";
 
 const ProductDetailPage: NextPage<

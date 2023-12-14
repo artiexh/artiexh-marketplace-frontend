@@ -11,12 +11,12 @@ const shopProductColumns: TableColumns<
   }
 > = [
   {
-    title: "Product code",
+    title: "Code",
     key: "productCode",
     dataIndex: "productCode",
   },
   {
-    title: "Name",
+    title: "Tên sản phẩm",
     key: "name",
     render: (record) => (
       <div className="flex items-center gap-5">
@@ -33,7 +33,7 @@ const shopProductColumns: TableColumns<
     ),
   },
   {
-    title: "Price",
+    title: "Giá bán",
     key: "price",
     render: (value) => (
       <div>
@@ -42,13 +42,13 @@ const shopProductColumns: TableColumns<
     ),
   },
   {
-    title: "Quantity",
+    title: "Số lượng",
     dataIndex: "quantity",
     key: "quantity",
     className: "!text-center w-[10rem]",
   },
   {
-    title: "Action",
+    title: "Tác vụ",
     key: "action",
     action: "EDIT",
     className: "!text-center",

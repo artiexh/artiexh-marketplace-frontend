@@ -13,7 +13,7 @@ export const navSections = [
     navList: [
       {
         id: "INVENTORY",
-        label: "Products",
+        label: "Product inventory",
         iconPath: <IconPackageExport />,
         href: "/my-shop/products",
       },
@@ -37,7 +37,7 @@ export const navSections = [
       },
       {
         id: "SHOP_PROFILE",
-        label: "Shop profile",
+        label: "Thông tin Shop",
         iconPath: <IconBuildingWarehouse />,
         href: "/my-shop/profile",
       },

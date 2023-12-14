@@ -21,8 +21,10 @@ import { useForm } from "@mantine/form";
 import { IconArrowLeft } from "@tabler/icons-react";
 import { useQueryClient } from "@tanstack/react-query";
 import { AxiosResponse } from "axios";
+import clsx from "clsx";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import CurrencyInput from "react-currency-input-field";
 
 type UpdateGeneralInfoData = {
   attaches: (Attaches | File)[];
@@ -102,110 +104,25 @@ export default function ProductDetailContainer({
     label: category.name,
   }));
 
-  const submitHandler = async (
-    values: Omit<Partial<ProductInventory>, "attaches"> & {
-      attaches: File[];
-      thumbnail: File;
-    }
-  ) => {
-    const thumbnail = (await publicUploadFile([
-      values.thumbnail,
-    ])) as AxiosResponse<
-      CommonResponseBase<{
-        fileResponses: {
-          presignedUrl: string;
-          fileName: string;
-        }[];
-      }>,
-      any
-    >;
-
-    const attachmentRes = (await publicUploadFile(
-      values.attaches.filter((attachment) => attachment != null)
-    )) as AxiosResponse<
-      CommonResponseBase<{
-        fileResponses: {
-          presignedUrl: string;
-          fileName: string;
-        }[];
-      }>,
-      any
-    >;
-
-    console.log(attachmentRes);
-
-    const { productCode, ...rest } = values;
-
-    const updateRes = await axiosClient.put(
-      `/product-inventory/${data.productCode}`,
-      {
-        ...rest,
-        attaches: [
-          ...mapImageUrlToImageBody(thumbnail, ATTACHMENT_TYPE.THUMBNAIL),
-          ...mapImageUrlToImageBody(attachmentRes, ATTACHMENT_TYPE.OTHER),
-        ],
-        categoryId: data.category.id,
-        price: {
-          amount: rest.price,
-          unit: "VND",
-        },
-        paymentMethods: data?.paymentMethods,
-        type: data?.type,
-        deliveryType: "SHIP",
-        status: data?.status,
-        tags: values?.tags,
-      }
-    );
-
-    // const res = await updateGeneralInformationApi(data, {
-    //   ...values,
-    //   attaches: [
-    //     ...(attaches as Attaches[]),
-    //     ...((values.attaches?.filter(
-    //       (attach) => !(attach instanceof File)
-    //     ) as Attaches[]) ?? []),
-    //   ],
-    // });
-
-    // queryClient.setQueryData(
-    //   ["/custom-product/[id]/general", { id: data?.id }],
-    //   res.data
-    // );
-    // const tmp = res.data.data;
-    // setValues({
-    //   attaches: tmp.attaches?.filter((el) => el.type !== "THUMBNAIL") ?? [],
-    //   description: tmp.description,
-    //   maxItemPerOrder: tmp.maxItemPerOrder,
-    //   name: tmp.name,
-    //   tags: tmp.tags,
-    //   variantId: tmp.variant.id,
-    //   thumbnail: tmp.attaches?.find((el) => el.type === "THUMBNAIL"),
-    // });
-    resetDirty();
-  };
-
   return (
     <>
-      <form
-        className="create-product-container flex flex-col gap-5 w-full pb-5"
-        onSubmit={onSubmit(submitHandler)}
-      >
+      <form className="create-product-container flex flex-col gap-5 w-full pb-5">
         <div className="card general-wrapper">
           <div className="flex gap-x-2 items-center">
             <IconArrowLeft
               className="cursor-pointer"
               onClick={() => router.push("/my-shop/products")}
             />
-            <h2 className="font-bold text-xl">Product information</h2>
+            <h2 className="font-bold text-xl">Thông tin sản phẩm</h2>
           </div>
         </div>
         <div className="card general-wrapper">
-          <h2 className="text-xl font-bold">General information</h2>
+          <h2 className="text-xl font-bold">Thông tin cơ bản</h2>
           <div className="flex flex-col-reverse md:flex-row mt-5 gap-10">
             <div className="grid grid-cols-12 w-full gap-5 md:gap-x-10">
               <TextInput
                 readOnly={!editable}
-                label="Product name"
+                label="Tên sản phẩm"
                 className="col-span-12"
                 withAsterisk
                 {...getInputProps("name")}
@@ -234,8 +151,8 @@ export default function ProductDetailContainer({
               />
               <Select
                 data={categoryOptions || []}
-                className="col-span-12 md:col-span-8 order-1 md:order-none"
-                label="Category"
+                className="col-span-12 md:col-span-12 order-1 md:order-none"
+                label="Loại sản phẩm"
                 nothingFound="Nothing found"
                 searchable
                 placeholder={data.category.name}
@@ -243,7 +160,7 @@ export default function ProductDetailContainer({
               />
               <Textarea
                 readOnly={!editable}
-                label="Description"
+                label="Mô tả sản phẩm"
                 className="col-span-12 row-span-6 order-1 md:order-none"
                 classNames={{
                   root: "flex flex-col",
@@ -253,17 +170,31 @@ export default function ProductDetailContainer({
                 {...getInputProps("description")}
                 disabled={isSubmitting}
               />
-              <TextInput
-                readOnly={!editable}
-                label="Price"
+              <Input.Wrapper
+                classNames={{
+                  label: "w-full",
+                }}
                 className="col-span-5"
-                withAsterisk
-                {...getInputProps("price")}
-                disabled={isSubmitting}
-              />
+                label="Giá bán"
+              >
+                <div className="w-full col-span-5">
+                  <CurrencyInput
+                    readOnly={!editable}
+                    id="input-example"
+                    name="input-name"
+                    placeholder="Please enter a number"
+                    decimalsLimit={3}
+                    className={clsx(
+                      "w-full border rounded-lg border-[#ced4da] !leading-[calc(2.25rem-0.125rem)] px-3 !font-[inherit] !text-sm mb-1"
+                    )}
+                    value={values.price}
+                  />
+                </div>
+              </Input.Wrapper>
+
               <TextInput
                 readOnly={!editable}
-                label="Quantity"
+                label="Số lượng"
                 className="col-span-5"
                 withAsterisk
                 {...getInputProps("quantity")}
@@ -271,7 +202,7 @@ export default function ProductDetailContainer({
               />
               <TextInput
                 readOnly={!editable}
-                label="Weight"
+                label="Cân nặng (gram)"
                 className="col-span-5"
                 withAsterisk
                 {...getInputProps("weight")}
@@ -279,7 +210,7 @@ export default function ProductDetailContainer({
               />
               <TextInput
                 readOnly={!editable}
-                label="Max item per order"
+                label="Số lượng tối đa mỗi đơn hàng"
                 className="col-span-5"
                 withAsterisk
                 {...getInputProps("maxItemsPerOrder")}
@@ -287,7 +218,7 @@ export default function ProductDetailContainer({
               />
             </div>
             <div className="image-wrapper flex flex-col md:w-6/12">
-              <Input.Wrapper label="Thumbnail" withAsterisk>
+              <Input.Wrapper label="Hình ảnh chính" withAsterisk>
                 <Thumbnail
                   disabled={!editable}
                   url={
@@ -304,11 +235,11 @@ export default function ProductDetailContainer({
                     editable ? (
                       <div className="flex flex-col items-center">
                         <p className="text-4xl font-thin">+</p>
-                        <p>Add thumbnail</p>
+                        <p>Tải ảnh</p>
                       </div>
                     ) : (
                       <div className="flex flex-col items-center">
-                        <p className="text-4xl font-thin">No image</p>
+                        <p className="text-4xl font-thin">Không có hình ảnh</p>
                       </div>
                     )
                   }
@@ -318,7 +249,7 @@ export default function ProductDetailContainer({
                   }}
                 />
               </Input.Wrapper>
-              <Input.Wrapper label="Attachments" className="mt-3">
+              <Input.Wrapper label="Hình ảnh kèm" className="mt-3">
                 <div className="grid grid-cols-3 gap-3">
                   {
                     //@ts-ignore
@@ -348,13 +279,16 @@ export default function ProductDetailContainer({
                       />
                     ))
                   }
-                  {editable && values.attaches?.length < 6 && (
+                  {!values.attaches?.length && (
                     <Thumbnail
-                      setFile={(file) => {
-                        console.log(attaches);
-                        setFieldValue(`attaches`, [...attaches, file]);
-                      }}
-                      addNode
+                      disabled
+                      defaultPlaceholder={
+                        <div className="flex flex-col items-center">
+                          <p className=" font-thin text-center">
+                            Không có hình ảnh
+                          </p>
+                        </div>
+                      }
                     />
                   )}
                 </div>

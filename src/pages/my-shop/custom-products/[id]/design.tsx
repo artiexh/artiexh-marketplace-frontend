@@ -473,6 +473,17 @@ function ConfigMenu() {
           >
             <IconPhotoEdit className="w-6 aspect-square my-2" />
           </Button>
+          <Button
+            onClick={() =>
+              router.push(`/my-shop/custom-products/${res.data.id}/details`)
+            }
+            variant="filled"
+            className={clsx(
+              "px-2 h-10 aspect-square w-fit rounded-full border-none shadow-none outline-none"
+            )}
+          >
+            <IconEdit className="w-6 aspect-square my-2" />
+          </Button>
         </div>
       </div>
       <Transition
@@ -892,7 +903,10 @@ function ImageSetPicker({ currentCombination }: ImageSetPickerProps) {
 
   return (
     <>
-      <Accordion multiple={true}>
+      <Accordion
+        multiple={true}
+        defaultValue={currentCombination?.images.map((el) => el.code) ?? []}
+      >
         {currentCombination?.images?.map((el, index) => {
           const imageSet = currentCombination?.images.find(
             (i) => i.code === el.code
@@ -1002,7 +1016,7 @@ function ImageSetPicker({ currentCombination }: ImageSetPickerProps) {
                       {(props) => (
                         <Button
                           {...props}
-                          className="px-2 mt-3 rounded-full bg-white text-black border border-black shadow-none outline-none hover:bg-black hover:!text-white"
+                          className="px-2 mt-1 rounded-full w-full bg-white text-black border border-black shadow-none outline-none hover:bg-black hover:!text-white"
                         >
                           Tải ảnh
                         </Button>

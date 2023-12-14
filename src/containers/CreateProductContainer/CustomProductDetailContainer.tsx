@@ -22,6 +22,7 @@ import { useForm } from "@mantine/form";
 import { notifications } from "@mantine/notifications";
 import { IconArrowLeft } from "@tabler/icons-react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useParams } from "next/navigation";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
@@ -164,21 +165,31 @@ const CustomProductDetailContainer = ({ data }: Props) => {
         updateCustomProductMutation.mutate(values)
       )}
     >
-      <div className="card general-wrapper">
+      <div className="card general-wrapper flex justify-between">
         <div className="flex gap-x-2 items-center">
           <IconArrowLeft
             className="cursor-pointer"
             onClick={() => router.push("/my-shop/custom-products")}
           />
-          <h2 className="font-bold text-xl">Custom product information</h2>
+          <h2 className="font-bold text-xl">Thông tin thiết kế</h2>
+        </div>
+        <div>
+          <Button
+            variant="outline"
+            onClick={() =>
+              router.push(`/my-shop/custom-products/${data.id}/design`)
+            }
+          >
+            Thay đổi thiết kế
+          </Button>
         </div>
       </div>
       <div className="card general-wrapper">
-        <h2 className="text-xl font-bold">General information</h2>
+        <h2 className="text-xl font-bold">Thông tin cơ bản</h2>
         <div className="flex flex-col-reverse md:flex-row mt-5 gap-10">
           <div className="grid grid-cols-12 w-full gap-5 md:gap-x-10">
             <TextInput
-              label="Product name"
+              label="Tên thiết kế"
               className="col-span-12"
               withAsterisk
               {...getInputProps("name")}
@@ -208,14 +219,14 @@ const CustomProductDetailContainer = ({ data }: Props) => {
             <Select
               data={categoryOptions || []}
               className="col-span-12 md:col-span-12 order-1 md:order-none"
-              label="Category"
+              label="Loại"
               nothingFound="Nothing found"
               searchable
               placeholder={data.category.name}
               disabled={true}
             />
             <Textarea
-              label="Description"
+              label="Mô tả"
               className="col-span-12 row-span-6 order-1 md:order-none"
               classNames={{
                 root: "flex flex-col",
@@ -227,7 +238,7 @@ const CustomProductDetailContainer = ({ data }: Props) => {
             />
           </div>
           <div className="image-wrapper flex flex-col md:w-6/12">
-            <Input.Wrapper label="Thumbnail" withAsterisk>
+            <Input.Wrapper label="Hình ảnh chính" withAsterisk>
               <Thumbnail
                 url={
                   //@ts-ignore
@@ -242,7 +253,7 @@ const CustomProductDetailContainer = ({ data }: Props) => {
                 defaultPlaceholder={
                   <div className="flex flex-col items-center">
                     <p className="text-4xl font-thin">+</p>
-                    <p>Add thumbnail</p>
+                    <p>Tải ảnh</p>
                   </div>
                 }
                 clearable
@@ -251,7 +262,7 @@ const CustomProductDetailContainer = ({ data }: Props) => {
                 }}
               />
             </Input.Wrapper>
-            <Input.Wrapper label="Attachments" className="mt-3">
+            <Input.Wrapper label="Hình ảnh phụ" className="mt-3">
               <div className="grid grid-cols-3 gap-3">
                 {values.attaches?.map((attach, index) => (
                   <Thumbnail
