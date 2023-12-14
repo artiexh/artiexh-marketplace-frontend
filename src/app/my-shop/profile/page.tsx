@@ -166,7 +166,7 @@ function ShopProfileForm({
 
           <Grid.Col span={6}>
             <Input.Wrapper
-              label="Tên chủ tài khoản"
+              label="Tên ngân hàng"
               error={form.errors["bankName"]}
             >
               <Input {...form.getInputProps("bankName")} />
