@@ -13,6 +13,8 @@ import moment from "moment";
 import { useState } from "react";
 import useSWRInfinite from "swr/infinite";
 import ImageWithFallback from "../ImageWithFallback/ImageWithFallback";
+import "moment/locale/vi";
+import { IconMessage } from "@tabler/icons-react";
 
 type PostCardProps = {
   artist: User;
@@ -70,10 +72,18 @@ export default function PostCard({ artist, postInformation }: PostCardProps) {
         </div>
       </Modal>
       <div
-        className="post-card bg-white py-8 rounded-xl shadow w-full cursor-pointer"
+        className="post-card bg-white pt-8 pb-4 rounded-xl shadow w-full cursor-pointer"
         onClick={open}
       >
         <PostCardContent artist={artist} postInformation={postInformation} />
+        <div className="mt-3 px-6">
+          <div className="flex gap-x-2 items-center">
+            <IconMessage />
+            <div className="font-semibold">
+              {postInformation.numOfComments} bình luận
+            </div>
+          </div>
+        </div>
       </div>
     </>
   );
@@ -94,9 +104,9 @@ const PostCardContent = ({ artist, postInformation }: PostCardProps) => {
             />
           </div>
           <div>
-            <div className="text-sm">{artist.displayName}</div>
-            <div className="text-sm text-gray-500">
-              {moment(postInformation.createdDate).toNow()}
+            <div className="text-base">{artist.displayName}</div>
+            <div className="text-xs text-gray-500">
+              {moment(postInformation.createdDate).locale("vi").fromNow()}
             </div>
           </div>
         </div>
@@ -121,11 +131,8 @@ const CommentCard = ({ commentInfo }: { commentInfo: Comment }) => {
     <div>
       <div className="flex gap-4">
         <div>
-          <img
-            src={
-              commentInfo.owner.avatarUrl ??
-              "https://cdn.hero.page/pfp/5e92df9f-2fe9-4b7e-a87a-ba503fe458d2-charming-sakura-inspired-avatar-kawaii-anime-avatar-creations-1.png"
-            }
+          <ImageWithFallback
+            src={commentInfo.owner.avatarUrl}
             alt="img"
             className="w-[40px] h-[40px] rounded-full"
             width={40}
@@ -140,7 +147,7 @@ const CommentCard = ({ commentInfo }: { commentInfo: Comment }) => {
             <div className="text-sm">{commentInfo.content}</div>
           </div>
           <div className="text-xs text-gray-500 mt-1">
-            {moment(commentInfo.createdDate).toNow()}
+            {moment(commentInfo.createdDate).locale("vi").fromNow()}
           </div>
         </div>
       </div>

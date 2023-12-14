@@ -44,13 +44,13 @@ const Timer: FC<ITimer> = ({
         className
       )}
     >
-      <span className="bg-black rounded-sm px-1 text-white">{date}</span>
+      <span className="bg-black rounded-sm px-1 text-white">{date}d</span>
       <span className="text-black">:</span>
-      <span className="bg-black rounded-sm px-1 text-white">{hour}</span>
+      <span className="bg-black rounded-sm px-1 text-white">{hour}h</span>
       <span className="text-black">:</span>
-      <span className="bg-black rounded-sm px-1 text-white">{minute}</span>
+      <span className="bg-black rounded-sm px-1 text-white">{minute}m</span>
       <span className="text-black">:</span>
-      <span className="bg-black rounded-sm px-1 text-white">{second}</span>
+      <span className="bg-black rounded-sm px-1 text-white">{second}s</span>
     </div>
   );
 };

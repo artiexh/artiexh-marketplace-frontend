@@ -45,9 +45,9 @@ export default function CampaignPreviewCard({
         >
           {campaignTypeData.title}{" "}
           {campaign.type === "PRIVATE"
-            ? `- ${campaign.owner.displayName} Only`
+            ? `- Chỉ có ở Shop`
             : campaign.type === "PUBLIC"
-            ? "- Arty Only"
+            ? "- Chỉ có ở Arty"
             : undefined}
         </div>
         <ImageWithFallback

@@ -1,4 +1,6 @@
+import NotFoundComponent from "@/components/NotFoundComponents/NotFoundComponent";
 import PostCard from "@/components/PostCard/PostCard";
+import { notfoundMessages } from "@/constants/notfoundMesssages";
 import { paginationFetcher } from "@/services/backend/axiosClient";
 import { PostInformation } from "@/types/Post";
 import { User } from "@/types/User";
@@ -29,11 +31,20 @@ export default function PostContainer({ artist }: { artist: User }) {
 
   return (
     <div className="post-container">
-      {data?.flat()?.map((post) => (
-        <div key={post.id} className="my-10">
-          <PostCard artist={artist} postInformation={post} />
-        </div>
-      ))}
+      {data?.flat()?.length ? (
+        data?.flat()?.map((post) => (
+          <div key={post.id} className="my-10">
+            <PostCard artist={artist} postInformation={post} />
+          </div>
+        ))
+      ) : (
+        <NotFoundComponent
+          title={notfoundMessages.NOT_FOUND_POSTS}
+          classNames={{
+            root: "mt-10",
+          }}
+        />
+      )}
     </div>
   );
 }

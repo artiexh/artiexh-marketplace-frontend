@@ -1,4 +1,6 @@
 import CampaignPreviewCard from "@/components/CampaignPreviewCard/CampaignPreviewCard";
+import NotFoundComponent from "@/components/NotFoundComponents/NotFoundComponent";
+import { notfoundMessages } from "@/constants/notfoundMesssages";
 import { paginationFetcher } from "@/services/backend/axiosClient";
 import { CampaignData } from "@/types/Campaign";
 import { getQueryString } from "@/utils/formatter";
@@ -51,7 +53,7 @@ export default function CampaignListPage() {
           <Input
             className="w-[300px]"
             icon={<IconSearch />}
-            placeholder="Search by campaign name..."
+            placeholder="Tìm kiếm chiến dịch..."
             value={searchValue}
             onChange={(e) => {
               setSearchValue(e.target.value);
@@ -60,13 +62,24 @@ export default function CampaignListPage() {
         </div>
       </div>
       <div className={clsx("mt-6 grid grid-cols-1 md:!grid-cols-2 !gap-8")}>
-        {data?.flat()?.map((campaign, index) => (
-          <CampaignPreviewCard
-            campaign={campaign}
-            key={index}
-            contentStyle="bg-black opacity-80 min-h-[96px]"
+        {data?.flat()?.length ? (
+          data
+            ?.flat()
+            ?.map((campaign, index) => (
+              <CampaignPreviewCard
+                campaign={campaign}
+                key={index}
+                contentStyle="bg-black opacity-80 min-h-[96px]"
+              />
+            ))
+        ) : (
+          <NotFoundComponent
+            title={notfoundMessages.NOT_FOUND_CAMPAIGNS}
+            classNames={{
+              root: "col-span-full",
+            }}
           />
-        ))}
+        )}
       </div>
     </div>
   );

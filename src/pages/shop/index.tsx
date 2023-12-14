@@ -1,6 +1,7 @@
 import ArtistPreviewCard from "@/components/ArtistPreviewCard/ArtistPreviewCard";
+import NotFoundComponent from "@/components/NotFoundComponents/NotFoundComponent";
+import { notfoundMessages } from "@/constants/notfoundMesssages";
 import axiosClient from "@/services/backend/axiosClient";
-import productStyles from "@/styles/Products/ProductList.module.scss";
 import {
   CommonResponseBase,
   PaginationResponseBase,
@@ -50,7 +51,7 @@ export default function ShopListPage() {
           <Input
             className="w-[300px]"
             icon={<IconSearch />}
-            placeholder="Search by artist name..."
+            placeholder="Tìm kiếm artist..."
             onChange={(e) => {
               setPagination({
                 ...pagination,
@@ -62,31 +63,34 @@ export default function ShopListPage() {
         </div>
       </div>
       <div className="justify-between items-center hidden lg:flex"></div>
-      <div className={clsx(productStyles["product-list-grid"], "col-span-4")}>
-        {artists?.items?.length ? (
-          artists.items?.map((artist, index) => (
-            <ArtistPreviewCard artist={artist} key={index} />
-          ))
-        ) : (
-          <div className="col-span-4">
-            <h2 className="text-lg font-semibold text-centers">
-              Cannot find any items matching the criteria
-            </h2>
+
+      {artists?.items?.length ? (
+        <div className="flex flex-col gap-y-4">
+          <div
+            className={clsx(
+              "grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 xl:gap-x-6"
+            )}
+          >
+            {artists?.items?.map((artist, index) => (
+              <ArtistPreviewCard artist={artist} key={index} />
+            ))}
           </div>
-        )}
-      </div>
-      <div className="flex justify-center mt-6 mb-20">
-        <Pagination
-          value={pagination.pageNumber}
-          onChange={(e) => {
-            setPagination((prev) => ({ ...prev, pageNumber: e }));
-          }}
-          total={artists?.totalPage ?? 0}
-          classNames={{
-            control: "[&[data-active]]:!text-white",
-          }}
-        />
-      </div>
+          <div className="flex justify-center mt-6 mb-20">
+            <Pagination
+              value={pagination.pageNumber}
+              onChange={(e) => {
+                setPagination((prev) => ({ ...prev, pageNumber: e }));
+              }}
+              total={artists?.totalPage ?? 0}
+              classNames={{
+                control: "[&[data-active]]:!text-white",
+              }}
+            />
+          </div>
+        </div>
+      ) : (
+        <NotFoundComponent title={notfoundMessages.NOT_FOUND_ARTIST} />
+      )}
     </div>
   );
 }

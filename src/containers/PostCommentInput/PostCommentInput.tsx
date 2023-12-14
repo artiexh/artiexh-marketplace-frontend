@@ -9,6 +9,7 @@ import { useStore } from "@nanostores/react";
 import { IconSend } from "@tabler/icons-react";
 import { useState } from "react";
 import defaultImage from "../../../public/assets/default-thumbnail.jpg";
+import Link from "next/link";
 
 export default function PostCommentInput({
   commentId,
@@ -33,6 +34,16 @@ export default function PostCommentInput({
       });
     }
   };
+
+  if (!user)
+    return (
+      <div>
+        Bạn muốn bình luận?{" "}
+        <Link className="text-primary font-semibold" href="/auth/signin">
+          Đăng nhập ngay!
+        </Link>
+      </div>
+    );
 
   return (
     <div className="flex gap-6 items-center">

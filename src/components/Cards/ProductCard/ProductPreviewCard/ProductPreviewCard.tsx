@@ -39,9 +39,9 @@ const ProductPreviewCard = ({ data, className }: IProductPreviewCardProps) => {
           )}
         >
           {data.saleCampaign.type === "PRIVATE"
-            ? `Shop Only`
+            ? `Chỉ có ở Shop`
             : data.saleCampaign.type === "PUBLIC"
-            ? "Arty Only"
+            ? "Chỉ có ở Arty"
             : null}
         </div>
       )}

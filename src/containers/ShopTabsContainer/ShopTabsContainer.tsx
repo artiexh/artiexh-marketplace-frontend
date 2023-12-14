@@ -3,8 +3,8 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 
 const arr = [
-  { title: "Home", path: "home" },
-  { title: "Posts", path: "posts" },
+  { title: "Trang chủ", path: "home" },
+  { title: "Bài viết", path: "posts" },
 ];
 
 export default function ShopTabsContainer() {

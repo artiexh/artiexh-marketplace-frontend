@@ -1,7 +1,9 @@
 import ProductPreviewCard from "@/components/Cards/ProductCard/ProductPreviewCard";
+import NotFoundComponent from "@/components/NotFoundComponents/NotFoundComponent";
 import { MobileFilter, Sidebar } from "@/components/ProductList";
 import MobileSort from "@/components/ProductList/MobileSort";
 import { DEFAULT_FILTERS, SORT_OPTIONS } from "@/constants/ProductList";
+import { notfoundMessages } from "@/constants/notfoundMesssages";
 import axiosClient from "@/services/backend/axiosClient";
 import { FilterProps } from "@/services/backend/types/Filter";
 import productStyles from "@/styles/Products/ProductList.module.scss";
@@ -11,7 +13,7 @@ import {
   PaginationResponseBase,
 } from "@/types/ResponseBase";
 import { getQueryString } from "@/utils/formatter";
-import { Button, Menu, Pagination } from "@mantine/core";
+import { Button, Loader, Menu, Pagination } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { IconFilter, IconSortAscendingLetters } from "@tabler/icons-react";
 import clsx from "clsx";
@@ -270,9 +272,9 @@ const ProductListContainer: FC<ProductListContainerProps> = ({
               ))
             ) : (
               <div className="col-span-4">
-                <h2 className="text-lg font-semibold text-centers">
-                  Cannot find any items matching the criteria
-                </h2>
+                <NotFoundComponent
+                  title={notfoundMessages.NOT_FOUND_PRODUCTS}
+                />
               </div>
             )}
           </div>
