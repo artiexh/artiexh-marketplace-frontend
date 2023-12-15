@@ -327,7 +327,7 @@ function DesignPortalContainer({ modelCode }: { modelCode: string }) {
       const res = await updateThumbnailApi(designItemRes.data, thumbnail);
 
       queryClient.setQueryData(["custom-product", { id: id }], res.data);
-    }, 300)
+    }, 500)
   );
 
   useEffect(() => {
