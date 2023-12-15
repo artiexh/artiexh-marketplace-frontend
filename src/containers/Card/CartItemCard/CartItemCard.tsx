@@ -8,6 +8,7 @@ import {
 } from "@/services/backend/services/cart";
 import { CartData, CartItem } from "@/services/backend/types/Cart";
 import { CampaignData } from "@/types/Campaign";
+import { ValidationError } from "@/utils/error/ValidationError";
 import { errorHandler } from "@/utils/errorHandler";
 import { currencyFormatter } from "@/utils/formatter";
 import { getCampaignType, getNotificationIcon } from "@/utils/mapper";
@@ -59,12 +60,16 @@ export default function CartItemCard({
 
   const updateCartQuantityMutation = useMutation({
     mutationFn: async (value: number) => {
-      if (value === 0) {
-        notifications.show({
-          message: "Số lượng sản phẩm không thể bằng 0",
-          ...getNotificationIcon(NOTIFICATION_TYPE.FAILED),
-        });
-        return;
+      if (value <= 0) {
+        throw new ValidationError(
+          "Số lượng sản phẩm không thể nhỏ hơn hoặc bằng 0"
+        );
+      }
+
+      if (value > cartItem.remainingQuantity) {
+        throw new ValidationError(
+          "Số lượng sản phẩm không thể lớn hơn số lượng còn lại"
+        );
       }
 
       setLoading(true);
@@ -170,17 +175,12 @@ export default function CartItemCard({
                 onChange={(value) => {
                   if (
                     typeof value === "number" &&
-                    !updateCartQuantityMutation.isLoading
+                    updateCartQuantityMutation.isLoading === false &&
+                    value !== quantity
                   ) {
                     updateCartQuantityMutation.mutate(value);
                   }
                 }}
-                defaultValue={1}
-                min={1}
-                max={Math.min(
-                  cartItem.remainingQuantity,
-                  cartItem.maxItemsPerOrder ?? Number.MAX_SAFE_INTEGER
-                )}
               />
             )
           ) : (
@@ -240,13 +240,12 @@ export default function CartItemCard({
                   onChange={(value) => {
                     if (
                       typeof value === "number" &&
-                      updateCartQuantityMutation.isLoading === false
+                      updateCartQuantityMutation.isLoading === false &&
+                      value !== quantity
                     ) {
                       updateCartQuantityMutation.mutate(value);
                     }
                   }}
-                  min={1}
-                  max={cartItem.remainingQuantity}
                 />
               )}
             </div>
