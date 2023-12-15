@@ -128,6 +128,7 @@ export default function ProductDesignPage() {
     pageNumber: 1,
     category: null,
     sortDirection: "ASC",
+    isDeleted: false,
   });
   const {
     data: response,
@@ -139,6 +140,12 @@ export default function ProductDesignPage() {
       const params = new URLSearchParams();
       params.set("pageSize", apiParams.pageSize.toString());
       params.set("pageNumber", apiParams.pageNumber.toString());
+      params.set("sortDirection", apiParams.sortDirection);
+      params.set("isDeleted", apiParams.isDeleted.toString());
+      if (apiParams.category) {
+        //@ts-ignore
+        params.set("categoryId", apiParams.category.toString());
+      }
       Object.keys(form.values).forEach((key) => {
         if (form.values[key]) {
           params.set(key, form.values[key] as string);
