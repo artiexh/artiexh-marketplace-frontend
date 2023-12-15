@@ -1,14 +1,14 @@
 /* eslint-disable @next/next/no-img-element */
+import { CAMPAIGN_TYPE_DATA } from "@/constants/campaign";
 import { CampaignData } from "@/types/Campaign";
 import { getCampaignTime } from "@/utils/date";
+import { getCampaignType } from "@/utils/mapper";
 import clsx from "clsx";
+import { useRouter } from "next/router";
+import { useState } from "react";
+import ImageWithFallback from "../ImageWithFallback/ImageWithFallback";
 import Timer from "../Timer/Timer";
 import styles from "./CampaignPreviewCard.module.scss";
-import { useRouter } from "next/router";
-import { getCampaignType } from "@/utils/mapper";
-import { CAMPAIGN_TYPE_DATA, campaignData } from "@/constants/campaign";
-import ImageWithFallback from "../ImageWithFallback/ImageWithFallback";
-import { Indicator } from "@mantine/core";
 
 export default function CampaignPreviewCard({
   campaign,
@@ -18,7 +18,10 @@ export default function CampaignPreviewCard({
   contentStyle?: string;
 }) {
   const router = useRouter();
-  const campaignType = getCampaignType(campaign);
+  const [campaignType, setCampaignType] = useState<
+    keyof typeof CAMPAIGN_TYPE_DATA
+  >(getCampaignType(campaign));
+
   const campaignTime = getCampaignTime(
     campaign.from,
     campaign.to,
@@ -72,7 +75,10 @@ export default function CampaignPreviewCard({
             {campaignTime && (
               <div className="pt-3 py-4 px-3">
                 <div className="text-white text-center">Chỉ còn:</div>
-                <Timer initValue={campaignTime} />
+                <Timer
+                  initValue={campaignTime}
+                  onCompleted={() => setCampaignType(getCampaignType(campaign))}
+                />
               </div>
             )}
           </div>
