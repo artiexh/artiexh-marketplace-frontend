@@ -23,6 +23,7 @@ import { useMemo, useState } from "react";
 import { useDispatch } from "react-redux";
 import useSWR from "swr";
 import vnpayImg from "../../../public/assets/vn_pay.svg";
+import { updateUserInformation } from "@/utils/user";
 
 const PAYMENT_ITEM = [
   {
@@ -206,6 +207,8 @@ function CheckoutPage() {
       });
 
       if (!data) throw new Error("Có lỗi xảy ra, mua sản phẩm thất bại");
+
+      await updateUserInformation();
 
       const paymentLink = await getPaymentLink(data.id);
 

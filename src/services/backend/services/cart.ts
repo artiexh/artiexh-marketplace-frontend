@@ -67,21 +67,14 @@ export const deleteCartItem = async (
 };
 
 export const checkout = async (values: CheckoutBody) => {
-  try {
-    const { data } = (
-      await axiosClient.post<CommonResponseBase<TotalOrder>>(
-        "/order/checkout",
-        values
-      )
-    ).data;
+  const { data } = (
+    await axiosClient.post<CommonResponseBase<TotalOrder>>(
+      "/order/checkout",
+      values
+    )
+  ).data;
 
-    await updateUserInformation();
-
-    return data;
-  } catch (err) {
-    console.log(err);
-    return undefined;
-  }
+  return data;
 };
 
 export const getPaymentLink = async (id: string) => {

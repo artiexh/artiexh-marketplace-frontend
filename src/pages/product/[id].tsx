@@ -17,7 +17,9 @@ import {
 import { getCampaignTime } from "@/utils/date";
 import { getCampaignType } from "@/utils/mapper";
 import { Carousel } from "@mantine/carousel";
+import { Loader } from "@mantine/core";
 import { IconBuildingFactory, IconSparkles } from "@tabler/icons-react";
+import { useQuery } from "@tanstack/react-query";
 import clsx from "clsx";
 import {
   GetStaticPaths,
@@ -30,17 +32,38 @@ import { useState } from "react";
 
 const ProductDetailPage: NextPage<
   InferGetStaticPropsType<typeof getStaticProps>
-> = ({ product, relatedProducts }) => {
+> = ({ product: rawProduct, relatedProducts }) => {
   const router = useRouter();
 
-  if (router.isFallback) return <div>Loading...</div>;
-  if (!product) return <div>Product not found</div>;
-  const { description, attaches, owner, saleCampaign: campaign } = product;
+  const { data, isLoading } = useQuery({
+    queryKey: ["product", router.query.id],
+    queryFn: async () => {
+      const id = router.query.id as string;
+      const { data } = await axiosClient.get<CommonResponseBase<Product>>(
+        `/marketplace/sale-campaign/${id?.split("_")[0]}/product-in-sale/${
+          id?.split("_")[1]
+        }`
+      );
+      return data;
+    },
+  });
 
   // eslint-disable-next-line react-hooks/rules-of-hooks
   const [campaignType, setCampaignType] = useState<
     keyof typeof CAMPAIGN_TYPE_DATA
-  >(getCampaignType(campaign));
+  >(getCampaignType(rawProduct!.saleCampaign));
+
+  if (router.isFallback || isLoading)
+    return (
+      <div className="w-full h-full flex justify-center items-center">
+        <Loader />
+      </div>
+    );
+
+  const product = data?.data;
+  if (!product)
+    return <NotFoundComponent title={"Không tìm thấy sản phẩm này"} />;
+  const { description, attaches, owner, saleCampaign: campaign } = product;
 
   const campaignTime = getCampaignTime(
     campaign.from,
