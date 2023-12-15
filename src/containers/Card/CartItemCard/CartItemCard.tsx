@@ -163,6 +163,7 @@ export default function CartItemCard({
           {isCartPage ? (
             cartItem.remainingQuantity > 0 && (
               <NumberInput
+                max={cartItem.maxItemsPerOrder}
                 disabled={disabled}
                 className="w-[60px] md:w-[100px]"
                 thousandsSeparator=","
