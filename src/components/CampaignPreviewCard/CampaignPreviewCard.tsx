@@ -76,6 +76,7 @@ export default function CampaignPreviewCard({
               <div className="pt-3 py-4 px-3">
                 <div className="text-white text-center">Chỉ còn:</div>
                 <Timer
+                  key={campaignType}
                   initValue={campaignTime}
                   onCompleted={() => setCampaignType(getCampaignType(campaign))}
                 />

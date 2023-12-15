@@ -17,9 +17,7 @@ import {
 } from "@/types/ResponseBase";
 import { getCampaignTime } from "@/utils/date";
 import { getCampaignType } from "@/utils/mapper";
-import { Button } from "@mantine/core";
-import { IconBuildingFactory } from "@tabler/icons-react";
-import { IconSparkles } from "@tabler/icons-react";
+import { IconBuildingFactory, IconSparkles } from "@tabler/icons-react";
 import clsx from "clsx";
 import * as DOMPurify from "dompurify";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -32,7 +30,12 @@ export default function CampaignDetailPage() {
   const router = useRouter();
 
   const [campaignData, setCampaignData] = useState<CampaignDetailResponse>();
+
   const [campaignProducts, setCampaignProducts] = useState<Product[]>([]);
+
+  const [campaignType, setCampaignType] = useState(
+    campaignData ? getCampaignType(campaignData) : undefined
+  );
 
   const initCampaignData = async () => {
     if (!id) return;
@@ -82,11 +85,13 @@ export default function CampaignDetailPage() {
             getCampaignType(campaignData)
           ) && (
             <Timer
+              key={campaignType}
               initValue={getCampaignTime(
                 campaignData.from,
                 campaignData.to,
                 getCampaignType(campaignData)
               )}
+              onCompleted={() => setCampaignType(getCampaignType(campaignData))}
             />
           )}
         </div>

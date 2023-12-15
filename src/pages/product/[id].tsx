@@ -26,6 +26,7 @@ import {
   NextPage,
 } from "next";
 import { useRouter } from "next/router";
+import { useState } from "react";
 
 const ProductDetailPage: NextPage<
   InferGetStaticPropsType<typeof getStaticProps>
@@ -34,10 +35,13 @@ const ProductDetailPage: NextPage<
 
   if (router.isFallback) return <div>Loading...</div>;
   if (!product) return <div>Product not found</div>;
-
   const { description, attaches, owner, saleCampaign: campaign } = product;
 
-  const campaignType = getCampaignType(campaign);
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  const [campaignType, setCampaignType] = useState<
+    keyof typeof CAMPAIGN_TYPE_DATA
+  >(getCampaignType(campaign));
+
   const campaignTime = getCampaignTime(
     campaign.from,
     campaign.to,
@@ -66,7 +70,13 @@ const ProductDetailPage: NextPage<
           </div> */}
           <div className="flex items-center">
             <div className="min-w-[100px]">{campaignTypeData.title} </div>
-            {campaignTime && <Timer initValue={campaignTime} />}
+            {campaignTime && (
+              <Timer
+                key={campaignType}
+                initValue={campaignTime}
+                onCompleted={() => setCampaignType(getCampaignType(campaign))}
+              />
+            )}
           </div>
         </div>
         <div className="relative">
