@@ -7,6 +7,7 @@ import defaultImg from "../../../../../public/assets/default-thumbnail.jpg";
 import styles from "./ProductPreviewCard.module.scss";
 import { getCampaignType } from "@/utils/mapper";
 import { CAMPAIGN_TYPE_DATA } from "@/constants/campaign";
+import { remaniningQuantityThreshold } from "@/constants/common";
 
 interface IProductPreviewCardProps {
   data: Product;
@@ -56,23 +57,28 @@ const ProductPreviewCard = ({ data, className }: IProductPreviewCardProps) => {
           }
           alt="dogtor"
         />
-        {data.quantity === 0 &&
-        new Date(data.saleCampaign.from) > new Date() ? (
-          <div className="p-4 text-red-600 absolute top-20 w-full text-center bg-white opacity-80 font-semibold">
-            Đã hết hàng
-          </div>
-        ) : data.saleCampaign.status === "CLOSED" ||
-          new Date(data.saleCampaign.to).getTime() < new Date().getTime() ? (
-          <div className="p-4 text-red-600 absolute top-20 w-full text-center bg-white opacity-80 font-semibold">
+        {new Date(data.saleCampaign.from) <= new Date() &&
+        new Date(data.saleCampaign.to) >= new Date() ? (
+          data.quantity <= 0 ? (
+            <div className="p-4 text-red-600 absolute top-20 w-full text-center bg-white opacity-80 font-semibold">
+              Đã hết hàng
+            </div>
+          ) : data.quantity <= remaniningQuantityThreshold ? (
+            <div className="bg-orange-400 text-sm absolute bottom-0 right-0 px-2 py-1 text-white font-semibold rounded-tl-md">
+              Sắp cháy hàng!
+            </div>
+          ) : null
+        ) : new Date(data.saleCampaign.to) <= new Date() ||
+          data.saleCampaign.status === "CLOSED" ? (
+          <div className="p-4 text-red-600 absolute  top-20 w-full text-center bg-white opacity-80 font-semibold">
             Chiến dịch đã kết thúc
           </div>
         ) : null}
       </div>
-      <div className="p-2.5 sm:p-6 sm:text-xl md:p-4 md:text-lg md:leading-snug">
+      <div className="p-2.5 sm:p-6 sm:text-base md:p-4 md:text-base md:leading-snug">
         <div className="font-semibold product-name">{data?.name}</div>
-        <div className="text-slate-400 text-base">
-          {data?.owner?.displayName}
-        </div>
+        <div className="text-slate-400 text-sm">{data?.owner?.displayName}</div>
+
         <div className="text-right mt-2.5 md:mt-6 font-semibold">
           {isNaN(data.price.amount)
             ? "N/A"

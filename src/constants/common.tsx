@@ -7,6 +7,8 @@ import {
   IconTruckDelivery,
 } from "@tabler/icons-react";
 
+export const remaniningQuantityThreshold = 10;
+
 export const defaultButtonStylingClass =
   "!text-primary border-primary hover:bg-primary hover:!text-white";
 
