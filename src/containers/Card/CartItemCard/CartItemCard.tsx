@@ -163,7 +163,6 @@ export default function CartItemCard({
           {isCartPage ? (
             cartItem.remainingQuantity > 0 && (
               <NumberInput
-                max={cartItem.maxItemsPerOrder}
                 disabled={disabled}
                 className="w-[60px] md:w-[100px]"
                 thousandsSeparator=","
@@ -178,7 +177,10 @@ export default function CartItemCard({
                 }}
                 defaultValue={1}
                 min={1}
-                max={cartItem.remainingQuantity}
+                max={Math.min(
+                  cartItem.remainingQuantity,
+                  cartItem.maxItemsPerOrder ?? Number.MAX_SAFE_INTEGER
+                )}
               />
             )
           ) : (
