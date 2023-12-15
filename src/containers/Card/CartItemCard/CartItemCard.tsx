@@ -40,6 +40,10 @@ const messageMapper = (item: CartItem) => {
     return `Sản phẩm chỉ còn ${item.remainingQuantity} sản phẩm, vui lòng cập nhật lại số lượng`;
   }
 
+  if (item.maxItemsPerOrder < item.quantity) {
+    return `Tối đa ${item.maxItemsPerOrder} sản phẩm một đơn, vui lòng cập nhật lại số lượng`;
+  }
+
   return;
 };
 
@@ -167,21 +171,23 @@ export default function CartItemCard({
         <Grid.Col span={isCartPage ? 2 : 3} className="my-auto">
           {isCartPage ? (
             cartItem.remainingQuantity > 0 && (
-              <NumberInput
-                disabled={disabled}
-                className="w-[60px] md:w-[100px]"
-                thousandsSeparator=","
-                value={quantity}
-                onChange={(value) => {
-                  if (
-                    typeof value === "number" &&
-                    updateCartQuantityMutation.isLoading === false &&
-                    value !== quantity
-                  ) {
-                    updateCartQuantityMutation.mutate(value);
-                  }
-                }}
-              />
+              <>
+                <NumberInput
+                  disabled={disabled}
+                  className="w-[60px] md:w-[100px]"
+                  thousandsSeparator=","
+                  value={quantity}
+                  onChange={(value) => {
+                    if (
+                      typeof value === "number" &&
+                      updateCartQuantityMutation.isLoading === false &&
+                      value !== quantity
+                    ) {
+                      updateCartQuantityMutation.mutate(value);
+                    }
+                  }}
+                />
+              </>
             )
           ) : (
             <div>{quantity}</div>
@@ -262,6 +268,12 @@ export default function CartItemCard({
           </ActionIcon>
         </div>
       </div>
+
+      {messageMapper(cartItem) && (
+        <div className="text-red-500 mt-2 text-sm font-normal">
+          {messageMapper(cartItem)}
+        </div>
+      )}
     </div>
   );
 }
