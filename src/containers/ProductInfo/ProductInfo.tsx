@@ -112,24 +112,26 @@ const ProductInfo: FC<ProductInfoProps> = ({ product, special }) => {
         ) : null}
       </div>
       <div className="md:mt-auto">
-        {product.owner.username === user?.username ? (
-          <div className="text-red-600">Đây là sản phẩm của bạn</div>
-        ) : (
-          <div className="flex gap-5 mt-5">
-            <Button
-              loading={addToCartMutation.isLoading}
-              disabled={product.quantity == 0 || campaignType === "CLOSED"}
-              className={clsx(
-                "flex-1",
-                campaignType === "CLOSED" ? "!text-white" : "!text-primary"
-              )}
-              variant="outline"
-              onClick={() => addToCartMutation.mutate()}
-            >
-              Thêm vào giỏ
-            </Button>
-          </div>
-        )}
+        <div className="flex gap-5 mt-5">
+          <Button
+            loading={addToCartMutation.isLoading}
+            disabled={
+              product.quantity == 0 ||
+              campaignType === "CLOSED" ||
+              product.owner.username === user?.username
+            }
+            className={clsx(
+              "flex-1",
+              campaignType === "CLOSED" ? "!text-white" : "!text-primary"
+            )}
+            variant="outline"
+            onClick={() => addToCartMutation.mutate()}
+          >
+            {product.owner.username !== user?.username
+              ? "Thêm vào giỏ"
+              : "Đây là sản phẩm của bạn"}
+          </Button>
+        </div>
       </div>
       <div className="share-wrapper flex gap-x-2 mt-4 justify-end">
         <ActionIcon
