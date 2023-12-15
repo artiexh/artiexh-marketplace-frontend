@@ -159,11 +159,6 @@ export default function CartItemCard({
         </Grid.Col>
         <Grid.Col span={3} className="my-auto font-bold">
           {cartItem.name}
-          {messageMapper(cartItem) && (
-            <div className="text-red-500 mb-4 text-sm font-normal">
-              {messageMapper(cartItem)}
-            </div>
-          )}
         </Grid.Col>
         <Grid.Col span={isCartPage ? 2 : 3} className="my-auto font-bold ">
           {currencyFormatter(cartItem.price.amount)}

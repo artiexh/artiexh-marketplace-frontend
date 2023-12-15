@@ -202,7 +202,7 @@ const ProductDetailPage: NextPage<
         </div>
         <h2 className="font-bold text-lg mt-10">Sản phẩm liên quan:</h2>
         <div className="interest-wrapper grid grid-cols-4 md:grid-cols-10 gap-5 mt-5">
-          {relatedProducts.length ? (
+          {relatedProducts?.length ? (
             relatedProducts.map((product, index) => (
               <ProductPreviewCard
                 className="col-span-2"
