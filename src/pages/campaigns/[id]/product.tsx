@@ -14,7 +14,7 @@ const CampaignProductList = () => {
       endpoint={`marketplace/sale-campaign/${id}/product-in-sale`}
       categories={categories?.data.items ?? []}
       tags={tags?.data.items ?? []}
-      pathName={`/campaigns/${id}/product`}
+      pathName={`/marketplace/sale-campaign/${id}/product-in-sale`}
     />
   );
 };

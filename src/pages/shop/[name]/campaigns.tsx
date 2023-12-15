@@ -33,17 +33,13 @@ export default function CampaignListPage() {
     }
   }, [scroll]);
 
-  if (!data) {
-    return <div>Không tìm thấy sản phẩm nào</div>;
-  }
-
   return (
     <div className="campaign-list-page md:mx-10">
       <div className="text-xl font-semibold">
         Tất cả chiến dịch của {username}
       </div>
       <div className={clsx("mt-6 grid grid-cols-1 md:!grid-cols-2 !gap-8")}>
-        {data?.flat().length ? (
+        {data?.flat()?.length ? (
           data
             ?.flat()
             ?.map((campaign, index) => (
