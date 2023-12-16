@@ -122,16 +122,8 @@ export default function ArtistRegisterModal({
         />
         <div className="mt-6 btn-wrapper flex flex-col-reverse md:flex-row gap-5 w-full md:w-max ml-auto bg-white p-5 rounded-lg md:bg-transparent sm:p-0">
           <Button
-            variant="outline"
-            type="button"
-            disabled={registerArtistMutation.isLoading}
-            onClick={closeModal}
-          >
-            Trở về
-          </Button>
-          <Button
             className="bg-primary !text-white"
-            type="button"
+            type="submit"
             loading={registerArtistMutation.isLoading}
           >
             Đăng ký
