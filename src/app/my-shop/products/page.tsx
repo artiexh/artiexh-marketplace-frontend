@@ -3,6 +3,7 @@
 import TableComponent from "@/components/TableComponent";
 import shopProductColumns from "@/constants/Columns/shopProductColumns";
 import axiosClient from "@/services/backend/axiosClient";
+import { $user } from "@/store/user";
 import { SimpleCustomProduct } from "@/types/CustomProduct";
 import { ProductInventory } from "@/types/Product";
 import {
@@ -10,12 +11,14 @@ import {
   PaginationResponseBase,
 } from "@/types/ResponseBase";
 import { Input, Pagination } from "@mantine/core";
+import { useStore } from "@nanostores/react";
 import { IconSearch } from "@tabler/icons-react";
 import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
 import useSWR from "swr";
 
 export default function ProductTablePage() {
+  const user = useStore($user);
   const router = useRouter();
   const pathname = usePathname();
 
@@ -25,6 +28,7 @@ export default function ProductTablePage() {
     sortBy: "createdDate",
     sortDirection: "DESC",
     keyword: null,
+    ownerId: user?.id,
   });
 
   const { data: response, isLoading } = useSWR(
