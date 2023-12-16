@@ -53,7 +53,7 @@ const shopProductColumns: TableColumns<
     action: "EDIT",
     className: "!text-center",
     render: (record) => (
-      <div className="flex justify-center">
+      <div className="flex justify-center w-[100px]">
         <ActionIcon onClick={() => record.onView && record.onView()}>
           <IconEye />
         </ActionIcon>

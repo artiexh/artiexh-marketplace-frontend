@@ -119,10 +119,10 @@ export const artistCampaignColumns: TableColumns<
     render: (record) => (
       <div>
         <span
-          className="cursor-pointer border-blue-400 py-[3px] px-2 rounded-2xl text-xs bg-blue-400 text-white font-semibold"
+          className="cursor-pointer border-blue-400 py-[3px] px-2 rounded-2xl text-xs bg-blue-400 text-white font-semibold w-[100px]"
           onClick={() => record?.onClickEdit()}
         >
-          View
+          Xem chi tiết
         </span>
       </div>
     ),

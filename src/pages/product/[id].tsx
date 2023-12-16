@@ -32,19 +32,45 @@ import { useState } from "react";
 
 const ProductDetailPage: NextPage<
   InferGetStaticPropsType<typeof getStaticProps>
-> = ({ product: rawProduct, relatedProducts }) => {
+> = ({ product: rawProduct }) => {
   const router = useRouter();
+  const id = router.query.id as string;
 
+  const [saleCampaignId, productCode] = id.split("_");
   const { data, isLoading } = useQuery({
     queryKey: ["product", router.query.id],
     queryFn: async () => {
       const id = router.query.id as string;
       const { data } = await axiosClient.get<CommonResponseBase<Product>>(
-        `/marketplace/sale-campaign/${id?.split("_")[0]}/product-in-sale/${
-          id?.split("_")[1]
-        }`
+        `/marketplace/sale-campaign/${saleCampaignId}/product-in-sale/${productCode}`
       );
       return data;
+    },
+  });
+
+  const { data: relatedProducts } = useQuery({
+    queryKey: ["relatedProducts", rawProduct?.productCode],
+    queryFn: async () => {
+      const { data: res } = await axiosClient.get<
+        CommonResponseBase<PaginationResponseBase<Product>>
+      >(
+        `/marketplace/product-in-sale?category=${data?.data.category.id}&pageSize=6`
+      );
+
+      return res;
+    },
+  });
+
+  const { data: campaignProducts } = useQuery({
+    queryKey: ["campaignProducts", rawProduct?.productCode],
+    queryFn: async () => {
+      const { data: res } = await axiosClient.get<
+        CommonResponseBase<PaginationResponseBase<Product>>
+      >(
+        `/marketplace/sale-campaign/${saleCampaignId}/product-in-sale?pageSize=6`
+      );
+
+      return res;
     },
   });
 
@@ -81,16 +107,6 @@ const ProductDetailPage: NextPage<
             campaignTypeData.bannerStyle
           )}
         >
-          {/* <div
-            className="text-xl flex gap-1 items-center cursor-pointer"
-            onClick={() => router.push(`/campaigns/${campaign.id}`)}
-          >
-            <IconChevronLeft /> <div>Campaign: {campaign.name}</div>
-          </div>
-          <div className="flex items-center">
-            <div className="min-w-[100px]">{campaignTypeData.title} </div>
-            {campaignTime && <Timer initValue={campaignTime} />}
-          </div> */}
           <div className="flex items-center">
             <div className="min-w-[100px]">{campaignTypeData.title} </div>
             {campaignTime && (
@@ -200,16 +216,41 @@ const ProductDetailPage: NextPage<
             </div>
           </div>
         </div>
+        <h2 className="font-bold text-lg mt-10">
+          Sản phẩm khác trong chiến dịch:
+        </h2>
+        <div className="interest-wrapper grid grid-cols-4 md:grid-cols-10 gap-5 mt-5">
+          {campaignProducts?.data?.items?.length ? (
+            campaignProducts?.data?.items
+              ?.filter((item) => item.productCode !== product.productCode)
+              ?.map((product, index) => (
+                <ProductPreviewCard
+                  className="col-span-2"
+                  key={product.productCode}
+                  data={product}
+                />
+              ))
+          ) : (
+            <NotFoundComponent
+              title={notfoundMessages.NOT_FOUND_PRODUCTS}
+              classNames={{
+                root: "col-span-full",
+              }}
+            />
+          )}
+        </div>
         <h2 className="font-bold text-lg mt-10">Sản phẩm liên quan:</h2>
         <div className="interest-wrapper grid grid-cols-4 md:grid-cols-10 gap-5 mt-5">
-          {relatedProducts?.length ? (
-            relatedProducts.map((product, index) => (
-              <ProductPreviewCard
-                className="col-span-2"
-                key={product.productCode}
-                data={product}
-              />
-            ))
+          {relatedProducts?.data?.items?.length ? (
+            relatedProducts?.data?.items
+              ?.filter((item) => item.productCode !== product.productCode)
+              ?.map((product, index) => (
+                <ProductPreviewCard
+                  className="col-span-2"
+                  key={product.productCode}
+                  data={product}
+                />
+              ))
           ) : (
             <NotFoundComponent
               title={notfoundMessages.NOT_FOUND_PRODUCTS}
@@ -233,16 +274,9 @@ export const getStaticProps = async (context: GetStaticPropsContext) => {
     }`
   );
 
-  const { data: productList } = await axiosClient.get<
-    CommonResponseBase<PaginationResponseBase<Product>>
-  >(`/marketplace/product-in-sale?category=${data.data.category.id}`);
-
   return {
     props: {
       product: data.data,
-      relatedProducts: productList.data.items.filter(
-        (item) => item.productCode !== data.data.productCode
-      ),
     },
     revalidate: 2,
   };

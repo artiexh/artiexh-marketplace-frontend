@@ -178,7 +178,7 @@ export default function ProductDesignPage() {
             className="cursor-pointer"
             onClick={() => router.push("/my-shop/custom-products")}
           />
-          <h2 className="font-bold text-xl">Tạo custom product</h2>
+          <h2 className="font-bold text-xl">Tạo sản phẩm tùy chỉnh</h2>
         </div>
       </div>
       <Modal
@@ -436,7 +436,7 @@ function VariantAndProviderPicker({
           <h1 className="font-bold mb-0 leading-tight">{productBase.name}</h1>
           {productBase.productOptions.length ? (
             <h2 className="font-thin text-lg text-gray-500">
-              Vui lòng chọn option để tìm ra template phù hợp với bạn
+              Vui lòng chọn tổ hợp bạn mong muốn
             </h2>
           ) : null}
         </div>

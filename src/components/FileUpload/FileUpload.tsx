@@ -58,7 +58,7 @@ export default function FileUpload({
           <div className="flex gap-x-1 items-center">
             <IconFile className="w-10 aspect-square text-gray-600" />
             <span className="text-ellipsis overflow-hidden whitespace-nowrap ">
-              No file
+              Chưa tải file
             </span>
           </div>
         )}
@@ -67,8 +67,8 @@ export default function FileUpload({
         {disabled ? null : !value ? (
           <FileButton onChange={onChange} accept={accept}>
             {(props) => (
-              <Button {...props} className="rounded-full">
-                Upload
+              <Button {...props} className="rounded-full hover:!text-white">
+                Tải file lên
               </Button>
             )}
           </FileButton>

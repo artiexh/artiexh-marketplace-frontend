@@ -89,17 +89,21 @@ const ShopProductsPage = () => {
           onClick={() => router.push(`/my-shop/custom-products/create`)}
           variant="outline"
         >
-          Tạo custom product
+          Thiết kế sản phẩm mới
         </Button>
       </div>
       <div className="py-5 px-7 bg-white shadow rounded-lg">
         <div className="flex justify-between items-center mb-6">
           <div>
-            <div className="text-3xl font-bold">Custom products</div>
-            <div className="text-[#AFAFAF] mt-1">
-              {/* TODO: Replace with API call later or filter based on response */}
-              {data?.totalSize} custom products
+            <div className="text-3xl font-bold">
+              Danh sách sản phẩm tùy chỉnh
             </div>
+            {data?.totalSize ? (
+              <div className="text-[#AFAFAF] mt-1">
+                {/* TODO: Replace with API call later or filter based on response */}
+                {data?.totalSize} sản phẩm tùy chỉnh
+              </div>
+            ) : null}
           </div>
           <div>
             <Input
@@ -212,7 +216,7 @@ const customProductColumns: TableColumns<
     key: "action",
     className: "!text-center",
     render: (record) => (
-      <div className="flex justify-center gap-x-2">
+      <div className="flex justify-center gap-x-2 w-[100px]">
         <Tooltip label="Chỉnh sửa">
           <ActionIcon onClick={() => record.onEdit && record.onEdit()}>
             <IconBallpen />

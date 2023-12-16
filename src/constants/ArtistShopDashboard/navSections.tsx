@@ -13,31 +13,31 @@ export const navSections = [
     navList: [
       {
         id: "INVENTORY",
-        label: "Product inventory",
+        label: "Hàng trong kho",
         iconPath: <IconPackageExport />,
         href: "/my-shop/products",
       },
       {
         id: "PRODUCTS",
-        label: "Custom Products",
+        label: "Sản phẩm tùy chỉnh",
         iconPath: <IconTemplate />,
         href: "/my-shop/custom-products",
       },
       {
         id: "CAMPAIGNS",
-        label: "Campaign requests",
+        label: "Yêu cầu đăng ký chiến dịch",
         iconPath: <IconBrandCampaignmonitor />,
         href: "/my-shop/campaigns",
       },
       {
         id: "SALE_CAMPAIGNS",
-        label: "Sale campaigns",
+        label: "Chiến dịch",
         iconPath: <IconBuildingStore />,
         href: "/my-shop/sale-campaigns",
       },
       {
         id: "SHOP_PROFILE",
-        label: "Thông tin Shop",
+        label: "Thông tin cửa hàng",
         iconPath: <IconBuildingWarehouse />,
         href: "/my-shop/profile",
       },

@@ -64,7 +64,7 @@ const ShopCampaignsPage = () => {
   const handleCreateCampaign = () => {
     modals.open({
       modalId: "create-campaign-info",
-      title: "Input campaign information",
+      title: "Nhập thông tin chiến dịch",
       classNames: {
         content: "!w-[30rem] !h-fit top-1/3 left-[30%]",
       },
@@ -82,18 +82,22 @@ const ShopCampaignsPage = () => {
           onClick={handleCreateCampaign}
           variant="outline"
         >
-          Tạo campaign request
+          Yêu cầu chiến dịch mới
         </Button>
       </div>
       <div className="product-table-page">
         <div className="py-5 px-7 bg-white shadow rounded-lg">
           <div className="flex justify-between items-center mb-6">
             <div>
-              <div className="text-3xl font-bold">Campaign requests</div>
-              <div className="text-[#AFAFAF] mt-1 mb-4">
-                {/* TODO: Replace with API call later or filter based on response */}
-                {data?.totalSize} campaign requests
+              <div className="text-3xl font-bold">
+                Yêu cầu đăng ký chiến dịch
               </div>
+              {data?.totalSize ? (
+                <div className="text-[#AFAFAF] mt-1 mb-4">
+                  {/* TODO: Replace with API call later or filter based on response */}
+                  {data?.totalSize} yêu cầu đăng ký chiến dịch
+                </div>
+              ) : null}
             </div>
             <div>
               <Input.Wrapper label="Trạng thái">
@@ -218,7 +222,7 @@ function CreateCampaignModal() {
     },
     onSuccess: (data) => {
       notifications.show({
-        message: "Tạo campaign thành công!",
+        message: "Tạo chiến dịch thành công!",
         ...getNotificationIcon(NOTIFICATION_TYPE.SUCCESS),
       });
       router.push(`/my-shop/campaigns/${data.data.id}`);
@@ -239,11 +243,11 @@ function CreateCampaignModal() {
       <SegmentedControl
         {...form.getInputProps("type")}
         data={[
-          { label: "Private campaign", value: "PRIVATE" },
-          { label: "Shared campaign", value: "SHARE" },
+          { label: "Riêng tư", value: "PRIVATE" },
+          { label: "Cộng tác", value: "SHARE" },
         ]}
       />
-      <TextInput label="Campaign name" {...form.getInputProps("name")} />
+      <TextInput label="Tên chiến dịch" {...form.getInputProps("name")} />
 
       <div className="flex justify-end ">
         <Button
@@ -251,7 +255,7 @@ function CreateCampaignModal() {
           className="bg-primary !text-white"
           type="submit"
         >
-          Submit
+          Tạo
         </Button>
       </div>
     </form>

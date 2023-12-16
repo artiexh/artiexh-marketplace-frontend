@@ -83,7 +83,7 @@ const Thumbnail: FC<ThumbnailProps> = ({
       />
       {!disabled && imageUrl && (
         <div className="absolute top-0 left-0 w-full h-full pointer-events-none peer-hover:opacity-100 hover:opacity-100 opacity-0 bg-black/50 transition-opacity flex flex-col items-center justify-center gap-1">
-          <div className="text-white text-center">Update</div>
+          <div className="text-white text-center">Chỉnh sửa</div>
           {clearable && (
             <Button
               size="xs"
@@ -95,7 +95,7 @@ const Thumbnail: FC<ThumbnailProps> = ({
                 onClear && onClear();
               }}
             >
-              Clear
+              Xóa
             </Button>
           )}
         </div>

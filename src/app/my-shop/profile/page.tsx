@@ -148,7 +148,7 @@ function ShopProfileForm({
           />
         </div>
 
-        <Input.Wrapper label="Description" error={form.errors["description"]}>
+        <Input.Wrapper label="Mô tả" error={form.errors["description"]}>
           <Input {...form.getInputProps("description")} />
         </Input.Wrapper>
       </div>
@@ -184,7 +184,7 @@ function ShopProfileForm({
               disabled={loading}
               className="bg-primary !text-white"
             >
-              Cập
+              Lưu thay đổi
             </Button>
           </Grid.Col>
         </Grid>

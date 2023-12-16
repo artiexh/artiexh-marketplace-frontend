@@ -112,7 +112,7 @@ export default function PickCustomProduct({
                 data={designItem}
                 actions={
                   <div className="flex gap-x-2">
-                    <Tooltip label="View design detail">
+                    <Tooltip label="Xem chi tiết thiết kế">
                       <IconEye
                         className="w-4 aspect-square"
                         onClick={() => setSelectedDesign(designItem)}

@@ -119,7 +119,7 @@ function CustomWebTab({ data: campaignData }: { data: CampaignDetail }) {
           !isDisabled(campaignData.status) ? (
             <div className="flex flex-col items-center">
               <p className="text-4xl font-thin">+</p>
-              <p>Add thumbnail</p>
+              <p>Thêm hình ảnh</p>
             </div>
           ) : (
             <div className="flex flex-col items-center">
@@ -191,7 +191,7 @@ function CustomWebTab({ data: campaignData }: { data: CampaignDetail }) {
             !isDirty()
           }
         >
-          Update
+          Lưu thay đổi
         </Button>
       </div>
     </form>

@@ -149,7 +149,7 @@ export default function DesignPortalPage() {
   if (!res?.data || !productTemplateRes?.data)
     return (
       <div className="w-screen h-screen flex justify-center items-center">
-        <NotFoundComponent title="Custom product hoặc Template không phù hợp vui lòng thử lại sau" />
+        <NotFoundComponent title="Sản phẩm tùy chỉnh hoặc mẫu thiết kế không phù hợp. Vui lòng thử lại sau" />
       </div>
     );
 
@@ -668,7 +668,7 @@ function ImageCombinationPicker({
       {step === 0 && (
         <>
           <div className="flex justify-between">
-            <h3>Combo hình ảnh</h3>
+            <h3>Vị trí hình ảnh</h3>
             <div>
               {currentCombination && (
                 <IconArrowRight

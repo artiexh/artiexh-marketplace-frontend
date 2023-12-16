@@ -44,10 +44,7 @@ export default function CampaignHistoryTab({
   return (
     <div className="py-5 px-7 bg-white rounded-lg">
       <>
-        <div className="text-3xl font-bold">Histories</div>
-        <div className="text-[#AFAFAF] mt-1 mb-4">
-          {data?.data.totalSize} histories
-        </div>
+        <div className="text-3xl font-bold mb-6">Lịch sử chỉnh sửa</div>
       </>
       <div className="flex flex-col items-center gap-4 w-full">
         <TableComponent
@@ -74,7 +71,7 @@ export const campaignHistoryColumns: TableColumns<
   CampaignDetail["campaignHistories"][0]
 > = [
   {
-    title: "Date",
+    title: "Ngày",
     key: "date",
     render: (record: CampaignDetail["campaignHistories"][0]) => (
       <span>
@@ -87,17 +84,17 @@ export const campaignHistoryColumns: TableColumns<
     ),
   },
   {
-    title: "Action",
+    title: "Hành động",
     dataIndex: "action",
     key: "action",
   },
   {
-    title: "Message",
+    title: "Nội dung",
     dataIndex: "message",
     key: "message",
   },
   {
-    title: "Created by",
+    title: "Người chỉnh sửa",
     dataIndex: "updatedBy",
     key: "updatedBy",
   },

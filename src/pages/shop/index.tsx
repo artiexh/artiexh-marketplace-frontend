@@ -23,7 +23,7 @@ export default function ShopListPage() {
     pageNumber: number;
     name?: string;
   }>({
-    pageSize: 8,
+    pageSize: 12,
     pageNumber: 1,
     name: undefined,
   });
