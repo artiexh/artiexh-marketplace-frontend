@@ -115,8 +115,8 @@ const HomePage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = ({
           </div>
         </div>
         <div className={clsx("mt-3 hidden md:grid md:grid-cols-2 gap-8")}>
-          {campaigns.length ? (
-            campaigns?.map((campaign, index) => (
+          {saleCampaigns?.items?.length ? (
+            saleCampaigns.items?.map((campaign, index) => (
               <CampaignPreviewCard campaign={campaign} key={index} />
             ))
           ) : (
@@ -131,8 +131,8 @@ const HomePage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = ({
         <div
           className={clsx("mt-3 grid md:hidden !grid-cols-1 gap-8 !md:hidden")}
         >
-          {campaigns.length ? (
-            campaigns
+          {saleCampaigns?.items?.length ? (
+            saleCampaigns.items
               ?.filter((item, idx) => idx <= 1)
               .map((campaign, index) => (
                 <CampaignPreviewCard campaign={campaign} key={index} />
