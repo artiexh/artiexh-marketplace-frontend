@@ -54,6 +54,7 @@ export const updateUserProfileApi = async (body: {
 
 export const updateShopProfileApi = async (body: {
   bankAccount?: string;
+  bankAccountName?: string;
   bankName?: string;
   phone?: string;
   shopThumbnailUrl?: string;

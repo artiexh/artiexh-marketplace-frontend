@@ -32,6 +32,7 @@ export default function MyShopProfilePage() {
   const updateProfileMutation = useMutation({
     mutationFn: async (values: {
       bankAccount?: string;
+      bankAccountName?: string;
       bankName?: string;
       phone?: string;
       shopThumbnail: string | File | null;
@@ -48,6 +49,7 @@ export default function MyShopProfilePage() {
 
       const res = await updateShopProfileApi({
         bankAccount: values.bankAccount,
+        bankAccountName: values.bankAccountName,
         bankName: values.bankName,
         phone: values.phone,
         shopThumbnailUrl: shopThumbnailUrl,
@@ -98,6 +100,7 @@ function ShopProfileForm({
 }) {
   const form = useForm<{
     bankAccount?: string;
+    bankAccountName?: string;
     bankName?: string;
     phone?: string;
     shopThumbnail: string | File | null;
@@ -105,6 +108,7 @@ function ShopProfileForm({
   }>({
     initialValues: {
       bankAccount: data.bankAccount,
+      bankAccountName: data.bankAccountName,
       bankName: data.bankName,
       phone: data.phone,
       shopThumbnail: data.shopThumbnailUrl,
@@ -172,7 +176,15 @@ function ShopProfileForm({
               <Input {...form.getInputProps("bankName")} />
             </Input.Wrapper>
           </Grid.Col>
-          <Grid.Col span={12}>
+          <Grid.Col span={6}>
+            <Input.Wrapper
+              label="Tên chủ tài khoản"
+              error={form.errors["bankAccountName"]}
+            >
+              <Input {...form.getInputProps("bankAccountName")} />
+            </Input.Wrapper>
+          </Grid.Col>
+          <Grid.Col span={6}>
             <Input.Wrapper label="Số điện thoại" error={form.errors["phone"]}>
               <Input {...form.getInputProps("phone")} />
             </Input.Wrapper>
