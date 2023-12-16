@@ -184,7 +184,7 @@ function SaleCampaignStatisticContainer({ id }: { id: string }) {
           </div>
         </div>
       </div>
-      <div className="mt-10 mb-6 font-semibold text-xl">Thống kê số lượng:</div>
+      <div className="mt-10 mb-6 font-semibold text-xl">Top 5 sản phẩm:</div>
       <div className="flex gap-10">
         <div className="bg-[#F8F9FB] p-4 rounded-sm shadow flex-1">
           <TableComponent
