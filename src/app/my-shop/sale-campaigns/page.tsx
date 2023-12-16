@@ -48,7 +48,7 @@ const ShopCampaignsPage = () => {
   return (
     <div className="py-5 px-7 bg-white shadow rounded-lg">
       <div className="flex justify-between items-center mb-10">
-        <div className="text-3xl font-bold">Sale campaigns của tôi</div>
+        <div className="text-3xl font-bold">Chiến dịch của tôi</div>
         <div className="w-[400px]">
           <DatePickerInput
             type="range"

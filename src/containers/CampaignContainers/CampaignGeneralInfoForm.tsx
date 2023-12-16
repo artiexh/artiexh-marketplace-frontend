@@ -107,8 +107,8 @@ export default function CampaignGeneralInfoForm({
               value={data.type}
               className="h-fit flex-[2]"
               data={[
-                { label: "Private", value: "PRIVATE" },
-                { label: "Shared", value: "SHARE" },
+                { label: "Riêng tư", value: "PRIVATE" },
+                { label: "Cộng tác", value: "SHARE" },
               ]}
             />
           </div>
@@ -235,7 +235,7 @@ function EditCampaignGeneralInfo({
       <div className="flex flex-col space-y-4 mt-6">
         <div className="flex items-end gap-x-2">
           <TextInput
-            label="Campaign name"
+            label="Tên chiến dịch"
             {...form.getInputProps("name")}
             className="flex-[3]"
           />
@@ -243,14 +243,14 @@ function EditCampaignGeneralInfo({
             {...form.getInputProps("type")}
             className="h-fit flex-[2]"
             data={[
-              { label: "Private", value: "PRIVATE" },
-              { label: "Shared", value: "SHARE" },
+              { label: "Riêng tư", value: "PRIVATE" },
+              { label: "Cộng tác", value: "SHARE" },
             ]}
           />
         </div>
         <div className="flex gap-x-2">
           <DateTimePicker
-            label="From"
+            label="Ngày bắt đầu"
             classNames={{
               input: "!py-0",
             }}
@@ -263,7 +263,7 @@ function EditCampaignGeneralInfo({
             className="h-fit flex-1"
           />
           <DateTimePicker
-            label="To"
+            label="Ngày kết thúc"
             classNames={{
               input: "!py-0",
             }}
@@ -276,7 +276,7 @@ function EditCampaignGeneralInfo({
             className="h-fit flex-1"
           />
         </div>
-        <Textarea label="Description" {...form.getInputProps("description")} />
+        <Textarea label="Mô tả" {...form.getInputProps("description")} />
       </div>
       <div className="w-full flex justify-end">
         <Button
@@ -285,7 +285,7 @@ function EditCampaignGeneralInfo({
           className="bg-primary !text-white mt-4"
           type="submit"
         >
-          Submit
+          Lưu thay đổi
         </Button>
       </div>
     </form>

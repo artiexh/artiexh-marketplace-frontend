@@ -45,7 +45,7 @@ export default function CustomProductTable({
   const openCustomProductModal = () => {
     modals.open({
       modalId: "custom-product-create-campaign",
-      title: "Chọn custom products",
+      title: "Chọn sản phẩm tùy chỉnh",
       centered: true,
 
       size: "80rem",
@@ -58,7 +58,7 @@ export default function CustomProductTable({
       <div className="table-header flex w-full justify-between ">
         <div className="flex justify-end gap-x-2 items-center">
           <Text>
-            Provider:{" "}
+            Nhà cung cấp:{" "}
             {campaignRes?.data?.provider?.businessName ?? "Không khả dụng"}
           </Text>
           {/* <Button onClick={openProviderModal} disabled={rawData.length <= 0}>
@@ -71,7 +71,7 @@ export default function CustomProductTable({
             className={defaultButtonStylingClass}
             onClick={openCustomProductModal}
           >
-            Thêm custom product
+            Thêm sản phẩm tùy chỉnh
           </Button>
         </div>
       </div>
@@ -99,7 +99,7 @@ export default function CustomProductTable({
                 onView: () =>
                   modals.open({
                     modalId: `${data.id}-custom-product-view`,
-                    title: "Thông tin custom product",
+                    title: "Thông tin sản phẩm tùy chỉnh",
                     fullScreen: true,
                     children: (
                       <div className="">

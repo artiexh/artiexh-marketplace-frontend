@@ -67,9 +67,9 @@ export default function SaleCampaignGeneralInfoForm({
               value={data.type}
               className="h-fit flex-1"
               data={[
-                { label: "Private", value: "PRIVATE" },
-                { label: "Shared", value: "SHARE" },
-                { label: "Public", value: "PUBLIC" },
+                { label: "Riêng tư", value: "PRIVATE" },
+                { label: "Cộng tác", value: "SHARE" },
+                { label: "Công khai", value: "PUBLIC" },
               ]}
             />
           </div>

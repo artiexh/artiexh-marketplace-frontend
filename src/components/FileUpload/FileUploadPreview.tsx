@@ -72,7 +72,7 @@ export default function PrivateFileUploadPreview({
           <div className="flex gap-x-1 items-center">
             <IconFile className="text-2xl aspect-square text-gray-600" />
             <span className="text-ellipsis overflow-hidden whitespace-nowrap ">
-              No file
+              Tải file lên
             </span>
           </div>
         )}

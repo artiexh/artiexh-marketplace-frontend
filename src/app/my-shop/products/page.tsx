@@ -44,17 +44,19 @@ export default function ProductTablePage() {
       <div className="py-5 px-7 bg-white shadow rounded-lg">
         <div className="flex justify-between items-center mb-6">
           <div>
-            <div className="text-3xl font-bold">Product inventory</div>
-            <div className="text-[#AFAFAF] mt-1 mb-4">
-              {/* TODO: Replace with API call later or filter based on response */}
-              {data?.totalSize} products
-            </div>
+            <div className="text-3xl font-bold">Hàng trong kho</div>
+            {data?.totalSize ? (
+              <div className="text-[#AFAFAF] mt-1 mb-4">
+                {/* TODO: Replace with API call later or filter based on response */}
+                {data?.totalSize} sản phẩm
+              </div>
+            ) : null}
           </div>
           <div>
             <Input
               className="w-[300px]"
               icon={<IconSearch />}
-              placeholder="Search by product code..."
+              placeholder="Tìm kiếm bằng mã sản phẩm..."
               onChange={(e) => {
                 setParams({
                   ...params,
