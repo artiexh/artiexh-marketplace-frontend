@@ -107,16 +107,6 @@ const ProductDetailPage: NextPage<
             campaignTypeData.bannerStyle
           )}
         >
-          {/* <div
-            className="text-xl flex gap-1 items-center cursor-pointer"
-            onClick={() => router.push(`/campaigns/${campaign.id}`)}
-          >
-            <IconChevronLeft /> <div>Campaign: {campaign.name}</div>
-          </div>
-          <div className="flex items-center">
-            <div className="min-w-[100px]">{campaignTypeData.title} </div>
-            {campaignTime && <Timer initValue={campaignTime} />}
-          </div> */}
           <div className="flex items-center">
             <div className="min-w-[100px]">{campaignTypeData.title} </div>
             {campaignTime && (
