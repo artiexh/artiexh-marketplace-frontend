@@ -36,13 +36,18 @@ export const artistRegisterValidation: FormValidateInput<ArtistRegisterData> = {
     return null;
   },
   phone: (shopPhone) => {
-    if (!phoneNumberRegex.test(shopPhone.trim())) return "Invalid phone number";
+    if (!phoneNumberRegex.test(shopPhone.trim()))
+      return "Số điện thoại không hợp lệ";
     if (shopPhone.trim().length === 0) return "Bạn phải điền số điện thoại";
     return null;
   },
   bankName: (bankName) => {
-    if (bankName.trim().length === 0)
-      return "Bạn phải điền tên tài khoản ngân hàng của bạn";
+    if (bankName.trim().length === 0) return "Bạn phải điền tên ngân hàng";
+    return null;
+  },
+  bankAccountName: (bankAccountName) => {
+    if (bankAccountName.trim().length === 0)
+      return "Bạn phải điền tên chủ tài khoản ngân hàng";
     return null;
   },
   description: (description) => {

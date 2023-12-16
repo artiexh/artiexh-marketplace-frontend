@@ -84,6 +84,7 @@ export type Ward = {
 
 export type ArtistRegisterData = {
   bankAccount: string;
+  bankAccountName: string;
   bankName: string;
   description: string;
   phone: string;

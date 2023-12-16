@@ -6,6 +6,7 @@ import ArtistRegisterModal from "../ArtistRegisterModal";
 import AccountTab from "../Tabs/AccountTab";
 import OrderTab from "../Tabs/OrderTab";
 import PostTab from "../Tabs/PostTab";
+import { QueryClientProvider, useQueryClient } from "@tanstack/react-query";
 
 type MyProfileProps = {
   user: User;
@@ -31,11 +32,14 @@ const tabs = [
 
 export default function MyProfilePage({ user }: MyProfileProps) {
   const [opened, { open, close }] = useDisclosure(false);
+  const queryClient = useQueryClient();
 
   return (
     <div className="my-profile-page">
       <Modal opened={opened} onClose={close} title="Artist Registration">
-        <ArtistRegisterModal closeModal={close} />
+        <QueryClientProvider client={queryClient}>
+          <ArtistRegisterModal closeModal={close} />
+        </QueryClientProvider>
       </Modal>
       <div className="bg-white py-6 px-10 relative mt-[200px]">
         <div className="absolute -top-16">

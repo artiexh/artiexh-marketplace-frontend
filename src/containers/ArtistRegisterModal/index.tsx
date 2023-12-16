@@ -23,6 +23,7 @@ export default function ArtistRegisterModal({
 }) {
   const initialValues = {
     bankAccount: "",
+    bankAccountName: "",
     bankName: "",
     description: "",
     phone: "",
@@ -40,6 +41,7 @@ export default function ArtistRegisterModal({
 
   const registerArtistMutation = useMutation({
     mutationFn: async (values: ArtistRegisterData) => {
+      console.log("test");
       if (file == null) {
         throw new ValidationError("Xin hãy upload ảnh shop của bạn");
       }
@@ -79,6 +81,13 @@ export default function ArtistRegisterModal({
       >
         <TextInput
           className="my-4"
+          label="Tên ngân hàng"
+          withAsterisk
+          {...getInputProps("bankName")}
+          disabled={registerArtistMutation.isLoading}
+        />
+        <TextInput
+          className="my-4"
           label="Số tài khoản ngân hàng"
           withAsterisk
           {...getInputProps("bankAccount")}
@@ -86,9 +95,9 @@ export default function ArtistRegisterModal({
         />
         <TextInput
           className="my-4"
-          label="Tên tài khoản ngân hàng"
+          label="Chủ tài khoản"
           withAsterisk
-          {...getInputProps("bankName")}
+          {...getInputProps("bankAccountName")}
           disabled={registerArtistMutation.isLoading}
         />
         <TextInput
@@ -122,7 +131,7 @@ export default function ArtistRegisterModal({
           </Button>
           <Button
             className="bg-primary !text-white"
-            type="submit"
+            type="button"
             loading={registerArtistMutation.isLoading}
           >
             Đăng ký
