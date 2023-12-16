@@ -169,7 +169,7 @@ function OrderDetailPage() {
                         {order.campaignSale.name}
                       </div>
                       <span className="text-sm text-gray-500">
-                        Owner: ${order.campaignSale.owner.username}
+                        Artist: {order.campaignSale.owner.username}
                       </span>
                     </div>
                   </div>
