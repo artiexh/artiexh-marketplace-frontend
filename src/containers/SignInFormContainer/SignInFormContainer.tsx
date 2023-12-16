@@ -22,11 +22,11 @@ const validate = {
   username: (value: string) =>
     value != null && value.trim().length > 0
       ? null
-      : "Username cannot be empty",
+      : "Username không được để trống",
   password: (value: string) =>
     value != null && value.trim().length > 0
       ? null
-      : "Password cannot be empty",
+      : "Mật khẩu không được để trống",
 };
 
 const SignInFormContainer = () => {
@@ -52,7 +52,7 @@ const SignInFormContainer = () => {
       const { data: userRes } = await axiosClient.get<CommonResponseBase<User>>(
         "/account/me"
       );
-      if (userRes.data.role === "ADMIN") {
+      if (userRes.data.role === "ADMIN" || userRes.data.role === "STAFF") {
         await logout();
         notifications.show({
           message: "Tài khoản không hợp lệ",
@@ -74,10 +74,9 @@ const SignInFormContainer = () => {
     } catch (error) {
       // TODO:
       // Handle 401 invalid credentials
-      console.log(error);
-      form.setErrors({
-        username: "Invalid credentials",
-        password: "Invalid credentials",
+      notifications.show({
+        message: "Tài khoản không hợp lệ",
+        ...getNotificationIcon(NOTIFICATION_TYPE.FAILED),
       });
     } finally {
       setIsSubmitting(false);
