@@ -25,7 +25,7 @@ export const navSections = [
       },
       {
         id: "CAMPAIGNS",
-        label: "Yêu cầu đăng ký chiến dịch",
+        label: "Yêu cầu chiến dịch",
         iconPath: <IconBrandCampaignmonitor />,
         href: "/my-shop/campaigns",
       },

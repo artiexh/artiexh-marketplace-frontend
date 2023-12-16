@@ -46,6 +46,8 @@ const ShopCampaignsPage = () => {
     pageNumber: 1,
     status: null,
     keyword: null,
+    sortBy: "id",
+    sortDirection: "DESC",
   });
 
   const { data: response, isLoading } = useSWR(
