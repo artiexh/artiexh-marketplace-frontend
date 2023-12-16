@@ -195,11 +195,10 @@ function OrderDetailPage() {
             >
               {data &&
                 currencyFormatter(
-                  data?.currentTransaction?.priceAmount ??
-                    data?.orderDetails?.reduce(
-                      (acc, item) => acc + item.price.amount * item.quantity,
-                      0
-                    ) + (data?.shippingFee ?? 0)
+                  data?.orderDetails?.reduce(
+                    (acc, item) => acc + item.price.amount * item.quantity,
+                    0
+                  ) + (data?.shippingFee ?? 0)
                 )}
             </Grid.Col>
           </Grid>
