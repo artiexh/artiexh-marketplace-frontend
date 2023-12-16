@@ -68,7 +68,7 @@ const productInCampaignColumns: TableColumns<
     key: "action",
     className: "!text-center",
     render: (record) => (
-      <div className="flex justify-center gap-x-2 w-[100px]">
+      <div className="flex justify-center gap-x-2 w-full">
         <Tooltip label="Chỉnh sửa">
           <IconBallpen
             className={clsx(
