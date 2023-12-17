@@ -370,7 +370,7 @@ function CustomProductGeneralInfo({
                   <div key={data.id} className="col-span-1">
                     <Thumbnail
                       defaultPlaceholder={
-                        <div className="flex flex-col items-center">
+                        <div className="flex flex-col items-center text-center">
                           <p>Không có hình ảnh</p>
                         </div>
                       }
