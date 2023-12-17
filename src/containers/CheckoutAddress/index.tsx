@@ -83,7 +83,7 @@ export default function CheckoutAddress() {
         <div className="text-2xl">Địa chỉ giao hàng</div>
         {selectedAddress && (
           <div className="cursor-pointer" onClick={open}>
-            Edit
+            Đổi
           </div>
         )}
       </div>

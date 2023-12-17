@@ -130,7 +130,7 @@ const CartPage = () => {
             }}
             className="bg-[#50207D] !text-white w-[200px] h-[3rem]"
           >
-            Checkout
+            Thanh toán
           </Button>
         </div>
       </div>
@@ -161,7 +161,7 @@ const CartPage = () => {
             className="bg-[#50207D] !text-white w-[120px] h-[3rem]"
             onClick={() => router.push(ROUTE.CHECKOUT)}
           >
-            Checkout
+            Thanh toán
           </Button>
         </div>
       </div>
