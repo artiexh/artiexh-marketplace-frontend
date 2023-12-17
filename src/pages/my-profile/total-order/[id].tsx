@@ -145,59 +145,69 @@ function OrderDetailPage() {
           Chi tiết đơn hàng
         </div>
         <div className="flex flex-col gap-10">
-          {data?.campaignOrders.map((order) => (
-            <div key={order.id} className="shadow-sm p-4">
-              <div>
-                <div className="flex items-center justify-between px-4">
-                  <div className="flex items-center">
-                    <div>
-                      <ImageWithFallback
-                        className="rounded-full mr-4 aspect-square"
-                        src={order.campaignSale.thumbnailUrl}
-                        width={60}
-                        height={60}
-                        alt="shop-img"
-                      />
-                    </div>
-                    <div className="flex flex-col">
-                      <div
-                        className="px-0 text-lg cursor-pointer"
-                        onClick={() =>
-                          router.push(`/campaigns/${order.campaignSale.id}`)
-                        }
-                      >
-                        {order.campaignSale.name}
+          {data?.campaignOrders
+            .sort((a, b) => Number(a.id) - Number(b.id))
+            .map((order) => (
+              <div key={order.id} className="shadow-sm p-4">
+                <div>
+                  <div className="flex items-center justify-between px-4">
+                    <div className="flex items-center">
+                      <div>
+                        <ImageWithFallback
+                          className="rounded-full mr-4 aspect-square"
+                          src={order.campaignSale.thumbnailUrl}
+                          width={60}
+                          height={60}
+                          alt="shop-img"
+                        />
                       </div>
-                      <span className="text-sm text-gray-500">
-                        Artist: {order.campaignSale.owner.username}
-                      </span>
+                      <div className="flex flex-col">
+                        <div
+                          className="px-0 text-lg cursor-pointer"
+                          onClick={() =>
+                            router.push(`/campaigns/${order.campaignSale.id}`)
+                          }
+                        >
+                          {order.campaignSale.name}
+                        </div>
+                        <span className="text-sm text-gray-500">
+                          Artist: {order.campaignSale.owner.username}
+                        </span>
+                      </div>
+                    </div>
+                    <div
+                      className="font-semibold text-primary cursor-pointer"
+                      onClick={() =>
+                        router.push(`${ROUTE.MY_PROFILE}/order/${order.id}`)
+                      }
+                    >
+                      Xem đơn hàng
                     </div>
                   </div>
-                  <div
-                    className="font-semibold text-primary cursor-pointer"
-                    onClick={() =>
-                      router.push(`${ROUTE.MY_PROFILE}/order/${order.id}`)
-                    }
-                  >
-                    Xem đơn hàng
+                  <Divider className="my-4" />
+                  <div className="flex flex-col gap-6">
+                    <TableComponent
+                      columns={orderProductColumns}
+                      data={order.orderDetails
+                        .sort((a, b) => Number(a.id) - Number(b.id))
+                        .map((el) => ({
+                          ...el,
+                          onClickView: () =>
+                            router.push(
+                              `/product/${order.campaignSale.id}_${el.productCode}`
+                            ),
+                        }))}
+                    />
                   </div>
-                </div>
-                <Divider className="my-4" />
-                <div className="flex flex-col gap-6">
-                  <TableComponent
-                    columns={orderProductColumns}
-                    data={order.orderDetails.map((el) => ({
-                      ...el,
-                      onClickView: () =>
-                        router.push(
-                          `/product/${order.campaignSale.id}_${el.productCode}`
-                        ),
-                    }))}
-                  />
+                  <div className="flex justify-end px-3">
+                    <div className="text-sm">
+                      <span className="font-semibold">Tiền vận chuyển:</span>{" "}
+                      {currencyFormatter(order.shippingFee)}
+                    </div>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            ))}
           {data && (
             <div className="flex justify-end text-lg mt-12 mb-4 mr-4">
               <Grid className="w-[400px]">

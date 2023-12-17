@@ -3,16 +3,15 @@ import { OrderItemDetail } from "@/types/Order";
 import { TableColumns } from "@/types/Table";
 import { currencyFormatter } from "@/utils/formatter";
 
-export const orderProductColumns: TableColumns<OrderItemDetail> = [
-  {
-    title: "Code",
-    key: "productCode",
-    dataIndex: "productCode",
-  },
+export const orderProductColumns: TableColumns<
+  OrderItemDetail & {
+    onClickView?: () => void;
+  }
+> = [
   {
     title: "Name",
     key: "name",
-    render: (record: any) => (
+    render: (record) => (
       <div
         className="flex items-center gap-5 cursor-pointer"
         onClick={record?.onClickView}
@@ -24,7 +23,12 @@ export const orderProductColumns: TableColumns<OrderItemDetail> = [
             className="object-cover w-full h-full"
           />
         </div>
-        <div>{record.name}</div>
+        <div>
+          <div>{record.name}</div>
+          <div className="text-gray-600 text-xs">
+            Code: {record.productCode}
+          </div>
+        </div>
       </div>
     ),
   },
