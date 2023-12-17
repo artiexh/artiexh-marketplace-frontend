@@ -1,5 +1,5 @@
 import { getPrivateFile } from "@/services/backend/services/media";
-import { Modal } from "@mantine/core";
+import { Loader, LoadingOverlay, Modal } from "@mantine/core";
 import { modals } from "@mantine/modals";
 import {
   IconDownload,
@@ -11,6 +11,7 @@ import {
 import { Buffer } from "buffer";
 import clsx from "clsx";
 import useSWR from "swr";
+import NotFoundComponent from "../NotFoundComponents/NotFoundComponent";
 
 type PrivateFileUploadPreviewProps = {
   classNames?: {
@@ -31,6 +32,7 @@ export default function PrivateFileUploadPreview({
     modals.open({
       modalId: `image-${value?.id}`,
       title: value?.fileName ?? "",
+      fullScreen: true,
       children: <PreviewImageBody id={id} />,
     });
   };
@@ -70,9 +72,9 @@ export default function PrivateFileUploadPreview({
           </div>
         ) : (
           <div className="flex gap-x-1 items-center">
-            <IconFile className="text-2xl aspect-square text-gray-600" />
+            <IconFile className="w-10 aspect-square text-gray-600" />
             <span className="text-ellipsis overflow-hidden whitespace-nowrap ">
-              Tải file lên
+              Không có hình ảnh
             </span>
           </div>
         )}
@@ -80,16 +82,18 @@ export default function PrivateFileUploadPreview({
       <div
         className={clsx("file-upload-action flex gap-x-2", classNames?.actions)}
       >
-        {allowView && (
+        {value?.id && allowView && (
           <IconEye
-            className="text-xl aspect-square"
+            className="text-xl aspect-square cursor-pointer"
             onClick={() => value?.id && handleView(value.id)}
           />
         )}
-        <IconDownload
-          className="text-xl aspect-square"
-          onClick={() => value?.id && handleDownload(value.id)}
-        />
+        {value?.id && (
+          <IconDownload
+            className="text-xl aspect-square cursor-pointer"
+            onClick={() => value?.id && handleDownload(value.id)}
+          />
+        )}
       </div>
     </div>
   );
@@ -100,9 +104,19 @@ function PreviewImageBody({ id }: { id: string }) {
     getPrivateFile(id)
   );
 
-  console.log(res);
+  if (isLoading)
+    return (
+      <div className={clsx("w-full h-full flex justify-center items-center")}>
+        <Loader />
+      </div>
+    );
 
-  if (isLoading || !res?.data) return null;
+  if (!res?.data)
+    return (
+      <div className="w-full h-full flex justify-center items-center">
+        <NotFoundComponent />
+      </div>
+    );
 
   const buffer = Buffer.from(res?.data, "binary").toString("base64");
   const image = `data:${res.headers["content-type"]};base64,${buffer}`;
