@@ -174,7 +174,7 @@ function CustomProductDetailCard({
                                       </div>
                                     </Accordion.Control>
                                     <Accordion.Panel>
-                                      <h1>Image preview</h1>
+                                      <h1>Chưa có thông tin hình ảnh</h1>
                                     </Accordion.Panel>
                                   </Accordion.Item>
                                 </>
