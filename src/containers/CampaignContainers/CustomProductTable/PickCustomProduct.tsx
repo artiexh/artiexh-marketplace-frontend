@@ -65,7 +65,8 @@ export default function PickCustomProduct({
     pageSize: 5,
     pageNumber: 1,
     category: null,
-    sortDirection: "ASC",
+    sortBy: "id",
+    sortDirection: "DESC",
     name: "",
   });
   const {
@@ -80,6 +81,8 @@ export default function PickCustomProduct({
           pageSize: params.pageSize.toString(),
           pageNumber: params.pageNumber.toString(),
           name: params.name ?? "",
+          sortBy: "id",
+          sortDirection: "DESC",
         }).toString()}`
       );
     }
