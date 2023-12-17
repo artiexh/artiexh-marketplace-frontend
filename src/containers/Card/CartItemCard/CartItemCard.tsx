@@ -40,7 +40,10 @@ const messageMapper = (item: CartItem) => {
     return `Sản phẩm chỉ còn ${item.remainingQuantity} sản phẩm, vui lòng cập nhật lại số lượng`;
   }
 
-  if (item.maxItemsPerOrder < item.quantity) {
+  if (
+    typeof item.maxItemsPerOrder === "number" &&
+    item.maxItemsPerOrder < item.quantity
+  ) {
     return `Tối đa ${item.maxItemsPerOrder} sản phẩm một đơn, vui lòng cập nhật lại số lượng`;
   }
 
