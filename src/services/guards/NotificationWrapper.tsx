@@ -14,7 +14,7 @@ import axiosClient from "../backend/axiosClient";
 
 export default function NotificationWrapper({ children }: any) {
   const user = useStore($user);
-  const socket = io("https://api.artiexh.space", {
+  const socket = io(process.env.NEXT_PUBLIC_SOCKET_ENDPOINT, {
     path: `/socket.io`, // Specify the path if necessary
     transports: ["websocket"],
     query: {
