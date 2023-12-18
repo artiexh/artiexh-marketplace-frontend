@@ -1,7 +1,7 @@
 import { NOTIFICATION_TYPE } from "@/constants/common";
 import axiosClient from "@/services/backend/axiosClient";
 import { publicUploadFile } from "@/services/backend/services/media";
-import { artistRegister } from "@/services/backend/services/user";
+import { artistRegister, logout } from "@/services/backend/services/user";
 import { ArtistRegisterData } from "@/types/User";
 import { ValidationError } from "@/utils/error/ValidationError";
 import { errorHandler } from "@/utils/errorHandler";
@@ -12,6 +12,7 @@ import { Button, FileInput, TextInput } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { notifications } from "@mantine/notifications";
 import { useMutation } from "@tanstack/react-query";
+import { useRouter } from "next/router";
 import { useState } from "react";
 
 export default function ArtistRegisterModal({
@@ -21,6 +22,7 @@ export default function ArtistRegisterModal({
   closeModal: () => void;
   revalidateFunc?: () => void;
 }) {
+  const router = useRouter();
   const initialValues = {
     bankAccount: "",
     bankAccountName: "",
@@ -53,20 +55,19 @@ export default function ArtistRegisterModal({
           ...values,
           shopThumbnailUrl: data.fileResponses[0].presignedUrl,
         });
-
-        //refresh token
-        await axiosClient.post("/auth/refresh");
       } else {
         throw new Error("Có lỗi xảy ra, vui lòng thử lại sau!");
       }
     },
     onSuccess: () => {
       notifications.show({
-        message: "Đăng ký trở thành artist thành công",
+        message: "Đăng ký trở thành artist thành công, vui long đăng nhập lại",
         ...getNotificationIcon(NOTIFICATION_TYPE.SUCCESS),
       });
       revalidateFunc?.();
-      updateUserInformation();
+      logout().then(() => {
+        router.push("/auth/signin");
+      });
       closeModal();
     },
     onError: (e) => {

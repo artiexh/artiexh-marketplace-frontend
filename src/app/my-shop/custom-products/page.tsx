@@ -215,6 +215,7 @@ const customProductColumns: TableColumns<
     title: "Tác vụ",
     key: "action",
     className: "!text-center",
+
     render: (record) => (
       <div className="flex justify-center gap-x-2 w-[100px]">
         <Tooltip label="Chỉnh sửa">
