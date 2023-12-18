@@ -1,32 +1,30 @@
 import PrivateImageLoader from "@/components/PrivateImageLoader/PrivateImageLoader";
 import { CampaignDetail, ProductInCampaignDetail } from "@/types/Campaign";
-import { Tag } from "@/types/Product";
 
 import clsx from "clsx";
 
-import { useQuery } from "@tanstack/react-query";
 import axiosClient from "@/services/backend/axiosClient";
 import {
   IconAlertCircleFilled,
   IconCircleCheckFilled,
 } from "@tabler/icons-react";
+import { useQuery } from "@tanstack/react-query";
 
-import { CommonResponseBase } from "@/types/ResponseBase";
+import Thumbnail from "@/components/CreateProduct/Thumbnail";
+import PrivateFileUploadPreview from "@/components/FileUpload/FileUploadPreview";
 import { GENERAL_CAMPAIGN_ENDPOINT } from "@/services/backend/services/campaign";
-import { useForm } from "@mantine/form";
+import { CommonResponseBase } from "@/types/ResponseBase";
+import { currencyFormatter } from "@/utils/formatter";
 import {
   Accordion,
   Card,
   Col,
-  Collapse,
   Grid,
   Input,
   Tabs,
   Textarea,
 } from "@mantine/core";
-import PrivateFileUploadPreview from "@/components/FileUpload/FileUploadPreview";
-import Thumbnail from "@/components/CreateProduct/Thumbnail";
-import { currencyFormatter } from "@/utils/formatter";
+import { useForm } from "@mantine/form";
 
 function CustomProductDetailCard({
   campaignId,

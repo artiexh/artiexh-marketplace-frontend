@@ -12,21 +12,21 @@ import {
 import { CampaignDetail, CustomProduct } from "@/types/Campaign";
 import { CommonResponseBase } from "@/types/ResponseBase";
 import { configCalculate } from "@/utils/campaign.utils";
+import { errorHandler } from "@/utils/errorHandler";
 import { currencyFormatter } from "@/utils/formatter";
+import { getNotificationIcon } from "@/utils/mapper";
 import { Button, Input, NumberInput, Text, Tooltip } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { modals } from "@mantine/modals";
+import { notifications } from "@mantine/notifications";
 import { IconHelpCircle } from "@tabler/icons-react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import clsx from "clsx";
 import { useParams } from "next/navigation";
+import CurrencyInput from "react-currency-input-field";
 import useSWR from "swr";
 import CustomProductDetailCard from "../CustomProductDetailCard";
 import PickCustomProduct from "./PickCustomProduct";
-import { getNotificationIcon } from "@/utils/mapper";
-import { notifications } from "@mantine/notifications";
-import { errorHandler } from "@/utils/errorHandler";
-import CurrencyInput from "react-currency-input-field";
-import clsx from "clsx";
 
 export default function CustomProductTable({
   data: rawData,
@@ -140,6 +140,10 @@ function EditCustomProductModal({ data: product }: { data: CustomProduct }) {
         if (config && config?.providerConfig?.basePriceAmount >= value) {
           return `Giá bán phải lớn hơn ${config.providerConfig?.basePriceAmount}`;
         }
+
+        if (value > 10000000) {
+          return "Giá sản phẩm không thể vượt quá 10 triệu đồng";
+        }
         return null;
       },
       quantity: (value, values, path) => {
@@ -147,6 +151,10 @@ function EditCustomProductModal({ data: product }: { data: CustomProduct }) {
         const config = product;
         if (config && config.providerConfig?.minQuantity > value) {
           return `Số lượng phải lớn hơn hoặc bằng ${config.providerConfig?.minQuantity}`;
+        }
+
+        if (value > 10000) {
+          return "Số lượng sản phẩm tối đa là 10000 cái";
         }
         return null;
       },
@@ -272,7 +280,6 @@ function EditCustomProductModal({ data: product }: { data: CustomProduct }) {
           />
         </div>
       </Input.Wrapper>
-
       <NumberInput
         thousandsSeparator=","
         classNames={{
