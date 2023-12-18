@@ -51,7 +51,7 @@ export default function CampaignGeneralInfoForm({
   const editHandler = () => {
     modals.open({
       modalId: "edit-campaign-info-" + id,
-      title: "Edit general info",
+      title: "Chỉnh sửa thông tin cơ bản",
       size: "xl",
       centered: true,
       classNames: {
