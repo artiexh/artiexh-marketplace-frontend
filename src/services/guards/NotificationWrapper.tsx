@@ -36,14 +36,7 @@ export default function NotificationWrapper({ children }: any) {
 
       socket.current?.on("messages", (data: NotificationType) => {
         setIsHasNewNotification(true);
-        console.log(data);
       });
-      socket.current?.on("disconnect", () => console.log("b"));
-
-      socket.current?.on("connect_error", (err: unknown) => {
-        errorHandler(err);
-      });
-      socket.current?.on("connect_failed", (err: unknown) => errorHandler(err));
     }
 
     return () => {
