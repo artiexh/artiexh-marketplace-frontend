@@ -30,7 +30,7 @@ export default function AuthWrapper({
     return null;
   }
 
-  if (user?.role === "ADMIN") {
+  if (user?.role === "ADMIN" || user?.role === "STAFF") {
     logout().then(() => {
       router.push(
         `/auth/signin?${new URLSearchParams({
