@@ -23,7 +23,7 @@ export default function ProductTablePage() {
   const pathname = usePathname();
 
   const [params, setParams] = useState<{ [key: string]: any }>({
-    pageSize: 5,
+    pageSize: 6,
     pageNumber: 1,
     sortBy: "createdDate",
     sortDirection: "DESC",

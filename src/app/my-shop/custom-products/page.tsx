@@ -217,7 +217,7 @@ const customProductColumns: TableColumns<
     className: "!text-center",
 
     render: (record) => (
-      <div className="flex justify-center gap-x-2 w-[100px]">
+      <div className="flex justify-center gap-x-2 w-[100px] mx-auto">
         <Tooltip label="Chỉnh sửa">
           <ActionIcon onClick={() => record.onEdit && record.onEdit()}>
             <IconBallpen />

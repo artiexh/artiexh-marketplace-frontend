@@ -1,7 +1,8 @@
 import { CampaignData } from "@/types/Campaign";
 import { TableColumns } from "@/types/Table";
 import { currencyFormatter, dateFormatter } from "@/utils/formatter";
-import { Badge } from "@mantine/core";
+import { ActionIcon, Badge } from "@mantine/core";
+import { IconEye } from "@tabler/icons-react";
 import clsx from "clsx";
 
 export const saleCampaignColumns: TableColumns<
@@ -10,38 +11,15 @@ export const saleCampaignColumns: TableColumns<
   }
 > = [
   {
-    title: "Id",
-    key: "id",
-    dataIndex: "id",
-  },
-  {
     title: "Tên",
     key: "name",
     dataIndex: "name",
     render: (record) => (
       <div className="flex flex-col">
-        <span>{record.name}</span>
-        <span className="text-sm text-gray-500">
-          Artist: {record.owner.username}
-        </span>
+        <span className="font-semibold">{record.name}</span>
+        <span className="text-sm text-gray-700">Id: {record.id}</span>
       </div>
     ),
-  },
-  {
-    title: "Ngày mở bán",
-    key: "orderTime",
-    render: (record) => (
-      <div className="flex flex-col">
-        <span>Từ: {dateFormatter(record.from)}</span>
-        <span>Đến: {dateFormatter(record.to)}</span>
-      </div>
-    ),
-  },
-  {
-    title: "Ngày hiển thị",
-    key: "publicDate",
-    dataIndex: "publicDate",
-    render: (record) => <span>{dateFormatter(record.publicDate)}</span>,
   },
   {
     title: "Loại",
@@ -60,18 +38,26 @@ export const saleCampaignColumns: TableColumns<
           color = "bg-green-500";
       }
 
-      return (
-        <Badge
-          className={clsx(
-            `text-white font-semibold px-2 py-1 rounded-2xl`,
-            color
-          )}
-        >
-          {record.type}
-        </Badge>
-      );
+      return <Badge className={clsx(`text-white`, color)}>{record.type}</Badge>;
     },
   },
+  {
+    title: "Ngày mở bán",
+    key: "orderTime",
+    render: (record) => (
+      <div className="flex flex-col">
+        <span>Từ: {dateFormatter(record.from)}</span>
+        <span>Đến: {dateFormatter(record.to)}</span>
+      </div>
+    ),
+  },
+  {
+    title: "Ngày hiển thị",
+    key: "publicDate",
+    dataIndex: "publicDate",
+    render: (record) => <span>{dateFormatter(record.publicDate)}</span>,
+  },
+
   {
     title: "Trạng thái",
     key: "status",
@@ -80,25 +66,16 @@ export const saleCampaignColumns: TableColumns<
       let color;
       switch (record.status) {
         case "ACTIVE":
-          color = "bg-blue-500";
+          color = "bg-sky-100 text-sky-600";
           break;
         case "DRAFT":
-          color = "bg-yellow-500";
+          color = "bg-[#e6fffb] text-[#08979c]";
           break;
         default:
-          color = "bg-green-500";
+          color = "bg-gray-100 text-black";
       }
 
-      return (
-        <Badge
-          className={clsx(
-            `text-white font-semibold px-2 py-1 rounded-2xl`,
-            color
-          )}
-        >
-          {record.status}
-        </Badge>
-      );
+      return <Badge className={clsx(color)}>{record.status}</Badge>;
     },
   },
   {
@@ -106,13 +83,10 @@ export const saleCampaignColumns: TableColumns<
     key: "actions",
     className: "!text-center",
     render: (record) => (
-      <div className="w-[100px] flex justify-center">
-        <span
-          className="cursor-pointer border-blue-400 py-[3px] px-2 rounded-2xl text-xs bg-blue-400 text-white font-semibold"
-          onClick={() => record?.onView()}
-        >
-          Xem chi tiết
-        </span>
+      <div className="w-[100px] flex justify-center mx-auto">
+        <ActionIcon onClick={() => record.onView && record.onView()}>
+          <IconEye />
+        </ActionIcon>
       </div>
     ),
   },

@@ -11,24 +11,23 @@ const shopProductColumns: TableColumns<
   }
 > = [
   {
-    title: "Mã sản phẩm",
-    key: "productCode",
-    dataIndex: "productCode",
-  },
-  {
     title: "Tên sản phẩm",
     key: "name",
     render: (record) => (
       <div className="flex items-center gap-5">
-        <div className="relative w-16 aspect-square">
+        <div className="relative w-16 aspect-square rounded-md">
           <ImageWithFallback
-            fallback="/assets/default-thumbnail.jpg"
             src={record.thumbnailUrl}
             alt="product-thumb"
-            className="object-cover rounded-full aspect-square"
+            className="w-full h-full object-cover rounded-md"
           />
         </div>
-        <div>{record.name}</div>
+        <div>
+          <div className="font-semibold">{record.name}</div>
+          <div className="text-sm text-gray-700">
+            Code: {record.productCode}
+          </div>
+        </div>
       </div>
     ),
   },
@@ -53,7 +52,7 @@ const shopProductColumns: TableColumns<
     action: "EDIT",
     className: "!text-center",
     render: (record) => (
-      <div className="flex justify-center w-[100px]">
+      <div className="flex justify-center w-[100px] mx-auto">
         <ActionIcon onClick={() => record.onView && record.onView()}>
           <IconEye />
         </ActionIcon>

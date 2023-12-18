@@ -2,7 +2,8 @@ import ImageWithFallback from "@/components/ImageWithFallback/ImageWithFallback"
 import { CampaignData } from "@/types/Campaign";
 import { TableColumns } from "@/types/Table";
 import { dateFormatter } from "@/utils/formatter";
-import { Badge } from "@mantine/core";
+import { ActionIcon, Badge } from "@mantine/core";
+import { IconEye } from "@tabler/icons-react";
 import clsx from "clsx";
 
 export const artistCampaignColumns: TableColumns<
@@ -11,34 +12,16 @@ export const artistCampaignColumns: TableColumns<
   }
 > = [
   {
-    title: "Id",
-    key: "id",
-    dataIndex: "id",
-  },
-  {
     title: "Tên",
     key: "name",
     dataIndex: "name",
     render: (record) => (
       <div className="flex flex-col">
-        <span>{record.name}</span>
-        <span className="text-sm text-gray-500">
-          Artist: {record.owner.username}
-        </span>
+        <span className="font-semibold">{record.name}</span>
+        <span className="text-sm text-gray-700">Id: {record.id}</span>
       </div>
     ),
   },
-  {
-    title: "Thời gian đặt hàng",
-    key: "orderTime",
-    render: (record) => (
-      <div className="flex flex-col">
-        <span>Từ: {dateFormatter(record.from)}</span>
-        <span>Đến: {dateFormatter(record.to)}</span>
-      </div>
-    ),
-  },
-
   {
     title: "Loại",
     key: "type",
@@ -56,18 +39,20 @@ export const artistCampaignColumns: TableColumns<
           color = "bg-green-500";
       }
 
-      return (
-        <Badge
-          className={clsx(
-            `text-white font-semibold px-2 py-1 rounded-2xl`,
-            color
-          )}
-        >
-          {record.type}
-        </Badge>
-      );
+      return <Badge className={clsx(color, "text-white")}>{record.type}</Badge>;
     },
   },
+  {
+    title: "Ngày mở bán",
+    key: "orderTime",
+    render: (record) => (
+      <div className="flex flex-col">
+        <span>Từ: {dateFormatter(record.from)}</span>
+        <span>Đến: {dateFormatter(record.to)}</span>
+      </div>
+    ),
+  },
+
   {
     title: "Trạng thái",
     key: "status",
@@ -76,40 +61,31 @@ export const artistCampaignColumns: TableColumns<
       let color;
       switch (record.status) {
         case "WAITING":
-          color = "bg-[#DBD33E]";
+          color = "bg-sky-100 text-sky-600";
           break;
         case "REQUEST_CHANGE":
-          color = "bg-[#FB931D] text-white";
+          color = "bg-yellow-100 text-yellow-600";
           break;
         case "CANCELED":
-          color = "bg-[#9093A4] text-white";
+          color = "bg-red-100 text-red-600";
           break;
         case "APPROVED":
-          color = "bg-[#1AC455] text-white";
+          color = "bg-green-100 text-green-600";
           break;
         case "REJECTED":
-          color = "bg-[#F21616] text-white";
+          color = "bg-red-100 text-red-600";
           break;
         case "MANUFACTURING":
-          color = "bg-[#9E3FC9] text-white";
+          color = "bg-[#e6fffb] text-[#08979c]";
           break;
         case "MANUFACTURED":
-          color = "bg-[#5C68AC] text-white";
+          color = "bg-gray-100 text-black";
           break;
         default:
-          color = "bg-[#09B8FF]";
+          color = "bg-violet-100 text-violet-600";
       }
 
-      return (
-        <Badge
-          className={clsx(
-            `text-white font-semibold px-2 py-1 rounded-2xl`,
-            color
-          )}
-        >
-          {record.status}
-        </Badge>
-      );
+      return <Badge className={clsx(color)}>{record.status}</Badge>;
     },
   },
   {
@@ -117,13 +93,10 @@ export const artistCampaignColumns: TableColumns<
     key: "actions",
     className: "!text-center",
     render: (record) => (
-      <div className="w-[100px] flex justify-center">
-        <span
-          className="cursor-pointer border-blue-400 py-[3px] px-2 rounded-2xl text-xs bg-blue-400 text-white font-semibold w-[100px]"
-          onClick={() => record?.onClickEdit()}
-        >
-          Xem chi tiết
-        </span>
+      <div className="w-[100px] flex justify-center mx-auto">
+        <ActionIcon onClick={() => record.onClickEdit && record.onClickEdit()}>
+          <IconEye />
+        </ActionIcon>
       </div>
     ),
   },
