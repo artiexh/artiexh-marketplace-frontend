@@ -106,7 +106,7 @@ export const saleCampaignColumns: TableColumns<
     key: "actions",
     className: "!text-center",
     render: (record) => (
-      <div className="w-[100px]">
+      <div className="w-[100px] flex justify-center">
         <span
           className="cursor-pointer border-blue-400 py-[3px] px-2 rounded-2xl text-xs bg-blue-400 text-white font-semibold"
           onClick={() => record?.onView()}
