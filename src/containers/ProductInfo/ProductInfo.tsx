@@ -6,7 +6,7 @@ import { increaseCartItem } from "@/services/backend/services/cart";
 import { $user } from "@/store/user";
 import { Product } from "@/types/Product";
 import { errorHandler } from "@/utils/errorHandler";
-import { currencyFormatter } from "@/utils/formatter";
+import { currencyFormatter, dateFormatter } from "@/utils/formatter";
 import { getCampaignType, getNotificationIcon } from "@/utils/mapper";
 import { ActionIcon, Badge, Button, NumberInput } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
@@ -92,7 +92,7 @@ const ProductInfo: FC<ProductInfoProps> = ({ product, special }) => {
         {campaignType === "IN_COMING" && (
           <div className="text-red-500 mb-4">
             Sản phẩm này chỉ chính thức được bán sau ngày{" "}
-            {new Date(campaign.from).toLocaleDateString()}
+            {dateFormatter(campaign.from)}
           </div>
         )}
         {new Date(product.saleCampaign.from) <= new Date() &&

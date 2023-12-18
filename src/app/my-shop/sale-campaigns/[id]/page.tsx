@@ -61,7 +61,7 @@ export default function SaleCampaignDetailPage() {
           <SaleCampaignDetailContainer />
         </div>
         <div className={!isDetailPage ? "" : "hidden"}>
-          <SaleCampaignStatisticContainer id={id} />
+          <SaleCampaignStatisticContainer id={id} status={res.data.status} />
         </div>
       </div>
     </>

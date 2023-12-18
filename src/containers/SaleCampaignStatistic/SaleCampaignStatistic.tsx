@@ -46,7 +46,13 @@ ChartJS.register(
   ArcElement
 );
 
-function SaleCampaignStatisticContainer({ id }: { id: string }) {
+function SaleCampaignStatisticContainer({
+  id,
+  status,
+}: {
+  id: string;
+  status: string;
+}) {
   const { data: statisticData, isLoading } = useSWR(
     [SALE_CAMPAIGN_ENDPOINT, id, "statistic"],
     async () => {
@@ -121,7 +127,11 @@ function SaleCampaignStatisticContainer({ id }: { id: string }) {
   ];
 
   const getMessage = () => {
-    if (new Date(statisticData.to).getTime() < new Date().getTime()) {
+    console.log(status);
+    if (
+      new Date(statisticData.to).getTime() < new Date().getTime() ||
+      status === "CLOSED"
+    ) {
       return "Chiến dịch đã kết thúc";
     }
 
@@ -225,7 +235,13 @@ function SaleCampaignStatisticContainer({ id }: { id: string }) {
   );
 }
 
-export default function SaleCampaignStatistics({ id }: { id: string }) {
+export default function SaleCampaignStatistics({
+  id,
+  status,
+}: {
+  id: string;
+  status: string;
+}) {
   return (
     <Tabs defaultValue="general-info" className="mt-2">
       <Tabs.List>
@@ -234,7 +250,7 @@ export default function SaleCampaignStatistics({ id }: { id: string }) {
         <Tabs.Tab value="products">Sản phẩm</Tabs.Tab>
       </Tabs.List>
       <Tabs.Panel value="general-info">
-        <SaleCampaignStatisticContainer id={id} />
+        <SaleCampaignStatisticContainer id={id} status={status} />
       </Tabs.Panel>
       <Tabs.Panel value="products">
         <ProductStatisticTable id={id} />
