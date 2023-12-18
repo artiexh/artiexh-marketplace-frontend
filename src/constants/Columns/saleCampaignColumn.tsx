@@ -136,7 +136,8 @@ export const statisticCampaignColumns: TableColumns<{
   {
     title: "Tên sản phẩm",
     key: "name",
-    dataIndex: "name",
+    className: "!text-center w-[10rem]",
+    render: (value) => <div>{value.name}</div>,
   },
   {
     title: "Tổng số lượng",

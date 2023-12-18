@@ -11,7 +11,7 @@ const shopProductColumns: TableColumns<
   }
 > = [
   {
-    title: "Code",
+    title: "Mã sản phẩm",
     key: "productCode",
     dataIndex: "productCode",
   },
