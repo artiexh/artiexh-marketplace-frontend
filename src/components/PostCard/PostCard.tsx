@@ -114,12 +114,14 @@ const PostCardContent = ({ artist, postInformation }: PostCardProps) => {
       </div>
       <Divider className="mt-6" />
       {postInformation.attaches?.[0]?.url && (
-        <div>
-          <img
-            src={postInformation.attaches?.[0]?.url}
-            alt="img"
-            className="w-full !h-[400px] object-cover"
-          />
+        <div className="flex justify-center">
+          <div>
+            <img
+              src={postInformation.attaches?.[0]?.url}
+              alt="img"
+              className="!h-[400px] object-cover"
+            />
+          </div>
         </div>
       )}
     </>
