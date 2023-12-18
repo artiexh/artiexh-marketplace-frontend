@@ -21,7 +21,7 @@ export default function NotificationPage() {
   const [scroll] = useWindowScroll();
 
   useEffect(() => {
-    if (1.5 * scroll.y > window.screen.height * size) {
+    if (10 * scroll.y > window.screen.height * size) {
       setSize((prev) => prev + 1);
     }
   }, [scroll]);

@@ -220,7 +220,8 @@ const ProductDetailPage: NextPage<
           Sản phẩm khác trong chiến dịch:
         </h2>
         <div className="interest-wrapper grid grid-cols-4 md:grid-cols-10 gap-5 mt-5">
-          {campaignProducts?.data?.items?.length ? (
+          {campaignProducts?.data?.items?.length &&
+          campaignProducts?.data?.items?.length > 1 ? (
             campaignProducts?.data?.items
               ?.filter((item) => item.productCode !== product.productCode)
               ?.map((product, index) => (
