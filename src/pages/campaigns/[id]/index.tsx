@@ -135,13 +135,16 @@ export default function CampaignDetailPage() {
               getCampaignType(campaignData)
             ) && (
               <Timer
-                key={campaignData.from}
+                key={campaignType}
                 className="!text-3xl "
                 initValue={getCampaignTime(
                   campaignData.from,
                   campaignData.to,
                   getCampaignType(campaignData)
                 )}
+                onCompleted={() =>
+                  setCampaignType(getCampaignType(campaignData))
+                }
                 classNames={{
                   root: "items-center",
                   element: "!p-4 !rounded-md !bg-primary",
