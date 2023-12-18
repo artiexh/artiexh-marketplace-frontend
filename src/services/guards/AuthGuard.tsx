@@ -23,7 +23,7 @@ const AuthGuard = () => {
           "/account/me"
         );
 
-        if (data.data.role === "ADMIN") {
+        if (data.data.role === "ADMIN" || data.data?.role === "STAFF") {
           await logout();
           throw new Error("Invalid role");
         }
