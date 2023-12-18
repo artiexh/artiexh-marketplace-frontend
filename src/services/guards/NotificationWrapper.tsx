@@ -7,20 +7,49 @@ import {
 } from "@/types/ResponseBase";
 import { errorHandler } from "@/utils/errorHandler";
 import { useStore } from "@nanostores/react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 // @ts-ignore
 import * as io from "socket.io-client";
 import axiosClient from "../backend/axiosClient";
 
 export default function NotificationWrapper({ children }: any) {
   const user = useStore($user);
-  const socket = io("https://api.artiexh.space", {
-    path: `/socket.io`, // Specify the path if necessary
-    transports: ["websocket"],
-    query: {
-      userId: user?.id,
-    },
-  });
+  const socket = useRef() as any;
+
+  useEffect(() => {
+    if (!socket.current && user?.id) {
+      io("https://api.artiexh.space", {
+        path: `/socket.io`, // Specify the path if necessary
+        transports: ["websocket"],
+        query: {
+          userId: user?.id,
+        },
+        reconnection: false,
+      });
+
+      socket.current?.on("connect", () => {
+        if (user != null) {
+          console.log("aa");
+          getNotification();
+        }
+      });
+
+      socket.current?.on("messages", (data: NotificationType) => {
+        setIsHasNewNotification(true);
+        console.log(data);
+      });
+      socket.current?.on("disconnect", () => console.log("b"));
+
+      socket.current?.on("connect_error", (err: unknown) => {
+        errorHandler(err);
+      });
+      socket.current?.on("connect_failed", (err: unknown) => errorHandler(err));
+    }
+
+    return () => {
+      socket.current?.close();
+    };
+  }, [user]);
 
   const [isHasNewNotification, setIsHasNewNotification] = useState(false);
 
@@ -38,28 +67,7 @@ export default function NotificationWrapper({ children }: any) {
     }
   };
 
-  useEffect(() => {
-    socket.on("connect", () => {
-      if (user != null) {
-        getNotification();
-      }
-    });
-
-    socket.on("messages", (data: NotificationType) => {
-      setIsHasNewNotification(true);
-      console.log(data);
-    });
-    socket.on("disconnect", () => console.log("b"));
-
-    socket.on("connect_error", (err: unknown) => {
-      errorHandler(err);
-    });
-    socket.on("connect_failed", (err: unknown) => errorHandler(err));
-
-    return () => {
-      socket.close();
-    };
-  }, [user]);
+  useEffect(() => {}, [user]);
 
   return (
     <div className="notification-wrapper">

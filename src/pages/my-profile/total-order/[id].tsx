@@ -125,7 +125,7 @@ function OrderDetailPage() {
             </div>
             <div>
               <span className="font-bold">Tổng cộng: </span>
-              {data.currentTransaction.priceAmount} VND
+              {currencyFormatter(data.currentTransaction.priceAmount)} VND
             </div>
             <div>
               <span className="font-bold">Hình thức: </span>
